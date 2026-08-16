@@ -272,12 +272,13 @@
         }
 
         .profile-image {
-            width: 260px;
-            height: 260px;
-            border-radius: 50%;
-            background: #000000;
-            margin-bottom: 70px;
-        }
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 70px;
+}
 
         .profile-description {
             max-width: 500px;
@@ -510,7 +511,11 @@
 
         <h2>Patrycja Boruch</h2>
 
-        <div class="profile-image"></div>
+        <img
+    class="profile-image"
+    src="images/patrycja-boruch.jpg"
+    alt="Patrycja Boruch"
+>
 
         <div class="profile-description">
 
