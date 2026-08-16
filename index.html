@@ -11,30 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 
-            .artist-row {
-            position: relative;
-        }
-
-        .artist-photo {
-            position: absolute;
-            right: 40px;
-            top: 50%;
-            width: 130px;
-            height: 130px;
-            transform: translateY(-50%) scale(0.8);
-            border-radius: 50%;
-            background: #000000;
-            opacity: 0;
-            transition:
-                opacity 0.3s ease,
-                transform 0.4s ease;
-            pointer-events: none;
-        }
-
-        .artist-row:hover .artist-photo {
-            opacity: 1;
-            transform: translateY(-50%) scale(1);
-        }
+           
     <style>
 
         * {
@@ -221,6 +198,30 @@
             font-family: "Libre Bodoni", serif;
             font-size: clamp(28px, 4vw, 52px);
             font-weight: 400;
+        }
+                .artist-row {
+            position: relative;
+        }
+
+        .artist-photo {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            width: 130px;
+            height: 130px;
+            transform: translateY(-50%) scale(0.8);
+            border-radius: 50%;
+            background: #000000;
+            opacity: 0;
+            transition:
+                opacity 0.3s ease,
+                transform 0.4s ease;
+            pointer-events: none;
+        }
+
+        .artist-row:hover .artist-photo {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
         }
     </style>
 </head>
