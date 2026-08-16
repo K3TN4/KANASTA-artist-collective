@@ -145,59 +145,82 @@
             vertical-align: middle;
             margin-right: 18px;
         }
-            /* ARTISTS */
+        /* ARTISTS */
 
-        .artists {
-            padding: 140px 32px 160px;
-            border-top: 1px solid #dddddd;
-        }
+.artists {
+    padding: 140px 32px 160px;
+    border-top: 1px solid #dddddd;
+}
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 90px;
-            font-size: 11px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-        }
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 90px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
 
-        .section-header h2 {
-            font-family: "Libre Bodoni", serif;
-            font-size: clamp(48px, 8vw, 110px);
-            font-weight: 400;
-            letter-spacing: 0.02em;
-            text-transform: none;
-        }
+.section-header h2 {
+    font-family: "Libre Bodoni", serif;
+    font-size: clamp(48px, 8vw, 110px);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: none;
+}
 
-        .artist-list {
-            border-top: 1px solid #dddddd;
-        }
+.artist-list {
+    border-top: 1px solid #dddddd;
+}
 
-                .artist-row {
-            position: relative;
-        }
+.artist-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    align-items: center;
+    padding: 24px 0;
+    border-bottom: 1px solid #dddddd;
+    cursor: pointer;
+    transition: padding-left 0.25s ease;
+}
 
-        .artist-photo {
-            position: absolute;
-            right: 40px;
-            top: 50%;
-            width: 130px;
-            height: 130px;
-            transform: translateY(-50%) scale(0.8);
-            border-radius: 50%;
-            background: #000000;
-            opacity: 0;
-            transition:
-                opacity 0.3s ease,
-                transform 0.4s ease;
-            pointer-events: none;
-        }
+.artist-row:hover {
+    padding-left: 20px;
+}
 
-        .artist-row:hover .artist-photo {
-            opacity: 1;
-            transform: translateY(-50%) scale(1);
-        }
+.artist-number {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: #777777;
+}
+
+.artist-name {
+    font-family: "Libre Bodoni", serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 400;
+}
+
+.artist-photo {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    width: 130px;
+    height: 130px;
+    transform: translateY(-50%) scale(0.8);
+    border-radius: 50%;
+    background: #000000;
+    opacity: 0;
+    transition:
+        opacity 0.3s ease,
+        transform 0.4s ease;
+    pointer-events: none;
+}
+
+.artist-row:hover .artist-photo {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+}
 
                 /* ARTIST PROFILE */
 
@@ -524,7 +547,7 @@
 
     <script>
 
-        <script>
+       <script>
 
     const menuButton = document.getElementById("menuButton");
     const menuOverlay = document.getElementById("menuOverlay");
@@ -540,23 +563,33 @@
 
 
     function openArtist(artist) {
+
         if (artist === "patrycja") {
+
             document
                 .getElementById("patrycjaProfile")
                 .classList.add("active");
+
         }
+
     }
 
+
     function closeArtist() {
+
         document
             .getElementById("patrycjaProfile")
             .classList.remove("active");
+
     }
 
+
     function toggleBio() {
+
         document
             .getElementById("patrycjaBio")
             .classList.toggle("active");
+
     }
 
 </script>
