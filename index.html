@@ -6,15 +6,13 @@
 
     <title>KANASTA — artist collective</title>
 
+    <!-- Libre Bodoni -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&display=swap" rel="stylesheet">
-    
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -27,6 +25,8 @@
             font-family: Arial, Helvetica, sans-serif;
         }
 
+        /* HEADER */
+
         header {
             padding: 28px 32px;
             display: flex;
@@ -35,17 +35,20 @@
         }
 
         .logo {
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 17px;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-}
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 17px;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+        }
 
         .menu {
             font-size: 12px;
             letter-spacing: 0.12em;
             text-transform: uppercase;
+            cursor: pointer;
         }
+
+        /* MAIN */
 
         main {
             min-height: calc(100vh - 80px);
@@ -57,13 +60,13 @@
         }
 
         h1 {
-    font-family: "Libre Bodoni", serif;
-    font-size: clamp(64px, 12vw, 180px);
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    line-height: 0.9;
-    text-align: center;
-}
+            font-family: "Libre Bodoni", serif;
+            font-size: clamp(64px, 12vw, 180px);
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            line-height: 0.9;
+            text-align: center;
+        }
 
         .subtitle {
             margin-top: 20px;
@@ -80,6 +83,8 @@
             margin-top: 70px;
         }
 
+        /* FOOTER */
+
         footer {
             padding: 28px 32px;
             display: flex;
@@ -88,9 +93,8 @@
             letter-spacing: 0.1em;
             text-transform: uppercase;
         }
-                .menu {
-            cursor: pointer;
-        }
+
+        /* MENU OVERLAY */
 
         .menu-overlay {
             position: fixed;
@@ -123,6 +127,7 @@
         }
 
         .menu-item {
+            display: block;
             font-family: "Libre Bodoni", serif;
             font-size: clamp(40px, 7vw, 100px);
             font-weight: 400;
@@ -139,17 +144,26 @@
             vertical-align: middle;
             margin-right: 18px;
         }
+
     </style>
 </head>
 
 <body>
 
+    <!-- HEADER -->
+
     <header>
         <div class="logo">KANASTA</div>
-        <div class="menu" id="menuButton">MENU</div>
+
+        <div class="menu" id="menuButton">
+            MENU
+        </div>
     </header>
 
-        <div class="menu-overlay" id="menuOverlay">
+
+    <!-- MENU -->
+
+    <div class="menu-overlay" id="menuOverlay">
 
         <div class="menu-close" id="menuClose">
             CLOSE
@@ -186,7 +200,11 @@
 
     </div>
 
+
+    <!-- MAIN -->
+
     <main>
+
         <h1>KANASTA</h1>
 
         <div class="subtitle">
@@ -194,24 +212,35 @@
         </div>
 
         <div class="black-box"></div>
+
     </main>
+
+
+    <!-- FOOTER -->
 
     <footer>
         <span>15 artists</span>
         <span>2026</span>
     </footer>
+
+
+    <!-- JAVASCRIPT -->
+
     <script>
-    const menuButton = document.getElementById("menuButton");
-    const menuOverlay = document.getElementById("menuOverlay");
-    const menuClose = document.getElementById("menuClose");
 
-    menuButton.addEventListener("click", () => {
-        menuOverlay.classList.add("active");
-    });
+        const menuButton = document.getElementById("menuButton");
+        const menuOverlay = document.getElementById("menuOverlay");
+        const menuClose = document.getElementById("menuClose");
 
-    menuClose.addEventListener("click", () => {
-        menuOverlay.classList.remove("active");
-    });
-</script>
+        menuButton.addEventListener("click", function() {
+            menuOverlay.classList.add("active");
+        });
+
+        menuClose.addEventListener("click", function() {
+            menuOverlay.classList.remove("active");
+        });
+
+    </script>
+
 </body>
 </html>
