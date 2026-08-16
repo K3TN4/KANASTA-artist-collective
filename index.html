@@ -144,7 +144,60 @@
             vertical-align: middle;
             margin-right: 18px;
         }
+            /* ARTISTS */
 
+        .artists {
+            padding: 140px 32px 160px;
+            border-top: 1px solid #dddddd;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 90px;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .section-header h2 {
+            font-family: "Libre Bodoni", serif;
+            font-size: clamp(48px, 8vw, 110px);
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            text-transform: none;
+        }
+
+        .artist-list {
+            border-top: 1px solid #dddddd;
+        }
+
+        .artist-row {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            align-items: center;
+            padding: 24px 0;
+            border-bottom: 1px solid #dddddd;
+            cursor: pointer;
+            transition: padding-left 0.25s ease;
+        }
+
+        .artist-row:hover {
+            padding-left: 20px;
+        }
+
+        .artist-number {
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            color: #777777;
+        }
+
+        .artist-name {
+            font-family: "Libre Bodoni", serif;
+            font-size: clamp(28px, 4vw, 52px);
+            font-weight: 400;
+        }
     </style>
 </head>
 
@@ -214,7 +267,94 @@
         <div class="black-box"></div>
 
     </main>
+    <section class="artists" id="artists">
 
+    <div class="section-header">
+        <span>01</span>
+        <h2>ARTISTS</h2>
+        <span>15</span>
+    </div>
+
+    <div class="artist-list">
+
+        <div class="artist-row">
+            <span class="artist-number">01</span>
+            <span class="artist-name">Patrycja Boruch</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">02</span>
+            <span class="artist-name">Zuzanna Frankowska</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">03</span>
+            <span class="artist-name">Amelia Korczak</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">04</span>
+            <span class="artist-name">Adam Pażucha</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">05</span>
+            <span class="artist-name">Antoni Augustyniak</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">06</span>
+            <span class="artist-name">Ada Rosa</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">07</span>
+            <span class="artist-name">Anastazja Gierlak</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">08</span>
+            <span class="artist-name">Anna Esnekier</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">09</span>
+            <span class="artist-name">Gabriela Bossowska</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">10</span>
+            <span class="artist-name">Marta Mioduszewska</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">11</span>
+            <span class="artist-name">Nina Borowicz</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">12</span>
+            <span class="artist-name">Aleksandra Sikora</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">13</span>
+            <span class="artist-name">Marta Mendelejeva</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">14</span>
+            <span class="artist-name">Franek Ciastoń</span>
+        </div>
+
+        <div class="artist-row">
+            <span class="artist-number">15</span>
+            <span class="artist-name">Urszula Smagowicz</span>
+        </div>
+
+    </div>
+
+</section>
 
     <!-- FOOTER -->
 
