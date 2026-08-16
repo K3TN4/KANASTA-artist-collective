@@ -11,6 +11,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 
+            .artist-row {
+            position: relative;
+        }
+
+        .artist-photo {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            width: 130px;
+            height: 130px;
+            transform: translateY(-50%) scale(0.8);
+            border-radius: 50%;
+            background: #000000;
+            opacity: 0;
+            transition:
+                opacity 0.3s ease,
+                transform 0.4s ease;
+            pointer-events: none;
+        }
+
+        .artist-row:hover .artist-photo {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+        }
     <style>
 
         * {
@@ -280,76 +304,91 @@
         <div class="artist-row">
             <span class="artist-number">01</span>
             <span class="artist-name">Patrycja Boruch</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">02</span>
             <span class="artist-name">Zuzanna Frankowska</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">03</span>
             <span class="artist-name">Amelia Korczak</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">04</span>
             <span class="artist-name">Adam Pażucha</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">05</span>
             <span class="artist-name">Antoni Augustyniak</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">06</span>
             <span class="artist-name">Ada Rosa</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">07</span>
             <span class="artist-name">Anastazja Gierlak</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">08</span>
             <span class="artist-name">Anna Esnekier</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">09</span>
             <span class="artist-name">Gabriela Bossowska</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">10</span>
             <span class="artist-name">Marta Mioduszewska</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">11</span>
             <span class="artist-name">Nina Borowicz</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">12</span>
             <span class="artist-name">Aleksandra Sikora</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">13</span>
             <span class="artist-name">Marta Mendelejeva</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">14</span>
             <span class="artist-name">Franek Ciastoń</span>
+            <span class="artist-photo"></span>
         </div>
 
         <div class="artist-row">
             <span class="artist-number">15</span>
             <span class="artist-name">Urszula Smagowicz</span>
+            <span class="artist-photo"></span>
         </div>
 
     </div>
