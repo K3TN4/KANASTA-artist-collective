@@ -198,7 +198,104 @@
             opacity: 1;
             transform: translateY(-50%) scale(1);
         }
-               
+
+                /* ARTIST PROFILE */
+
+        .artist-profile {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            z-index: 2000;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .artist-profile.active {
+            display: block;
+        }
+
+        .profile-close {
+            position: fixed;
+            top: 28px;
+            right: 32px;
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            z-index: 2001;
+        }
+
+        .profile-content {
+            min-height: 100vh;
+            padding: 120px 8vw 100px;
+        }
+
+        .profile-number {
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            color: #777777;
+            margin-bottom: 35px;
+        }
+
+        .profile-content h2 {
+            font-family: "Libre Bodoni", serif;
+            font-size: clamp(50px, 9vw, 130px);
+            font-weight: 400;
+            line-height: 0.95;
+            margin-bottom: 70px;
+        }
+
+        .profile-image {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: #000000;
+            margin-bottom: 70px;
+        }
+
+        .profile-description {
+            max-width: 500px;
+        }
+
+        .profile-role {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            margin-bottom: 25px;
+        }
+
+        .profile-description > p:not(.profile-role) {
+            font-family: "Libre Bodoni", serif;
+            font-size: 22px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+
+        .profile-description button {
+            border: none;
+            background: none;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-bottom: 1px solid #111111;
+            padding-bottom: 5px;
+        }
+
+        .profile-bio {
+            display: none;
+            margin-top: 30px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 600px;
+        }
+
+        .profile-bio.active {
+            display: block;
+        }
     </style>
 </head>
 
@@ -278,11 +375,11 @@
 
     <div class="artist-list">
 
-        <div class="artist-row">
-            <span class="artist-number">01</span>
-            <span class="artist-name">Patrycja Boruch</span>
-            <span class="artist-photo"></span>
-        </div>
+        <div class="artist-row" onclick="openArtist('patrycja')">
+    <span class="artist-number">01</span>
+    <span class="artist-name">Patrycja Boruch</span>
+    <span class="artist-photo"></span>
+</div>
 
         <div class="artist-row">
             <span class="artist-number">02</span>
@@ -371,7 +468,50 @@
     </div>
 
 </section>
+    <!-- ARTIST PROFILE -->
 
+<div class="artist-profile" id="patrycjaProfile">
+
+    <div class="profile-close" onclick="closeArtist()">
+        CLOSE
+    </div>
+
+    <div class="profile-content">
+
+        <div class="profile-number">
+            01 / 15
+        </div>
+
+        <h2>Patrycja Boruch</h2>
+
+        <div class="profile-image"></div>
+
+        <div class="profile-description">
+
+            <p class="profile-role">
+                ARTIST · KANASTA
+            </p>
+
+            <p>
+                Artist based in Poland. Member of the KANASTA
+                artist collective.
+            </p>
+
+            <button onclick="toggleBio()">
+                READ BIO
+            </button>
+
+            <div class="profile-bio" id="patrycjaBio">
+                <p>
+                    Biography coming soon.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
     <!-- FOOTER -->
 
     <footer>
@@ -384,17 +524,42 @@
 
     <script>
 
-        const menuButton = document.getElementById("menuButton");
-        const menuOverlay = document.getElementById("menuOverlay");
-        const menuClose = document.getElementById("menuClose");
+        <script>
 
-        menuButton.addEventListener("click", function() {
-            menuOverlay.classList.add("active");
-        });
+    const menuButton = document.getElementById("menuButton");
+    const menuOverlay = document.getElementById("menuOverlay");
+    const menuClose = document.getElementById("menuClose");
 
-        menuClose.addEventListener("click", function() {
-            menuOverlay.classList.remove("active");
-        });
+    menuButton.addEventListener("click", function() {
+        menuOverlay.classList.add("active");
+    });
+
+    menuClose.addEventListener("click", function() {
+        menuOverlay.classList.remove("active");
+    });
+
+
+    function openArtist(artist) {
+        if (artist === "patrycja") {
+            document
+                .getElementById("patrycjaProfile")
+                .classList.add("active");
+        }
+    }
+
+    function closeArtist() {
+        document
+            .getElementById("patrycjaProfile")
+            .classList.remove("active");
+    }
+
+    function toggleBio() {
+        document
+            .getElementById("patrycjaBio")
+            .classList.toggle("active");
+    }
+
+</script>
 
     </script>
 
