@@ -212,7 +212,8 @@
     height: 130px;
     transform: translateY(-50%) scale(0.8);
     border-radius: 50%;
-    background: #000000;
+    object-fit: cover;
+    display: block;
     opacity: 0;
     transition:
         opacity 0.3s ease,
@@ -405,7 +406,11 @@
         <div class="artist-row" onclick="openArtist('patrycja')">
     <span class="artist-number">01</span>
     <span class="artist-name">Patrycja Boruch</span>
-    <span class="artist-photo"></span>
+    <img
+    class="artist-photo"
+    src="images/patrycja-boruch.jpg"
+    alt=""
+>
 </div>
 
         <div class="artist-row">
