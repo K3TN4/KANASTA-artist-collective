@@ -272,13 +272,21 @@
             margin-bottom: 70px;
         }
 
-        .profile-image {
+       .profile-image-wrapper {
     width: 260px;
     height: 260px;
     border-radius: 50%;
+    overflow: hidden;
+    background: #000000;
+    margin-bottom: 70px;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
     object-fit: cover;
     display: block;
-    margin-bottom: 70px;
 }
 
         .profile-description {
@@ -500,7 +508,7 @@
 </section>
     <!-- ARTIST PROFILE -->
 
-<div class="artist-profile" id="patrycjaProfile">
+<div class="artist-profile" id="artistProfile">
 
     <div class="profile-close" onclick="closeArtist()">
         CLOSE
@@ -508,17 +516,22 @@
 
     <div class="profile-content">
 
-        <div class="profile-number">
+        <div class="profile-number" id="profileNumber">
             01 / 15
         </div>
 
-        <h2>Patrycja Boruch</h2>
+        <h2 id="profileName">
+            Patrycja Boruch
+        </h2>
 
-        <img
-    class="profile-image"
-    src="images/patrycja-boruch.jpg"
-    alt="Patrycja Boruch"
->
+        <div class="profile-image-wrapper">
+            <img
+                class="profile-image"
+                id="profileImage"
+                src=""
+                alt=""
+            >
+        </div>
 
         <div class="profile-description">
 
@@ -526,7 +539,7 @@
                 ARTIST · KANASTA
             </p>
 
-            <p>
+            <p id="profileDescription">
                 Artist based in Poland. Member of the KANASTA
                 artist collective.
             </p>
@@ -535,54 +548,7 @@
                 READ BIO
             </button>
 
-            <div class="profile-bio" id="patrycjaBio">
-                <p>
-                    Biography coming soon.
-                </p>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-    <div class="artist-profile" id="zuzannaProfile">
-
-    <div class="profile-close" onclick="closeArtist()">
-        CLOSE
-    </div>
-
-    <div class="profile-content">
-
-        <div class="profile-number">
-            02 / 15
-        </div>
-
-        <h2>Zuzanna Frankowska</h2>
-
-        <img
-    class="profile-image"
-    src="images/zuzanna-frankowska.jpg"
-    alt="Zuzanna Frankowska"
->
-
-        <div class="profile-description">
-
-            <p class="profile-role">
-                ARTIST · KANASTA
-            </p>
-
-            <p>
-                Artist based in Poland. Member of the KANASTA
-                artist collective.
-            </p>
-
-            <button onclick="toggleBio()">
-                READ BIO
-            </button>
-
-            <div class="profile-bio" id="patrycjaBio">
+            <div class="profile-bio" id="profileBio">
                 <p>
                     Biography coming soon.
                 </p>
@@ -605,6 +571,133 @@
 
    <script>
 
+const artists = {
+
+    patrycja: {
+        number: "01 / 15",
+        name: "Patrycja Boruch",
+        image: "images/patrycja-boruch.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    zuzanna: {
+        number: "02 / 15",
+        name: "Zuzanna Frankowska",
+        image: "images/zuzanna-frankowska.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    amelia: {
+        number: "03 / 15",
+        name: "Amelia Korczak",
+        image: "images/amelia-korczak.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    adam: {
+        number: "04 / 15",
+        name: "Adam Pażucha",
+        image: "images/adam-pazucha.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    antoni: {
+        number: "05 / 15",
+        name: "Antoni Augustyniak",
+        image: "images/antoni-augustyniak.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    ada: {
+        number: "06 / 15",
+        name: "Ada Rosa",
+        image: "images/ada-rosa.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    anastazja: {
+        number: "07 / 15",
+        name: "Anastazja Gierlak",
+        image: "images/anastazja-gierlak.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    anna: {
+        number: "08 / 15",
+        name: "Anna Esnekier",
+        image: "images/anna-esnekier.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    gabriela: {
+        number: "09 / 15",
+        name: "Gabriela Bossowska",
+        image: "images/gabriela-bossowska.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    "marta-mioduszewska": {
+        number: "10 / 15",
+        name: "Marta Mioduszewska",
+        image: "images/marta-mioduszewska.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    nina: {
+        number: "11 / 15",
+        name: "Nina Borowicz",
+        image: "images/nina-borowicz.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    aleksandra: {
+        number: "12 / 15",
+        name: "Aleksandra Sikora",
+        image: "images/aleksandra-sikora.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    "marta-mendelejeva": {
+        number: "13 / 15",
+        name: "Marta Mendelejeva",
+        image: "images/marta-mendelejeva.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    franek: {
+        number: "14 / 15",
+        name: "Franek Ciastoń",
+        image: "images/franek-ciaston.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    },
+
+    urszula: {
+        number: "15 / 15",
+        name: "Urszula Smagowicz",
+        image: "images/urszula-smagowicz.jpg",
+        description: "Artist based in Poland. Member of the KANASTA artist collective.",
+        bio: "Biography coming soon."
+    }
+
+};
+
+
+/* MENU */
+
 const menuButton = document.getElementById("menuButton");
 const menuOverlay = document.getElementById("menuOverlay");
 const menuClose = document.getElementById("menuClose");
@@ -618,22 +711,59 @@ menuClose.addEventListener("click", function () {
 });
 
 
+/* OPEN ARTIST */
+
 function openArtist(artist) {
 
-    const profile = document.getElementById(artist + "Profile");
+    const data = artists[artist];
 
-    if (profile) {
-        profile.classList.add("active");
-    }
+    if (!data) return;
+
+    document.getElementById("profileNumber").textContent = data.number;
+
+    document.getElementById("profileName").textContent = data.name;
+
+    document.getElementById("profileDescription").textContent = data.description;
+
+    document.getElementById("profileBio").innerHTML =
+        "<p>" + data.bio + "</p>";
+
+    const image = document.getElementById("profileImage");
+
+    image.src = data.image;
+    image.alt = data.name;
+
+    image.style.display = "block";
+
+    image.onerror = function () {
+        image.style.display = "none";
+    };
+
+    document
+        .getElementById("artistProfile")
+        .classList.add("active");
 
 }
 
 
+/* CLOSE ARTIST */
+
 function closeArtist() {
 
-    document.querySelectorAll(".artist-profile").forEach(function(profile) {
-        profile.classList.remove("active");
-    });
+    document
+        .getElementById("artistProfile")
+        .classList.remove("active");
+
+}
+
+
+/* READ BIO */
+
+function toggleBio() {
+
+    document
+        .getElementById("profileBio")
+        .classList.toggle("active");
 
 }
 
