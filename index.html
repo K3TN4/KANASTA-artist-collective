@@ -50,6 +50,16 @@
     position: relative;
     z-index: 3000;
 }
+        .menu-close {
+    position: absolute;
+    top: 28px;
+    right: 32px;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    z-index: 3001;
+}
 
         /* MAIN */
 
@@ -836,10 +846,12 @@ const menuClose = document.getElementById("menuClose");
 
 menuButton.addEventListener("click", function () {
     menuOverlay.classList.add("active");
+    menuButton.style.visibility = "hidden";
 });
 
 menuClose.addEventListener("click", function () {
     menuOverlay.classList.remove("active");
+    menuButton.style.visibility = "visible";
 });
 
 document.querySelectorAll(".menu-item").forEach(function (item) {
