@@ -41,12 +41,31 @@
         }
 
         .logo {
+    position: fixed;
+
+    top: 28px;
+    left: 32px;
+
     font-family: "Cairo", sans-serif;
     font-size: 11px;
     font-weight: 400;
     letter-spacing: 0.18em;
     text-transform: uppercase;
+
     color: #ed3d66;
+
+    cursor: pointer;
+
+    z-index: 3002;
+
+    transform-origin: left center;
+
+    transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.logo:hover {
+    transform: scale(1.18);
 }
 
         .menu {
@@ -56,8 +75,24 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: #ed3d66;
-    position: relative;
-    z-index: 3000;
+
+    cursor: pointer;
+
+    position: fixed;
+
+    top: 28px;
+    right: 32px;
+
+    z-index: 3002;
+
+    transform-origin: right center;
+
+    transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.menu:hover {
+    transform: scale(1.18);
 }
         .menu-close {
     position: absolute;
@@ -87,6 +122,22 @@ main h1 {
     position: relative;
     z-index: 2;
     margin-top: 12vh;
+}
+        main h1 {
+    position: relative;
+    z-index: 2;
+    margin-top: 12vh;
+
+    display: inline-block;
+
+    transform-origin: center center;
+
+    transition:
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+main h1:hover {
+    transform: scale(1.06);
 }
         h1 {
     font-family: "Bakbak One", sans-serif;
@@ -165,7 +216,7 @@ main h1 {
     width: 130px;
     height: 130px;
 
-    border-radius: 40%;
+    border-radius: 50%;
 
     overflow: hidden;
 
@@ -266,7 +317,19 @@ body {
         pointer-events: none;
     }
 
+    .artist-circle {
+    --hover-scale: 1;
+    --hover-x: 0px;
 
+    flex: 0 0 72px;
+
+    width: 72px;
+    height: 72px;
+
+    border-radius: 50% !important;
+
+    border: 3px solid #ed3d66;
+}
     /* =====================================
        RZĘDY
        ===================================== */
@@ -302,25 +365,38 @@ body {
        ===================================== */
 
     .artist-circle {
-        flex: 0 0 72px;
+    position: relative;
 
-        width: 72px;
-        height: 72px;
+    flex: 0 0 130px;
 
-        position: relative;
+    width: 130px;
+    height: 130px;
 
-        border-radius: 50% !important;
+    border-radius: 50%;
 
-        border: 3px solid #ed3d66;
+    overflow: hidden;
 
-        pointer-events: auto;
+    background: #111111;
 
-        transform-origin: center center;
+    border: 3px solid #59e0b3;
 
-        will-change:
-            transform,
-            opacity;
-    }
+    --hover-scale: 1;
+    --hover-x: 0px;
+
+    transform-origin: center center;
+
+    will-change:
+        transform,
+        opacity;
+
+    pointer-events: auto;
+    cursor: pointer;
+
+    box-shadow: none;
+
+    transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
 
     .artist-circle img {
         width: 100%;
@@ -699,7 +775,7 @@ main h1.image-text {
     <!-- HEADER -->
 
     <header>
-        <div class="logo">KANASTA</div>
+        <div class="logo" id="homeLogo">KANASTA</div>
 
         <div class="menu" id="menuButton">
             MENU
@@ -1235,6 +1311,136 @@ artistKeys.forEach((key, index) => {
 
 });
 
+       /* =========================================
+   HOVER KÓŁ
+   ========================================= */
+
+const HOVER_SCALE = 1.22;
+
+
+/*
+ * Odległość, o jaką trzeba odsunąć
+ * sąsiednie koła, aby zachować odstęp
+ * pomiędzy ich KRAWĘDZIAMI.
+ */
+const hoverShift =
+    (
+        130 *
+        HOVER_SCALE -
+        130
+    ) / 2;
+
+
+artistCircles.forEach(
+    (circle) => {
+
+        circle.addEventListener(
+            "mouseenter",
+            function () {
+
+                /*
+                 * Powiększ hovered circle.
+                 */
+                circle.style.setProperty(
+                    "--hover-scale",
+                    HOVER_SCALE
+                );
+
+
+                /*
+                 * Znajdź rząd.
+                 */
+                const row =
+                    circle.parentElement;
+
+
+                const siblings =
+                    Array.from(
+                        row.children
+                    );
+
+
+                const currentIndex =
+                    siblings.indexOf(
+                        circle
+                    );
+
+
+                /*
+                 * Odsuń wszystkie koła
+                 * w tym samym rzędzie.
+                 */
+                siblings.forEach(
+                    (sibling, index) => {
+
+                        if (
+                            sibling ===
+                            circle
+                        ) {
+                            return;
+                        }
+
+
+                        const direction =
+                            index <
+                            currentIndex
+                                ? -1
+                                : 1;
+
+
+                        sibling.style.setProperty(
+                            "--hover-x",
+                            `${direction * hoverShift}px`
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        circle.addEventListener(
+            "mouseleave",
+            function () {
+
+                /*
+                 * Zmniejsz z powrotem.
+                 */
+                circle.style.setProperty(
+                    "--hover-scale",
+                    "1"
+                );
+
+
+                /*
+                 * Wszystkie sąsiednie
+                 * wracają na swoje miejsce.
+                 */
+                const row =
+                    circle.parentElement;
+
+
+                row
+                    .querySelectorAll(
+                        ".artist-circle"
+                    )
+                    .forEach(
+                        sibling => {
+
+                            sibling.style.setProperty(
+                                "--hover-x",
+                                "0px"
+                            );
+
+                        }
+                    );
+
+            }
+        );
+
+    }
+);
 
 /* =========================================
    ORBIT SETTINGS
@@ -1557,18 +1763,18 @@ const mobileMultiplier =
              */
 
             circle.style.transform = `
-                translate3d(
-                    ${x}px,
-                    ${y}px,
-                    0
-                )
-                rotate(
-                    ${rotation + lateRotation}deg
-                )
-                scale(
-                    ${individualScale}
-                )
-            `;
+    translate3d(
+        calc(${x}px + var(--hover-x)),
+        ${y}px,
+        0
+    )
+    rotate(
+        ${rotation + lateRotation}deg
+    )
+    scale(
+        calc(${individualScale} * var(--hover-scale))
+    )
+`;
 
 
             circle.style.borderRadius =
@@ -1697,6 +1903,36 @@ updateArtistOrbit();
 const menuButton = document.getElementById("menuButton");
 const menuOverlay = document.getElementById("menuOverlay");
 const menuClose = document.getElementById("menuClose");
+
+       const homeLogo =
+    document.getElementById("homeLogo");
+
+homeLogo.addEventListener(
+    "click",
+    function () {
+
+        /*
+         * Zamknij menu
+         */
+        menuOverlay.classList.remove("active");
+
+        /*
+         * Zamknij profil artysty
+         */
+        document
+            .getElementById("artistProfile")
+            .classList.remove("active");
+
+        /*
+         * Wróć na początek strony
+         */
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+);
 
 menuButton.addEventListener("click", function () {
     menuOverlay.classList.add("active");
