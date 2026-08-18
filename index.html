@@ -302,27 +302,55 @@ body {
        ===================================== */
 
     .artist-orbit {
-        top: 62%;
-        left: 50%;
+    top: 62%;
+    left: 50%;
 
-        width: 100vw;
-        height: 220px;
+    width: 100vw;
+    height: 220px;
 
-        transform:
-            translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 
-        overflow: visible;
+    /*
+     * NA MOBILE TO JEST PRAWDZIWY CAROUSEL
+     */
+    overflow-x: auto;
+    overflow-y: hidden;
 
-        display: flex;
-        flex-direction: column;
+    /*
+     * ukryj pasek scrolla
+     */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 
-        justify-content: center;
-        align-items: center;
+    display: flex;
+    flex-direction: column;
 
-        gap: 10px;
+    justify-content: center;
+    align-items: flex-start;
 
-        pointer-events: none;
-    }
+    gap: 10px;
+
+    /*
+     * pozwala na swipe palcem
+     */
+    pointer-events: auto;
+    touch-action: pan-x;
+
+    /*
+     * nie pozwala przeglądarce przejąć
+     * poziomego gestu w dziwny sposób
+     */
+    overscroll-behavior-x: contain;
+
+    /*
+     * płynne programowe przesuwanie
+     */
+    scroll-behavior: smooth;
+}
+
+.artist-orbit::-webkit-scrollbar {
+    display: none;
+}
 
     .artist-circle {
     --hover-scale: 1;
@@ -342,20 +370,25 @@ body {
        ===================================== */
 
     .artist-row-orbit {
-        width: max-content;
+    width: max-content;
 
-        display: flex;
+    display: flex;
 
-        justify-content: center;
-        align-items: center;
+    justify-content: flex-start;
+    align-items: center;
 
-        gap: 14px;
+    gap: 14px;
 
-        flex-shrink: 0;
+    flex-shrink: 0;
 
-        pointer-events: none;
-    }
+    pointer-events: auto;
 
+    /*
+     * bardzo ważne:
+     * rząd nie może się ścisnąć
+     */
+    min-width: max-content;
+}
 
     /*
      * Dolny rząd lekko przesunięty,
