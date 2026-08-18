@@ -110,8 +110,8 @@ main h1 {
     top: 62%;
     left: 50%;
 
-    width: min(860px, 92vw);
-    height: 300px;
+    width: min(1180px, 94vw);
+    height: 330px;
 
     transform: translate(-50%, -50%);
 
@@ -121,43 +121,66 @@ main h1 {
     transform-style: preserve-3d;
 }
 
+
+/* =========================================
+   RZĘDY
+   ========================================= */
+
 .artist-row-orbit {
     display: flex;
-    justify-content: center;
-    align-items: center;
 
-    gap: 18px;
+    align-items: center;
+    justify-content: center;
+
+    gap: 24px;
 
     width: 100%;
 }
 
 .artist-row-orbit + .artist-row-orbit {
-    margin-top: 18px;
+    margin-top: 22px;
 }
+
+
+/* =========================================
+   KOŁO
+   ========================================= */
 
 .artist-circle {
     position: relative;
 
-    flex: 0 0 125px;
+    flex: 0 0 130px;
 
-    width: 125px;
-    height: 125px;
+    width: 130px;
+    height: 130px;
 
     border-radius: 50%;
+
     overflow: hidden;
 
     background: #111111;
+
+    /*
+     * KONTUR:
+     * tutaj później zmienisz sobie kolor.
+     */
+    border: 2px solid #1f1f14;
 
     transform-origin: center center;
 
     will-change:
         transform,
-        border-radius,
         opacity;
 
     pointer-events: auto;
+
     cursor: pointer;
 
+    /*
+     * WAŻNE:
+     * brak box-shadow,
+     * brak zmiany border-radius.
+     */
     box-shadow: none;
 }
 
@@ -168,6 +191,7 @@ main h1 {
     display: block;
 
     object-fit: cover;
+
     border-radius: 50%;
 }
     html,
@@ -621,6 +645,8 @@ body {
    ========================================= */
 
 main h1.image-text {
+    background-image: var(--type-image);
+
     background-size: 130% auto;
 
     background-position:
@@ -1255,14 +1281,13 @@ function updateArtistOrbit() {
 
     /*
      * =====================================
-     * GLOBAL PROGRESS
+     * PROGRESS
      * =====================================
      */
 
     let progress =
-        (scrollY - ORBIT.start) /
-        (ORBIT.end - ORBIT.start);
-
+        scrollY /
+        ORBIT.end;
 
     progress =
         clamp(
@@ -1274,161 +1299,11 @@ function updateArtistOrbit() {
 
     /*
      * =====================================
-     * BEVEL / SHAPE
-     * =====================================
-     */
-
-    let bevelProgress =
-        progress /
-        ORBIT.bevelEnd;
-
-
-    bevelProgress =
-        clamp(
-            bevelProgress,
-            0,
-            1
-        );
-
-
-    const bevelEase =
-        easeInOut(
-            bevelProgress
-        );
-
-
-    /*
-     * =====================================
-     * ROUND
-     * =====================================
-     */
-
-    let roundProgress =
-        (progress - ORBIT.roundStart) /
-        (
-            ORBIT.roundEnd -
-            ORBIT.roundStart
-        );
-
-
-    roundProgress =
-        clamp(
-            roundProgress,
-            0,
-            1
-        );
-
-
-    const roundEase =
-        easeInOut(
-            roundProgress
-        );
-
-
-    /*
-     * =====================================
-     * ORBIT
-     * =====================================
-     */
-
-    let orbitProgress =
-        (progress - ORBIT.orbitStart) /
-        (
-            ORBIT.orbitEnd -
-            ORBIT.orbitStart
-        );
-
-
-    orbitProgress =
-        clamp(
-            orbitProgress,
-            0,
-            1
-        );
-
-
-    const orbitEase =
-        easeInOut(
-            orbitProgress
-        );
-
-
-    const orbitAngle =
-        orbitEase *
-        Math.PI *
-        2 *
-        ORBIT.orbitTurns;
-
-
-    /*
-     * =====================================
-     * SELF ROTATION
-     * =====================================
-     */
-
-    let selfProgress =
-        (
-            progress -
-            ORBIT.selfRotationStart
-        ) /
-        (
-            ORBIT.spreadStart -
-            ORBIT.selfRotationStart
-        );
-
-
-    selfProgress =
-        clamp(
-            selfProgress,
-            0,
-            1
-        );
-
-
-    const selfEase =
-        easeInOut(
-            selfProgress
-        );
-
-
-    /*
-     * =====================================
-     * SPREAD
-     * =====================================
-     */
-
-    let spreadProgress =
-        (
-            progress -
-            ORBIT.spreadStart
-        ) /
-        (
-            1 -
-            ORBIT.spreadStart
-        );
-
-
-    spreadProgress =
-        clamp(
-            spreadProgress,
-            0,
-            1
-        );
-
-
-    const spreadEase =
-        easeInOut(
-            spreadProgress
-        );
-
-
-    /*
-     * =====================================
      * MOBILE
      * =====================================
      *
-     * Na telefonie koła są carouselem,
-     * więc nie animujemy ich po orbicie.
+     * Na telefonie koła pozostają
+     * zwykłym poziomym carousel'em.
      */
 
     const isMobile =
@@ -1443,11 +1318,11 @@ function updateArtistOrbit() {
                 circle.style.transform =
                     "none";
 
-                circle.style.borderRadius =
-                    "50%";
-
                 circle.style.opacity =
                     "1";
+
+                circle.style.borderRadius =
+                    "50%";
 
             }
         );
@@ -1458,193 +1333,213 @@ function updateArtistOrbit() {
 
     /*
      * =====================================
-     * DESKTOP
+     * START SHAPE
      * =====================================
+     *
+     * Koła są od początku kołami.
      */
 
-    const orbitRect =
-        artistOrbit.getBoundingClientRect();
+    const startEase =
+        easeInOut(
+            clamp(
+                progress / 0.15,
+                0,
+                1
+            )
+        );
 
 
-    const orbitCenterX =
-        orbitRect.left +
-        orbitRect.width / 2;
+    /*
+     * =====================================
+     * ROTATION
+     * =====================================
+     *
+     * Zaczynają obracać się bardzo wcześnie.
+     */
+
+    const rotationProgress =
+        clamp(
+            progress /
+            0.75,
+            0,
+            1
+        );
 
 
-    const orbitCenterY =
-        orbitRect.top +
-        orbitRect.height / 2;
+    const rotationEase =
+        easeInOut(
+            rotationProgress
+        );
 
+
+    /*
+     * =====================================
+     * ROZJAZD
+     * =====================================
+     *
+     * Każde koło dostaje trochę inną
+     * siłę ruchu.
+     */
+
+    const spreadProgress =
+        clamp(
+            (progress - 0.18) /
+            0.82,
+            0,
+            1
+        );
+
+
+    const spreadEase =
+        easeInOut(
+            spreadProgress
+        );
+
+
+    /*
+     * =====================================
+     * KOŁA
+     * =====================================
+     */
 
     artistCircles.forEach(
         (circle, index) => {
 
-            const rect =
-                circle.getBoundingClientRect();
-
-
-            const circleCenterX =
-                rect.left +
-                rect.width / 2;
-
-
-            const circleCenterY =
-                rect.top +
-                rect.height / 2;
-
-
             /*
-             * Początkowa pozycja
-             * względem centrum całej kompozycji.
+             * Każdy element ma własny
+             * kierunek.
+             *
+             * Dzięki temu nie zachowują się
+             * jak identyczne kopie.
              */
 
-            const baseX =
-                circleCenterX -
-                orbitCenterX;
-
-
-            const baseY =
-                circleCenterY -
-                orbitCenterY;
-
-
-            const baseDistance =
-                Math.sqrt(
-                    baseX * baseX +
-                    baseY * baseY
-                );
-
-
-            const baseAngle =
-                Math.atan2(
-                    baseY,
-                    baseX
-                );
-
-
-            /*
-             * =================================
-             * WYRÓWNANIE PROMIENIA
-             * =================================
-             */
-
-            const equalizedDistance =
+            const angle =
                 (
-                    1 -
-                    orbitEase
+                    index *
+                    137.5
                 ) *
-                baseDistance
-                +
-                orbitEase *
-                145;
+                Math.PI /
+                180;
 
 
             /*
-             * =================================
-             * ORBITA
-             * =================================
+             * Różna prędkość dla każdego koła.
              */
 
-            const orbitalAngle =
-                baseAngle +
-                orbitAngle;
-
-
-            const orbitX =
-                Math.cos(
-                    orbitalAngle
-                ) *
-                equalizedDistance;
-
-
-            const orbitY =
-                Math.sin(
-                    orbitalAngle
-                ) *
-                equalizedDistance;
-
-
-            /*
-             * Ruch względem
-             * pozycji początkowej.
-             */
-
-            let x =
-                orbitX -
-                baseX;
-
-
-            let y =
-                orbitY -
-                baseY;
-
-
-            /*
-             * =================================
-             * ROZSUWANIE
-             * =================================
-             */
-
-            x +=
-                Math.cos(
-                    orbitalAngle
-                ) *
-                spreadEase *
-                ORBIT.spread;
-
-
-            y +=
-                Math.sin(
-                    orbitalAngle
-                ) *
-                spreadEase *
-                ORBIT.spread;
-
-
-            /*
-             * =================================
-             * WŁASNY OBRÓT
-             * =================================
-             */
-
-            const ownRotation =
-                selfEase *
+            const individualSpeed =
+                0.65 +
                 (
-                    ORBIT.selfRotation +
-                    index * 24
-                );
+                    index % 5
+                ) *
+                0.13;
 
 
             /*
-             * =================================
-             * POWIĘKSZENIE
-             * =================================
+             * Różna siła oddalania.
              */
 
-            const scale =
+            const individualSpread =
+                0.65 +
+                (
+                    index % 4
+                ) *
+                0.18;
+
+
+            /*
+             * Różna skala.
+             */
+
+            const individualScale =
                 1 +
                 spreadEase *
                 (
-                    ORBIT.scaleEnd -
-                    1
+                    0.30 +
+                    (
+                        index % 5
+                    ) *
+                    0.10
                 );
 
 
             /*
+             * Dużo większy ruch dopiero
+             * pod koniec.
+             */
+
+            const travel =
+                Math.pow(
+                    spreadEase,
+                    1.15
+                ) *
+                (
+                    250 +
+                    (
+                        index % 4
+                    ) *
+                    85
+                ) *
+                individualSpread;
+
+
+            /*
+             * Każde koło porusza się
+             * w inną stronę.
+             */
+
+            const x =
+                Math.cos(angle) *
+                travel;
+
+            const y =
+                Math.sin(angle) *
+                travel;
+
+
+            /*
+             * Każde ma własny obrót.
+             */
+
+            const rotation =
+                rotationEase *
+                (
+                    260 *
+                    individualSpeed +
+                    index *
+                    31
+                );
+
+
+            /*
+             * Dodatkowa nieregularność.
+             */
+
+            const lateRotation =
+                spreadEase *
+                index *
+                20;
+
+
+            /*
              * =================================
-             * ZAOKRĄGLENIE
+             * OPACITY
              * =================================
              */
 
-            const radius =
-                roundEase *
-                50;
+            const opacity =
+                1 -
+                Math.pow(
+                    spreadEase,
+                    1.35
+                );
 
 
             /*
              * =================================
              * TRANSFORM
              * =================================
+             *
+             * KOŁO ZAWSZE POZOSTAJE KOŁEM.
              */
 
             circle.style.transform = `
@@ -1653,30 +1548,21 @@ function updateArtistOrbit() {
                     ${y}px,
                     0
                 )
-                rotate(${ownRotation}deg)
-                scale(${scale})
+                rotate(
+                    ${rotation + lateRotation}deg
+                )
+                scale(
+                    ${individualScale}
+                )
             `;
 
 
             circle.style.borderRadius =
-                `${radius}%`;
-
-
-            /*
-             * Bez szarego cienia.
-             */
-
-            circle.style.boxShadow =
-                "none";
+                "50%";
 
 
             circle.style.opacity =
-                1 -
-                spreadEase *
-                (
-                    1 -
-                    ORBIT.opacityEnd
-                );
+                opacity;
 
         }
     );
