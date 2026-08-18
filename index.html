@@ -17,6 +17,17 @@
 
            
     <style>
+        @property --hover-x {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 0px;
+}
+
+@property --hover-scale {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 1;
+}
 
         * {
             box-sizing: border-box;
@@ -222,28 +233,24 @@ main h1:hover {
 
     background: #111111;
 
-    /*
-     * KONTUR:
-     * tutaj później zmienisz sobie kolor.
-     */
     border: 3px solid #59e0b3;
+
+    --hover-scale: 1;
+    --hover-x: 0px;
 
     transform-origin: center center;
 
-    will-change:
-        transform,
-        opacity;
+    will-change: transform;
 
     pointer-events: auto;
-
     cursor: pointer;
 
-    /*
-     * WAŻNE:
-     * brak box-shadow,
-     * brak zmiany border-radius.
-     */
     box-shadow: none;
+
+    transition:
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        --hover-x 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+        --hover-scale 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .artist-circle img {
@@ -394,8 +401,10 @@ body {
 
     box-shadow: none;
 
+    
     transition:
-    transform 2s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    --hover-x 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
     .artist-circle img {
