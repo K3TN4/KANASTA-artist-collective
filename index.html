@@ -20,10 +20,11 @@
         }
 
         body {
-            background: #ffffff;
-            color: #111111;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+    background: var(--page-bg);
+    color: #111111;
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
 
         /* HEADER */
 
@@ -63,14 +64,16 @@
         /* MAIN */
 
         main {
-            min-height: calc(100vh - 80px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-        }
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
 
+    z-index: 2;
+}
         h1 {
     font-family: "Bakbak One", sans-serif;
     font-size: clamp(64px, 12vw, 180px);
@@ -88,12 +91,55 @@
             color: #666666;
         }
 
-        .black-box {
-            width: min(500px, 70vw);
-            height: min(500px, 45vh);
-            background: #000000;
-            margin-top: 70px;
-        }
+        /* =========================================
+   MOVING SQUARE
+   ========================================= */
+
+.black-box {
+    position: absolute;
+
+    top: 62vh;
+    left: 50%;
+
+    width: var(--square-size);
+    height: var(--square-size);
+
+    transform:
+        translateX(-50%)
+        translateY(calc(var(--scroll-y) * var(--square-fall)))
+        scale(
+            calc(
+                1 +
+                (var(--scroll-y) * var(--square-growth) / 1000)
+            )
+        );
+
+    max-width: var(--square-max-size);
+    max-height: var(--square-max-size);
+
+    background-color: #000000;
+    background-image: var(--square-image);
+    background-size: var(--square-image-size) auto;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    z-index: 0;
+
+    pointer-events: none;
+
+    will-change: transform;
+}
+        main {
+    position: relative;
+    z-index: 2;
+}
+
+.artists,
+.page-section,
+footer {
+    position: relative;
+    z-index: 3;
+}
 
         /* FOOTER */
 
@@ -135,6 +181,8 @@
 
     /* Początkowy rozmiar obrazu wewnątrz kwadratu */
     --square-image-size: 560px;
+
+    --scroll-y: 0;
 }
         /* MENU OVERLAY */
 
@@ -241,6 +289,17 @@
     font-family: "Bakbak One", sans-serif;
     font-size: clamp(28px, 4vw, 52px);
     font-weight: 400;
+
+    background-image: var(--type-image);
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .artist-photo {
@@ -432,6 +491,26 @@
         .contact-content a:hover {
             text-decoration: underline;
         }
+
+        /* =========================================
+   IMAGE TEXT
+   Obraz jest nieruchomy,
+   tekst przesuwa się podczas scrollowania.
+   ========================================= */
+
+.image-text {
+    background-image: var(--type-image);
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+        
     </style>
 </head>
 
@@ -492,7 +571,7 @@
 
     <main>
 
-        <h1>KANASTA</h1>
+        <h1 class="image-text">KANASTA</h1>
 
         <div class="subtitle">
             artist collective · Poland
@@ -505,11 +584,11 @@
 
     <div class="section-header">
         <span>01</span>
-        <h2>ARTISTS</h2>
+        <h2 class="image-text">ARTISTS</h2>
         <span>15</span>
     </div>
 
-   <div class="artist-list">
+  
 
     <div class="artist-list">
 
@@ -697,7 +776,7 @@
             01 / 15
         </div>
 
-        <h2 id="profileName">
+        <h2 id="profileName" class="image-text">
             Patrycja Boruch
         </h2>
 
@@ -869,6 +948,23 @@ const artists = {
         description: "Artist based in Poland. Member of the KANASTA artist collective.",
         bio: "Biography coming soon."
     }
+
+    /* =========================================
+   SCROLL CONTROL
+   ========================================= */
+
+const root = document.documentElement;
+
+window.addEventListener("scroll", function () {
+
+    const scrollY = window.scrollY;
+
+    root.style.setProperty(
+        "--scroll-y",
+        scrollY
+    );
+
+});
 
 };
 
