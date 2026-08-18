@@ -95,7 +95,11 @@
    MOVING SQUARE
    ========================================= */
 
-.black-box {
+/* =========================================
+   SPIRAL IMAGE
+   ========================================= */
+
+.spiral-box {
     position: fixed;
 
     top: 50%;
@@ -104,19 +108,65 @@
     width: var(--square-size);
     height: var(--square-size);
 
+    transform: translate(-50%, -50%);
+
+    z-index: 0;
+    pointer-events: none;
+
+    perspective: 1200px;
+    transform-style: preserve-3d;
+
+    will-change: transform;
+}
+
+.spiral-piece {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
     background-color: #000000;
     background-image: var(--square-image);
-    background-size: var(--square-image-size);
-    background-position: center center;
     background-repeat: no-repeat;
 
-    transform:
-        translate(-50%, -50%)
-        translateY(calc(var(--scroll-y) * var(--square-fall)))
-        scale(
-            calc(
-                1 + (var(--scroll-y) * var(--square-growth) / 1000)
-            )
+    /*
+     * Obraz jest powiększony tak,
+     * aby każdy fragment mógł pokazać
+     * właściwy kawałek fotografii.
+     */
+    background-size: 400% 400%;
+
+    transform-origin: center center;
+
+    will-change: transform, opacity;
+
+    overflow: hidden;
+}
+
+/* delikatnie ukrywa element na samym początku */
+.spiral-piece::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #000000;
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .spiral-box {
+        width: min(78vw, var(--square-size));
+        height: min(78vw, var(--square-size));
+    }
+
+}
         );
 
     z-index: 0;
@@ -148,7 +198,7 @@ footer {
         }
 
 
-        :root {
+       :root {
 
     /* KOLOR TŁA */
     --page-bg: #f3eee4;
@@ -159,18 +209,13 @@ footer {
     /* ZDJĘCIE W KWADRACIE */
     --square-image: url("images/hero-square.jpg");
 
-    /* POCZĄTKOWY ROZMIAR KWADRATU */
+    /* ROZMIAR POCZĄTKOWY */
     --square-size: 420px;
 
-    /* JAK SZYBKO ROŚNIE */
-    --square-growth: 0.45;
-
-    /* JAK SZYBKO ZJEŻDŻA W DÓŁ */
-    --square-fall: 0.55;
-
-    /* ROZMIAR ZDJĘCIA W KWADRACIE */
+    /* ROZMIAR ZDJĘCIA */
     --square-image-size: 560px;
 
+    /* SCROLL */
     --scroll-y: 0;
 }
         /* MENU OVERLAY */
@@ -556,7 +601,7 @@ footer {
             artist collective · Poland
         </div>
 
-        <div class="black-box"></div>
+        <div class="spiral-box" id="spiralBox"></div>
 
     </main>
     <section class="artists" id="artists">
@@ -932,21 +977,285 @@ const artists = {
 
 
 /* =========================================
-   SCROLL CONTROL
+   SPIRAL SCROLL
    ========================================= */
 
-const root = document.documentElement;
+const SPIRAL = {
 
-window.addEventListener("scroll", function () {
+    /* liczba fragmentów */
+    pieces: 16,
+
+    /* gdzie zaczyna się rozpad */
+    start: 80,
+
+    /* gdzie kończy się animacja */
+    end: 1400,
+
+    /* maksymalny obrót */
+    rotation: 720,
+
+    /* maksymalne rozsunięcie */
+    spread: 900,
+
+    /* przesunięcie całej spirali w dół */
+    fall: 700,
+
+    /* dodatkowa skala */
+    scale: 1.15,
+
+    /* jak mocno kolejne fragmenty są przesunięte */
+    stagger: 26,
+
+    /* jak mocno fragmenty obracają się względem siebie */
+    pieceRotation: 32,
+
+    /* ile fragmentów zostaje jeszcze widocznych pod koniec */
+    opacityEnd: 0.05
+};
+
+
+/* =========================================
+   CREATE PIECES
+   ========================================= */
+
+const spiralBox = document.getElementById("spiralBox");
+
+for (let i = 0; i < SPIRAL.pieces; i++) {
+
+    const piece = document.createElement("div");
+
+    piece.className = "spiral-piece";
+
+    /*
+     * Każdy fragment dostaje ten sam obraz,
+     * ale z przesunięciem background-position,
+     * dzięki czemu całość tworzy jedno zdjęcie.
+     */
+
+    const column = i % 4;
+const row = Math.floor(i / 4);
+
+const x =
+    (column / 3) * 100;
+
+const y =
+    (row / 3) * 100;
+
+piece.style.backgroundPosition =
+    `${x}% ${y}%`;
+
+    spiralBox.appendChild(piece);
+}
+
+
+const spiralPieces =
+    document.querySelectorAll(".spiral-piece");
+
+
+/* =========================================
+   EASING
+   ========================================= */
+
+function easeInOut(value) {
+
+    return value * value * (3 - 2 * value);
+
+}
+
+
+/* =========================================
+   CLAMP
+   ========================================= */
+
+function clamp(value, min, max) {
+
+    return Math.min(
+        Math.max(value, min),
+        max
+    );
+
+}
+
+
+/* =========================================
+   SCROLL UPDATE
+   ========================================= */
+
+function updateSpiral() {
 
     const scrollY = window.scrollY;
 
-    root.style.setProperty(
+    let progress =
+        (scrollY - SPIRAL.start) /
+        (SPIRAL.end - SPIRAL.start);
+
+    progress = clamp(progress, 0, 1);
+
+    const eased =
+        easeInOut(progress);
+
+
+    /*
+     * Cały box zaczyna schodzić w dół.
+     */
+
+    const boxY =
+        eased * SPIRAL.fall;
+
+    /*
+     * Delikatne powiększenie całej kompozycji.
+     */
+
+    const boxScale =
+        1 + eased * SPIRAL.scale;
+
+
+    spiralBox.style.transform =
+        `
+        translate(-50%, -50%)
+        translateY(${boxY}px)
+        scale(${boxScale})
+        `;
+
+
+    /* =====================================
+       PIECES
+       ===================================== */
+
+    spiralPieces.forEach((piece, index) => {
+
+        /*
+         * Pozycja fragmentu
+         * względem środka spirali.
+         */
+
+        const angleStep =
+            (index / SPIRAL.pieces) * Math.PI * 2;
+
+        /*
+         * Każdy kolejny fragment
+         * dostaje lekki dodatkowy obrót.
+         */
+
+        const individualAngle =
+            eased * SPIRAL.rotation +
+            index * SPIRAL.pieceRotation;
+
+
+        /*
+         * Rozsunięcie fragmentu.
+         */
+
+        const distance =
+            eased * SPIRAL.spread +
+            index * SPIRAL.stagger;
+
+
+        /*
+         * Współrzędne ruchu po okręgu.
+         */
+
+        const x =
+            Math.cos(angleStep) *
+            distance;
+
+        const y =
+            Math.sin(angleStep) *
+            distance;
+
+
+        /*
+         * Dodatkowy obrót w 3D.
+         */
+
+        const z =
+            eased *
+            index *
+            18;
+
+
+        /*
+         * Wielkość poszczególnych elementów.
+         */
+
+        const pieceScale =
+            1 - eased * 0.35;
+
+
+        /*
+         * Fragmenty stopniowo znikają.
+         */
+
+        const opacity =
+            1 -
+            eased *
+            (1 - SPIRAL.opacityEnd);
+
+
+        piece.style.transform = `
+            translate3d(
+                ${x}px,
+                ${y}px,
+                ${z}px
+            )
+            rotate(
+                ${individualAngle}deg
+            )
+            scale(
+                ${pieceScale}
+            )
+        `;
+
+
+        piece.style.opacity = opacity;
+
+    });
+
+
+    /*
+     * To zostawiamy, ponieważ Twój
+     * obecny layout może z niego korzystać.
+     */
+
+    document.documentElement.style.setProperty(
         "--scroll-y",
         scrollY
     );
 
-});
+}
+
+
+/* =========================================
+   REQUEST ANIMATION FRAME
+   ========================================= */
+
+let spiralTicking = false;
+
+window.addEventListener(
+    "scroll",
+    function () {
+
+        if (!spiralTicking) {
+
+            window.requestAnimationFrame(() => {
+
+                updateSpiral();
+
+                spiralTicking = false;
+
+            });
+
+            spiralTicking = true;
+        }
+
+    },
+    { passive: true }
+);
+
+
+/* pierwsze ustawienie */
+
+updateSpiral();
 
 
 /* MENU */
