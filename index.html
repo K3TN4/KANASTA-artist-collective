@@ -68,11 +68,16 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    padding: 40px;
-
+    padding: 0 40px;
     z-index: 2;
+}
+
+main h1 {
+    position: relative;
+    z-index: 2;
+    margin-top: 30vh;
 }
         h1 {
     font-family: "Bakbak One", sans-serif;
@@ -102,7 +107,7 @@
 .spiral-box {
     position: fixed;
 
-    top: 50%;
+    top: 62%;
     left: 50%;
 
     width: var(--square-size);
@@ -113,29 +118,12 @@
     z-index: 0;
     pointer-events: none;
 
-    perspective: 1200px;
     transform-style: preserve-3d;
 
     will-change: transform;
 }
 
 
-/* =========================================
-   WSPÓLNA ORBITA
-   ========================================= */
-
-.spiral-orbit {
-    position: absolute;
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    transform-origin: center center;
-    transform-style: preserve-3d;
-
-    will-change: transform;
-}
 
 
 /* =========================================
@@ -143,7 +131,6 @@
    ========================================= */
 
 .spiral-piece {
-
     position: absolute;
 
     width: 25%;
@@ -153,21 +140,12 @@
     background-image: var(--square-image);
     background-repeat: no-repeat;
     background-size: 400% 400%;
-
     background-clip: padding-box;
 
     overflow: hidden;
 
-    /*
-     * Początkowo idealnie kwadratowe.
-     * JS będzie zwiększał do 50%.
-     */
-    border-radius: 0%;
-
-    /*
-     * Bevel będzie sterowany JS.
-     */
-    border: 1px solid transparent;
+    border-radius: 0;
+    border: 0;
 
     box-shadow:
         inset 0 0 0 rgba(255,255,255,0),
@@ -184,7 +162,6 @@
     pointer-events: none;
 }
 
-
 /* =========================================
    MOBILE
    ========================================= */
@@ -197,13 +174,7 @@
     }
 
 }
-        );
-
-    z-index: 0;
-    pointer-events: none;
-
-    will-change: transform;
-}
+    
         main {
     position: relative;
     z-index: 2;
@@ -1012,90 +983,59 @@ const artists = {
 
 const SPIRAL = {
 
-    /* liczba fragmentów */
     pieces: 16,
 
-    /* początek całego efektu */
-    start: 80,
-
-    /* koniec całego efektu */
-    end: 1400,
-
+    /*
+     * Zakres całej animacji
+     */
+    start: 40,
+    end: 1900,
 
     /*
-     * WSPÓLNA ORBITA
-     *
-     * cały kwadrat obraca się jako jedna
-     * kompozycja wokół własnego środka.
+     * BEVEL:
+     * zaczyna się praktycznie od pierwszych ruchów scrolla.
      */
-
-    orbitRotation: 720,
-
+    bevelStart: 0.015,
+    bevelEnd: 0.22,
 
     /*
-     * późniejsze rozchodzenie się fragmentów
+     * Zaokrąglanie narożników
      */
-
-    spread: 900,
-
+    roundStart: 0.05,
+    roundEnd: 0.48,
 
     /*
-     * przesunięcie całej animacji w dół
+     * Jeden pełny wspólny obieg
      */
-
-    fall: 700,
-
+    orbitTurns: 1,
 
     /*
-     * dodatkowa skala całości
+     * Własna rotacja każdego kafelka
      */
+    selfRotationStart: 0.24,
+    selfRotation: 720,
 
+    /*
+     * Dopiero po pełnym kole
+     * zaczyna się mocne rozchodzenie.
+     */
+    spreadStart: 0.72,
+    spreadEnd: 1,
+
+    spread: 1100,
+
+    /*
+     * Przesunięcie całego obrazka
+     * w dół pod koniec.
+     */
+    fall: 650,
+
+    /*
+     * Końcowe powiększenie.
+     */
     scale: 1.15,
 
-
-    /*
-     * indywidualny obrót każdego fragmentu
-     */
-
-    pieceRotation: 32,
-
-
-    /*
-     * zaokrąglenie
-     */
-
-    roundStart: 0.02,
-    roundEnd: 0.38,
-
-
-    /*
-     * bevel
-     */
-
-    bevelStart: 0.05,
-    bevelEnd: 0.35,
-
-
-    /*
-     * kiedy rozpoczyna się rozsuwanie
-     */
-
-    spreadStart: 0.38,
-
-
-    /*
-     * kiedy pojawia się indywidualna rotacja
-     */
-
-    pieceRotationStart: 0.42,
-
-
-    /*
-     * przezroczystość na końcu
-     */
-
     opacityEnd: 0
-
 };
 
 /* =========================================
@@ -1106,20 +1046,7 @@ const spiralBox =
     document.getElementById("spiralBox");
 
 
-/*
- * To jest wspólna warstwa, która później
- * obraca cały obraz wokół środka.
- */
 
-const spiralOrbit =
-    document.createElement("div");
-
-spiralOrbit.className =
-    "spiral-orbit";
-
-spiralBox.appendChild(
-    spiralOrbit
-);
 
 
 const GRID = 4;
@@ -1165,9 +1092,9 @@ for (let i = 0; i < SPIRAL.pieces; i++) {
         `;
 
 
-    spiralOrbit.appendChild(
-        piece
-    );
+    spiralBox.appendChild(
+    piece
+);
 }
 
 
@@ -1212,22 +1139,21 @@ function updateSpiral() {
 
 
     /*
-     * =====================================
+     * =========================================
      * GLOBAL PROGRESS
-     * =====================================
+     * =========================================
      */
 
     let progress =
         (scrollY - SPIRAL.start) /
         (SPIRAL.end - SPIRAL.start);
 
-
     progress =
         clamp(progress, 0, 1);
 
 
     /*
-     * Gładki easing.
+     * Smooth easing
      */
 
     const eased =
@@ -1235,17 +1161,35 @@ function updateSpiral() {
 
 
     /*
-     * =====================================
-     * CAŁA KOMPOZYCJA
-     * =====================================
+     * =========================================
+     * CAŁY BOX — DOPIERO PÓŹNIEJ
+     * =========================================
+     *
+     * Początkowo praktycznie zero ruchu.
      */
 
+    const movementProgress =
+        Math.max(
+            0,
+            (progress - 0.72) /
+            0.28
+        );
+
+    const movementEase =
+        easeInOut(
+            movementProgress
+        );
+
+
     const boxY =
-        eased * SPIRAL.fall;
+        movementEase *
+        SPIRAL.fall;
 
 
     const boxScale =
-        1 + eased * SPIRAL.scale;
+        1 +
+        movementEase *
+        SPIRAL.scale;
 
 
     spiralBox.style.transform = `
@@ -1256,84 +1200,17 @@ function updateSpiral() {
 
 
     /*
-     * =====================================
-     * 1. WSPÓLNA ORBITA
-     * =====================================
+     * =========================================
+     * BEVEL
+     * =========================================
      *
-     * Na początku wszystkie elementy
-     * poruszają się jak jedna konstrukcja.
-     *
-     * ZERO rotacji przy progress = 0.
-     */
-
-    let orbitProgress =
-        progress / 0.72;
-
-
-    orbitProgress =
-        clamp(
-            orbitProgress,
-            0,
-            1
-        );
-
-
-    const orbitEase =
-        easeInOut(orbitProgress);
-
-
-    const orbitAngle =
-        orbitEase *
-        SPIRAL.orbitRotation;
-
-
-    spiralOrbit.style.transform = `
-        rotate(${orbitAngle}deg)
-    `;
-
-
-    /*
-     * =====================================
-     * 2. ZAOKRĄGLENIE
-     * =====================================
-     *
-     * Jeszcze zanim elementy się rozjadą,
-     * zaczynają przechodzić:
-     *
-     * kwadrat → zaokrąglony kwadrat → koło
-     */
-
-    let roundProgress =
-        (progress - SPIRAL.roundStart) /
-        (SPIRAL.roundEnd - SPIRAL.roundStart);
-
-
-    roundProgress =
-        clamp(
-            roundProgress,
-            0,
-            1
-        );
-
-
-    const roundEase =
-        easeInOut(roundProgress);
-
-
-    const radius =
-        roundEase * 50;
-
-
-    /*
-     * =====================================
-     * 3. BEVEL
-     * =====================================
+     * To dzieje się ZANIM
+     * kafelki zaczynają mocno orbitować.
      */
 
     let bevelProgress =
         (progress - SPIRAL.bevelStart) /
         (SPIRAL.bevelEnd - SPIRAL.bevelStart);
-
 
     bevelProgress =
         clamp(
@@ -1342,33 +1219,127 @@ function updateSpiral() {
             1
         );
 
-
     const bevelEase =
-        easeInOut(bevelProgress);
+        easeInOut(
+            bevelProgress
+        );
 
-
-    /*
-     * Siła bevelu.
-     */
 
     const bevel =
-        bevelEase * 9;
-
-
-    const borderAlpha =
-        bevelEase * 0.35;
+        bevelEase * 10;
 
 
     /*
-     * =====================================
-     * 4. ROZSUNIĘCIE
-     * =====================================
+     * =========================================
+     * ROUNDING
+     * =========================================
+     */
+
+    let roundProgress =
+        (progress - SPIRAL.roundStart) /
+        (SPIRAL.roundEnd - SPIRAL.roundStart);
+
+    roundProgress =
+        clamp(
+            roundProgress,
+            0,
+            1
+        );
+
+    const roundEase =
+        easeInOut(
+            roundProgress
+        );
+
+
+    const radius =
+        roundEase * 50;
+
+
+    /*
+     * =========================================
+     * ORBIT
+     * =========================================
+     *
+     * KAŻDY KAFEL MA WŁASNY ŚRODEK ORBITY.
+     *
+     * Wszystkie orbitują wokół
+     * środka początkowego obrazka.
+     */
+
+    let orbitProgress =
+    Math.max(
+        0,
+        (progress - 0.10) /
+        0.62
+    );
+
+    orbitProgress =
+        clamp(
+            orbitProgress,
+            0,
+            1
+        );
+
+    const orbitEase =
+        easeInOut(
+            orbitProgress
+        );
+
+
+    /*
+     * Jeden pełny wspólny obrót.
+     */
+
+    const commonOrbit =
+        orbitEase *
+        Math.PI *
+        2 *
+        SPIRAL.orbitTurns;
+
+
+    /*
+     * =========================================
+     * PROMIEŃ ORBITY
+     * =========================================
+     *
+     * Początkowo każdy kafelek siedzi
+     * na swoim miejscu.
+     *
+     * W trakcie robi małe koło,
+     * a potem wyrównuje odległości.
+     */
+
+    const radiusProgress =
+        orbitEase;
+
+
+    /*
+     * Każdy kafelek ma swoją
+     * początkową odległość od środka.
+     */
+
+    const centerX =
+        1.5;
+
+    const centerY =
+        1.5;
+
+
+    /*
+     * =========================================
+     * SPREAD
+     * =========================================
+     *
+     * WAŻNE:
+     *
+     * rozchodzenie NIE występuje
+     * podczas pierwszego wspólnego koła.
      */
 
     let spreadProgress =
         (progress - SPIRAL.spreadStart) /
-        (1 - SPIRAL.spreadStart);
-
+        (SPIRAL.spreadEnd - SPIRAL.spreadStart);
 
     spreadProgress =
         clamp(
@@ -1379,38 +1350,39 @@ function updateSpiral() {
 
 
     const spreadEase =
-        easeInOut(spreadProgress);
+        easeInOut(
+            spreadProgress
+        );
 
 
     /*
-     * =====================================
-     * 5. INDYWIDUALNA ROTACJA
-     * =====================================
+     * =========================================
+     * SELF ROTATION
+     * =========================================
      */
 
-    let pieceRotationProgress =
-        (progress - SPIRAL.pieceRotationStart) /
-        (1 - SPIRAL.pieceRotationStart);
+    let selfProgress =
+        (progress - SPIRAL.selfRotationStart) /
+        (SPIRAL.spreadStart - SPIRAL.selfRotationStart);
 
-
-    pieceRotationProgress =
+    selfProgress =
         clamp(
-            pieceRotationProgress,
+            selfProgress,
             0,
             1
         );
 
 
-    const pieceRotationEase =
+    const selfEase =
         easeInOut(
-            pieceRotationProgress
+            selfProgress
         );
 
 
     /*
-     * =====================================
-     * POSZCZEGÓLNE FRAGMENTY
-     * =====================================
+     * =========================================
+     * KAŻDY KAFEL
+     * =========================================
      */
 
     spiralPieces.forEach(
@@ -1424,110 +1396,173 @@ function updateSpiral() {
 
 
             /*
-             * Środek siatki.
-             *
-             * -1.5 ... +1.5
+             * Pozycja początkowa
+             * względem centrum obrazka.
              */
 
-            const localX =
-                column - 1.5;
+            const baseX =
+                column -
+                centerX;
 
-            const localY =
-                row - 1.5;
+            const baseY =
+                row -
+                centerY;
 
 
             /*
-             * Kierunek od środka.
+             * Odległość od wspólnego środka.
              */
 
-            const angle =
-                Math.atan2(
-                    localY,
-                    localX
-                );
-
-
-            /*
-             * Odległość od środka.
-             */
-
-            const distance =
+            const baseDistance =
                 Math.sqrt(
-                    localX * localX +
-                    localY * localY
+                    baseX * baseX +
+                    baseY * baseY
                 );
 
 
             /*
-             * =================================
+             * Kąt początkowy.
+             */
+
+            const baseAngle =
+                Math.atan2(
+                    baseY,
+                    baseX
+                );
+
+
+            /*
+             * =====================================
+             * WYRÓWNYWANIE PROMIENIA
+             * =====================================
+             *
+             * Wszystkie kafelki zaczynają
+             * stopniowo dążyć do podobnej
+             * odległości od wspólnego środka.
+             */
+
+            const equalizedDistance =
+                (
+                    1 - orbitEase
+                ) *
+                baseDistance
+                +
+                orbitEase *
+                1.5;
+
+
+            /*
+             * =====================================
+             * ORBITALNA POZYCJA
+             * =====================================
+             */
+
+            const orbitalAngle =
+                baseAngle +
+                commonOrbit;
+
+
+            /*
+             * Początkowo jest tylko minimalny
+             * ruch radialny.
+             */
+
+            const localOrbitRadius =
+                equalizedDistance *
+                105;
+
+
+            /*
+             * Położenie orbitalne.
+             */
+
+            let x =
+                Math.cos(
+                    orbitalAngle
+                ) *
+                localOrbitRadius;
+
+            let y =
+                Math.sin(
+                    orbitalAngle
+                ) *
+                localOrbitRadius;
+
+
+            /*
+             * =====================================
              * SPREAD
-             * =================================
+             * =====================================
              *
-             * Im dalej od środka,
-             * tym mocniej fragment odjeżdża.
+             * Dopiero teraz wszystkie koła
+             * zaczynają naprawdę odjeżdżać.
              */
 
-            const moveDistance =
+            const spreadDistance =
                 spreadEase *
-                SPIRAL.spread *
+                SPIRAL.spread;
+
+
+            x +=
+                Math.cos(
+                    orbitalAngle
+                ) *
+                spreadDistance;
+
+
+            y +=
+                Math.sin(
+                    orbitalAngle
+                ) *
+                spreadDistance;
+
+
+            /*
+             * =====================================
+             * INDYWIDUALNA ROTACJA
+             * =====================================
+             */
+
+            const phase =
+                index *
+                22;
+
+
+            const selfRotation =
+                selfEase *
                 (
-                    0.25 +
-                    distance / 6
+                    SPIRAL.selfRotation +
+                    phase
                 );
 
 
-            const moveX =
-                Math.cos(angle) *
-                moveDistance;
-
-
-            const moveY =
-                Math.sin(angle) *
-                moveDistance;
-
-
             /*
-             * =================================
-             * INDYWIDUALNY OBRÓT
-             * =================================
-             *
-             * WAŻNE:
-             *
-             * przy progress = 0
-             * rotation = 0.
+             * Dodatkowy obrót po rozpoczęciu
+             * rozpadu.
              */
 
-            const individualRotation =
-                pieceRotationEase *
-                (
-                    index *
-                    SPIRAL.pieceRotation
-                );
-
-
-            /*
-             * Jeszcze dodatkowo cały ruch
-             * może dawać lekkie 3D.
-             */
-
-            const z =
+            const lateRotation =
                 spreadEase *
-                distance *
-                80;
+                index *
+                28;
 
 
             /*
-             * Końcowe zmniejszenie.
+             * =====================================
+             * SKALA
+             * =====================================
              */
 
             const pieceScale =
-                1 -
+                1 +
                 spreadEase *
-                0.25;
+                0.75;
 
 
             /*
-             * Przezroczystość.
+             * =====================================
+             * OPACITY
+             * =====================================
              */
 
             const opacity =
@@ -1540,26 +1575,26 @@ function updateSpiral() {
 
 
             /*
-             * =================================
+             * =====================================
              * TRANSFORM
-             * =================================
+             * =====================================
              */
 
             piece.style.transform = `
                 translate3d(
-                    ${moveX}px,
-                    ${moveY}px,
-                    ${z}px
+                    ${x}px,
+                    ${y}px,
+                    0
                 )
-                rotate(${individualRotation}deg)
+                rotate(${selfRotation + lateRotation}deg)
                 scale(${pieceScale})
             `;
 
 
             /*
-             * =================================
-             * SHAPE
-             * =================================
+             * =====================================
+             * ROUNDING
+             * =====================================
              */
 
             piece.style.borderRadius =
@@ -1567,22 +1602,19 @@ function updateSpiral() {
 
 
             /*
-             * =================================
+             * =====================================
              * BEVEL
-             * =================================
+             * =====================================
              */
 
-            piece.style.border =
-                `1px solid rgba(
-                    255,
-                    255,
-                    255,
-                    ${borderAlpha}
-                )`;
+            const bevelWhite =
+                bevelEase * 0.2;
+
+            const bevelBlack =
+                bevelEase * 0.3;
 
 
             piece.style.boxShadow = `
-
                 inset
                 ${bevel}px
                 ${bevel}px
@@ -1591,7 +1623,7 @@ function updateSpiral() {
                     255,
                     255,
                     255,
-                    ${bevelEase * 0.22}
+                    ${bevelWhite}
                 ),
 
                 inset
@@ -1602,9 +1634,8 @@ function updateSpiral() {
                     0,
                     0,
                     0,
-                    ${bevelEase * 0.35}
+                    ${bevelBlack}
                 )
-
             `;
 
 
@@ -1621,9 +1652,7 @@ function updateSpiral() {
             "--scroll-y",
             scrollY
         );
-
 }
-
 /* =========================================
    REQUEST ANIMATION FRAME
    ========================================= */
