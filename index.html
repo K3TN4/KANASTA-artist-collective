@@ -119,7 +119,31 @@
     will-change: transform;
 }
 
+
+/* =========================================
+   WSPÓLNA ORBITA
+   ========================================= */
+
+.spiral-orbit {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    transform-origin: center center;
+    transform-style: preserve-3d;
+
+    will-change: transform;
+}
+
+
+/* =========================================
+   POJEDYNCZY FRAGMENT
+   ========================================= */
+
 .spiral-piece {
+
     position: absolute;
 
     width: 25%;
@@ -130,24 +154,40 @@
     background-repeat: no-repeat;
     background-size: 400% 400%;
 
+    background-clip: padding-box;
+
+    overflow: hidden;
+
+    /*
+     * Początkowo idealnie kwadratowe.
+     * JS będzie zwiększał do 50%.
+     */
+    border-radius: 0%;
+
+    /*
+     * Bevel będzie sterowany JS.
+     */
+    border: 1px solid transparent;
+
+    box-shadow:
+        inset 0 0 0 rgba(255,255,255,0),
+        inset 0 0 0 rgba(0,0,0,0);
+
     transform-origin: center center;
 
-    will-change: transform, opacity;
-    pointer-events: none;
-}
+    will-change:
+        transform,
+        border-radius,
+        box-shadow,
+        opacity;
 
-/* delikatnie ukrywa element na samym początku */
-.spiral-piece::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: #000000;
-    opacity: 0;
     pointer-events: none;
 }
 
 
-/* MOBILE */
+/* =========================================
+   MOBILE
+   ========================================= */
 
 @media (max-width: 700px) {
 
@@ -975,73 +1015,166 @@ const SPIRAL = {
     /* liczba fragmentów */
     pieces: 16,
 
-    /* gdzie zaczyna się rozpad */
+    /* początek całego efektu */
     start: 80,
 
-    /* gdzie kończy się animacja */
+    /* koniec całego efektu */
     end: 1400,
 
-    /* maksymalny obrót */
-    rotation: 540,
 
-    /* maksymalne rozsunięcie */
+    /*
+     * WSPÓLNA ORBITA
+     *
+     * cały kwadrat obraca się jako jedna
+     * kompozycja wokół własnego środka.
+     */
+
+    orbitRotation: 720,
+
+
+    /*
+     * późniejsze rozchodzenie się fragmentów
+     */
+
     spread: 900,
 
-    /* przesunięcie całej spirali w dół */
+
+    /*
+     * przesunięcie całej animacji w dół
+     */
+
     fall: 700,
 
-    /* dodatkowa skala */
+
+    /*
+     * dodatkowa skala całości
+     */
+
     scale: 1.15,
 
-    /* jak mocno kolejne fragmenty są przesunięte */
-    stagger: 26,
 
-    /* jak mocno fragmenty obracają się względem siebie */
+    /*
+     * indywidualny obrót każdego fragmentu
+     */
+
     pieceRotation: 32,
 
-    /* ile fragmentów zostaje jeszcze widocznych pod koniec */
-    opacityEnd: 0.05
+
+    /*
+     * zaokrąglenie
+     */
+
+    roundStart: 0.02,
+    roundEnd: 0.38,
+
+
+    /*
+     * bevel
+     */
+
+    bevelStart: 0.05,
+    bevelEnd: 0.35,
+
+
+    /*
+     * kiedy rozpoczyna się rozsuwanie
+     */
+
+    spreadStart: 0.38,
+
+
+    /*
+     * kiedy pojawia się indywidualna rotacja
+     */
+
+    pieceRotationStart: 0.42,
+
+
+    /*
+     * przezroczystość na końcu
+     */
+
+    opacityEnd: 0
+
 };
 
-
 /* =========================================
-   CREATE PIECES
+   CREATE SPIRAL
    ========================================= */
 
-const spiralBox = document.getElementById("spiralBox");
+const spiralBox =
+    document.getElementById("spiralBox");
+
+
+/*
+ * To jest wspólna warstwa, która później
+ * obraca cały obraz wokół środka.
+ */
+
+const spiralOrbit =
+    document.createElement("div");
+
+spiralOrbit.className =
+    "spiral-orbit";
+
+spiralBox.appendChild(
+    spiralOrbit
+);
+
 
 const GRID = 4;
 
+
 for (let i = 0; i < SPIRAL.pieces; i++) {
 
-    const piece = document.createElement("div");
+    const piece =
+        document.createElement("div");
 
-    piece.className = "spiral-piece";
+    piece.className =
+        "spiral-piece";
 
-    const column = i % GRID;
-    const row = Math.floor(i / GRID);
+
+    const column =
+        i % GRID;
+
+    const row =
+        Math.floor(i / GRID);
+
 
     /*
-     * Ustawienie fragmentu w normalnej siatce 4 × 4
+     * POCZĄTKOWA POZYCJA
+     *
+     * 4 × 4 tworzy perfekcyjny kwadrat.
      */
 
-    piece.style.left = `${column * 25}%`;
-    piece.style.top = `${row * 25}%`;
+    piece.style.left =
+        `${column * 25}%`;
+
+    piece.style.top =
+        `${row * 25}%`;
+
 
     /*
-     * Każdy fragment pokazuje odpowiednią
-     * ćwiartkę tego samego zdjęcia.
+     * Odpowiedni fragment jednego zdjęcia.
      */
 
     piece.style.backgroundPosition =
-        `${column * 33.3333}% ${row * 33.3333}%`;
+        `
+        ${(column / 3) * 100}%
+        ${(row / 3) * 100}%
+        `;
 
-    spiralBox.appendChild(piece);
+
+    spiralOrbit.appendChild(
+        piece
+    );
 }
 
-const spiralPieces =
-    document.querySelectorAll(".spiral-piece");
 
+const spiralPieces =
+    document.querySelectorAll(
+        ".spiral-piece"
+    );
 
 /* =========================================
    EASING
@@ -1074,24 +1207,42 @@ function clamp(value, min, max) {
 
 function updateSpiral() {
 
-    const scrollY = window.scrollY;
+    const scrollY =
+        window.scrollY;
+
+
+    /*
+     * =====================================
+     * GLOBAL PROGRESS
+     * =====================================
+     */
 
     let progress =
         (scrollY - SPIRAL.start) /
         (SPIRAL.end - SPIRAL.start);
 
-    progress = clamp(progress, 0, 1);
 
-    const eased = easeInOut(progress);
+    progress =
+        clamp(progress, 0, 1);
 
 
     /*
-     * Cały kontener na początku jest idealnie
-     * nieruchomy i tworzy normalny kwadrat.
+     * Gładki easing.
+     */
+
+    const eased =
+        easeInOut(progress);
+
+
+    /*
+     * =====================================
+     * CAŁA KOMPOZYCJA
+     * =====================================
      */
 
     const boxY =
         eased * SPIRAL.fall;
+
 
     const boxScale =
         1 + eased * SPIRAL.scale;
@@ -1104,124 +1255,374 @@ function updateSpiral() {
     `;
 
 
-    spiralPieces.forEach((piece, index) => {
+    /*
+     * =====================================
+     * 1. WSPÓLNA ORBITA
+     * =====================================
+     *
+     * Na początku wszystkie elementy
+     * poruszają się jak jedna konstrukcja.
+     *
+     * ZERO rotacji przy progress = 0.
+     */
 
-        const column = index % GRID;
-        const row = Math.floor(index / GRID);
-
-
-        /*
-         * Środek każdego fragmentu
-         * względem środka całego kwadratu.
-         *
-         * Dzięki temu fragmenty rozchodzą się
-         * od własnych pozycji.
-         */
-
-        const centerX =
-            (column - 1.5) * 25;
-
-        const centerY =
-            (row - 1.5) * 25;
+    let orbitProgress =
+        progress / 0.72;
 
 
-        /*
-         * Kierunek rozchodzenia się fragmentu.
-         */
-
-        const angle =
-            Math.atan2(centerY, centerX);
-
-
-        /*
-         * Odległość od środka.
-         */
-
-        const distance =
-            Math.sqrt(
-                centerX * centerX +
-                centerY * centerY
-            );
+    orbitProgress =
+        clamp(
+            orbitProgress,
+            0,
+            1
+        );
 
 
-        /*
-         * Rozsunięcie podczas scrolla.
-         */
-
-        const spread =
-            eased *
-            SPIRAL.spread *
-            (0.35 + distance / 50);
+    const orbitEase =
+        easeInOut(orbitProgress);
 
 
-        const moveX =
-            Math.cos(angle) * spread;
-
-        const moveY =
-            Math.sin(angle) * spread;
+    const orbitAngle =
+        orbitEase *
+        SPIRAL.orbitRotation;
 
 
-        /*
-         * Każdy fragment obraca się
-         * trochę inaczej.
-         */
-
-        const rotation =
-            eased *
-            SPIRAL.rotation +
-            index *
-            SPIRAL.pieceRotation;
+    spiralOrbit.style.transform = `
+        rotate(${orbitAngle}deg)
+    `;
 
 
-        /*
-         * Delikatne zmniejszanie fragmentów.
-         */
+    /*
+     * =====================================
+     * 2. ZAOKRĄGLENIE
+     * =====================================
+     *
+     * Jeszcze zanim elementy się rozjadą,
+     * zaczynają przechodzić:
+     *
+     * kwadrat → zaokrąglony kwadrat → koło
+     */
 
-        const scale =
-            1 - eased * 0.35;
-
-
-        /*
-         * Stopniowe zanikanie.
-         */
-
-        const opacity =
-            1 -
-            eased *
-            (1 - SPIRAL.opacityEnd);
+    let roundProgress =
+        (progress - SPIRAL.roundStart) /
+        (SPIRAL.roundEnd - SPIRAL.roundStart);
 
 
-        /*
-         * KLUCZOWE:
-         *
-         * translate zaczyna się od 0.
-         *
-         * Czyli przy progress = 0
-         * KAŻDY fragment pozostaje dokładnie
-         * na swojej pozycji w siatce 4 × 4.
-         */
-
-        piece.style.transform = `
-            translate3d(
-                ${moveX}px,
-                ${moveY}px,
-                0
-            )
-            rotate(${rotation}deg)
-            scale(${scale})
-        `;
-
-        piece.style.opacity = opacity;
-
-    });
+    roundProgress =
+        clamp(
+            roundProgress,
+            0,
+            1
+        );
 
 
-    document.documentElement.style.setProperty(
-        "--scroll-y",
-        scrollY
+    const roundEase =
+        easeInOut(roundProgress);
+
+
+    const radius =
+        roundEase * 50;
+
+
+    /*
+     * =====================================
+     * 3. BEVEL
+     * =====================================
+     */
+
+    let bevelProgress =
+        (progress - SPIRAL.bevelStart) /
+        (SPIRAL.bevelEnd - SPIRAL.bevelStart);
+
+
+    bevelProgress =
+        clamp(
+            bevelProgress,
+            0,
+            1
+        );
+
+
+    const bevelEase =
+        easeInOut(bevelProgress);
+
+
+    /*
+     * Siła bevelu.
+     */
+
+    const bevel =
+        bevelEase * 9;
+
+
+    const borderAlpha =
+        bevelEase * 0.35;
+
+
+    /*
+     * =====================================
+     * 4. ROZSUNIĘCIE
+     * =====================================
+     */
+
+    let spreadProgress =
+        (progress - SPIRAL.spreadStart) /
+        (1 - SPIRAL.spreadStart);
+
+
+    spreadProgress =
+        clamp(
+            spreadProgress,
+            0,
+            1
+        );
+
+
+    const spreadEase =
+        easeInOut(spreadProgress);
+
+
+    /*
+     * =====================================
+     * 5. INDYWIDUALNA ROTACJA
+     * =====================================
+     */
+
+    let pieceRotationProgress =
+        (progress - SPIRAL.pieceRotationStart) /
+        (1 - SPIRAL.pieceRotationStart);
+
+
+    pieceRotationProgress =
+        clamp(
+            pieceRotationProgress,
+            0,
+            1
+        );
+
+
+    const pieceRotationEase =
+        easeInOut(
+            pieceRotationProgress
+        );
+
+
+    /*
+     * =====================================
+     * POSZCZEGÓLNE FRAGMENTY
+     * =====================================
+     */
+
+    spiralPieces.forEach(
+        (piece, index) => {
+
+            const column =
+                index % GRID;
+
+            const row =
+                Math.floor(index / GRID);
+
+
+            /*
+             * Środek siatki.
+             *
+             * -1.5 ... +1.5
+             */
+
+            const localX =
+                column - 1.5;
+
+            const localY =
+                row - 1.5;
+
+
+            /*
+             * Kierunek od środka.
+             */
+
+            const angle =
+                Math.atan2(
+                    localY,
+                    localX
+                );
+
+
+            /*
+             * Odległość od środka.
+             */
+
+            const distance =
+                Math.sqrt(
+                    localX * localX +
+                    localY * localY
+                );
+
+
+            /*
+             * =================================
+             * SPREAD
+             * =================================
+             *
+             * Im dalej od środka,
+             * tym mocniej fragment odjeżdża.
+             */
+
+            const moveDistance =
+                spreadEase *
+                SPIRAL.spread *
+                (
+                    0.25 +
+                    distance / 6
+                );
+
+
+            const moveX =
+                Math.cos(angle) *
+                moveDistance;
+
+
+            const moveY =
+                Math.sin(angle) *
+                moveDistance;
+
+
+            /*
+             * =================================
+             * INDYWIDUALNY OBRÓT
+             * =================================
+             *
+             * WAŻNE:
+             *
+             * przy progress = 0
+             * rotation = 0.
+             */
+
+            const individualRotation =
+                pieceRotationEase *
+                (
+                    index *
+                    SPIRAL.pieceRotation
+                );
+
+
+            /*
+             * Jeszcze dodatkowo cały ruch
+             * może dawać lekkie 3D.
+             */
+
+            const z =
+                spreadEase *
+                distance *
+                80;
+
+
+            /*
+             * Końcowe zmniejszenie.
+             */
+
+            const pieceScale =
+                1 -
+                spreadEase *
+                0.25;
+
+
+            /*
+             * Przezroczystość.
+             */
+
+            const opacity =
+                1 -
+                spreadEase *
+                (
+                    1 -
+                    SPIRAL.opacityEnd
+                );
+
+
+            /*
+             * =================================
+             * TRANSFORM
+             * =================================
+             */
+
+            piece.style.transform = `
+                translate3d(
+                    ${moveX}px,
+                    ${moveY}px,
+                    ${z}px
+                )
+                rotate(${individualRotation}deg)
+                scale(${pieceScale})
+            `;
+
+
+            /*
+             * =================================
+             * SHAPE
+             * =================================
+             */
+
+            piece.style.borderRadius =
+                `${radius}%`;
+
+
+            /*
+             * =================================
+             * BEVEL
+             * =================================
+             */
+
+            piece.style.border =
+                `1px solid rgba(
+                    255,
+                    255,
+                    255,
+                    ${borderAlpha}
+                )`;
+
+
+            piece.style.boxShadow = `
+
+                inset
+                ${bevel}px
+                ${bevel}px
+                ${bevel * 2}px
+                rgba(
+                    255,
+                    255,
+                    255,
+                    ${bevelEase * 0.22}
+                ),
+
+                inset
+                -${bevel}px
+                -${bevel}px
+                ${bevel * 2}px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    ${bevelEase * 0.35}
+                )
+
+            `;
+
+
+            piece.style.opacity =
+                opacity;
+
+        }
     );
-}
 
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--scroll-y",
+            scrollY
+        );
+
+}
 
 /* =========================================
    REQUEST ANIMATION FRAME
