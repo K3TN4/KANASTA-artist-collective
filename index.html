@@ -1386,93 +1386,128 @@ function updateSpiral() {
              * względem centrum obrazka.
              */
 
-            const baseX =
-                column -
-                centerX;
+           const baseX =
+    column -
+    centerX;
 
-            const baseY =
-                row -
-                centerY;
-
-
-            /*
-             * Odległość od wspólnego środka.
-             */
-
-            const baseDistance =
-                Math.sqrt(
-                    baseX * baseX +
-                    baseY * baseY
-                );
+const baseY =
+    row -
+    centerY;
 
 
-            /*
-             * Kąt początkowy.
-             */
+/*
+ * Odległość kafelka od środka
+ * w jednostkach siatki.
+ */
 
-            const baseAngle =
-                Math.atan2(
-                    baseY,
-                    baseX
-                );
-
-
-            /*
-             * =====================================
-             * WYRÓWNYWANIE PROMIENIA
-             * =====================================
-             *
-             * Wszystkie kafelki zaczynają
-             * stopniowo dążyć do podobnej
-             * odległości od wspólnego środka.
-             */
-
-            const equalizedDistance =
-                (
-                    1 - orbitEase
-                ) *
-                baseDistance
-                +
-                orbitEase *
-                1.5;
+const baseDistance =
+    Math.sqrt(
+        baseX * baseX +
+        baseY * baseY
+    );
 
 
-            /*
-             * =====================================
-             * ORBITALNA POZYCJA
-             * =====================================
-             */
+/*
+ * Kąt początkowy kafelka.
+ */
 
-            const orbitalAngle =
-                baseAngle +
-                commonOrbit;
-
-
-            /*
-             * Początkowo jest tylko minimalny
-             * ruch radialny.
-             */
-
-            const localOrbitRadius =
-                equalizedDistance *
-                105;
+const baseAngle =
+    Math.atan2(
+        baseY,
+        baseX
+    );
 
 
-            /*
-             * Położenie orbitalne.
-             */
+/*
+ * =================================================
+ * WSPÓLNY PROMIEŃ ORBITY
+ * =================================================
+ *
+ * Na początku:
+ *
+ * currentPosition = initialPosition
+ *
+ * więc transform = 0.
+ *
+ * Później wszystkie kafelki
+ * dążą do podobnego promienia.
+ */
 
-            let x =
-                Math.cos(
-                    orbitalAngle
-                ) *
-                localOrbitRadius;
+const equalizedDistance =
+    (1 - orbitEase) * baseDistance +
+    orbitEase * 1.5;
 
-            let y =
-                Math.sin(
-                    orbitalAngle
-                ) *
-                localOrbitRadius;
+
+/*
+ * =================================================
+ * KĄT ORBITY
+ * =================================================
+ */
+
+const orbitalAngle =
+    baseAngle +
+    commonOrbit;
+
+
+/*
+ * =================================================
+ * PROMIEŃ
+ * =================================================
+ *
+ * 105 px odpowiada obecnemu rozmiarowi
+ * początkowego obiegu.
+ */
+
+const orbitRadius =
+    equalizedDistance * 105;
+
+
+/*
+ * =================================================
+ * AKTUALNA POZYCJA NA ORBICIE
+ * =================================================
+ */
+
+const currentX =
+    Math.cos(orbitalAngle) *
+    orbitRadius;
+
+const currentY =
+    Math.sin(orbitalAngle) *
+    orbitRadius;
+
+
+/*
+ * =================================================
+ * POCZĄTKOWA POZYCJA
+ * =================================================
+ *
+ * To jest klucz.
+ *
+ * Odejmujemy początkową pozycję,
+ * dzięki czemu przy orbitEase = 0
+ * transform wynosi dokładnie 0.
+ * =================================================
+ */
+
+const initialX =
+    baseX * 105;
+
+const initialY =
+    baseY * 105;
+
+
+/*
+ * Rzeczywiste przesunięcie kafelka.
+ */
+
+let x =
+    currentX -
+    initialX;
+
+let y =
+    currentY -
+    initialY;
 
 
             /*
