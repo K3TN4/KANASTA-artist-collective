@@ -122,28 +122,18 @@
 .spiral-piece {
     position: absolute;
 
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 100%;
+    width: 25%;
+    height: 25%;
 
     background-color: #000000;
     background-image: var(--square-image);
     background-repeat: no-repeat;
-
-    /*
-     * Obraz jest powiększony tak,
-     * aby każdy fragment mógł pokazać
-     * właściwy kawałek fotografii.
-     */
     background-size: 400% 400%;
 
     transform-origin: center center;
 
     will-change: transform, opacity;
-
-    overflow: hidden;
+    pointer-events: none;
 }
 
 /* delikatnie ukrywa element na samym początku */
@@ -986,13 +976,13 @@ const SPIRAL = {
     pieces: 16,
 
     /* gdzie zaczyna się rozpad */
-    start: 0,
+    start: 80,
 
     /* gdzie kończy się animacja */
     end: 1400,
 
     /* maksymalny obrót */
-    rotation: 720,
+    rotation: 540,
 
     /* maksymalne rozsunięcie */
     spread: 900,
@@ -1020,33 +1010,34 @@ const SPIRAL = {
 
 const spiralBox = document.getElementById("spiralBox");
 
+const GRID = 4;
+
 for (let i = 0; i < SPIRAL.pieces; i++) {
 
     const piece = document.createElement("div");
 
     piece.className = "spiral-piece";
 
+    const column = i % GRID;
+    const row = Math.floor(i / GRID);
+
     /*
-     * Każdy fragment dostaje ten sam obraz,
-     * ale z przesunięciem background-position,
-     * dzięki czemu całość tworzy jedno zdjęcie.
+     * Ustawienie fragmentu w normalnej siatce 4 × 4
      */
 
-    const column = i % 4;
-const row = Math.floor(i / 4);
+    piece.style.left = `${column * 25}%`;
+    piece.style.top = `${row * 25}%`;
 
-const x =
-    (column / 3) * 100;
+    /*
+     * Każdy fragment pokazuje odpowiednią
+     * ćwiartkę tego samego zdjęcia.
+     */
 
-const y =
-    (row / 3) * 100;
-
-piece.style.backgroundPosition =
-    `${x}% ${y}%`;
+    piece.style.backgroundPosition =
+        `${column * 33.3333}% ${row * 33.3333}%`;
 
     spiralBox.appendChild(piece);
 }
-
 
 const spiralPieces =
     document.querySelectorAll(".spiral-piece");
@@ -1091,99 +1082,107 @@ function updateSpiral() {
 
     progress = clamp(progress, 0, 1);
 
-    const eased =
-        easeInOut(progress);
+    const eased = easeInOut(progress);
 
 
     /*
-     * Cały box zaczyna schodzić w dół.
+     * Cały kontener na początku jest idealnie
+     * nieruchomy i tworzy normalny kwadrat.
      */
 
     const boxY =
         eased * SPIRAL.fall;
 
-    /*
-     * Delikatne powiększenie całej kompozycji.
-     */
-
     const boxScale =
         1 + eased * SPIRAL.scale;
 
 
-    spiralBox.style.transform =
-        `
+    spiralBox.style.transform = `
         translate(-50%, -50%)
         translateY(${boxY}px)
         scale(${boxScale})
-        `;
+    `;
 
-
-    /* =====================================
-       PIECES
-       ===================================== */
 
     spiralPieces.forEach((piece, index) => {
 
+        const column = index % GRID;
+        const row = Math.floor(index / GRID);
+
+
         /*
-         * Pozycja fragmentu
-         * względem środka spirali.
+         * Środek każdego fragmentu
+         * względem środka całego kwadratu.
+         *
+         * Dzięki temu fragmenty rozchodzą się
+         * od własnych pozycji.
          */
 
-        const angleStep =
-            (index / SPIRAL.pieces) * Math.PI * 2;
+        const centerX =
+            (column - 1.5) * 25;
+
+        const centerY =
+            (row - 1.5) * 25;
+
 
         /*
-         * Każdy kolejny fragment
-         * dostaje lekki dodatkowy obrót.
+         * Kierunek rozchodzenia się fragmentu.
          */
 
-        const individualAngle =
-            eased * SPIRAL.rotation +
-            index * SPIRAL.pieceRotation;
+        const angle =
+            Math.atan2(centerY, centerX);
 
 
         /*
-         * Rozsunięcie fragmentu.
+         * Odległość od środka.
          */
 
         const distance =
-            eased * SPIRAL.spread +
-            index * SPIRAL.stagger;
+            Math.sqrt(
+                centerX * centerX +
+                centerY * centerY
+            );
 
 
         /*
-         * Współrzędne ruchu po okręgu.
+         * Rozsunięcie podczas scrolla.
          */
 
-        const x =
-            Math.cos(angleStep) *
-            distance;
-
-        const y =
-            Math.sin(angleStep) *
-            distance;
-
-
-        /*
-         * Dodatkowy obrót w 3D.
-         */
-
-        const z =
+        const spread =
             eased *
-            index *
-            18;
+            SPIRAL.spread *
+            (0.35 + distance / 50);
+
+
+        const moveX =
+            Math.cos(angle) * spread;
+
+        const moveY =
+            Math.sin(angle) * spread;
 
 
         /*
-         * Wielkość poszczególnych elementów.
+         * Każdy fragment obraca się
+         * trochę inaczej.
          */
 
-        const pieceScale =
+        const rotation =
+            eased *
+            SPIRAL.rotation +
+            index *
+            SPIRAL.pieceRotation;
+
+
+        /*
+         * Delikatne zmniejszanie fragmentów.
+         */
+
+        const scale =
             1 - eased * 0.35;
 
 
         /*
-         * Fragmenty stopniowo znikają.
+         * Stopniowe zanikanie.
          */
 
         const opacity =
@@ -1192,36 +1191,35 @@ function updateSpiral() {
             (1 - SPIRAL.opacityEnd);
 
 
+        /*
+         * KLUCZOWE:
+         *
+         * translate zaczyna się od 0.
+         *
+         * Czyli przy progress = 0
+         * KAŻDY fragment pozostaje dokładnie
+         * na swojej pozycji w siatce 4 × 4.
+         */
+
         piece.style.transform = `
             translate3d(
-                ${x}px,
-                ${y}px,
-                ${z}px
+                ${moveX}px,
+                ${moveY}px,
+                0
             )
-            rotate(
-                ${individualAngle}deg
-            )
-            scale(
-                ${pieceScale}
-            )
+            rotate(${rotation}deg)
+            scale(${scale})
         `;
-
 
         piece.style.opacity = opacity;
 
     });
 
 
-    /*
-     * To zostawiamy, ponieważ Twój
-     * obecny layout może z niego korzystać.
-     */
-
     document.documentElement.style.setProperty(
         "--scroll-y",
         scrollY
     );
-
 }
 
 
