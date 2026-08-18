@@ -77,7 +77,7 @@
 main h1 {
     position: relative;
     z-index: 2;
-    margin-top: 30vh;
+    margin-top: 22vh;
 }
         h1 {
     font-family: "Bakbak One", sans-serif;
@@ -140,7 +140,6 @@ main h1 {
     background-image: var(--square-image);
     background-repeat: no-repeat;
     background-size: 400% 400%;
-    background-clip: padding-box;
 
     overflow: hidden;
 
@@ -161,6 +160,7 @@ main h1 {
 
     pointer-events: none;
 }
+        
 
 /* =========================================
    MOBILE
@@ -1051,7 +1051,6 @@ const spiralBox =
 
 const GRID = 4;
 
-
 for (let i = 0; i < SPIRAL.pieces; i++) {
 
     const piece =
@@ -1060,18 +1059,15 @@ for (let i = 0; i < SPIRAL.pieces; i++) {
     piece.className =
         "spiral-piece";
 
-
     const column =
         i % GRID;
 
     const row =
         Math.floor(i / GRID);
 
-
     /*
-     * POCZĄTKOWA POZYCJA
-     *
-     * 4 × 4 tworzy perfekcyjny kwadrat.
+     * Dokładna pozycja kafelka
+     * w siatce 4 × 4.
      */
 
     piece.style.left =
@@ -1080,29 +1076,19 @@ for (let i = 0; i < SPIRAL.pieces; i++) {
     piece.style.top =
         `${row * 25}%`;
 
-
     /*
-     * Odpowiedni fragment jednego zdjęcia.
+     * Każdy kafelek pokazuje
+     * właściwy fragment tego samego zdjęcia.
      */
 
     piece.style.backgroundPosition =
-        `
-        ${(column / 3) * 100}%
-        ${(row / 3) * 100}%
-        `;
+        `${(column / 3) * 100}% ${(row / 3) * 100}%`;
 
-
-    spiralBox.appendChild(
-    piece
-);
+    spiralBox.appendChild(piece);
 }
 
-
 const spiralPieces =
-    document.querySelectorAll(
-        ".spiral-piece"
-    );
-
+    document.querySelectorAll(".spiral-piece");
 /* =========================================
    EASING
    ========================================= */
@@ -1187,9 +1173,9 @@ function updateSpiral() {
 
 
     const boxScale =
-        1 +
-        movementEase *
-        SPIRAL.scale;
+    1 +
+    movementEase *
+    (SPIRAL.scale - 1);
 
 
     spiralBox.style.transform = `
