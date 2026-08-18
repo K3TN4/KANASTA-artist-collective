@@ -995,8 +995,8 @@ const SPIRAL = {
      * BEVEL:
      * zaczyna się praktycznie od pierwszych ruchów scrolla.
      */
-    bevelStart: 0.015,
-    bevelEnd: 0.22,
+    bevelStart: 0.0,
+    bevelEnd: 0.18,
 
     /*
      * Zaokrąglanie narożników
@@ -1028,7 +1028,7 @@ const SPIRAL = {
      * Przesunięcie całego obrazka
      * w dół pod koniec.
      */
-    fall: 650,
+   
 
     /*
      * Końcowe powiększenie.
@@ -1154,36 +1154,8 @@ function updateSpiral() {
      * Początkowo praktycznie zero ruchu.
      */
 
-    const movementProgress =
-        Math.max(
-            0,
-            (progress - 0.72) /
-            0.28
-        );
-
-    const movementEase =
-        easeInOut(
-            movementProgress
-        );
-
-
-    const boxY =
-        movementEase *
-        SPIRAL.fall;
-
-
-    const boxScale =
-    1 +
-    movementEase *
-    (SPIRAL.scale - 1);
-
-
-    spiralBox.style.transform = `
-        translate(-50%, -50%)
-        translateY(${boxY}px)
-        scale(${boxScale})
-    `;
-
+   spiralBox.style.transform =
+    "translate(-50%, -50%)";
 
     /*
      * =========================================
@@ -1212,7 +1184,7 @@ function updateSpiral() {
 
 
     const bevel =
-        bevelEase * 10;
+        bevelEase * 14;
 
 
     /*
