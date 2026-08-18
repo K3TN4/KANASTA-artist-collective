@@ -164,7 +164,7 @@ main h1 {
      * KONTUR:
      * tutaj później zmienisz sobie kolor.
      */
-    border: 6px solid #ed3d66;
+    border: 6px solid #59e0b3;
 
     transform-origin: center center;
 
@@ -228,80 +228,98 @@ body {
     }
 
 
+    /* =====================================
+       OBSZAR KÓŁ
+       ===================================== */
+
     .artist-orbit {
         top: 62%;
         left: 50%;
 
         width: 100vw;
-        height: 230px;
+        height: 220px;
 
         transform:
             translate(-50%, -50%);
 
-        overflow-x: auto;
-        overflow-y: hidden;
-
-        pointer-events: auto;
-
-        scrollbar-width: none;
-
-        overscroll-behavior-x: contain;
-
-        touch-action: pan-x;
+        overflow: visible;
 
         display: flex;
         flex-direction: column;
+
         justify-content: center;
-        align-items: flex-start;
+        align-items: center;
 
-        gap: 14px;
+        gap: 10px;
 
-        /*
-         * Dzięki temu oba rzędy mogą
-         * być przewijane od środka.
-         */
-        padding-left: 50vw;
-        padding-right: 50vw;
+        pointer-events: none;
     }
 
-    .artist-orbit::-webkit-scrollbar {
-        display: none;
-    }
 
+    /* =====================================
+       RZĘDY
+       ===================================== */
 
     .artist-row-orbit {
         width: max-content;
 
+        display: flex;
+
         justify-content: center;
+        align-items: center;
 
         gap: 14px;
 
         flex-shrink: 0;
+
+        pointer-events: none;
     }
 
 
-    .artist-row-orbit + .artist-row-orbit {
-        margin-top: 0;
+    /*
+     * Dolny rząd lekko przesunięty,
+     * żeby powstał zygzak.
+     */
+
+    .artist-row-orbit:nth-child(2) {
+        transform: translateX(7px);
     }
 
+
+    /* =====================================
+       KOŁA
+       ===================================== */
 
     .artist-circle {
-        flex: 0 0 92px;
+        flex: 0 0 72px;
 
-        width: 92px;
-        height: 92px;
+        width: 72px;
+        height: 72px;
 
         position: relative;
 
-        transform: none !important;
-
-        opacity: 1 !important;
-
         border-radius: 50% !important;
+
+        border: 3px solid #ed3d66;
+
+        pointer-events: auto;
+
+        transform-origin: center center;
+
+        will-change:
+            transform,
+            opacity;
+    }
+
+    .artist-circle img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        border-radius: 50%;
     }
 }
-
-    
 
         /* FOOTER */
 
@@ -1307,28 +1325,11 @@ function updateArtistOrbit() {
      */
 
     const isMobile =
-        window.innerWidth <= 700;
+    window.innerWidth <= 700;
 
-
-    if (isMobile) {
-
-        artistCircles.forEach(
-            circle => {
-
-                circle.style.transform =
-                    "none";
-
-                circle.style.opacity =
-                    "1";
-
-                circle.style.borderRadius =
-                    "50%";
-
-            }
-        );
-
-        return;
-    }
+const mobileMultiplier =
+    isMobile ? 0.72 : 1;
+  
 
 
     /*
@@ -1468,18 +1469,19 @@ function updateArtistOrbit() {
              */
 
             const travel =
-                Math.pow(
-                    spreadEase,
-                    1.15
-                ) *
-                (
-                    250 +
-                    (
-                        index % 4
-                    ) *
-                    85
-                ) *
-                individualSpread;
+    Math.pow(
+        spreadEase,
+        1.15
+    ) *
+    (
+        250 +
+        (
+            index % 4
+        ) *
+        85
+    ) *
+    individualSpread *
+    mobileMultiplier;
 
 
             /*
@@ -1501,13 +1503,14 @@ function updateArtistOrbit() {
              */
 
             const rotation =
-                rotationEase *
-                (
-                    260 *
-                    individualSpeed +
-                    index *
-                    31
-                );
+    rotationEase *
+    (
+        260 *
+        individualSpeed +
+        index *
+        31
+    ) *
+    (isMobile ? 0.8 : 1);
 
 
             /*
