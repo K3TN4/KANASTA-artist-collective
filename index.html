@@ -96,35 +96,30 @@
    ========================================= */
 
 .black-box {
-    position: absolute;
+    position: fixed;
 
-    top: 62vh;
+    top: 50%;
     left: 50%;
 
     width: var(--square-size);
     height: var(--square-size);
 
-    transform:
-        translateX(-50%)
-        translateY(calc(var(--scroll-y) * var(--square-fall)))
-        scale(
-            calc(
-                1 +
-                (var(--scroll-y) * var(--square-growth) / 1000)
-            )
-        );
-
-    max-width: var(--square-max-size);
-    max-height: var(--square-max-size);
-
     background-color: #000000;
     background-image: var(--square-image);
-    background-size: var(--square-image-size) auto;
+    background-size: var(--square-image-size);
     background-position: center center;
     background-repeat: no-repeat;
 
-    z-index: 0;
+    transform:
+        translate(-50%, -50%)
+        translateY(calc(var(--scroll-y) * var(--square-fall)))
+        scale(
+            calc(
+                1 + (var(--scroll-y) * var(--square-growth) / 1000)
+            )
+        );
 
+    z-index: 0;
     pointer-events: none;
 
     will-change: transform;
