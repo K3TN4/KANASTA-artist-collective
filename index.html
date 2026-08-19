@@ -2557,10 +2557,6 @@ function pointInsideText(
 
 
 /* =========================================
-   CZY ELEMENT JEST "KOLOROWY"
-   ========================================= */
-
-/* =========================================
    CZY ELEMENT JEST RZECZYWIŚCIE WIDOCZNY
    ========================================= */
 
@@ -2593,11 +2589,8 @@ function elementIsForeground(
 
 
     /*
-     * =====================================
      * NIEWIDOCZNE
-     * =====================================
      */
-
     if (
         Number(style.opacity) === 0 ||
         style.visibility === "hidden"
@@ -2607,14 +2600,8 @@ function elementIsForeground(
 
 
     /*
-     * =====================================
-     * ZDJĘCIA / VIDEO / SVG
-     * =====================================
-     *
-     * Te elementy są jednoznacznie
-     * foregroundem.
+     * ZDJĘCIA
      */
-
     if (
         tag === "img" ||
         tag === "video" ||
@@ -2625,14 +2612,8 @@ function elementIsForeground(
 
 
     /*
-     * =====================================
-     * BACKGROUND KOLOROWY
-     * =====================================
-     *
-     * Tylko jeśli element naprawdę
-     * ma własny kolorowy background.
+     * KOLOROWE TŁO
      */
-
     if (
         style.backgroundColor &&
         style.backgroundColor !== "transparent"
@@ -2650,11 +2631,8 @@ function elementIsForeground(
 
 
     /*
-     * =====================================
      * BACKGROUND IMAGE
-     * =====================================
      */
-
     if (
         style.backgroundImage &&
         style.backgroundImage !== "none"
@@ -2664,11 +2642,8 @@ function elementIsForeground(
 
 
     /*
-     * =====================================
      * BORDER
-     * =====================================
      */
-
     const borders = [
         style.borderTopColor,
         style.borderRightColor,
@@ -2695,14 +2670,8 @@ function elementIsForeground(
 
 
     /*
-     * =====================================
      * TEKST
-     * =====================================
-     *
-     * Sprawdzamy tylko element,
-     * który rzeczywiście jest tekstem.
      */
-
     const textTags = new Set([
         "a",
         "button",
@@ -2725,6 +2694,10 @@ function elementIsForeground(
         textTags.has(tag)
     ) {
 
+        /*
+         * Czy punkt naprawdę znajduje się
+         * w obszarze tekstu.
+         */
         if (
             !pointInsideText(
                 element,
@@ -2737,17 +2710,15 @@ function elementIsForeground(
 
 
         /*
-         * IMAGE-TEXT ma transparentny text-fill,
-         * więc nie sprawdzamy tylko `color`.
+         * Twój KANASTA jest image-text,
+         * więc ma transparentny text-fill.
          */
         if (
             element.classList.contains(
                 "image-text"
             )
         ) {
-
             return true;
-
         }
 
 
@@ -2766,15 +2737,8 @@ function elementIsForeground(
 
 
     /*
-     * =====================================
-     * SPECJALNE OBIEKTY
-     * =====================================
-     *
-     * TYLKO SAME OBIEKTY.
-     * Nie używamy już dużej listy
-     * kontenerów tekstowych.
+     * KOŁA ARTYSTÓW
      */
-
     if (
         element.classList.contains(
             "artist-circle"
@@ -2784,6 +2748,9 @@ function elementIsForeground(
     }
 
 
+    /*
+     * PROFIL
+     */
     if (
         element.classList.contains(
             "profile-image-wrapper"
@@ -2793,122 +2760,10 @@ function elementIsForeground(
     }
 
 
-    /*
-     * =====================================
-     * RESZTA
-     * =====================================
-     */
-
     return false;
 
 }
 
-    /*
-     * =====================================
-     * TEKST
-     * =====================================
-     */
-
-    const textTags = new Set([
-
-        "a",
-        "button",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
-        "p",
-        "span",
-        "strong",
-        "em",
-        "small",
-        "label"
-
-    ]);
-
-
-    if (
-        textTags.has(tag)
-    ) {
-
-        /*
-         * Najpierw sprawdzamy,
-         * czy punkt naprawdę wpada
-         * w obszar tekstu.
-         */
-        if (
-            !pointInsideText(
-                element,
-                x,
-                y
-            )
-        ) {
-
-            return false;
-
-        }
-
-
-        if (
-            style.color &&
-            style.color !== "transparent"
-        ) {
-
-            if (
-                !isBackgroundColor(
-                    style.color
-                )
-            ) {
-
-                return true;
-
-            }
-
-        }
-
-    }
-
-
-    /*
-     * =====================================
-     * SPECJALNE ELEMENTY TWOJEJ STRONY
-     * =====================================
-     */
-
-    if (
-        element.matches(`
-            .artist-circle,
-            .artist-photo,
-            .profile-image,
-            .profile-image-wrapper,
-            .image-text,
-            .logo,
-            .menu,
-            .subtitle,
-            .menu-item,
-            .menu-number,
-            .artist-name,
-            .artist-number,
-            .section-header h2,
-            .section-placeholder
-        `)
-    ) {
-
-        return true;
-
-    }
-
-
-    return false;
-
-}
-
-
-/* =========================================
-   CZY PUNKT = CYAN
-   ========================================= */
 
 /* =========================================
    CZY PUNKT JEST NAD OBIEKTEM
@@ -2938,14 +2793,6 @@ function isCyanPoint(
     );
 
 }
-
-/* =========================================
-   RYSOWANIE KULKI
-   ========================================= */
-/* =========================================
-   RYSOWANIE KULKI
-   ========================================= */
-
 function drawCursorMask() {
 
     const size =
