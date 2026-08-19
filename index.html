@@ -1186,7 +1186,7 @@ main h1.image-text {
 
 
     <!-- JAVASCRIPT -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
 
    <script>
 
@@ -2131,24 +2131,36 @@ function toggleBio() {
         .classList.toggle("active");
 
 }
-/* =========================================
-   TWO-COLOR FLUID CURSOR
-   =========================================
+
+       /* =========================================================
+   LIGHTWEIGHT PIXEL CURSOR
+   =========================================================
 
    ZASADA:
 
-   #FAED8F = tło -> PINK
-   wszystko inne -> CYAN
-
-   PINK:
-   #ed3d66
+   BAZA:
+   #ed3d66 = MAGENTA
 
    CYAN:
    #59e0b3
-   ========================================= */
+
+   CYAN pojawia się WYŁĄCZNIE na rzeczywistych pikselach:
+
+   - KANASTA
+   - MENU
+   - artist collective · Poland
+   - koła artystów
+
+   NIE sprawdzamy całej strony.
+   NIE używamy html2canvas.
+   NIE analizujemy borderów.
+   NIE analizujemy backgroundu.
+   ========================================================= */
 
 
-/* PIXEL MASK CURSOR */
+/* =========================================================
+   ELEMENT KURSORA
+   ========================================================= */
 
 const customCursor =
     document.getElementById("customCursor");
@@ -2157,289 +2169,986 @@ const cursorCanvas =
     customCursor;
 
 const ctx =
-    cursorCanvas.getContext("2d", {
-        alpha: true
-    });
+    cursorCanvas.getContext(
+        "2d",
+        {
+            alpha: true
+        }
+    );
+
+
+/* =========================================================
+   COLORS
+   ========================================================= */
 
 const CURSOR_COLORS = {
-    background: "#FAED8F",
+
     pink: "#ed3d66",
+
     cyan: "#59e0b3"
+
 };
+
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
 
 const CURSOR = {
+
     size: 18,
+
+    /*
+     * Jak szybko kursor dogania mysz.
+     */
     follow: 0.24,
+
+    /*
+     * Subtelne rozciąganie przy szybkim ruchu.
+     */
     maxStretch: 1.10,
+
     stretchStrength: 0.006,
+
+    /*
+     * Rozdzielczość próbkowania
+     * wewnątrz kulki.
+     *
+     * 18 = praktycznie 1 CSS pixel
+     * przy kulce 18px.
+     */
     samples: 18,
+
+    /*
+     * Kolor nie musi być liczony
+     * w każdej klatce.
+     */
     colorFPS: 30
+
 };
 
-let mouseX = window.innerWidth / 2;
-let mouseY = window.innerHeight / 2;
 
-let cursorX = mouseX;
-let cursorY = mouseY;
+/* =========================================================
+   DPR
+   ========================================================= */
 
-let lastX = cursorX;
-let lastY = cursorY;
+const DPR =
+    Math.min(
+        window.devicePixelRatio || 1,
+        2
+    );
+
+
+cursorCanvas.width =
+    CURSOR.size * DPR;
+
+cursorCanvas.height =
+    CURSOR.size * DPR;
+
+
+ctx.scale(
+    DPR,
+    DPR
+);
+
+ctx.imageSmoothingEnabled = true;
+
+
+/* =========================================================
+   MOUSE
+   ========================================================= */
+
+let mouseX =
+    window.innerWidth / 2;
+
+let mouseY =
+    window.innerHeight / 2;
+
+
+let cursorX =
+    mouseX;
+
+let cursorY =
+    mouseY;
+
+
+let lastX =
+    cursorX;
+
+let lastY =
+    cursorY;
+
 
 let velocityX = 0;
 let velocityY = 0;
 
-let previousMaskTime = 0;
+
+let previousColorTime = 0;
 
 
-/* MASK */
+/* =========================================================
+   TARGETS
+   =========================================================
+   
+   TO SĄ JEDYNE RZECZY, KTÓRE MOGĄ ZMIENIĆ
+   KOLOR KULKI NA CYAN.
+   ========================================================= */
 
-let maskCanvas = null;
-let maskCtx = null;
+const CURSOR_TEXT_TARGETS = [
 
-let maskWidth = 0;
-let maskHeight = 0;
+    {
+        element:
+            document.querySelector("main h1.image-text")
+    },
 
-let maskReady = false;
-let maskBuilding = false;
+    {
+        element:
+            document.getElementById("menuButton")
+    },
+
+    {
+        element:
+            document.querySelector(".subtitle")
+    },
+
+    {
+        element:
+            document.getElementById("homeLogo")
+    }
+
+];
 
 
-const BACKGROUND_RGB = {
-    r: 250,
-    g: 237,
-    b: 143
-};
+/* =========================================================
+   TEXT MASK CACHE
+   ========================================================= */
 
-const BACKGROUND_TOLERANCE = 10;
+const textMasks =
+    new WeakMap();
 
 
-function isBeigePixel(r, g, b) {
+/* =========================================================
+   TEXT TRANSFORM
+   ========================================================= */
 
-    return (
-        Math.abs(r - BACKGROUND_RGB.r) <= BACKGROUND_TOLERANCE &&
-        Math.abs(g - BACKGROUND_RGB.g) <= BACKGROUND_TOLERANCE &&
-        Math.abs(b - BACKGROUND_RGB.b) <= BACKGROUND_TOLERANCE
-    );
+function transformText(
+    text,
+    textTransform
+) {
+
+    if (
+        textTransform === "uppercase"
+    ) {
+
+        return text.toUpperCase();
+
+    }
+
+
+    if (
+        textTransform === "lowercase"
+    ) {
+
+        return text.toLowerCase();
+
+    }
+
+
+    if (
+        textTransform === "capitalize"
+    ) {
+
+        return text.replace(
+            /\b\w/g,
+            char =>
+                char.toUpperCase()
+        );
+
+    }
+
+
+    return text;
+
 }
 
 
-async function buildPageMask() {
+/* =========================================================
+   BUILD TEXT MASK
+   ========================================================= */
 
-    if (
-        maskBuilding ||
-        typeof html2canvas === "undefined"
-    ) {
-        return;
+function buildTextMask(
+    element
+) {
+
+    if (!element) {
+        return null;
     }
 
-    maskBuilding = true;
 
-    try {
+    const style =
+        getComputedStyle(element);
 
-        if (
-            document.fonts &&
-            document.fonts.ready
-        ) {
-            await document.fonts.ready;
-        }
 
-        await new Promise(
-            resolve =>
-                requestAnimationFrame(resolve)
+    const rect =
+        element.getBoundingClientRect();
+
+
+    /*
+     * Element jest niewidoczny.
+     */
+
+    if (
+        rect.width <= 0 ||
+        rect.height <= 0 ||
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        Number(style.opacity) === 0
+    ) {
+
+        return null;
+
+    }
+
+
+    /*
+     * Tekst.
+     */
+
+    let text =
+        element.textContent
+            .replace(/\s+/g, " ")
+            .trim();
+
+
+    if (!text) {
+        return null;
+    }
+
+
+    text =
+        transformText(
+            text,
+            style.textTransform
         );
 
 
-        const renderedCanvas =
-            await html2canvas(
-                document.body,
-                {
-                    x: window.scrollX,
-                    y: window.scrollY,
+    /*
+     * Canvas potrzebuje fontu.
+     */
 
-                    width:
-                        window.innerWidth,
-
-                    height:
-                        window.innerHeight,
-
-                    windowWidth:
-                        window.innerWidth,
-
-                    windowHeight:
-                        window.innerHeight,
-
-                    scrollX:
-                        window.scrollX,
-
-                    scrollY:
-                        window.scrollY,
-
-                    backgroundColor:
-                        CURSOR_COLORS.background,
-
-                    scale: 1,
-
-                    useCORS: true,
-
-                    allowTaint: false,
-
-                    logging: false,
-
-                    ignoreElements:
-                        element =>
-                            element ===
-                            customCursor
-                }
-            );
+    const font =
+        [
+            style.fontStyle,
+            style.fontVariant,
+            style.fontWeight,
+            style.fontSize,
+            style.fontFamily
+        ]
+        .filter(Boolean)
+        .join(" ");
 
 
-        maskWidth =
-            window.innerWidth;
+    /*
+     * Letter spacing.
+     */
 
-        maskHeight =
-            window.innerHeight;
-
-
-        maskCanvas =
-            document.createElement("canvas");
-
-        maskCanvas.width =
-            maskWidth;
-
-        maskCanvas.height =
-            maskHeight;
+    const letterSpacing =
+        parseFloat(
+            style.letterSpacing
+        ) || 0;
 
 
-        maskCtx =
-            maskCanvas.getContext(
-                "2d",
-                {
-                    willReadFrequently: true
-                }
-            );
+    /*
+     * Padding zabezpiecza końce tekstu.
+     */
+
+    const padding =
+        8;
 
 
-        maskCtx.drawImage(
-            renderedCanvas,
-            0,
-            0
+    const canvas =
+        document.createElement(
+            "canvas"
         );
 
 
-        const imageData =
-            maskCtx.getImageData(
-                0,
-                0,
-                maskWidth,
-                maskHeight
+    /*
+     * Najpierw mierzymy tekst.
+     */
+
+    const measureCtx =
+        canvas.getContext("2d");
+
+
+    measureCtx.font =
+        font;
+
+
+    let textWidth =
+        measureCtx.measureText(
+            text
+        ).width;
+
+
+    /*
+     * Dodajemy letter-spacing.
+     */
+
+    if (
+        text.length > 1
+    ) {
+
+        textWidth +=
+            letterSpacing *
+            (
+                text.length - 1
             );
 
+    }
 
-        const data =
-            imageData.data;
 
+    const fontSize =
+        parseFloat(
+            style.fontSize
+        ) || 16;
+
+
+    const textHeight =
+        Math.max(
+            fontSize * 1.5,
+            rect.height
+        );
+
+
+    canvas.width =
+        Math.ceil(
+            textWidth +
+            padding * 2
+        );
+
+    canvas.height =
+        Math.ceil(
+            textHeight +
+            padding * 2
+        );
+
+
+    const drawCtx =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    drawCtx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    drawCtx.font =
+        font;
+
+
+    drawCtx.fillStyle =
+        "#000000";
+
+
+    drawCtx.textBaseline =
+        "middle";
+
+
+    /*
+     * Wyrównanie tekstu.
+     */
+
+    let drawX =
+        padding;
+
+
+    if (
+        style.textAlign === "center"
+    ) {
+
+        drawX =
+            canvas.width / 2;
+
+        drawCtx.textAlign =
+            "center";
+
+    }
+    else if (
+        style.textAlign === "right"
+    ) {
+
+        drawX =
+            canvas.width -
+            padding;
+
+        drawCtx.textAlign =
+            "right";
+
+    }
+    else {
+
+        drawCtx.textAlign =
+            "left";
+
+    }
+
+
+    const drawY =
+        canvas.height / 2;
+
+
+    /*
+     * Jeżeli nie ma letter-spacing,
+     * wystarczy jedno fillText.
+     */
+
+    if (
+        letterSpacing === 0
+    ) {
+
+        drawCtx.fillText(
+            text,
+            drawX,
+            drawY
+        );
+
+    }
+    else {
 
         /*
-         * BEŻ = WHITE
-         * RESZTA = BLACK
+         * Rysujemy znak po znaku,
+         * żeby zachować letter-spacing.
          */
+
+        let totalWidth =
+            0;
+
 
         for (
             let i = 0;
-            i < data.length;
-            i += 4
+            i < text.length;
+            i++
         ) {
 
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
+            totalWidth +=
+                measureCtx.measureText(
+                    text[i]
+                ).width;
+
 
             if (
-                isBeigePixel(
-                    r,
-                    g,
-                    b
-                )
+                i <
+                text.length - 1
             ) {
 
-                data[i] = 255;
-                data[i + 1] = 255;
-                data[i + 2] = 255;
-                data[i + 3] = 255;
-
-            } else {
-
-                data[i] = 0;
-                data[i + 1] = 0;
-                data[i + 2] = 0;
-                data[i + 3] = 255;
+                totalWidth +=
+                    letterSpacing;
 
             }
+
         }
 
 
-        maskCtx.putImageData(
-            imageData,
-            0,
-            0
-        );
+        let x =
+            drawX;
 
-        maskReady = true;
 
-    } catch (error) {
+        if (
+            style.textAlign === "center"
+        ) {
 
-        console.error(
-            "Cursor mask error:",
-            error
-        );
+            x =
+                drawX -
+                totalWidth / 2;
 
-        maskReady = false;
+        }
+        else if (
+            style.textAlign === "right"
+        ) {
 
-    } finally {
+            x =
+                drawX -
+                totalWidth;
 
-        maskBuilding = false;
+        }
+
+
+        for (
+            let i = 0;
+            i < text.length;
+            i++
+        ) {
+
+            const char =
+                text[i];
+
+
+            drawCtx.fillText(
+                char,
+                x,
+                drawY
+            );
+
+
+            x +=
+                measureCtx.measureText(
+                    char
+                ).width +
+                letterSpacing;
+
+        }
 
     }
+
+
+    /*
+     * Pobieramy rzeczywistą bitmapę.
+     */
+
+    const pixels =
+        drawCtx.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+    const mask =
+        new Uint8Array(
+            canvas.width *
+            canvas.height
+        );
+
+
+    /*
+     * Zamieniamy alpha na prostą
+     * maskę 0 / 1.
+     */
+
+    for (
+        let y = 0;
+        y < canvas.height;
+        y++
+    ) {
+
+        for (
+            let x = 0;
+            x < canvas.width;
+            x++
+        ) {
+
+            const index =
+                (
+                    y *
+                    canvas.width +
+                    x
+                ) * 4;
+
+
+            const alpha =
+                pixels.data[
+                    index + 3
+                ];
+
+
+            if (
+                alpha > 20
+            ) {
+
+                mask[
+                    y *
+                    canvas.width +
+                    x
+                ] = 1;
+
+            }
+
+        }
+
+    }
+
+
+    return {
+
+        canvas,
+
+        mask,
+
+        width:
+            canvas.width,
+
+        height:
+            canvas.height
+
+    };
+
 }
 
 
-function maskPixelIsBlack(x, y) {
+/* =========================================================
+   GET TEXT MASK
+   ========================================================= */
 
-    if (
-        !maskReady ||
-        !maskCtx
+function getTextMask(
+    element
+) {
+
+    if (!element) {
+        return null;
+    }
+
+
+    let cached =
+        textMasks.get(
+            element
+        );
+
+
+    if (!cached) {
+
+        cached =
+            buildTextMask(
+                element
+            );
+
+
+        if (cached) {
+
+            textMasks.set(
+                element,
+                cached
+            );
+
+        }
+
+    }
+
+
+    return cached;
+
+}
+
+
+/* =========================================================
+   INVALIDATE TEXT MASKS
+   ========================================================= */
+
+function invalidateTextMasks() {
+
+    for (
+        const target
+        of CURSOR_TEXT_TARGETS
     ) {
+
+        if (
+            target.element
+        ) {
+
+            textMasks.delete(
+                target.element
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   TEXT PIXEL TEST
+   ========================================================= */
+
+function textPixelHit(
+    element,
+    screenX,
+    screenY
+) {
+
+    if (!element) {
         return false;
     }
 
-    const px = Math.floor(x);
-    const py = Math.floor(y);
+
+    const style =
+        getComputedStyle(
+            element
+        );
+
+
+    if (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        Number(style.opacity) === 0
+    ) {
+
+        return false;
+
+    }
+
+
+    const rect =
+        element.getBoundingClientRect();
+
+
+    if (
+        screenX < rect.left ||
+        screenX > rect.right ||
+        screenY < rect.top ||
+        screenY > rect.bottom
+    ) {
+
+        return false;
+
+    }
+
+
+    const mask =
+        getTextMask(
+            element
+        );
+
+
+    if (!mask) {
+        return false;
+    }
+
+
+    /*
+     * Normalizujemy pozycję punktu
+     * do bounding boxa elementu.
+     */
+
+    const localX =
+        (
+            (
+                screenX -
+                rect.left
+            )
+            /
+            rect.width
+        )
+        *
+        mask.width;
+
+
+    const localY =
+        (
+            (
+                screenY -
+                rect.top
+            )
+            /
+            rect.height
+        )
+        *
+        mask.height;
+
+
+    const px =
+        Math.floor(
+            localX
+        );
+
+    const py =
+        Math.floor(
+            localY
+        );
+
 
     if (
         px < 0 ||
         py < 0 ||
-        px >= maskWidth ||
-        py >= maskHeight
+        px >= mask.width ||
+        py >= mask.height
     ) {
+
         return false;
+
     }
 
-    const pixel =
-        maskCtx.getImageData(
-            px,
-            py,
-            1,
-            1
-        ).data;
 
     return (
-        pixel[0] < 128 &&
-        pixel[1] < 128 &&
-        pixel[2] < 128
+        mask.mask[
+            py *
+            mask.width +
+            px
+        ] === 1
     );
+
 }
 
 
-function drawCursorMask() {
+/* =========================================================
+   CIRCLE PIXEL TEST
+   ========================================================= */
+
+function circlePixelHit(
+    circle,
+    screenX,
+    screenY
+) {
+
+    if (!circle) {
+        return false;
+    }
+
+
+    const style =
+        getComputedStyle(
+            circle
+        );
+
+
+    if (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        Number(style.opacity) === 0
+    ) {
+
+        return false;
+
+    }
+
+
+    const rect =
+        circle.getBoundingClientRect();
+
+
+    if (
+        screenX < rect.left ||
+        screenX > rect.right ||
+        screenY < rect.top ||
+        screenY > rect.bottom
+    ) {
+
+        return false;
+
+    }
+
+
+    const centerX =
+        rect.left +
+        rect.width / 2;
+
+
+    const centerY =
+        rect.top +
+        rect.height / 2;
+
+
+    const radiusX =
+        rect.width / 2;
+
+
+    const radiusY =
+        rect.height / 2;
+
+
+    const dx =
+        (
+            screenX -
+            centerX
+        )
+        /
+        radiusX;
+
+
+    const dy =
+        (
+            screenY -
+            centerY
+        )
+        /
+        radiusY;
+
+
+    return (
+        dx * dx +
+        dy * dy
+        <= 1
+    );
+
+}
+
+
+/* =========================================================
+   ANY TARGET PIXEL?
+   ========================================================= */
+
+function isCyanPixel(
+    screenX,
+    screenY
+) {
+
+    /*
+     * -----------------------------------------
+     * 1. TEXT
+     * -----------------------------------------
+     */
+
+    for (
+        const target
+        of CURSOR_TEXT_TARGETS
+    ) {
+
+        if (
+            textPixelHit(
+                target.element,
+                screenX,
+                screenY
+            )
+        ) {
+
+            return true;
+
+        }
+
+    }
+
+
+    /*
+     * -----------------------------------------
+     * 2. ARTIST CIRCLES
+     * -----------------------------------------
+     */
+
+    for (
+        const circle
+        of artistCircles
+    ) {
+
+        if (
+            circlePixelHit(
+                circle,
+                screenX,
+                screenY
+            )
+        ) {
+
+            return true;
+
+        }
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================================
+   DRAW CURSOR
+   ========================================================= */
+
+function drawCursor() {
 
     const size =
         CURSOR.size;
@@ -2447,6 +3156,11 @@ function drawCursorMask() {
     const radius =
         size / 2;
 
+
+    /*
+     * Magenta pochodzi z CSS.
+     * Czyścimy wyłącznie cyanowe piksele.
+     */
 
     ctx.clearRect(
         0,
@@ -2457,6 +3171,11 @@ function drawCursorMask() {
 
 
     ctx.save();
+
+
+    /*
+     * Okrąg.
+     */
 
     ctx.beginPath();
 
@@ -2474,9 +3193,16 @@ function drawCursorMask() {
     const samples =
         CURSOR.samples;
 
-    const step =
-        size / samples;
 
+    const step =
+        size /
+        samples;
+
+
+    /*
+     * Sprawdzamy tylko piksele
+     * wewnątrz małej kulki.
+     */
 
     for (
         let row = 0;
@@ -2493,37 +3219,61 @@ function drawCursorMask() {
             const localX =
                 (
                     col + 0.5
-                ) *
-                step -
+                )
+                *
+                step
+                -
                 radius;
+
 
             const localY =
                 (
                     row + 0.5
-                ) *
-                step -
+                )
+                *
+                step
+                -
                 radius;
 
 
+            /*
+             * Poza okręgiem = nic.
+             */
+
             if (
-                Math.sqrt(
-                    localX * localX +
-                    localY * localY
-                ) > radius
+                localX *
+                localX +
+                localY *
+                localY
+                >
+                radius *
+                radius
             ) {
+
                 continue;
+
             }
 
 
             const screenX =
-                cursorX + localX;
+                cursorX +
+                localX;
+
 
             const screenY =
-                cursorY + localY;
+                cursorY +
+                localY;
 
+
+            /*
+             * Tutaj decydujemy:
+             *
+             * false = MAGENTA
+             * true  = CYAN
+             */
 
             if (
-                maskPixelIsBlack(
+                isCyanPixel(
                     screenX,
                     screenY
                 )
@@ -2532,22 +3282,29 @@ function drawCursorMask() {
                 ctx.fillStyle =
                     CURSOR_COLORS.cyan;
 
+
                 ctx.fillRect(
                     col * step,
                     row * step,
-                    step + 0.8,
-                    step + 0.8
+                    step + 0.7,
+                    step + 0.7
                 );
 
             }
+
         }
+
     }
 
+
     ctx.restore();
+
 }
 
 
-/* MOUSE */
+/* =========================================================
+   MOUSE EVENTS
+   ========================================================= */
 
 window.addEventListener(
     "mousemove",
@@ -2602,13 +3359,22 @@ document.addEventListener(
 );
 
 
-/* ANIMATION */
+/* =========================================================
+   ANIMATION
+   ========================================================= */
 
-function animateCustomCursor(timestamp) {
+function animateCustomCursor(
+    timestamp
+) {
+
+    /*
+     * FOLLOW
+     */
 
     const dx =
         mouseX -
         cursorX;
+
 
     const dy =
         mouseY -
@@ -2619,14 +3385,20 @@ function animateCustomCursor(timestamp) {
         dx *
         CURSOR.follow;
 
+
     cursorY +=
         dy *
         CURSOR.follow;
 
 
+    /*
+     * VELOCITY
+     */
+
     velocityX =
         cursorX -
         lastX;
+
 
     velocityY =
         cursorY -
@@ -2640,10 +3412,16 @@ function animateCustomCursor(timestamp) {
         cursorY;
 
 
+    /*
+     * SOFT BODY
+     */
+
     const speed =
         Math.sqrt(
-            velocityX * velocityX +
-            velocityY * velocityY
+            velocityX *
+            velocityX +
+            velocityY *
+            velocityY
         );
 
 
@@ -2659,7 +3437,9 @@ function animateCustomCursor(timestamp) {
 
     const scaleY =
         1 /
-        Math.sqrt(stretch);
+        Math.sqrt(
+            stretch
+        );
 
 
     const angle =
@@ -2668,6 +3448,10 @@ function animateCustomCursor(timestamp) {
             velocityX
         );
 
+
+    /*
+     * POSITION
+     */
 
     customCursor.style.transform = `
         translate3d(
@@ -2689,6 +3473,10 @@ function animateCustomCursor(timestamp) {
     `;
 
 
+    /*
+     * KOLOR
+     */
+
     const interval =
         1000 /
         CURSOR.colorFPS;
@@ -2696,13 +3484,14 @@ function animateCustomCursor(timestamp) {
 
     if (
         timestamp -
-        previousMaskTime >=
+        previousColorTime
+        >=
         interval
     ) {
 
-        drawCursorMask();
+        drawCursor();
 
-        previousMaskTime =
+        previousColorTime =
             timestamp;
 
     }
@@ -2711,105 +3500,46 @@ function animateCustomCursor(timestamp) {
     requestAnimationFrame(
         animateCustomCursor
     );
+
 }
 
 
-/* BUILD MASK */
+/* =========================================================
+   RESIZE
+   ========================================================= */
 
-window.addEventListener(
-    "load",
-    () => {
+let cursorResizeTimer =
+    null;
 
-        setTimeout(
-            buildPageMask,
-            300
-        );
-
-    }
-);
-
-
-/* REBUILD AFTER RESIZE */
-
-let resizeTimer = null;
 
 window.addEventListener(
     "resize",
     () => {
 
         clearTimeout(
-            resizeTimer
+            cursorResizeTimer
         );
 
-        resizeTimer =
+
+        cursorResizeTimer =
             setTimeout(
-                buildPageMask,
-                250
+                () => {
+
+                    invalidateTextMasks();
+
+                    drawCursor();
+
+                },
+                100
             );
 
     }
 );
 
 
-/* REBUILD AFTER SCROLL */
-
-let scrollTimer = null;
-
-window.addEventListener(
-    "scroll",
-    () => {
-
-        clearTimeout(
-            scrollTimer
-        );
-
-        scrollTimer =
-            setTimeout(
-                buildPageMask,
-                120
-            );
-
-    },
-    {
-        passive: true
-    }
-);
-
-
-/* REBUILD AFTER MENU / PROFILE */
-
-const maskObserver =
-    new MutationObserver(
-        () => {
-
-            clearTimeout(
-                scrollTimer
-            );
-
-            scrollTimer =
-                setTimeout(
-                    buildPageMask,
-                    120
-                );
-
-        }
-    );
-
-
-maskObserver.observe(
-    document.body,
-    {
-        subtree: true,
-        attributes: true,
-        attributeFilter: [
-            "class",
-            "style"
-        ]
-    }
-);
-
-
-/* START */
+/* =========================================================
+   START
+   ========================================================= */
 
 requestAnimationFrame(
     animateCustomCursor
