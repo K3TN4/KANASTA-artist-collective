@@ -2570,19 +2570,16 @@ function elementIsForeground(
         return false;
     }
 
-
     /*
-     * Nie interesuje nas sam kursor.
+     * KURSOR NIGDY NIE JEST ŹRÓDŁEM CYANU
      */
-    if (
-        element === customCursor
-    ) {
+    if (element === customCursor) {
         return false;
     }
 
-
     /*
-     * Kontenery strony nie są foregroundem.
+     * BODY / HTML / GŁÓWNE KONTENERY
+     * NIE SĄ SAME W SOBIE FOREGROUNDEM
      */
     if (
         element === document.documentElement ||
@@ -2594,22 +2591,23 @@ function elementIsForeground(
         return false;
     }
 
-
     const tag =
         element.tagName?.toLowerCase();
-
 
     const style =
         getComputedStyle(element);
 
 
     /*
-     * Element niewidoczny.
+     * =====================================
+     * NIEWIDOCZNE
+     * =====================================
      */
+
     if (
-        Number(style.opacity) === 0 ||
+        style.display === "none" ||
         style.visibility === "hidden" ||
-        style.display === "none"
+        Number(style.opacity) === 0
     ) {
         return false;
     }
@@ -2617,7 +2615,19 @@ function elementIsForeground(
 
     /*
      * =====================================
-     * OBRAZY / VIDEO / SVG
+     * BORDERY — CELOWO IGNORUJEMY
+     * =====================================
+     *
+     * ŻADEN border nie może zmieniać koloru
+     * kursora.
+     *
+     * To naprawia Twój obecny problem.
+     */
+
+
+    /*
+     * =====================================
+     * OBRAZY
      * =====================================
      */
 
@@ -2632,56 +2642,12 @@ function elementIsForeground(
 
     /*
      * =====================================
-     * KOŁA ARTYSTÓW
-     * =====================================
-     */
-
-    if (
-        element.classList.contains(
-            "artist-circle"
-        )
-    ) {
-        return true;
-    }
-
-
-    if (
-        element.classList.contains(
-            "profile-image-wrapper"
-        )
-    ) {
-        return true;
-    }
-
-
-    /*
-     * =====================================
-     * IMAGE TEXT
+     * TŁO ELEMENTU
      * =====================================
      *
-     * Sam box h1 nie może być cyan.
-     * Cyan ma pojawić się tylko na literach.
-     */
-
-    if (
-        element.classList.contains(
-            "image-text"
-        )
-    ) {
-
-        return pointInsideText(
-            element,
-            x,
-            y
-        );
-
-    }
-
-
-    /*
-     * =====================================
-     * PRAWDZIWY KOLOROWY BACKGROUND
-     * =====================================
+     * Liczy się tylko rzeczywiste backgroundColor.
+     *
+     * BEŻ JEST WYŁĄCZONY.
      */
 
     if (
@@ -2695,9 +2661,7 @@ function elementIsForeground(
                 style.backgroundColor
             )
         ) {
-
             return true;
-
         }
 
     }
@@ -2714,6 +2678,25 @@ function elementIsForeground(
         style.backgroundImage !== "none"
     ) {
         return true;
+    }
+
+
+    /*
+     * =====================================
+     * IMAGE TEXT
+     * =====================================
+     */
+
+    if (
+        element.classList.contains("image-text")
+    ) {
+
+        return pointInsideText(
+            element,
+            x,
+            y
+        );
+
     }
 
 
@@ -2746,9 +2729,8 @@ function elementIsForeground(
     ) {
 
         /*
-         * Najpierw naprawdę sprawdzamy,
-         * czy punkt wpada na GLYPH tekstu,
-         * a nie tylko jego prostokąt.
+         * Punkt musi być rzeczywiście
+         * wewnątrz tekstu.
          */
 
         if (
@@ -2763,7 +2745,7 @@ function elementIsForeground(
 
 
         /*
-         * Transparentny tekst nie jest foregroundem.
+         * Transparentny tekst = brak koloru.
          */
 
         if (
@@ -2775,8 +2757,9 @@ function elementIsForeground(
 
 
         /*
-         * Jeżeli tekst jest beżowy,
-         * pozostaje magenta.
+         * BEŻOWY TEKST = NIE CYAN
+         *
+         * Każdy inny kolor = CYAN.
          */
 
         return !isBackgroundColor(
@@ -2786,11 +2769,43 @@ function elementIsForeground(
     }
 
 
+    /*
+     * =====================================
+     * KOŁA ARTYSTÓW
+     * =====================================
+     *
+     * Samo koło jest kolorowym obiektem
+     * dzięki zdjęciu / wnętrzu.
+     *
+     * Border NIE MA ZNACZENIA.
+     */
+
+    if (
+        element.classList.contains(
+            "artist-circle"
+        )
+    ) {
+        return true;
+    }
+
+
+    /*
+     * =====================================
+     * PROFILOWE ZDJĘCIE
+     * =====================================
+     */
+
+    if (
+        element.classList.contains(
+            "profile-image-wrapper"
+        )
+    ) {
+        return true;
+    }
+
+
     return false;
-
 }
-
-
 /* =========================================
    CZY PUNKT LEŻY NA RZECZYWISTYM OBIEKCIE
    ========================================= */
@@ -2800,20 +2815,11 @@ function isCyanPoint(
     y
 ) {
 
-    /*
-     * Bierzemy CAŁY stos elementów
-     * znajdujących się pod punktem.
-     *
-     * To jest ważniejsze niż
-     * pojedynczy elementFromPoint().
-     */
-
     const elements =
         document.elementsFromPoint(
             x,
             y
         );
-
 
     if (
         !elements ||
@@ -2823,25 +2829,25 @@ function isCyanPoint(
     }
 
 
-    /*
-     * Szukamy pierwszego rzeczywistego
-     * foregroundu.
-     */
-
     for (
-        const element
-        of elements
+        const element of elements
     ) {
 
         /*
-         * Pomijamy sam cursor.
+         * Ignorujemy kursor.
          */
+
         if (
             element === customCursor
         ) {
             continue;
         }
 
+
+        /*
+         * Znaleziono rzeczywisty kolorowy
+         * element pod tym fragmentem.
+         */
 
         if (
             elementIsForeground(
@@ -2852,20 +2858,17 @@ function isCyanPoint(
         ) {
 
             return true;
-
         }
 
     }
 
 
     /*
-     * Nic kolorowego pod spodem.
-     *
-     * ZOSTAJE MAGENTA.
+     * Nic kolorowego.
+     * Zostaje MAGENTA.
      */
 
     return false;
-
 }
 function drawCursorMask() {
 
