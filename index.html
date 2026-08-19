@@ -2560,6 +2560,10 @@ function pointInsideText(
    CZY ELEMENT JEST "KOLOROWY"
    ========================================= */
 
+/* =========================================
+   CZY ELEMENT JEST RZECZYWIŚCIE WIDOCZNY
+   ========================================= */
+
 function elementIsForeground(
     element,
     x,
@@ -2567,96 +2571,71 @@ function elementIsForeground(
 ) {
 
     if (!element) {
-
         return false;
-
     }
 
 
     if (
-        element ===
-        document.documentElement
+        element === document.documentElement ||
+        element === document.body ||
+        element === customCursor
     ) {
-
         return false;
-
-    }
-
-
-    if (
-        element ===
-        document.body
-    ) {
-
-        return false;
-
-    }
-
-
-    if (
-        element ===
-        customCursor
-    ) {
-
-        return false;
-
     }
 
 
     const tag =
-        element.tagName
-            ?.toLowerCase();
+        element.tagName?.toLowerCase();
+
+
+    const style =
+        getComputedStyle(element);
 
 
     /*
      * =====================================
-     * IMAGE
+     * NIEWIDOCZNE
      * =====================================
+     */
+
+    if (
+        Number(style.opacity) === 0 ||
+        style.visibility === "hidden"
+    ) {
+        return false;
+    }
+
+
+    /*
+     * =====================================
+     * ZDJĘCIA / VIDEO / SVG
+     * =====================================
+     *
+     * Te elementy są jednoznacznie
+     * foregroundem.
      */
 
     if (
         tag === "img" ||
         tag === "video" ||
-        tag === "canvas" ||
         tag === "svg"
     ) {
-
         return true;
-
-    }
-
-
-    const style =
-        getComputedStyle(
-            element
-        );
-
-
-    /*
-     * =====================================
-     * PRAWIE NIEWIDOCZNE
-     * =====================================
-     */
-
-    if (
-        Number(style.opacity) === 0
-    ) {
-
-        return false;
-
     }
 
 
     /*
      * =====================================
-     * BACKGROUND
+     * BACKGROUND KOLOROWY
      * =====================================
+     *
+     * Tylko jeśli element naprawdę
+     * ma własny kolorowy background.
      */
 
     if (
         style.backgroundColor &&
-        style.backgroundColor !==
-            "transparent"
+        style.backgroundColor !== "transparent"
     ) {
 
         if (
@@ -2664,9 +2643,7 @@ function elementIsForeground(
                 style.backgroundColor
             )
         ) {
-
             return true;
-
         }
 
     }
@@ -2682,9 +2659,7 @@ function elementIsForeground(
         style.backgroundImage &&
         style.backgroundImage !== "none"
     ) {
-
         return true;
-
     }
 
 
@@ -2695,15 +2670,10 @@ function elementIsForeground(
      */
 
     const borders = [
-
         style.borderTopColor,
-
         style.borderRightColor,
-
         style.borderBottomColor,
-
         style.borderLeftColor
-
     ];
 
 
@@ -2712,22 +2682,126 @@ function elementIsForeground(
             border => {
 
                 return (
-                    border !==
-                        "transparent"
-                    &&
-                    !isBackgroundColor(
-                        border
-                    )
+                    border !== "transparent" &&
+                    border !== "rgba(0, 0, 0, 0)" &&
+                    !isBackgroundColor(border)
                 );
 
             }
         )
     ) {
-
         return true;
+    }
+
+
+    /*
+     * =====================================
+     * TEKST
+     * =====================================
+     *
+     * Sprawdzamy tylko element,
+     * który rzeczywiście jest tekstem.
+     */
+
+    const textTags = new Set([
+        "a",
+        "button",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p",
+        "span",
+        "strong",
+        "em",
+        "small",
+        "label"
+    ]);
+
+
+    if (
+        textTags.has(tag)
+    ) {
+
+        if (
+            !pointInsideText(
+                element,
+                x,
+                y
+            )
+        ) {
+            return false;
+        }
+
+
+        /*
+         * IMAGE-TEXT ma transparentny text-fill,
+         * więc nie sprawdzamy tylko `color`.
+         */
+        if (
+            element.classList.contains(
+                "image-text"
+            )
+        ) {
+
+            return true;
+
+        }
+
+
+        if (
+            style.color &&
+            style.color !== "transparent"
+        ) {
+
+            return !isBackgroundColor(
+                style.color
+            );
+
+        }
 
     }
 
+
+    /*
+     * =====================================
+     * SPECJALNE OBIEKTY
+     * =====================================
+     *
+     * TYLKO SAME OBIEKTY.
+     * Nie używamy już dużej listy
+     * kontenerów tekstowych.
+     */
+
+    if (
+        element.classList.contains(
+            "artist-circle"
+        )
+    ) {
+        return true;
+    }
+
+
+    if (
+        element.classList.contains(
+            "profile-image-wrapper"
+        )
+    ) {
+        return true;
+    }
+
+
+    /*
+     * =====================================
+     * RESZTA
+     * =====================================
+     */
+
+    return false;
+
+}
 
     /*
      * =====================================
@@ -2836,12 +2910,16 @@ function elementIsForeground(
    CZY PUNKT = CYAN
    ========================================= */
 
+/* =========================================
+   CZY PUNKT JEST NAD OBIEKTEM
+   ========================================= */
+
 function isCyanPoint(
     x,
     y
 ) {
 
-    let element =
+    const element =
         document.elementFromPoint(
             x,
             y
@@ -2849,45 +2927,17 @@ function isCyanPoint(
 
 
     if (!element) {
-
         return false;
-
     }
 
 
-    /*
-     * Przechodzimy od najbardziej
-     * konkretnego elementu do rodzica.
-     */
-    while (
-        element &&
-        element !==
-            document.body
-    ) {
-
-        if (
-            elementIsForeground(
-                element,
-                x,
-                y
-            )
-        ) {
-
-            return true;
-
-        }
-
-
-        element =
-            element.parentElement;
-
-    }
-
-
-    return false;
+    return elementIsForeground(
+        element,
+        x,
+        y
+    );
 
 }
-
 
 /* =========================================
    RYSOWANIE KULKI
