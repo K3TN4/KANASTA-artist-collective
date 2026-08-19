@@ -2887,6 +2887,77 @@ mainH1.addEventListener(
 
     }
 );
+
+       /* =========================================================
+   CIRCLE PIXEL TEST
+   ========================================================= */
+
+function circlePixelHit(
+    circle,
+    screenX,
+    screenY
+) {
+
+    if (!circle) {
+        return false;
+    }
+
+    const style =
+        getComputedStyle(circle);
+
+    if (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        Number(style.opacity) === 0
+    ) {
+        return false;
+    }
+
+    const rect =
+        circle.getBoundingClientRect();
+
+    if (
+        screenX < rect.left ||
+        screenX > rect.right ||
+        screenY < rect.top ||
+        screenY > rect.bottom
+    ) {
+        return false;
+    }
+
+    const centerX =
+        rect.left +
+        rect.width / 2;
+
+    const centerY =
+        rect.top +
+        rect.height / 2;
+
+    const radiusX =
+        rect.width / 2;
+
+    const radiusY =
+        rect.height / 2;
+
+    const dx =
+        (
+            screenX -
+            centerX
+        ) /
+        radiusX;
+
+    const dy =
+        (
+            screenY -
+            centerY
+        ) /
+        radiusY;
+
+    return (
+        dx * dx +
+        dy * dy <= 1
+    );
+}
 /* =========================================================
    ANY TARGET PIXEL?
    ========================================================= */
