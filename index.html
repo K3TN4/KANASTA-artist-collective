@@ -811,6 +811,10 @@ main h1.image-text {
   /* =========================================
    SOFT BODY CURSOR
    ========================================= */
+/* =========================================
+   SOFT FLUID CURSOR
+   ========================================= */
+
 .custom-cursor {
     position: fixed;
 
@@ -830,30 +834,67 @@ main h1.image-text {
 
     will-change: transform;
 
-    overflow: visible;
+    transform:
+        translate3d(-50%, -50%, 0)
+        scale(1);
+
+    /*
+     * Bazowa kulka:
+     * ZAWSZE różowa.
+     */
 }
 
 
-.custom-cursor-cyan {
+/*
+ * Warstwa blendująca
+ */
+.custom-cursor-difference {
     position: absolute;
 
     inset: 0;
 
     border-radius: 50%;
 
+    /*
+     * To jest nasz CYJAN.
+     */
     background: #59e0b3;
 
     /*
-     * To daje realny difference.
+     * Blend tylko dla tej warstwy.
      */
     mix-blend-mode: difference;
 
     opacity: 0;
+
+    transform: scale(0.96);
+
+    transition:
+        opacity 0.12s ease,
+        transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 
-.custom-cursor.is-text .custom-cursor-cyan {
+/*
+ * Kiedy jesteśmy nad tekstem.
+ */
+.custom-cursor.is-text .custom-cursor-difference {
     opacity: 1;
+    transform: scale(1);
+}
+
+
+.custom-cursor.is-hidden {
+    opacity: 0;
+}
+
+
+@media (max-width: 700px) {
+
+    .custom-cursor {
+        display: none;
+    }
+
 }
     </style>
 </head>
