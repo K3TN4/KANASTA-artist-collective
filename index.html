@@ -2371,32 +2371,16 @@ function buildTextMask(element) {
     const style =
         getComputedStyle(element);
 
-    /*
-     * WAŻNE:
-     *
-     * offsetWidth / offsetHeight
-     * = rzeczywisty rozmiar elementu
-     * PRZED transform: scale().
-     *
-     * Dzięki temu maska opisuje prawdziwe
-     * kształty liter, a nie ich powiększony
-     * bounding box.
-     */
-
     const width =
         Math.max(
             1,
-            Math.ceil(
-                element.offsetWidth
-            )
+            Math.ceil(element.offsetWidth)
         );
 
     const height =
         Math.max(
             1,
-            Math.ceil(
-                element.offsetHeight
-            )
+            Math.ceil(element.offsetHeight)
         );
 
     if (
@@ -2436,14 +2420,36 @@ function buildTextMask(element) {
         .join(" ");
 
     const letterSpacing =
-        parseFloat(
-            style.letterSpacing
-        ) || 0;
+        parseFloat(style.letterSpacing) || 0;
+
+    const fontSize =
+        parseFloat(style.fontSize) || 16;
+
+    /*
+     * PRAWDZIWY LINE-HEIGHT ELEMENTU
+     */
+
+    let lineHeight;
+
+    if (style.lineHeight === "normal") {
+
+        lineHeight =
+            fontSize * 1.2;
+
+    }
+    else {
+
+        lineHeight =
+            parseFloat(style.lineHeight);
+
+    }
+
+    /*
+     * CANVAS
+     */
 
     const canvas =
-        document.createElement(
-            "canvas"
-        );
+        document.createElement("canvas");
 
     canvas.width =
         width;
@@ -2452,9 +2458,7 @@ function buildTextMask(element) {
         height;
 
     const drawCtx =
-        canvas.getContext(
-            "2d"
-        );
+        canvas.getContext("2d");
 
     const measureCtx =
         document
@@ -2463,13 +2467,6 @@ function buildTextMask(element) {
 
     measureCtx.font =
         font;
-
-    drawCtx.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
 
     drawCtx.font =
         font;
@@ -2480,96 +2477,103 @@ function buildTextMask(element) {
     drawCtx.textBaseline =
         "alphabetic";
 
+    drawCtx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
     /*
-     * METRYKI RZECZYWISTEGO TEKSTU
+     * =========================================
+     * SZEROKOŚĆ TEKSTU
+     * =========================================
+     */
+
+    let textWidth =
+        measureCtx.measureText(text).width;
+
+    if (text.length > 1) {
+
+        textWidth +=
+            letterSpacing *
+            (text.length - 1);
+
+    }
+
+    /*
+     * =========================================
+     * X
+     * =========================================
+     */
+
+    let startX = 0;
+
+    if (style.textAlign === "center") {
+
+        startX =
+            (width - textWidth) / 2;
+
+    }
+    else if (style.textAlign === "right") {
+
+        startX =
+            width - textWidth;
+
+    }
+
+    /*
+     * =========================================
+     * METRYKI GLYPHÓW
+     * =========================================
      */
 
     const metrics =
-        measureCtx.measureText(
-            text
-        );
+        measureCtx.measureText(text);
 
     const ascent =
         metrics.actualBoundingBoxAscent ||
-        parseFloat(style.fontSize) ||
-        16;
+        fontSize;
 
     const descent =
         metrics.actualBoundingBoxDescent ||
         0;
 
-    const textPixelHeight =
-        ascent +
-        descent;
-
     /*
-     * CENTROWANIE PIONOWE
+     * =========================================
+     * BASELINE
+     * =========================================
+     *
+     * DOM:
+     *
+     * line-height / 2
+     *
+     * + font metrics
+     *
+     * To jest znacznie bliżej tego,
+     * co faktycznie renderuje przeglądarka.
      */
+
+    const lineBoxTop =
+        (height - lineHeight) / 2;
 
     const baseline =
+        lineBoxTop +
         (
-            height +
-            textPixelHeight
-        ) / 2 -
-        descent;
+            lineHeight +
+            ascent -
+            descent
+        ) / 2;
 
     /*
-     * SZEROKOŚĆ TEKSTU
-     */
-
-    let textWidth =
-        measureCtx.measureText(
-            text
-        ).width;
-
-    if (
-        text.length > 1
-    ) {
-        textWidth +=
-            letterSpacing *
-            (
-                text.length - 1
-            );
-    }
-
-    /*
-     * POZYCJA X
-     */
-
-    let startX =
-        0;
-
-    if (
-        style.textAlign === "center"
-    ) {
-
-        startX =
-            (
-                width -
-                textWidth
-            ) / 2;
-
-    }
-    else if (
-        style.textAlign === "right"
-    ) {
-
-        startX =
-            width -
-            textWidth;
-
-    }
-
-    /*
+     * =========================================
      * RYSOWANIE
+     * =========================================
      */
 
-    drawCtx.textAlign =
-        "left";
+    drawCtx.textAlign = "left";
 
-    if (
-        letterSpacing === 0
-    ) {
+    if (letterSpacing === 0) {
 
         drawCtx.fillText(
             text,
@@ -2599,9 +2603,7 @@ function buildTextMask(element) {
             );
 
             x +=
-                measureCtx.measureText(
-                    char
-                ).width +
+                measureCtx.measureText(char).width +
                 letterSpacing;
 
         }
@@ -2610,7 +2612,7 @@ function buildTextMask(element) {
 
     /*
      * =========================================
-     * RASTER MASK
+     * MASKA
      * =========================================
      */
 
@@ -2624,8 +2626,7 @@ function buildTextMask(element) {
 
     const mask =
         new Uint8Array(
-            width *
-            height
+            width * height
         );
 
     for (
@@ -2642,23 +2643,16 @@ function buildTextMask(element) {
 
             const index =
                 (
-                    y *
-                    width +
+                    y * width +
                     x
                 ) * 4;
 
-            const alpha =
-                pixels.data[
-                    index + 3
-                ];
-
             if (
-                alpha > 20
+                pixels.data[index + 3] > 20
             ) {
 
                 mask[
-                    y *
-                    width +
+                    y * width +
                     x
                 ] = 1;
 
@@ -2780,8 +2774,7 @@ function invalidateTextMasks() {
     }
 
 }
-
-       function screenPointToTextLocal(
+function screenPointToTextLocal(
     element,
     screenX,
     screenY
@@ -2790,30 +2783,31 @@ function invalidateTextMasks() {
     const rect =
         element.getBoundingClientRect();
 
-    const localWidth =
+    const baseWidth =
         element.offsetWidth;
 
-    const localHeight =
+    const baseHeight =
         element.offsetHeight;
 
     if (
-        localWidth <= 0 ||
-        localHeight <= 0
+        baseWidth <= 0 ||
+        baseHeight <= 0
     ) {
         return null;
     }
 
     /*
-     * Aktualny rozmiar po transform: scale()
+     * Aktualna skala wynikająca
+     * z transform: scale(...)
      */
 
     const scaleX =
         rect.width /
-        localWidth;
+        baseWidth;
 
     const scaleY =
         rect.height /
-        localHeight;
+        baseHeight;
 
     if (
         scaleX === 0 ||
@@ -2823,66 +2817,58 @@ function invalidateTextMasks() {
     }
 
     /*
-     * transform-origin
-     *
-     * np.:
-     *
-     * 0px 50%       -> logo
-     * 100% 50%      -> menu
-     * 50% 50%       -> KANASTA
+     * Transform-origin elementu.
      */
 
-    const originParts =
-        styleTransformOrigin(
+    const origin =
+        getTransformOrigin(
             element
         );
 
-    const originX =
-        originParts.x;
-
-    const originY =
-        originParts.y;
-
     /*
-     * Pozycja punktu transform-origin
-     * na ekranie po przeskalowaniu.
+     * Najpierw odzyskujemy
+     * NIEPRZESKALOWANY top-left.
+     *
+     * To jest kluczowa różnica.
      */
 
-    const transformedOriginX =
-        rect.left +
-        originX *
-        scaleX;
+    const originalLeft =
+        rect.left -
+        origin.x *
+        (1 - scaleX);
 
-    const transformedOriginY =
-        rect.top +
-        originY *
-        scaleY;
+    const originalTop =
+        rect.top -
+        origin.y *
+        (1 - scaleY);
 
     /*
-     * Cofamy scale().
+     * Punkt myszy wracamy
+     * do układu współrzędnych
+     * sprzed scale().
      */
 
     const localX =
-        originX +
         (
             screenX -
-            transformedOriginX
+            originalLeft
         ) /
         scaleX;
 
     const localY =
-        originY +
         (
             screenY -
-            transformedOriginY
+            originalTop
         ) /
         scaleY;
 
     return {
 
-        x: localX,
+        x:
+            localX,
 
-        y: localY
+        y:
+            localY
 
     };
 
@@ -3000,14 +2986,12 @@ function textPixelHit(
    CIRCLE PIXEL TEST
    ========================================================= */
 
-       function styleTransformOrigin(
+      function getTransformOrigin(
     element
 ) {
 
     const style =
-        getComputedStyle(
-            element
-        );
+        getComputedStyle(element);
 
     const parts =
         style.transformOrigin
@@ -3019,13 +3003,13 @@ function textPixelHit(
     const height =
         element.offsetHeight;
 
-    function parseOrigin(
+    function parseValue(
         value,
         size
     ) {
 
         if (
-            value.includes("%")
+            value.endsWith("%")
         ) {
 
             return (
@@ -3035,22 +3019,22 @@ function textPixelHit(
 
         }
 
-        return parseFloat(
-            value
-        ) || 0;
+        return (
+            parseFloat(value) || 0
+        );
 
     }
 
     return {
 
         x:
-            parseOrigin(
+            parseValue(
                 parts[0] || "50%",
                 width
             ),
 
         y:
-            parseOrigin(
+            parseValue(
                 parts[1] || "50%",
                 height
             )
