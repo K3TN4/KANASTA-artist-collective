@@ -808,79 +808,39 @@ main h1.image-text {
     -webkit-text-fill-color: transparent;
     color: transparent;
 }
-  /* =========================================
-   SOFT BODY CURSOR
-   ========================================= */
 /* =========================================
-   SOFT FLUID CURSOR
+   TWO-COLOR FLUID CURSOR
    ========================================= */
 
 .custom-cursor {
     position: fixed;
 
-    width: 14px;
-    height: 14px;
-
     left: 0;
     top: 0;
 
-    border-radius: 50%;
+    width: 18px;
+    height: 18px;
 
-    background: #ed3d66;
+    display: block;
 
     pointer-events: none;
 
     z-index: 99999;
 
-    will-change: transform;
+    opacity: 1;
 
     transform:
-        translate3d(-50%, -50%, 0)
-        scale(1);
+        translate3d(
+            -100px,
+            -100px,
+            0
+        );
 
-    /*
-     * Bazowa kulka:
-     * ZAWSZE różowa.
-     */
-}
+    transform-origin: center center;
 
+    will-change: transform;
 
-/*
- * Warstwa blendująca
- */
-.custom-cursor-difference {
-    position: absolute;
-
-    inset: 0;
-
-    border-radius: 50%;
-
-    /*
-     * To jest nasz CYJAN.
-     */
-    background: #59e0b3;
-
-    /*
-     * Blend tylko dla tej warstwy.
-     */
-    mix-blend-mode: difference;
-
-    opacity: 0;
-
-    transform: scale(0.96);
-
-    transition:
-        opacity 0.12s ease,
-        transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-
-/*
- * Kiedy jesteśmy nad tekstem.
- */
-.custom-cursor.is-text .custom-cursor-difference {
-    opacity: 1;
-    transform: scale(1);
+    overflow: visible;
 }
 
 
@@ -903,9 +863,12 @@ main h1.image-text {
 
     <body>
 
-    <div class="custom-cursor" id="customCursor">
-    <div class="custom-cursor-cyan"></div>
-</div>
+    <canvas
+    id="customCursor"
+    class="custom-cursor"
+    width="32"
+    height="32"
+></canvas>
 
     <!-- HEADER -->
 
@@ -2162,68 +2125,155 @@ function toggleBio() {
 
 }
 /* =========================================
-   SOFT FLUID CURSOR
+   TWO-COLOR FLUID CURSOR
+   =========================================
+
+   ZASADA:
+
+   #FAED8F = tło -> PINK
+   wszystko inne -> CYAN
+
+   PINK:
+   #ed3d66
+
+   CYAN:
+   #59e0b3
    ========================================= */
 
+
 const customCursor =
-    document.getElementById("customCursor");
+    document.getElementById(
+        "customCursor"
+    );
 
 
-let mouseX = window.innerWidth / 2;
-let mouseY = window.innerHeight / 2;
+const cursorCanvas =
+    customCursor;
 
-let cursorX = mouseX;
-let cursorY = mouseY;
+
+const ctx =
+    cursorCanvas.getContext(
+        "2d",
+        {
+            alpha: true
+        }
+    );
+
+
+/* =========================================
+   KOLORY
+   ========================================= */
+
+const CURSOR_COLORS = {
+
+    background: "#FAED8F",
+
+    pink: "#ed3d66",
+
+    cyan: "#59e0b3"
+
+};
+
+
+/* =========================================
+   ROZMIAR
+   ========================================= */
+
+const CURSOR = {
+
+    size: 18,
+
+    /*
+     * Jak szybko kulka dogania mysz.
+     */
+    follow: 0.24,
+
+    /*
+     * Maksymalna ilość "soft"
+     * przy gwałtownym ruchu.
+     */
+    maxStretch: 1.10,
+
+    stretchStrength: 0.006,
+
+    /*
+     * Próbkowanie koloru.
+     *
+     * 11 x 11 daje:
+     * wystarczającą szczegółowość
+     * bez zabijania wydajności.
+     */
+    samples: 11,
+
+    /*
+     * Kolor jest odświeżany 30 razy/s,
+     * a ruch 60+ razy/s.
+     *
+     * Dzięki temu kolor nie powoduje
+     * zacięć przy ruchu.
+     */
+    colorFPS: 30
+
+};
+
+
+/* =========================================
+   INTERNAL
+   ========================================= */
+
+let mouseX =
+    window.innerWidth / 2;
+
+let mouseY =
+    window.innerHeight / 2;
+
+
+let cursorX =
+    mouseX;
+
+let cursorY =
+    mouseY;
+
+
+let lastX =
+    cursorX;
+
+let lastY =
+    cursorY;
+
 
 let velocityX = 0;
 let velocityY = 0;
 
-let lastMouseX = mouseX;
-let lastMouseY = mouseY;
+
+let previousMaskTime = 0;
 
 
-/*
- * Ograniczony soft-body.
- */
-let wobble = 0;
-let wobbleVelocity = 0;
+/* =========================================
+   DEVICE PIXEL RATIO
+   ========================================= */
+
+const DPR =
+    Math.min(
+        window.devicePixelRatio || 1,
+        2
+    );
 
 
-const CURSOR = {
+cursorCanvas.width =
+    CURSOR.size * DPR;
 
-    /*
-     * To jest najważniejsze.
-     *
-     * 0.18 = wyraźny delay
-     * ale nadal blisko kursora.
-     */
-    follow: 0.18,
+cursorCanvas.height =
+    CURSOR.size * DPR;
 
-    /*
-     * Tłumienie.
-     */
-    damping: 0.72,
 
-    /*
-     * Maksymalna odległość od kursora.
-     */
-    maxDistance: 18,
+ctx.scale(
+    DPR,
+    DPR
+);
 
-    /*
-     * Bardzo delikatny jiggle.
-     */
-    wobbleSpring: 0.045,
-
-    wobbleDamping: 0.86,
-
-    /*
-     * Minimalny stretch.
-     */
-    maxStretch: 1.18,
-
-    stretchStrength: 0.012
-
-};
+ctx.imageSmoothingEnabled =
+    true;
 
 
 /* =========================================
@@ -2234,8 +2284,11 @@ window.addEventListener(
     "mousemove",
     event => {
 
-        mouseX = event.clientX;
-        mouseY = event.clientY;
+        mouseX =
+            event.clientX;
+
+        mouseY =
+            event.clientY;
 
     },
     {
@@ -2245,58 +2298,7 @@ window.addEventListener(
 
 
 /* =========================================
-   TEXT DETECTION
-   ========================================= */
-
-const textElements =
-    document.querySelectorAll(`
-        h1,
-        h2,
-        h3,
-        p,
-        span,
-        a,
-        button,
-        .logo,
-        .menu,
-        .subtitle,
-        .artist-name,
-        .artist-number
-    `);
-
-
-textElements.forEach(
-    element => {
-
-        element.addEventListener(
-            "mouseenter",
-            () => {
-
-                customCursor.classList.add(
-                    "is-text"
-                );
-
-            }
-        );
-
-
-        element.addEventListener(
-            "mouseleave",
-            () => {
-
-                customCursor.classList.remove(
-                    "is-text"
-                );
-
-            }
-        );
-
-    }
-);
-
-
-/* =========================================
-   HIDE
+   HIDE / SHOW
    ========================================= */
 
 document.addEventListener(
@@ -2313,113 +2315,848 @@ document.addEventListener(
 
 document.addEventListener(
     "mouseenter",
-    () => {
+    event => {
 
         customCursor.classList.remove(
             "is-hidden"
         );
+
+        mouseX =
+            event.clientX;
+
+        mouseY =
+            event.clientY;
+
+        cursorX =
+            mouseX;
+
+        cursorY =
+            mouseY;
 
     }
 );
 
 
 /* =========================================
-   ANIMATION
+   HEX -> RGB
    ========================================= */
 
-function animateCustomCursor() {
+function hexToRgb(hex) {
 
-    /*
-     * Odległość od kursora.
-     */
-    const dx =
-        mouseX - cursorX;
-
-    const dy =
-        mouseY - cursorY;
-
-
-    /*
-     * FOLLOW.
-     *
-     * Kulka podąża za kursorem,
-     * ale nigdy zbyt daleko.
-     */
-    velocityX +=
-        dx *
-        CURSOR.follow;
-
-    velocityY +=
-        dy *
-        CURSOR.follow;
-
-
-    /*
-     * DAMPING.
-     */
-    velocityX *=
-        CURSOR.damping;
-
-    velocityY *=
-        CURSOR.damping;
-
-
-    /*
-     * Aktualizacja.
-     */
-    cursorX += velocityX;
-    cursorY += velocityY;
-
-
-    /*
-     * OGRANICZENIE ODLEGŁOŚCI.
-     */
-    const distance =
-        Math.sqrt(
-            dx * dx +
-            dy * dy
+    const value =
+        hex.replace(
+            "#",
+            ""
         );
 
 
+    return {
+
+        r:
+            parseInt(
+                value.substring(0, 2),
+                16
+            ),
+
+        g:
+            parseInt(
+                value.substring(2, 4),
+                16
+            ),
+
+        b:
+            parseInt(
+                value.substring(4, 6),
+                16
+            )
+
+    };
+
+}
+
+
+const BACKGROUND_RGB =
+    hexToRgb(
+        CURSOR_COLORS.background
+    );
+
+
+/* =========================================
+   RGB PARSER
+   ========================================= */
+
+function parseRgb(
+    color
+) {
+
     if (
-        distance >
-        CURSOR.maxDistance
+        !color ||
+        color === "transparent"
     ) {
 
-        const angle =
-            Math.atan2(
-                dy,
-                dx
-            );
+        return null;
+
+    }
 
 
-        cursorX =
-            mouseX -
-            Math.cos(angle) *
-            CURSOR.maxDistance;
+    const match =
+        color.match(
+            /rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?\s*\)/
+        );
 
 
-        cursorY =
-            mouseY -
-            Math.sin(angle) *
-            CURSOR.maxDistance;
+    if (!match) {
+
+        return null;
+
+    }
+
+
+    return {
+
+        r:
+            Number(match[1]),
+
+        g:
+            Number(match[2]),
+
+        b:
+            Number(match[3]),
+
+        a:
+            match[4] === undefined
+                ? 1
+                : Number(match[4])
+
+    };
+
+}
+
+
+/* =========================================
+   CZY KOLOR = BEŻ
+   ========================================= */
+
+function isBackgroundColor(
+    color
+) {
+
+    const rgb =
+        parseRgb(color);
+
+
+    if (!rgb) {
+
+        return true;
 
     }
 
 
     /*
-     * PRĘDKOŚĆ.
+     * Mała tolerancja,
+     * ponieważ browser może czasem
+     * zwrócić lekko zmieniony kolor.
      */
-    const speed =
-        Math.sqrt(
-            velocityX * velocityX +
-            velocityY * velocityY
+    const tolerance = 3;
+
+
+    return (
+
+        Math.abs(
+            rgb.r -
+            BACKGROUND_RGB.r
+        ) <= tolerance
+
+        &&
+
+        Math.abs(
+            rgb.g -
+            BACKGROUND_RGB.g
+        ) <= tolerance
+
+        &&
+
+        Math.abs(
+            rgb.b -
+            BACKGROUND_RGB.b
+        ) <= tolerance
+
+    );
+
+}
+
+
+/* =========================================
+   CZY PUNKT LEŻY W TEKŚCIE
+   ========================================= */
+
+function pointInsideText(
+    element,
+    x,
+    y
+) {
+
+    if (
+        !element ||
+        !element.textContent ||
+        !element.textContent.trim()
+    ) {
+
+        return false;
+
+    }
+
+
+    try {
+
+        const range =
+            document.createRange();
+
+
+        range.selectNodeContents(
+            element
+        );
+
+
+        const rects =
+            Array.from(
+                range.getClientRects()
+            );
+
+
+        return rects.some(
+            rect => {
+
+                return (
+
+                    x >= rect.left &&
+                    x <= rect.right &&
+
+                    y >= rect.top &&
+                    y <= rect.bottom
+
+                );
+
+            }
+        );
+
+    }
+    catch {
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================================
+   CZY ELEMENT JEST "KOLOROWY"
+   ========================================= */
+
+function elementIsForeground(
+    element,
+    x,
+    y
+) {
+
+    if (!element) {
+
+        return false;
+
+    }
+
+
+    if (
+        element ===
+        document.documentElement
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        element ===
+        document.body
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        element ===
+        customCursor
+    ) {
+
+        return false;
+
+    }
+
+
+    const tag =
+        element.tagName
+            ?.toLowerCase();
+
+
+    /*
+     * =====================================
+     * IMAGE
+     * =====================================
+     */
+
+    if (
+        tag === "img" ||
+        tag === "video" ||
+        tag === "canvas" ||
+        tag === "svg"
+    ) {
+
+        return true;
+
+    }
+
+
+    const style =
+        getComputedStyle(
+            element
         );
 
 
     /*
-     * Kierunek.
+     * =====================================
+     * PRAWIE NIEWIDOCZNE
+     * =====================================
      */
+
+    if (
+        Number(style.opacity) === 0
+    ) {
+
+        return false;
+
+    }
+
+
+    /*
+     * =====================================
+     * BACKGROUND
+     * =====================================
+     */
+
+    if (
+        style.backgroundColor &&
+        style.backgroundColor !==
+            "transparent"
+    ) {
+
+        if (
+            !isBackgroundColor(
+                style.backgroundColor
+            )
+        ) {
+
+            return true;
+
+        }
+
+    }
+
+
+    /*
+     * =====================================
+     * BACKGROUND IMAGE
+     * =====================================
+     */
+
+    if (
+        style.backgroundImage &&
+        style.backgroundImage !== "none"
+    ) {
+
+        return true;
+
+    }
+
+
+    /*
+     * =====================================
+     * BORDER
+     * =====================================
+     */
+
+    const borders = [
+
+        style.borderTopColor,
+
+        style.borderRightColor,
+
+        style.borderBottomColor,
+
+        style.borderLeftColor
+
+    ];
+
+
+    if (
+        borders.some(
+            border => {
+
+                return (
+                    border !==
+                        "transparent"
+                    &&
+                    !isBackgroundColor(
+                        border
+                    )
+                );
+
+            }
+        )
+    ) {
+
+        return true;
+
+    }
+
+
+    /*
+     * =====================================
+     * TEKST
+     * =====================================
+     */
+
+    const textTags = new Set([
+
+        "a",
+        "button",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p",
+        "span",
+        "strong",
+        "em",
+        "small",
+        "label"
+
+    ]);
+
+
+    if (
+        textTags.has(tag)
+    ) {
+
+        /*
+         * Najpierw sprawdzamy,
+         * czy punkt naprawdę wpada
+         * w obszar tekstu.
+         */
+        if (
+            !pointInsideText(
+                element,
+                x,
+                y
+            )
+        ) {
+
+            return false;
+
+        }
+
+
+        if (
+            style.color &&
+            style.color !== "transparent"
+        ) {
+
+            if (
+                !isBackgroundColor(
+                    style.color
+                )
+            ) {
+
+                return true;
+
+            }
+
+        }
+
+    }
+
+
+    /*
+     * =====================================
+     * SPECJALNE ELEMENTY TWOJEJ STRONY
+     * =====================================
+     */
+
+    if (
+        element.matches(`
+            .artist-circle,
+            .artist-photo,
+            .profile-image,
+            .profile-image-wrapper,
+            .image-text,
+            .logo,
+            .menu,
+            .subtitle,
+            .menu-item,
+            .menu-number,
+            .artist-name,
+            .artist-number,
+            .section-header h2,
+            .section-placeholder
+        `)
+    ) {
+
+        return true;
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================
+   CZY PUNKT = CYAN
+   ========================================= */
+
+function isCyanPoint(
+    x,
+    y
+) {
+
+    let element =
+        document.elementFromPoint(
+            x,
+            y
+        );
+
+
+    if (!element) {
+
+        return false;
+
+    }
+
+
+    /*
+     * Przechodzimy od najbardziej
+     * konkretnego elementu do rodzica.
+     */
+    while (
+        element &&
+        element !==
+            document.body
+    ) {
+
+        if (
+            elementIsForeground(
+                element,
+                x,
+                y
+            )
+        ) {
+
+            return true;
+
+        }
+
+
+        element =
+            element.parentElement;
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================
+   RYSOWANIE KULKI
+   ========================================= */
+
+function drawCursorMask() {
+
+    const size =
+        CURSOR.size;
+
+    const radius =
+        size / 2;
+
+
+    /*
+     * Wyczyść.
+     */
+    ctx.clearRect(
+        0,
+        0,
+        size,
+        size
+    );
+
+
+    /*
+     * =====================================
+     * 1. BAZA = PINK
+     * =====================================
+     */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        radius,
+        radius,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        CURSOR_COLORS.pink;
+
+    ctx.fill();
+
+
+    /*
+     * =====================================
+     * 2. CYAN MASK
+     * =====================================
+     */
+
+    const sampleCount =
+        CURSOR.samples;
+
+
+    const step =
+        size /
+        sampleCount;
+
+
+    const half =
+        sampleCount /
+        2;
+
+
+    for (
+        let row = 0;
+        row < sampleCount;
+        row++
+    ) {
+
+        for (
+            let col = 0;
+            col < sampleCount;
+            col++
+        ) {
+
+            const localX =
+                (
+                    col + 0.5
+                ) *
+                step -
+                radius;
+
+
+            const localY =
+                (
+                    row + 0.5
+                ) *
+                step -
+                radius;
+
+
+            /*
+             * Nie sprawdzamy punktów
+             * poza kołem.
+             */
+            if (
+                Math.sqrt(
+                    localX * localX +
+                    localY * localY
+                ) >
+                radius
+            ) {
+
+                continue;
+
+            }
+
+
+            const screenX =
+                cursorX +
+                localX;
+
+
+            const screenY =
+                cursorY +
+                localY;
+
+
+            /*
+             * Sprawdź co rzeczywiście
+             * znajduje się pod tym punktem.
+             */
+            if (
+                isCyanPoint(
+                    screenX,
+                    screenY
+                )
+            ) {
+
+                ctx.fillStyle =
+                    CURSOR_COLORS.cyan;
+
+
+                ctx.fillRect(
+                    col * step,
+                    row * step,
+                    step + 0.7,
+                    step + 0.7
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /*
+     * =====================================
+     * 3. LEKKIE WYGŁADZENIE
+     * =====================================
+     *
+     * Bardzo małe,
+     * żeby nie zrobić blur.
+     */
+
+    ctx.globalCompositeOperation =
+        "destination-in";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        radius,
+        radius,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.fill();
+
+
+    ctx.globalCompositeOperation =
+        "source-over";
+
+}
+
+
+/* =========================================
+   FLUID MOVEMENT
+   ========================================= */
+
+function animateCustomCursor(
+    timestamp
+) {
+
+    /*
+     * =====================================
+     * FOLLOW
+     * =====================================
+     */
+
+    const dx =
+        mouseX -
+        cursorX;
+
+
+    const dy =
+        mouseY -
+        cursorY;
+
+
+    cursorX +=
+        dx *
+        CURSOR.follow;
+
+
+    cursorY +=
+        dy *
+        CURSOR.follow;
+
+
+    /*
+     * =====================================
+     * VELOCITY
+     * =====================================
+     */
+
+    velocityX =
+        cursorX -
+        lastX;
+
+
+    velocityY =
+        cursorY -
+        lastY;
+
+
+    lastX =
+        cursorX;
+
+    lastY =
+        cursorY;
+
+
+    const speed =
+        Math.sqrt(
+            velocityX *
+                velocityX +
+            velocityY *
+                velocityY
+        );
+
+
+    /*
+     * =====================================
+     * SUBTELNY SOFT BODY
+     * =====================================
+     */
+
+    const stretch =
+        Math.min(
+            CURSOR.maxStretch,
+
+            1 +
+            speed *
+            CURSOR.stretchStrength
+        );
+
+
+    const scaleY =
+        1 /
+        Math.sqrt(
+            stretch
+        );
+
+
     const angle =
         Math.atan2(
             velocityY,
@@ -2429,103 +3166,9 @@ function animateCustomCursor() {
 
     /*
      * =====================================
-     * SOFT BODY STRETCH
+     * POSITION
      * =====================================
      */
-
-    const stretch =
-        Math.min(
-            CURSOR.maxStretch,
-            1 +
-            speed *
-            CURSOR.stretchStrength
-        );
-
-
-    const scaleY =
-        1 /
-        Math.sqrt(stretch);
-
-
-    /*
-     * =====================================
-     * SUBTELNY SETTLING / JIGGLE
-     * =====================================
-     */
-
-    const mouseDeltaX =
-        mouseX -
-        lastMouseX;
-
-    const mouseDeltaY =
-        mouseY -
-        lastMouseY;
-
-
-    const mouseDelta =
-        Math.sqrt(
-            mouseDeltaX *
-            mouseDeltaX +
-            mouseDeltaY *
-            mouseDeltaY
-        );
-
-
-    /*
-     * Nagłe zatrzymanie.
-     */
-    if (
-        mouseDelta < 0.4 &&
-        speed > 1.5
-    ) {
-
-        wobbleVelocity +=
-            speed *
-            0.004;
-
-    }
-
-
-    lastMouseX =
-        mouseX;
-
-    lastMouseY =
-        mouseY;
-
-
-    /*
-     * Sprężystość.
-     */
-    wobbleVelocity +=
-        -wobble *
-        CURSOR.wobbleSpring;
-
-
-    wobbleVelocity *=
-        CURSOR.wobbleDamping;
-
-
-    wobble +=
-        wobbleVelocity;
-
-
-    /*
-     * Bardzo mały zakres.
-     */
-    wobble =
-        Math.max(
-            -0.035,
-            Math.min(
-                0.035,
-                wobble
-            )
-        );
-
-
-    /*
-     * =====================================
-     * RENDER
-     * ===================================== */
 
     customCursor.style.transform = `
         translate3d(
@@ -2533,10 +3176,50 @@ function animateCustomCursor() {
             ${cursorY}px,
             0
         )
-        translate(-50%, -50%)
-        rotate(${angle + wobble}rad)
-        scale(${stretch}, ${scaleY})
+        translate(
+            -50%,
+            -50%
+        )
+        rotate(
+            ${angle}rad
+        )
+        scale(
+            ${stretch},
+            ${scaleY}
+        )
     `;
+
+
+    /*
+     * =====================================
+     * COLOR MASK
+     * =====================================
+     *
+     * Ruch:
+     * 60+ FPS
+     *
+     * Kolor:
+     * 30 FPS
+     */
+
+    const maskInterval =
+        1000 /
+        CURSOR.colorFPS;
+
+
+    if (
+        timestamp -
+            previousMaskTime
+        >=
+        maskInterval
+    ) {
+
+        drawCursorMask();
+
+        previousMaskTime =
+            timestamp;
+
+    }
 
 
     requestAnimationFrame(
@@ -2546,7 +3229,9 @@ function animateCustomCursor() {
 }
 
 
-animateCustomCursor();
+requestAnimationFrame(
+    animateCustomCursor
+);
 
 </script>
 
