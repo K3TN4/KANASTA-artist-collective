@@ -808,8 +808,12 @@ main h1.image-text {
     -webkit-text-fill-color: transparent;
     color: transparent;
 }
-    /* =========================================
+  /* =========================================
    SOFT BODY CURSOR
+   ========================================= */
+
+/* =========================================
+   CUSTOM CURSOR
    ========================================= */
 
 .custom-cursor {
@@ -818,58 +822,71 @@ main h1.image-text {
     width: 14px;
     height: 14px;
 
-    border-radius: 50%;
-
-    background: #ed3d66;
-
     left: 0;
     top: 0;
+
+    border-radius: 50%;
 
     pointer-events: none;
 
     z-index: 99999;
 
-    transform:
-        translate3d(-50%, -50%, 0)
-        scale(1);
-
     will-change: transform;
 
     /*
-     * To robi efekt "invertowania" tego,
-     * co znajduje się pod kulką.
+     * TO JEST GŁÓWNY KOLOR KULKI
+     */
+    background: #ed3d66;
+
+    /*
+     * Nic tutaj nie blendujemy.
+     * Dzięki temu na beżu zawsze jest #ed3d66.
+     */
+}
+
+
+.custom-cursor-difference {
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 50%;
+
+    /*
+     * Ten kolor ma dominować podczas
+     * wejścia na tekst.
+     */
+    background: #59e0b3;
+
+    /*
+     * Difference działa tylko dla
+     * tej wewnętrznej warstwy.
      */
     mix-blend-mode: difference;
 
-    /*
-     * Bardzo miękkie zachowanie.
-     */
-    filter: blur(0px);
+    opacity: 0;
 
     transition:
-        width 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-        height 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.2s ease;
+        opacity 0.18s ease,
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+
+    transform: scale(0.82);
 }
 
-/*
- * Kiedy kursor jest nad tekstem
- */
-.custom-cursor.is-text {
-    width: 24px;
-    height: 24px;
+
+.custom-cursor.is-text
+.custom-cursor-difference {
+    opacity: 1;
+
+    transform: scale(1);
 }
 
-/*
- * Kiedy wychodzi poza stronę
- */
+
 .custom-cursor.is-hidden {
     opacity: 0;
 }
 
-/*
- * Nie pokazuj custom cursora na telefonach
- */
+
 @media (max-width: 700px) {
 
     .custom-cursor {
@@ -877,7 +894,6 @@ main h1.image-text {
     }
 
 }
-        
     </style>
 </head>
 
@@ -885,7 +901,9 @@ main h1.image-text {
 
     <body>
 
-    <div class="custom-cursor" id="customCursor"></div>
+    <div class="custom-cursor" id="customCursor">
+    <div class="custom-cursor-difference"></div>
+</div>
 
     <!-- HEADER -->
 
@@ -2142,7 +2160,7 @@ function toggleBio() {
 
 }
 
-       /* =========================================
+   /* =========================================
    SOFT BODY CURSOR
    ========================================= */
 
@@ -2150,55 +2168,87 @@ const customCursor =
     document.getElementById("customCursor");
 
 
+/* =========================================
+   POZYCJA
+   ========================================= */
+
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
 
 let cursorX = mouseX;
 let cursorY = mouseY;
 
+
+/* =========================================
+   VELOCITY
+   ========================================= */
+
 let velocityX = 0;
 let velocityY = 0;
 
-let previousMouseX = mouseX;
-let previousMouseY = mouseY;
+
+/* =========================================
+   POPRZEDNI RUCH
+   ========================================= */
+
+let lastMouseX = mouseX;
+let lastMouseY = mouseY;
 
 
-/*
- * PARAMETRY FIZYKI
- */
+/* =========================================
+   JIGGLE
+   ========================================= */
+
+let jiggle = 0;
+let jiggleVelocity = 0;
+
+
+/* =========================================
+   USTAWIENIA
+   ========================================= */
 
 const CURSOR = {
 
     /*
-     * Im mniejsza wartość,
-     * tym większe opóźnienie.
+     * DUŻO MNIEJSZY DELAY
+     *
+     * 0.20 = bardzo szybki follow
+     * 0.30 = prawie bezpośrednio
      */
-    stiffness: 0.075,
+    follow: 0.45,
 
     /*
-     * Tłumienie.
+     * Delikatne wygaszanie prędkości.
      */
-    damping: 0.72,
+    damping: 0.78,
 
     /*
-     * Maksymalne rozciągnięcie.
+     * Jak mocno kulka rozciąga się
+     * podczas szybkiego ruchu.
      */
-    maxStretch: 1.65,
+    maxStretch: 1.22,
 
     /*
-     * Minimalna prędkość,
-     * przy której zaczyna się stretch.
+     * Czułość stretch.
      */
-    stretchStart: 2
+    stretchStrength: 0.018,
+
+    /*
+     * Sprężystość jiggle.
+     */
+    jiggleSpring: 0.055,
+
+    /*
+     * Tłumienie jiggle.
+     */
+    jiggleDamping: 0.82
 
 };
 
 
-/*
- * =========================================
- * MYSZ
- * =========================================
- */
+/* =========================================
+   MYSZ
+   ========================================= */
 
 window.addEventListener(
     "mousemove",
@@ -2207,12 +2257,6 @@ window.addEventListener(
         mouseX = event.clientX;
         mouseY = event.clientY;
 
-        /*
-         * Sprawdź prędkość ruchu myszy.
-         */
-        previousMouseX = mouseX;
-        previousMouseY = mouseY;
-
     },
     {
         passive: true
@@ -2220,15 +2264,26 @@ window.addEventListener(
 );
 
 
-/*
- * =========================================
- * TEKST / ELEMENTY INTERAKTYWNE
- * =========================================
- */
+/* =========================================
+   TEKST
+   ========================================= */
 
 const textElements =
     document.querySelectorAll(
-        "h1, h2, h3, p, span, a, button, .logo, .menu, .subtitle, .artist-name, .artist-number"
+        `
+        h1,
+        h2,
+        h3,
+        p,
+        span,
+        a,
+        button,
+        .logo,
+        .menu,
+        .subtitle,
+        .artist-name,
+        .artist-number
+        `
     );
 
 
@@ -2262,11 +2317,9 @@ textElements.forEach(
 );
 
 
-/*
- * =========================================
- * KIEDY MYSZ WYCHODZI ZA OKNO
- * =========================================
- */
+/* =========================================
+   WYJŚCIE MYSZY
+   ========================================= */
 
 document.addEventListener(
     "mouseleave",
@@ -2292,18 +2345,17 @@ document.addEventListener(
 );
 
 
-/*
- * =========================================
- * ANIMACJA FIZYCZNA
- * =========================================
- */
+/* =========================================
+   ANIMACJA
+   ========================================= */
 
 function animateCustomCursor() {
 
-    /*
-     * Aktualna różnica między kursorem
-     * a pozycją kulki.
-     */
+
+    /* -------------------------------------
+       ODLEGŁOŚĆ DO MYSZY
+       ------------------------------------- */
+
     const dx =
         mouseX - cursorX;
 
@@ -2311,26 +2363,23 @@ function animateCustomCursor() {
         mouseY - cursorY;
 
 
-    /*
-     * ACCELERATION
-     *
-     * Kulka nie teleportuje się do myszy.
-     * Dostaje "siłę" w kierunku myszy.
-     */
+    /* -------------------------------------
+       FOLLOW
+       ------------------------------------- */
+
     velocityX +=
         dx *
-        CURSOR.stiffness;
+        CURSOR.follow;
 
     velocityY +=
         dy *
-        CURSOR.stiffness;
+        CURSOR.follow;
 
 
-    /*
-     * DAMPING
-     *
-     * Stopniowo wyhamowuje.
-     */
+    /* -------------------------------------
+       DAMPING
+       ------------------------------------- */
+
     velocityX *=
         CURSOR.damping;
 
@@ -2338,18 +2387,20 @@ function animateCustomCursor() {
         CURSOR.damping;
 
 
-    /*
-     * RUCH
-     */
-    cursorX += velocityX;
-    cursorY += velocityY;
+    /* -------------------------------------
+       POZYCJA
+       ------------------------------------- */
+
+    cursorX +=
+        velocityX;
+
+    cursorY +=
+        velocityY;
 
 
-    /*
-     * =====================================
-     * SPEED
-     * =====================================
-     */
+    /* -------------------------------------
+       AKTUALNA PRĘDKOŚĆ
+       ------------------------------------- */
 
     const speed =
         Math.sqrt(
@@ -2358,32 +2409,115 @@ function animateCustomCursor() {
         );
 
 
+    /* =====================================
+       JIGGLE
+       ===================================== */
+
     /*
-     * =====================================
-     * SOFT BODY
-     * =====================================
-     *
-     * Przy szybszym ruchu kulka
-     * delikatnie rozciąga się
-     * w kierunku ruchu.
+     * Jeżeli kulka była w ruchu i nagle
+     * ruch się kończy, wzbudzamy bardzo
+     * małą sprężystość.
      */
 
-    const stretch =
-        Math.min(
-            CURSOR.maxStretch,
-            1 +
-            Math.max(
-                0,
-                speed -
-                CURSOR.stretchStart
-            ) *
-            0.035
+    const mouseMovementX =
+        mouseX - lastMouseX;
+
+    const mouseMovementY =
+        mouseY - lastMouseY;
+
+
+    const mouseMovement =
+        Math.sqrt(
+            mouseMovementX *
+            mouseMovementX +
+            mouseMovementY *
+            mouseMovementY
         );
 
 
     /*
-     * Kąt ruchu.
+     * Nagłe zatrzymanie.
      */
+
+    if (
+        mouseMovement < 0.8 &&
+        speed > 1.2
+    ) {
+
+        jiggleVelocity +=
+            speed * 0.018;
+
+    }
+
+
+    /*
+     * Aktualizuj poprzednią pozycję.
+     */
+
+    lastMouseX = mouseX;
+    lastMouseY = mouseY;
+
+
+    /*
+     * Sprężyna jiggle.
+     */
+
+    jiggleVelocity +=
+        -jiggle *
+        CURSOR.jiggleSpring;
+
+
+    jiggleVelocity *=
+        CURSOR.jiggleDamping;
+
+
+    jiggle +=
+        jiggleVelocity;
+
+
+    /*
+     * Wygaszamy ekstremalny jiggle.
+     */
+
+    jiggle =
+        Math.max(
+            -0.12,
+            Math.min(
+                0.12,
+                jiggle
+            )
+        );
+
+
+    /* =====================================
+       STRETCH
+       ===================================== */
+
+    const stretch =
+        Math.min(
+            CURSOR.maxStretch,
+
+            1 +
+            speed *
+            CURSOR.stretchStrength
+        );
+
+
+    /*
+     * Nie pozwalamy, żeby kulka
+     * rozciągała się przy minimalnym ruchu.
+     */
+
+    const finalStretch =
+        speed < 1
+            ? 1
+            : stretch;
+
+
+    /*
+     * Kierunek ruchu.
+     */
+
     const angle =
         Math.atan2(
             velocityY,
@@ -2392,33 +2526,42 @@ function animateCustomCursor() {
 
 
     /*
-     * Im szybszy ruch,
-     * tym większe rozciągnięcie.
+     * Odwrotna skala Y,
+     * żeby zachować mniej więcej
+     * tę samą objętość.
      */
 
     const scaleX =
-        stretch;
+        finalStretch;
 
     const scaleY =
         1 /
-        Math.sqrt(stretch);
+        Math.sqrt(finalStretch);
 
 
-    /*
-     * =====================================
-     * TRANSFORM
-     * =====================================
-     */
+    /* =====================================
+       RUCH KULKI
+       ===================================== */
 
     customCursor.style.transform = `
+
         translate3d(
             ${cursorX}px,
             ${cursorY}px,
             0
         )
+
         translate(-50%, -50%)
-        rotate(${angle}rad)
-        scale(${scaleX}, ${scaleY})
+
+        rotate(
+            ${angle + jiggle}rad
+        )
+
+        scale(
+            ${scaleX},
+            ${scaleY}
+        )
+
     `;
 
 
