@@ -811,11 +811,6 @@ main h1.image-text {
   /* =========================================
    SOFT BODY CURSOR
    ========================================= */
-
-/* =========================================
-   CUSTOM CURSOR
-   ========================================= */
-
 .custom-cursor {
     position: fixed;
 
@@ -827,72 +822,38 @@ main h1.image-text {
 
     border-radius: 50%;
 
+    background: #ed3d66;
+
     pointer-events: none;
 
     z-index: 99999;
 
     will-change: transform;
 
-    /*
-     * TO JEST GŁÓWNY KOLOR KULKI
-     */
-    background: #ed3d66;
-
-    /*
-     * Nic tutaj nie blendujemy.
-     * Dzięki temu na beżu zawsze jest #ed3d66.
-     */
+    overflow: visible;
 }
 
 
-.custom-cursor-difference {
+.custom-cursor-cyan {
     position: absolute;
 
     inset: 0;
 
     border-radius: 50%;
 
-    /*
-     * Ten kolor ma dominować podczas
-     * wejścia na tekst.
-     */
     background: #59e0b3;
 
     /*
-     * Difference działa tylko dla
-     * tej wewnętrznej warstwy.
+     * To daje realny difference.
      */
     mix-blend-mode: difference;
 
     opacity: 0;
-
-    transition:
-        opacity 0.18s ease,
-        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-
-    transform: scale(0.82);
 }
 
 
-.custom-cursor.is-text
-.custom-cursor-difference {
+.custom-cursor.is-text .custom-cursor-cyan {
     opacity: 1;
-
-    transform: scale(1);
-}
-
-
-.custom-cursor.is-hidden {
-    opacity: 0;
-}
-
-
-@media (max-width: 700px) {
-
-    .custom-cursor {
-        display: none;
-    }
-
 }
     </style>
 </head>
@@ -902,7 +863,7 @@ main h1.image-text {
     <body>
 
     <div class="custom-cursor" id="customCursor">
-    <div class="custom-cursor-difference"></div>
+    <div class="custom-cursor-cyan"></div>
 </div>
 
     <!-- HEADER -->
@@ -2159,18 +2120,13 @@ function toggleBio() {
         .classList.toggle("active");
 
 }
-
-   /* =========================================
-   SOFT BODY CURSOR
+/* =========================================
+   SOFT FLUID CURSOR
    ========================================= */
 
 const customCursor =
     document.getElementById("customCursor");
 
-
-/* =========================================
-   POZYCJA
-   ========================================= */
 
 let mouseX = window.innerWidth / 2;
 let mouseY = window.innerHeight / 2;
@@ -2178,81 +2134,64 @@ let mouseY = window.innerHeight / 2;
 let cursorX = mouseX;
 let cursorY = mouseY;
 
-
-/* =========================================
-   VELOCITY
-   ========================================= */
-
 let velocityX = 0;
 let velocityY = 0;
-
-
-/* =========================================
-   POPRZEDNI RUCH
-   ========================================= */
 
 let lastMouseX = mouseX;
 let lastMouseY = mouseY;
 
 
-/* =========================================
-   JIGGLE
-   ========================================= */
+/*
+ * Ograniczony soft-body.
+ */
+let wobble = 0;
+let wobbleVelocity = 0;
 
-let jiggle = 0;
-let jiggleVelocity = 0;
-
-
-/* =========================================
-   USTAWIENIA
-   ========================================= */
 
 const CURSOR = {
 
     /*
-     * DUŻO MNIEJSZY DELAY
+     * To jest najważniejsze.
      *
-     * 0.20 = bardzo szybki follow
-     * 0.30 = prawie bezpośrednio
+     * 0.18 = wyraźny delay
+     * ale nadal blisko kursora.
      */
-    follow: 0.45,
+    follow: 0.18,
 
     /*
-     * Delikatne wygaszanie prędkości.
+     * Tłumienie.
      */
-    damping: 0.78,
+    damping: 0.72,
 
     /*
-     * Jak mocno kulka rozciąga się
-     * podczas szybkiego ruchu.
+     * Maksymalna odległość od kursora.
      */
-    maxStretch: 1.22,
+    maxDistance: 18,
 
     /*
-     * Czułość stretch.
+     * Bardzo delikatny jiggle.
      */
-    stretchStrength: 0.018,
+    wobbleSpring: 0.045,
+
+    wobbleDamping: 0.86,
 
     /*
-     * Sprężystość jiggle.
+     * Minimalny stretch.
      */
-    jiggleSpring: 0.055,
+    maxStretch: 1.18,
 
-    /*
-     * Tłumienie jiggle.
-     */
-    jiggleDamping: 0.82
+    stretchStrength: 0.012
 
 };
 
 
 /* =========================================
-   MYSZ
+   MOUSE
    ========================================= */
 
 window.addEventListener(
     "mousemove",
-    function (event) {
+    event => {
 
         mouseX = event.clientX;
         mouseY = event.clientY;
@@ -2265,12 +2204,11 @@ window.addEventListener(
 
 
 /* =========================================
-   TEKST
+   TEXT DETECTION
    ========================================= */
 
 const textElements =
-    document.querySelectorAll(
-        `
+    document.querySelectorAll(`
         h1,
         h2,
         h3,
@@ -2283,8 +2221,7 @@ const textElements =
         .subtitle,
         .artist-name,
         .artist-number
-        `
-    );
+    `);
 
 
 textElements.forEach(
@@ -2318,7 +2255,7 @@ textElements.forEach(
 
 
 /* =========================================
-   WYJŚCIE MYSZY
+   HIDE
    ========================================= */
 
 document.addEventListener(
@@ -2346,16 +2283,14 @@ document.addEventListener(
 
 
 /* =========================================
-   ANIMACJA
+   ANIMATION
    ========================================= */
 
 function animateCustomCursor() {
 
-
-    /* -------------------------------------
-       ODLEGŁOŚĆ DO MYSZY
-       ------------------------------------- */
-
+    /*
+     * Odległość od kursora.
+     */
     const dx =
         mouseX - cursorX;
 
@@ -2363,10 +2298,12 @@ function animateCustomCursor() {
         mouseY - cursorY;
 
 
-    /* -------------------------------------
-       FOLLOW
-       ------------------------------------- */
-
+    /*
+     * FOLLOW.
+     *
+     * Kulka podąża za kursorem,
+     * ale nigdy zbyt daleko.
+     */
     velocityX +=
         dx *
         CURSOR.follow;
@@ -2376,10 +2313,9 @@ function animateCustomCursor() {
         CURSOR.follow;
 
 
-    /* -------------------------------------
-       DAMPING
-       ------------------------------------- */
-
+    /*
+     * DAMPING.
+     */
     velocityX *=
         CURSOR.damping;
 
@@ -2387,21 +2323,52 @@ function animateCustomCursor() {
         CURSOR.damping;
 
 
-    /* -------------------------------------
-       POZYCJA
-       ------------------------------------- */
-
-    cursorX +=
-        velocityX;
-
-    cursorY +=
-        velocityY;
+    /*
+     * Aktualizacja.
+     */
+    cursorX += velocityX;
+    cursorY += velocityY;
 
 
-    /* -------------------------------------
-       AKTUALNA PRĘDKOŚĆ
-       ------------------------------------- */
+    /*
+     * OGRANICZENIE ODLEGŁOŚCI.
+     */
+    const distance =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
 
+
+    if (
+        distance >
+        CURSOR.maxDistance
+    ) {
+
+        const angle =
+            Math.atan2(
+                dy,
+                dx
+            );
+
+
+        cursorX =
+            mouseX -
+            Math.cos(angle) *
+            CURSOR.maxDistance;
+
+
+        cursorY =
+            mouseY -
+            Math.sin(angle) *
+            CURSOR.maxDistance;
+
+    }
+
+
+    /*
+     * PRĘDKOŚĆ.
+     */
     const speed =
         Math.sqrt(
             velocityX * velocityX +
@@ -2409,115 +2376,9 @@ function animateCustomCursor() {
         );
 
 
-    /* =====================================
-       JIGGLE
-       ===================================== */
-
     /*
-     * Jeżeli kulka była w ruchu i nagle
-     * ruch się kończy, wzbudzamy bardzo
-     * małą sprężystość.
+     * Kierunek.
      */
-
-    const mouseMovementX =
-        mouseX - lastMouseX;
-
-    const mouseMovementY =
-        mouseY - lastMouseY;
-
-
-    const mouseMovement =
-        Math.sqrt(
-            mouseMovementX *
-            mouseMovementX +
-            mouseMovementY *
-            mouseMovementY
-        );
-
-
-    /*
-     * Nagłe zatrzymanie.
-     */
-
-    if (
-        mouseMovement < 0.8 &&
-        speed > 1.2
-    ) {
-
-        jiggleVelocity +=
-            speed * 0.018;
-
-    }
-
-
-    /*
-     * Aktualizuj poprzednią pozycję.
-     */
-
-    lastMouseX = mouseX;
-    lastMouseY = mouseY;
-
-
-    /*
-     * Sprężyna jiggle.
-     */
-
-    jiggleVelocity +=
-        -jiggle *
-        CURSOR.jiggleSpring;
-
-
-    jiggleVelocity *=
-        CURSOR.jiggleDamping;
-
-
-    jiggle +=
-        jiggleVelocity;
-
-
-    /*
-     * Wygaszamy ekstremalny jiggle.
-     */
-
-    jiggle =
-        Math.max(
-            -0.12,
-            Math.min(
-                0.12,
-                jiggle
-            )
-        );
-
-
-    /* =====================================
-       STRETCH
-       ===================================== */
-
-    const stretch =
-        Math.min(
-            CURSOR.maxStretch,
-
-            1 +
-            speed *
-            CURSOR.stretchStrength
-        );
-
-
-    /*
-     * Nie pozwalamy, żeby kulka
-     * rozciągała się przy minimalnym ruchu.
-     */
-
-    const finalStretch =
-        speed < 1
-            ? 1
-            : stretch;
-
-
-    /*
-     * Kierunek ruchu.
-     */
-
     const angle =
         Math.atan2(
             velocityY,
@@ -2526,42 +2387,114 @@ function animateCustomCursor() {
 
 
     /*
-     * Odwrotna skala Y,
-     * żeby zachować mniej więcej
-     * tę samą objętość.
+     * =====================================
+     * SOFT BODY STRETCH
+     * =====================================
      */
 
-    const scaleX =
-        finalStretch;
+    const stretch =
+        Math.min(
+            CURSOR.maxStretch,
+            1 +
+            speed *
+            CURSOR.stretchStrength
+        );
+
 
     const scaleY =
         1 /
-        Math.sqrt(finalStretch);
+        Math.sqrt(stretch);
 
 
-    /* =====================================
-       RUCH KULKI
-       ===================================== */
+    /*
+     * =====================================
+     * SUBTELNY SETTLING / JIGGLE
+     * =====================================
+     */
+
+    const mouseDeltaX =
+        mouseX -
+        lastMouseX;
+
+    const mouseDeltaY =
+        mouseY -
+        lastMouseY;
+
+
+    const mouseDelta =
+        Math.sqrt(
+            mouseDeltaX *
+            mouseDeltaX +
+            mouseDeltaY *
+            mouseDeltaY
+        );
+
+
+    /*
+     * Nagłe zatrzymanie.
+     */
+    if (
+        mouseDelta < 0.4 &&
+        speed > 1.5
+    ) {
+
+        wobbleVelocity +=
+            speed *
+            0.004;
+
+    }
+
+
+    lastMouseX =
+        mouseX;
+
+    lastMouseY =
+        mouseY;
+
+
+    /*
+     * Sprężystość.
+     */
+    wobbleVelocity +=
+        -wobble *
+        CURSOR.wobbleSpring;
+
+
+    wobbleVelocity *=
+        CURSOR.wobbleDamping;
+
+
+    wobble +=
+        wobbleVelocity;
+
+
+    /*
+     * Bardzo mały zakres.
+     */
+    wobble =
+        Math.max(
+            -0.035,
+            Math.min(
+                0.035,
+                wobble
+            )
+        );
+
+
+    /*
+     * =====================================
+     * RENDER
+     * ===================================== */
 
     customCursor.style.transform = `
-
         translate3d(
             ${cursorX}px,
             ${cursorY}px,
             0
         )
-
         translate(-50%, -50%)
-
-        rotate(
-            ${angle + jiggle}rad
-        )
-
-        scale(
-            ${scaleX},
-            ${scaleY}
-        )
-
+        rotate(${angle + wobble}rad)
+        scale(${stretch}, ${scaleY})
     `;
 
 
