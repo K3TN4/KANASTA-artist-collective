@@ -829,6 +829,13 @@ main h1.image-text {
 
     opacity: 1;
 
+    /*
+     * MAGENTA JEST BAZĄ CAŁEJ KULKI
+     */
+    background: #ed3d66;
+
+    border-radius: 50%;
+
     transform:
         translate3d(
             -100px,
@@ -840,9 +847,8 @@ main h1.image-text {
 
     will-change: transform;
 
-    overflow: visible;
+    overflow: hidden;
 }
-
 
 .custom-cursor.is-hidden {
     opacity: 0;
@@ -861,7 +867,7 @@ main h1.image-text {
 
 <body>
 
-    <body>
+  
 
     <canvas
     id="customCursor"
@@ -2897,7 +2903,10 @@ function drawCursorMask() {
 
 
     /*
-     * Wyczyść.
+     * Wyczyść canvas.
+     *
+     * Magenta nie jest już rysowany tutaj.
+     * Magenta jest CSS-em na całym canvasie.
      */
     ctx.clearRect(
         0,
@@ -2908,10 +2917,10 @@ function drawCursorMask() {
 
 
     /*
-     * =====================================
-     * 1. BAZA = PINK
-     * =====================================
+     * Wszystko, co narysujemy teraz,
+     * będzie ograniczone do koła.
      */
+    ctx.save();
 
     ctx.beginPath();
 
@@ -2923,15 +2932,12 @@ function drawCursorMask() {
         Math.PI * 2
     );
 
-    ctx.fillStyle =
-        CURSOR_COLORS.pink;
-
-    ctx.fill();
+    ctx.clip();
 
 
     /*
      * =====================================
-     * 2. CYAN MASK
+     * CYAN MASK
      * =====================================
      */
 
@@ -2942,11 +2948,6 @@ function drawCursorMask() {
     const step =
         size /
         sampleCount;
-
-
-    const half =
-        sampleCount /
-        2;
 
 
     for (
@@ -2978,22 +2979,10 @@ function drawCursorMask() {
 
 
             /*
-             * Nie sprawdzamy punktów
-             * poza kołem.
+             * Punkt ekranowy,
+             * który odpowiada temu fragmentowi
+             * kulki.
              */
-            if (
-                Math.sqrt(
-                    localX * localX +
-                    localY * localY
-                ) >
-                radius
-            ) {
-
-                continue;
-
-            }
-
-
             const screenX =
                 cursorX +
                 localX;
@@ -3005,8 +2994,8 @@ function drawCursorMask() {
 
 
             /*
-             * Sprawdź co rzeczywiście
-             * znajduje się pod tym punktem.
+             * Czy pod tym konkretnym fragmentem
+             * znajduje się obiekt?
              */
             if (
                 isCyanPoint(
@@ -3022,8 +3011,8 @@ function drawCursorMask() {
                 ctx.fillRect(
                     col * step,
                     row * step,
-                    step + 0.7,
-                    step + 0.7
+                    step + 0.8,
+                    step + 0.8
                 );
 
             }
@@ -3032,6 +3021,10 @@ function drawCursorMask() {
 
     }
 
+
+    ctx.restore();
+
+}
 
     /*
      * =====================================
@@ -3042,8 +3035,7 @@ function drawCursorMask() {
      * żeby nie zrobić blur.
      */
 
-    ctx.globalCompositeOperation =
-        "destination-in";
+   
 
 
     ctx.beginPath();
@@ -3062,8 +3054,7 @@ function drawCursorMask() {
     ctx.fill();
 
 
-    ctx.globalCompositeOperation =
-        "source-over";
+ 
 
 }
 
