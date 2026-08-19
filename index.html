@@ -808,13 +808,88 @@ main h1.image-text {
     -webkit-text-fill-color: transparent;
     color: transparent;
 }
+    /* =========================================
+   SOFT BODY CURSOR
+   ========================================= */
+
+.custom-cursor {
+    position: fixed;
+
+    width: 14px;
+    height: 14px;
+
+    border-radius: 50%;
+
+    background: #ed3d66;
+
+    left: 0;
+    top: 0;
+
+    pointer-events: none;
+
+    z-index: 99999;
+
+    transform:
+        translate3d(-50%, -50%, 0)
+        scale(1);
+
+    will-change: transform;
+
+    /*
+     * To robi efekt "invertowania" tego,
+     * co znajduje się pod kulką.
+     */
+    mix-blend-mode: difference;
+
+    /*
+     * Bardzo miękkie zachowanie.
+     */
+    filter: blur(0px);
+
+    transition:
+        width 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+        height 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.2s ease;
+}
+
+/*
+ * Kiedy kursor jest nad tekstem
+ */
+.custom-cursor.is-text {
+    width: 24px;
+    height: 24px;
+}
+
+/*
+ * Kiedy wychodzi poza stronę
+ */
+.custom-cursor.is-hidden {
+    opacity: 0;
+}
+
+/*
+ * Nie pokazuj custom cursora na telefonach
+ */
+@media (max-width: 700px) {
+
+    .custom-cursor {
+        display: none;
+    }
+
+}
         
     </style>
 </head>
 
 <body>
 
+    <body>
+
+    <div class="custom-cursor" id="customCursor"></div>
+
     <!-- HEADER -->
+
+
 
     <header>
         <div class="logo" id="homeLogo">KANASTA</div>
@@ -2066,6 +2141,295 @@ function toggleBio() {
         .classList.toggle("active");
 
 }
+
+       /* =========================================
+   SOFT BODY CURSOR
+   ========================================= */
+
+const customCursor =
+    document.getElementById("customCursor");
+
+
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+
+let cursorX = mouseX;
+let cursorY = mouseY;
+
+let velocityX = 0;
+let velocityY = 0;
+
+let previousMouseX = mouseX;
+let previousMouseY = mouseY;
+
+
+/*
+ * PARAMETRY FIZYKI
+ */
+
+const CURSOR = {
+
+    /*
+     * Im mniejsza wartość,
+     * tym większe opóźnienie.
+     */
+    stiffness: 0.075,
+
+    /*
+     * Tłumienie.
+     */
+    damping: 0.72,
+
+    /*
+     * Maksymalne rozciągnięcie.
+     */
+    maxStretch: 1.65,
+
+    /*
+     * Minimalna prędkość,
+     * przy której zaczyna się stretch.
+     */
+    stretchStart: 2
+
+};
+
+
+/*
+ * =========================================
+ * MYSZ
+ * =========================================
+ */
+
+window.addEventListener(
+    "mousemove",
+    function (event) {
+
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+
+        /*
+         * Sprawdź prędkość ruchu myszy.
+         */
+        previousMouseX = mouseX;
+        previousMouseY = mouseY;
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+/*
+ * =========================================
+ * TEKST / ELEMENTY INTERAKTYWNE
+ * =========================================
+ */
+
+const textElements =
+    document.querySelectorAll(
+        "h1, h2, h3, p, span, a, button, .logo, .menu, .subtitle, .artist-name, .artist-number"
+    );
+
+
+textElements.forEach(
+    element => {
+
+        element.addEventListener(
+            "mouseenter",
+            () => {
+
+                customCursor.classList.add(
+                    "is-text"
+                );
+
+            }
+        );
+
+
+        element.addEventListener(
+            "mouseleave",
+            () => {
+
+                customCursor.classList.remove(
+                    "is-text"
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/*
+ * =========================================
+ * KIEDY MYSZ WYCHODZI ZA OKNO
+ * =========================================
+ */
+
+document.addEventListener(
+    "mouseleave",
+    () => {
+
+        customCursor.classList.add(
+            "is-hidden"
+        );
+
+    }
+);
+
+
+document.addEventListener(
+    "mouseenter",
+    () => {
+
+        customCursor.classList.remove(
+            "is-hidden"
+        );
+
+    }
+);
+
+
+/*
+ * =========================================
+ * ANIMACJA FIZYCZNA
+ * =========================================
+ */
+
+function animateCustomCursor() {
+
+    /*
+     * Aktualna różnica między kursorem
+     * a pozycją kulki.
+     */
+    const dx =
+        mouseX - cursorX;
+
+    const dy =
+        mouseY - cursorY;
+
+
+    /*
+     * ACCELERATION
+     *
+     * Kulka nie teleportuje się do myszy.
+     * Dostaje "siłę" w kierunku myszy.
+     */
+    velocityX +=
+        dx *
+        CURSOR.stiffness;
+
+    velocityY +=
+        dy *
+        CURSOR.stiffness;
+
+
+    /*
+     * DAMPING
+     *
+     * Stopniowo wyhamowuje.
+     */
+    velocityX *=
+        CURSOR.damping;
+
+    velocityY *=
+        CURSOR.damping;
+
+
+    /*
+     * RUCH
+     */
+    cursorX += velocityX;
+    cursorY += velocityY;
+
+
+    /*
+     * =====================================
+     * SPEED
+     * =====================================
+     */
+
+    const speed =
+        Math.sqrt(
+            velocityX * velocityX +
+            velocityY * velocityY
+        );
+
+
+    /*
+     * =====================================
+     * SOFT BODY
+     * =====================================
+     *
+     * Przy szybszym ruchu kulka
+     * delikatnie rozciąga się
+     * w kierunku ruchu.
+     */
+
+    const stretch =
+        Math.min(
+            CURSOR.maxStretch,
+            1 +
+            Math.max(
+                0,
+                speed -
+                CURSOR.stretchStart
+            ) *
+            0.035
+        );
+
+
+    /*
+     * Kąt ruchu.
+     */
+    const angle =
+        Math.atan2(
+            velocityY,
+            velocityX
+        );
+
+
+    /*
+     * Im szybszy ruch,
+     * tym większe rozciągnięcie.
+     */
+
+    const scaleX =
+        stretch;
+
+    const scaleY =
+        1 /
+        Math.sqrt(stretch);
+
+
+    /*
+     * =====================================
+     * TRANSFORM
+     * =====================================
+     */
+
+    customCursor.style.transform = `
+        translate3d(
+            ${cursorX}px,
+            ${cursorY}px,
+            0
+        )
+        translate(-50%, -50%)
+        rotate(${angle}rad)
+        scale(${scaleX}, ${scaleY})
+    `;
+
+
+    requestAnimationFrame(
+        animateCustomCursor
+    );
+
+}
+
+
+animateCustomCursor();
 
 </script>
 
