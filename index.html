@@ -2740,23 +2740,7 @@ return {
 
 };
 
-    return {
-
-        canvas,
-
-        mask,
-
-        width,
-
-        height,
-
-        rectWidth:
-            width,
-
-        rectHeight:
-            height
-
-    };
+   
 
 }
    
@@ -2852,195 +2836,9 @@ function invalidateTextMasks() {
     }
 
 }
-function screenPointToTextLocal(
-    element,
-    screenX,
-    screenY
-) {
 
-    const rect =
-        element.getBoundingClientRect();
 
-    const baseWidth =
-        element.offsetWidth;
-
-    const baseHeight =
-        element.offsetHeight;
-
-    if (
-        baseWidth <= 0 ||
-        baseHeight <= 0
-    ) {
-        return null;
-    }
-
-    /*
-     * Aktualna skala wynikająca
-     * z transform: scale(...)
-     */
-
-    const scaleX =
-        rect.width /
-        baseWidth;
-
-    const scaleY =
-        rect.height /
-        baseHeight;
-
-    if (
-        scaleX === 0 ||
-        scaleY === 0
-    ) {
-        return null;
-    }
-
-    /*
-     * Transform-origin elementu.
-     */
-
-    const origin =
-        getTransformOrigin(
-            element
-        );
-
-    /*
-     * Najpierw odzyskujemy
-     * NIEPRZESKALOWANY top-left.
-     *
-     * To jest kluczowa różnica.
-     */
-
-    const originalLeft =
-        rect.left -
-        origin.x *
-        (1 - scaleX);
-
-    const originalTop =
-        rect.top -
-        origin.y *
-        (1 - scaleY);
-
-    /*
-     * Punkt myszy wracamy
-     * do układu współrzędnych
-     * sprzed scale().
-     */
-
-    const localX =
-        (
-            screenX -
-            originalLeft
-        ) /
-        scaleX;
-
-    const localY =
-        (
-            screenY -
-            originalTop
-        ) /
-        scaleY;
-
-    return {
-
-        x:
-            localX,
-
-        y:
-            localY
-
-    };
-
-}
-
-       function getRenderedTextLocalLeft(
-    element
-) {
-
-    if (!element) {
-        return null;
-    }
-
-    const textNode =
-        element.firstChild;
-
-    if (
-        !textNode ||
-        textNode.nodeType !==
-        Node.TEXT_NODE
-    ) {
-        return null;
-    }
-
-    const range =
-        document.createRange();
-
-    range.selectNodeContents(
-        textNode
-    );
-
-    const rangeRect =
-        range.getBoundingClientRect();
-
-    const rect =
-        element.getBoundingClientRect();
-
-    const baseWidth =
-        element.offsetWidth;
-
-    if (
-        baseWidth <= 0 ||
-        rangeRect.width <= 0
-    ) {
-        return null;
-    }
-
-    /*
-     * Aktualna skala elementu.
-     */
-
-    const scaleX =
-        rect.width /
-        baseWidth;
-
-    if (scaleX === 0) {
-        return null;
-    }
-
-    /*
-     * Prawdziwy transform-origin.
-     */
-
-    const origin =
-        getTransformOrigin(
-            element
-        );
-
-    /*
-     * Oryginalny, nieskalowany
-     * lewy brzeg elementu.
-     */
-
-    const originalLeft =
-        rect.left -
-        origin.x *
-        (1 - scaleX);
-
-    /*
-     * Zamieniamy prawdziwą
-     * pozycję tekstu z ekranu
-     * na lokalny układ DOM.
-     */
-
-    const localTextLeft =
-        (
-            rangeRect.left -
-            originalLeft
-        ) /
-        scaleX;
-
-    return localTextLeft;
-
-}
+    
 
 /* =========================================================
    TEXT PIXEL TEST
@@ -3072,94 +2870,175 @@ function textPixelHit(
 
     }
 
-    const rect =
-        element.getBoundingClientRect();
 
     /*
-     * Szybki bounding-box test.
+     * =========================================
+     * PRAWDZIWY RENDEROWANY TEKST
+     * =========================================
+     *
+     * Range daje nam rzeczywisty bounding box
+     * wyrenderowanych znaków.
+     *
+     * To UWZGLĘDNIA:
+     *
+     * - scale(1.06)
+     * - pozycję X
+     * - pozycję Y
+     * - font
+     * - letter spacing
      */
 
+    const textNode =
+        element.firstChild;
+
+
     if (
-        screenX < rect.left ||
-        screenX > rect.right ||
-        screenY < rect.top ||
-        screenY > rect.bottom
+        !textNode ||
+        textNode.nodeType !==
+        Node.TEXT_NODE
     ) {
 
         return false;
 
     }
+
+
+    const range =
+        document.createRange();
+
+
+    range.selectNodeContents(
+        textNode
+    );
+
+
+    const textRect =
+        range.getBoundingClientRect();
+
+
+    if (
+        textRect.width <= 0 ||
+        textRect.height <= 0
+    ) {
+
+        return false;
+
+    }
+
+
+    /*
+     * =========================================
+     * MASKA
+     * =========================================
+     */
 
     const mask =
         getTextMask(
             element
         );
 
+
     if (!mask) {
         return false;
     }
 
-    /*
-     * Cofamy scale()
-     * do lokalnych współrzędnych DOM.
-     */
-
-    const local =
-        screenPointToTextLocal(
-            element,
-            screenX,
-            screenY
-        );
-
-    if (!local) {
-        return false;
-    }
 
     /*
      * =========================================
-     * KLUCZOWA POPRAWKA X
+     * BOUNDING BOX
      * =========================================
-     *
-     * Canvas może mieć minimalnie inną
-     * szerokość glifów niż prawdziwy tekst.
-     *
-     * Dlatego przesuwamy maskę tak,
-     * aby jej rzeczywista lewa krawędź
-     * pokryła się z prawdziwą lewą krawędzią
-     * tekstu DOM.
      */
-
-    const renderedTextLeft =
-        getRenderedTextLocalLeft(
-            element
-        );
 
     if (
-        renderedTextLeft !== null
+        screenX < textRect.left ||
+        screenX > textRect.right ||
+        screenY < textRect.top ||
+        screenY > textRect.bottom
     ) {
 
-        const xOffset =
-            renderedTextLeft -
-            mask.inkLeft;
-
-        local.x -= xOffset;
+        return false;
 
     }
 
+
     /*
-     * Y zostawiamy dokładnie tak,
-     * jak był — bo wysokość już się zgadza.
+     * =========================================
+     * NORMALIZOWANA POZYCJA W TEKŚCIE
+     * =========================================
+     *
+     * 0 = lewa krawędź tekstu
+     * 1 = prawa krawędź tekstu
+     *
+     * Range pochodzi bezpośrednio
+     * z DOM-u, więc scale(1.06)
+     * jest już uwzględnione.
      */
+
+    const normalizedX =
+        (
+            screenX -
+            textRect.left
+        ) /
+        textRect.width;
+
+
+    const normalizedY =
+        (
+            screenY -
+            textRect.top
+        ) /
+        textRect.height;
+
+
+    /*
+     * =========================================
+     * RZECZYWISTY INK BOUNDING BOX MASKI
+     * =========================================
+     *
+     * Nie korzystamy z całego canvasu.
+     * Bierzemy tylko faktyczne piksele liter.
+     */
+
+    const maskInkWidth =
+        mask.inkRight -
+        mask.inkLeft +
+        1;
+
+
+    const maskInkHeight =
+        mask.inkBottom -
+        mask.inkTop +
+        1;
+
+
+    /*
+     * =========================================
+     * MAPOWANIE DOM -> CANVAS MASK
+     * =========================================
+     */
+
+    const localX =
+    mask.inkLeft +
+    normalizedX *
+    (maskInkWidth - 1);
+
+const localY =
+    mask.inkTop +
+    normalizedY *
+    (maskInkHeight - 1);
+
 
     const px =
         Math.floor(
-            local.x
+            localX
         );
+
 
     const py =
         Math.floor(
-            local.y
+            localY
         );
+
 
     if (
         px < 0 ||
@@ -3171,6 +3050,7 @@ function textPixelHit(
         return false;
 
     }
+
 
     return (
         mask.mask[
@@ -3187,62 +3067,7 @@ function textPixelHit(
    CIRCLE PIXEL TEST
    ========================================================= */
 
-      function getTransformOrigin(
-    element
-) {
-
-    const style =
-        getComputedStyle(element);
-
-    const parts =
-        style.transformOrigin
-            .split(" ");
-
-    const width =
-        element.offsetWidth;
-
-    const height =
-        element.offsetHeight;
-
-    function parseValue(
-        value,
-        size
-    ) {
-
-        if (
-            value.endsWith("%")
-        ) {
-
-            return (
-                parseFloat(value) /
-                100
-            ) * size;
-
-        }
-
-        return (
-            parseFloat(value) || 0
-        );
-
-    }
-
-    return {
-
-        x:
-            parseValue(
-                parts[0] || "50%",
-                width
-            ),
-
-        y:
-            parseValue(
-                parts[1] || "50%",
-                height
-            )
-
-    };
-
-}
+    
 
 function circlePixelHit(
     circle,
