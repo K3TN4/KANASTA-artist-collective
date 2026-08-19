@@ -2368,20 +2368,28 @@ function buildTextMask(element) {
         return null;
     }
 
+
     const style =
         getComputedStyle(element);
+
 
     const width =
         Math.max(
             1,
-            Math.ceil(element.offsetWidth)
+            Math.ceil(
+                element.offsetWidth
+            )
         );
+
 
     const height =
         Math.max(
             1,
-            Math.ceil(element.offsetHeight)
+            Math.ceil(
+                element.offsetHeight
+            )
         );
+
 
     if (
         width <= 0 ||
@@ -2390,23 +2398,61 @@ function buildTextMask(element) {
         style.visibility === "hidden" ||
         Number(style.opacity) === 0
     ) {
+
         return null;
+
     }
 
-    let text =
-        element.textContent
-            .replace(/\s+/g, " ")
-            .trim();
+
+    const textNode =
+        element.firstChild;
+
+
+    if (
+        !textNode ||
+        textNode.nodeType !== Node.TEXT_NODE
+    ) {
+
+        return null;
+
+    }
+
+
+    const text =
+        textNode.textContent;
+
 
     if (!text) {
         return null;
     }
 
-    text =
-        transformText(
-            text,
-            style.textTransform
-        );
+
+    /*
+     * =========================================
+     * CANVAS MASK
+     * =========================================
+     */
+
+    const canvas =
+        document.createElement("canvas");
+
+
+    canvas.width =
+        width;
+
+    canvas.height =
+        height;
+
+
+    const drawCtx =
+        canvas.getContext("2d");
+
+
+    const measureCtx =
+        document
+            .createElement("canvas")
+            .getContext("2d");
+
 
     const font =
         [
@@ -2419,143 +2465,69 @@ function buildTextMask(element) {
         .filter(Boolean)
         .join(" ");
 
-    const letterSpacing =
-        parseFloat(style.letterSpacing) || 0;
-
-    const fontSize =
-        parseFloat(style.fontSize) || 16;
-
-    /*
-     * PRAWDZIWY LINE-HEIGHT ELEMENTU
-     */
-
-    let lineHeight;
-
-    if (style.lineHeight === "normal") {
-
-        lineHeight =
-            fontSize * 1.2;
-
-    }
-    else {
-
-        lineHeight =
-            parseFloat(style.lineHeight);
-
-    }
-
-    /*
-     * CANVAS
-     */
-
-    const canvas =
-        document.createElement("canvas");
-
-    canvas.width =
-        width;
-
-    canvas.height =
-        height;
-
-    const drawCtx =
-        canvas.getContext("2d");
-
-    const measureCtx =
-        document
-            .createElement("canvas")
-            .getContext("2d");
 
     measureCtx.font =
         font;
 
+
     drawCtx.font =
         font;
+
 
     drawCtx.fillStyle =
         "#000000";
 
+
     drawCtx.textBaseline =
         "alphabetic";
 
-    drawCtx.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
 
     /*
      * =========================================
-     * SZEROKOŚĆ TEKSTU
+     * LINE HEIGHT
      * =========================================
      */
 
-    let textWidth =
-        measureCtx.measureText(text).width;
+    const fontSize =
+        parseFloat(
+            style.fontSize
+        ) || 16;
 
-    if (text.length > 1) {
 
-        textWidth +=
-            letterSpacing *
-            (text.length - 1);
+    const lineHeight =
+        style.lineHeight === "normal"
+            ? fontSize * 1.2
+            : parseFloat(style.lineHeight);
 
-    }
-
-    /*
-     * =========================================
-     * X
-     * =========================================
-     */
-
-    let startX = 0;
-
-    if (style.textAlign === "center") {
-
-        startX =
-            (width - textWidth) / 2;
-
-    }
-    else if (style.textAlign === "right") {
-
-        startX =
-            width - textWidth;
-
-    }
-
-    /*
-     * =========================================
-     * METRYKI GLYPHÓW
-     * =========================================
-     */
-
-    const metrics =
-        measureCtx.measureText(text);
-
-    const ascent =
-        metrics.actualBoundingBoxAscent ||
-        fontSize;
-
-    const descent =
-        metrics.actualBoundingBoxDescent ||
-        0;
 
     /*
      * =========================================
      * BASELINE
      * =========================================
      *
-     * DOM:
-     *
-     * line-height / 2
-     *
-     * + font metrics
-     *
-     * To jest znacznie bliżej tego,
-     * co faktycznie renderuje przeglądarka.
+     * Y zostaje liczone tak jak wcześniej,
+     * ponieważ ten sposób był poprawny.
      */
+
+    const metrics =
+        measureCtx.measureText(
+            text
+        );
+
+
+    const ascent =
+        metrics.actualBoundingBoxAscent ||
+        fontSize;
+
+
+    const descent =
+        metrics.actualBoundingBoxDescent ||
+        0;
+
 
     const lineBoxTop =
         (height - lineHeight) / 2;
+
 
     const baseline =
         lineBoxTop +
@@ -2565,185 +2537,356 @@ function buildTextMask(element) {
             descent
         ) / 2;
 
+
     /*
      * =========================================
-     * RYSOWANIE
+     * RZECZYWISTA POZYCJA KAŻDEGO ZNAKU
+     * Z DOM
      * =========================================
      */
 
-    drawCtx.textAlign = "left";
+    const elementRect =
+        element.getBoundingClientRect();
 
-    if (letterSpacing === 0) {
+
+    const baseWidth =
+        element.offsetWidth;
+
+
+    const baseHeight =
+        element.offsetHeight;
+
+
+    if (
+        baseWidth <= 0 ||
+        baseHeight <= 0
+    ) {
+
+        return null;
+
+    }
+
+
+    const scaleX =
+        elementRect.width /
+        baseWidth;
+
+
+    const scaleY =
+        elementRect.height /
+        baseHeight;
+
+
+    if (
+        scaleX === 0 ||
+        scaleY === 0
+    ) {
+
+        return null;
+
+    }
+
+
+    /*
+     * =========================================
+     * TRANSFORM ORIGIN
+     * =========================================
+     */
+
+    const originParts =
+        style.transformOrigin
+            .split(" ");
+
+
+    function parseOrigin(
+        value,
+        size
+    ) {
+
+        if (
+            value.endsWith("%")
+        ) {
+
+            return (
+                parseFloat(value) /
+                100
+            ) * size;
+
+        }
+
+
+        return (
+            parseFloat(value) || 0
+        );
+
+    }
+
+
+    const originX =
+        parseOrigin(
+            originParts[0] || "50%",
+            baseWidth
+        );
+
+
+    const originY =
+        parseOrigin(
+            originParts[1] || "50%",
+            baseHeight
+        );
+
+
+    /*
+     * =========================================
+     * ORYGINALNY TOP-LEFT
+     * =========================================
+     */
+
+    const originalLeft =
+        elementRect.left -
+        originX *
+        (1 - scaleX);
+
+
+    const originalTop =
+        elementRect.top -
+        originY *
+        (1 - scaleY);
+
+
+    /*
+     * =========================================
+     * RYSUJEMY KAŻDĄ LITERĘ NA JEJ
+     * PRAWDZIWYM POŁOŻENIU DOM
+     * =========================================
+     */
+
+    for (
+        let i = 0;
+        i < text.length;
+        i++
+    ) {
+
+        const char =
+            text[i];
+
+
+        /*
+         * Range tylko dla jednego znaku.
+         */
+
+        const range =
+            document.createRange();
+
+
+        range.setStart(
+            textNode,
+            i
+        );
+
+
+        range.setEnd(
+            textNode,
+            i + 1
+        );
+
+
+        const rect =
+            range.getBoundingClientRect();
+
+
+        /*
+         * Puste znaki, np. whitespace.
+         */
+
+        if (
+            rect.width <= 0 ||
+            rect.height <= 0
+        ) {
+
+            continue;
+
+        }
+
+
+        /*
+         * Rzeczywisty X litery z DOM,
+         * cofnięty z ekranu do lokalnych
+         * współrzędnych canvasu.
+         */
+
+        const localX =
+            (
+                rect.left -
+                originalLeft
+            ) /
+            scaleX;
+
+
+        /*
+         * NIE dodajemy letter-spacing.
+         *
+         * DOM już je uwzględnił.
+         */
+
 
         drawCtx.fillText(
-            text,
-            startX,
+            char,
+            localX,
             baseline
         );
 
     }
-    else {
 
-        let x =
-            startX;
-
-        for (
-            let i = 0;
-            i < text.length;
-            i++
-        ) {
-
-            const char =
-                text[i];
-
-            drawCtx.fillText(
-                char,
-                x,
-                baseline
-            );
-
-            x +=
-                measureCtx.measureText(char).width +
-                letterSpacing;
-
-        }
-
-    }
 
     /*
      * =========================================
-     * MASKA
+     * RASTER
      * =========================================
      */
 
-   const pixels =
-    drawCtx.getImageData(
-        0,
-        0,
-        width,
-        height
-    );
+    const pixels =
+        drawCtx.getImageData(
+            0,
+            0,
+            width,
+            height
+        );
 
-const mask =
-    new Uint8Array(
-        width * height
-    );
 
-/*
- * Znajdujemy rzeczywistą
- * lewą krawędź pikseli tekstu
- * narysowanego przez Canvas.
- */
+    const mask =
+        new Uint8Array(
+            width * height
+        );
 
-let inkLeft =
-    width;
 
-let inkRight =
-    -1;
+    let inkLeft =
+        width;
 
-let inkTop =
-    height;
 
-let inkBottom =
-    -1;
+    let inkRight =
+        -1;
 
-for (
-    let y = 0;
-    y < height;
-    y++
-) {
+
+    let inkTop =
+        height;
+
+
+    let inkBottom =
+        -1;
+
 
     for (
-        let x = 0;
-        x < width;
-        x++
+        let y = 0;
+        y < height;
+        y++
     ) {
 
-        const index =
-            (
-                y * width +
-                x
-            ) * 4;
-
-        if (
-            pixels.data[index + 3] > 20
+        for (
+            let x = 0;
+            x < width;
+            x++
         ) {
 
-            mask[
-                y * width +
-                x
-            ] = 1;
+            const index =
+                (
+                    y * width +
+                    x
+                ) * 4;
 
-            if (x < inkLeft) {
-                inkLeft = x;
-            }
 
-            if (x > inkRight) {
-                inkRight = x;
-            }
+            if (
+                pixels.data[index + 3] > 20
+            ) {
 
-            if (y < inkTop) {
-                inkTop = y;
-            }
+                mask[
+                    y * width +
+                    x
+                ] = 1;
 
-            if (y > inkBottom) {
-                inkBottom = y;
+
+                if (
+                    x < inkLeft
+                ) {
+
+                    inkLeft =
+                        x;
+
+                }
+
+
+                if (
+                    x > inkRight
+                ) {
+
+                    inkRight =
+                        x;
+
+                }
+
+
+                if (
+                    y < inkTop
+                ) {
+
+                    inkTop =
+                        y;
+
+                }
+
+
+                if (
+                    y > inkBottom
+                ) {
+
+                    inkBottom =
+                        y;
+
+                }
+
             }
 
         }
 
     }
 
-}
 
-/*
- * Jeżeli tekst nie został narysowany,
- * nie tworzymy maski.
- */
+    if (
+        inkRight < 0
+    ) {
 
-if (
-    inkRight < 0
-) {
+        return null;
 
-    return null;
+    }
 
-}
 
-return {
+    return {
 
-    canvas,
+        canvas,
 
-    mask,
+        mask,
 
-    width,
-
-    height,
-
-    rectWidth:
         width,
 
-    rectHeight:
         height,
 
-    /*
-     * Rzeczywista lewa krawędź
-     * pikseli naszej maski.
-     */
+        rectWidth:
+            width,
 
-    inkLeft,
+        rectHeight:
+            height,
 
-    inkRight,
+        inkLeft,
 
-    inkTop,
+        inkRight,
 
-    inkBottom
+        inkTop,
 
-};
+        inkBottom
 
-   
+    };
 
 }
-   
 
 /* =========================================================
    GET TEXT MASK
@@ -2855,51 +2998,33 @@ function textPixelHit(
         return false;
     }
 
+
     const style =
         getComputedStyle(element);
+
 
     if (
         style.display === "none" ||
         style.visibility === "hidden" ||
         Number(style.opacity) === 0
     ) {
+
         return false;
+
     }
 
 
-    /*
-     * =========================================
-     * RZECZYWISTY TEKST DOM
-     * =========================================
-     */
-
     const textNode =
         element.firstChild;
+
 
     if (
         !textNode ||
         textNode.nodeType !== Node.TEXT_NODE
     ) {
+
         return false;
-    }
 
-
-    const range =
-        document.createRange();
-
-    range.selectNodeContents(
-        textNode
-    );
-
-    const textRect =
-        range.getBoundingClientRect();
-
-
-    if (
-        textRect.width <= 0 ||
-        textRect.height <= 0
-    ) {
-        return false;
     }
 
 
@@ -2912,6 +3037,7 @@ function textPixelHit(
     const mask =
         getTextMask(element);
 
+
     if (!mask) {
         return false;
     }
@@ -2919,88 +3045,35 @@ function textPixelHit(
 
     /*
      * =========================================
-     * X — 100% Z RZECZYWISTEGO DOM
+     * GEOMETRIA ELEMENTU
      * =========================================
-     *
-     * textRect jest już po:
-     *
-     * scale(1.06)
-     *
-     * więc NIE cofamy tutaj skali.
-     *
-     * To jest najważniejsza zmiana.
-     */
-
-    if (
-        screenX < textRect.left ||
-        screenX > textRect.right ||
-        screenY < textRect.top ||
-        screenY > textRect.bottom
-    ) {
-        return false;
-    }
-
-
-    /*
-     * =========================================
-     * X NORMALIZOWANY
-     * =========================================
-     *
-     * 0 = prawdziwy lewy brzeg tekstu
-     * 1 = prawdziwy prawy brzeg tekstu
-     *
-     * Dzięki temu napis pozostaje idealnie
-     * wycentrowany razem z oryginalnym H1.
-     */
-
-    const normalizedX =
-        (
-            screenX -
-            textRect.left
-        ) /
-        textRect.width;
-
-
-    /*
-     * =========================================
-     * X MASKI
-     * =========================================
-     */
-
-    const maskInkWidth =
-        mask.inkRight -
-        mask.inkLeft +
-        1;
-
-
-    let maskX =
-        mask.inkLeft +
-        normalizedX *
-        (
-            maskInkWidth - 1
-        );
-
-
-    /*
-     * =========================================
-     * Y
-     * =========================================
-     *
-     * Y zostawiamy w układzie H1,
-     * ponieważ ten sposób już działa poprawnie.
      */
 
     const elementRect =
         element.getBoundingClientRect();
 
+
+    const baseWidth =
+        element.offsetWidth;
+
+
     const baseHeight =
         element.offsetHeight;
 
+
     if (
+        baseWidth <= 0 ||
         baseHeight <= 0
     ) {
+
         return false;
+
     }
+
+
+    const scaleX =
+        elementRect.width /
+        baseWidth;
 
 
     const scaleY =
@@ -3009,25 +3082,27 @@ function textPixelHit(
 
 
     if (
+        scaleX === 0 ||
         scaleY === 0
     ) {
+
         return false;
+
     }
 
 
     /*
-     * Transform-origin Y.
+     * =========================================
+     * TRANSFORM ORIGIN
+     * =========================================
      */
 
-    const transformOrigin =
-        getComputedStyle(
-            element
-        )
-        .transformOrigin
-        .split(" ");
+    const originParts =
+        style.transformOrigin
+            .split(" ");
 
 
-    function parseOriginY(
+    function parseOrigin(
         value,
         size
     ) {
@@ -3043,25 +3118,39 @@ function textPixelHit(
 
         }
 
+
         return (
-            parseFloat(value) ||
-            0
+            parseFloat(value) || 0
         );
 
     }
 
 
+    const originX =
+        parseOrigin(
+            originParts[0] || "50%",
+            baseWidth
+        );
+
+
     const originY =
-        parseOriginY(
-            transformOrigin[1] || "50%",
+        parseOrigin(
+            originParts[1] || "50%",
             baseHeight
         );
 
 
     /*
-     * Oryginalny top elementu
-     * przed scale().
+     * =========================================
+     * TOP-LEFT H1 PRZED SCALE
+     * =========================================
      */
+
+    const originalLeft =
+        elementRect.left -
+        originX *
+        (1 - scaleX);
+
 
     const originalTop =
         elementRect.top -
@@ -3070,8 +3159,18 @@ function textPixelHit(
 
 
     /*
-     * Punkt ekranu -> lokalny Y.
+     * =========================================
+     * EKRAN -> LOKALNE WSPÓŁRZĘDNE MASKI
+     * =========================================
      */
+
+    const localX =
+        (
+            screenX -
+            originalLeft
+        ) /
+        scaleX;
+
 
     const localY =
         (
@@ -3081,21 +3180,22 @@ function textPixelHit(
         scaleY;
 
 
-    const maskY =
-        localY;
-
-
     /*
      * =========================================
-     * PIXEL MASKI
+     * PIXEL
      * =========================================
      */
 
     const px =
-        Math.floor(maskX);
+        Math.floor(
+            localX
+        );
+
 
     const py =
-        Math.floor(maskY);
+        Math.floor(
+            localY
+        );
 
 
     if (
@@ -3104,7 +3204,9 @@ function textPixelHit(
         px >= mask.width ||
         py >= mask.height
     ) {
+
         return false;
+
     }
 
 
