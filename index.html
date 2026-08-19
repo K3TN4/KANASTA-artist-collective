@@ -2368,28 +2368,20 @@ function buildTextMask(element) {
         return null;
     }
 
-
     const style =
         getComputedStyle(element);
-
 
     const width =
         Math.max(
             1,
-            Math.ceil(
-                element.offsetWidth
-            )
+            Math.ceil(element.offsetWidth)
         );
-
 
     const height =
         Math.max(
             1,
-            Math.ceil(
-                element.offsetHeight
-            )
+            Math.ceil(element.offsetHeight)
         );
-
 
     if (
         width <= 0 ||
@@ -2398,44 +2390,33 @@ function buildTextMask(element) {
         style.visibility === "hidden" ||
         Number(style.opacity) === 0
     ) {
-
         return null;
-
     }
-
 
     const textNode =
         element.firstChild;
-
 
     if (
         !textNode ||
         textNode.nodeType !== Node.TEXT_NODE
     ) {
-
         return null;
-
     }
-
 
     const text =
         textNode.textContent;
-
 
     if (!text) {
         return null;
     }
 
 
-    /*
-     * =========================================
-     * CANVAS MASK
-     * =========================================
-     */
+    /* =========================================
+       CANVAS
+       ========================================= */
 
     const canvas =
         document.createElement("canvas");
-
 
     canvas.width =
         width;
@@ -2443,16 +2424,17 @@ function buildTextMask(element) {
     canvas.height =
         height;
 
-
-    const drawCtx =
+    const ctx =
         canvas.getContext("2d");
 
+    if (!ctx) {
+        return null;
+    }
 
-    const measureCtx =
-        document
-            .createElement("canvas")
-            .getContext("2d");
 
+    /* =========================================
+       FONT
+       ========================================= */
 
     const font =
         [
@@ -2465,34 +2447,106 @@ function buildTextMask(element) {
         .filter(Boolean)
         .join(" ");
 
-
-    measureCtx.font =
+    ctx.font =
         font;
-
-
-    drawCtx.font =
-        font;
-
-
-    drawCtx.fillStyle =
-        "#000000";
-
-
-    drawCtx.textBaseline =
-        "alphabetic";
 
 
     /*
-     * =========================================
-     * LINE HEIGHT
-     * =========================================
+     * KLUCZ:
+     * canvas dostaje DOKŁADNIE ten sam
+     * letter-spacing co CSS.
+     *
+     * Nie liczymy już znaków ręcznie.
      */
 
-    const fontSize =
-        parseFloat(
-            style.fontSize
-        ) || 16;
+    if (
+        "letterSpacing" in ctx
+    ) {
+        ctx.letterSpacing =
+            style.letterSpacing;
+    }
 
+
+    if (
+        "wordSpacing" in ctx
+    ) {
+        ctx.wordSpacing =
+            style.wordSpacing;
+    }
+
+
+    /*
+     * Staramy się zachować sposób
+     * renderowania tekstu.
+     */
+
+    if (
+        "fontKerning" in ctx
+    ) {
+        ctx.fontKerning =
+            style.fontKerning;
+    }
+
+
+    if (
+        "textRendering" in ctx &&
+        style.textRendering
+    ) {
+        ctx.textRendering =
+            style.textRendering;
+    }
+
+
+    ctx.fillStyle =
+        "#000";
+
+    ctx.textAlign =
+        style.textAlign === "center"
+            ? "center"
+            : style.textAlign === "right"
+                ? "right"
+                : "left";
+
+    ctx.textBaseline =
+        "alphabetic";
+
+
+    /* =========================================
+       X
+       ========================================= */
+
+    let drawX;
+
+    if (
+        ctx.textAlign === "center"
+    ) {
+
+        drawX =
+            width / 2;
+
+    }
+    else if (
+        ctx.textAlign === "right"
+    ) {
+
+        drawX =
+            width;
+
+    }
+    else {
+
+        drawX =
+            0;
+
+    }
+
+
+    /* =========================================
+       Y
+       ========================================= */
+
+    const fontSize =
+        parseFloat(style.fontSize) || 16;
 
     const lineHeight =
         style.lineHeight === "normal"
@@ -2500,19 +2554,8 @@ function buildTextMask(element) {
             : parseFloat(style.lineHeight);
 
 
-    /*
-     * =========================================
-     * BASELINE
-     * =========================================
-     *
-     * Y zostaje liczone tak jak wcześniej,
-     * ponieważ ten sposób był poprawny.
-     */
-
     const metrics =
-        measureCtx.measureText(
-            text
-        );
+        ctx.measureText(text);
 
 
     const ascent =
@@ -2538,215 +2581,23 @@ function buildTextMask(element) {
         ) / 2;
 
 
-    /*
-     * =========================================
-     * RZECZYWISTA POZYCJA KAŻDEGO ZNAKU
-     * Z DOM
-     * =========================================
-     */
-
-    const elementRect =
-        element.getBoundingClientRect();
-
-
-    const baseWidth =
-        element.offsetWidth;
-
-
-    const baseHeight =
-        element.offsetHeight;
-
-
-    if (
-        baseWidth <= 0 ||
-        baseHeight <= 0
-    ) {
-
-        return null;
-
-    }
-
-
-    const scaleX =
-        elementRect.width /
-        baseWidth;
-
-
-    const scaleY =
-        elementRect.height /
-        baseHeight;
-
-
-    if (
-        scaleX === 0 ||
-        scaleY === 0
-    ) {
-
-        return null;
-
-    }
-
-
-    /*
-     * =========================================
-     * TRANSFORM ORIGIN
-     * =========================================
-     */
-
-    const originParts =
-        style.transformOrigin
-            .split(" ");
-
-
-    function parseOrigin(
-        value,
-        size
-    ) {
-
-        if (
-            value.endsWith("%")
-        ) {
-
-            return (
-                parseFloat(value) /
-                100
-            ) * size;
-
-        }
-
-
-        return (
-            parseFloat(value) || 0
-        );
-
-    }
-
-
-    const originX =
-        parseOrigin(
-            originParts[0] || "50%",
-            baseWidth
-        );
-
-
-    const originY =
-        parseOrigin(
-            originParts[1] || "50%",
-            baseHeight
-        );
-
-
-    /*
-     * =========================================
-     * ORYGINALNY TOP-LEFT
-     * =========================================
-     */
-
-    const originalLeft =
-        elementRect.left -
-        originX *
-        (1 - scaleX);
-
-
-    const originalTop =
-        elementRect.top -
-        originY *
-        (1 - scaleY);
-
-
-    /*
-     * =========================================
-     * RYSUJEMY KAŻDĄ LITERĘ NA JEJ
-     * PRAWDZIWYM POŁOŻENIU DOM
-     * =========================================
-     */
-
-    for (
-        let i = 0;
-        i < text.length;
-        i++
-    ) {
-
-        const char =
-            text[i];
-
-
-        /*
-         * Range tylko dla jednego znaku.
-         */
-
-        const range =
-            document.createRange();
-
-
-        range.setStart(
-            textNode,
-            i
-        );
-
-
-        range.setEnd(
-            textNode,
-            i + 1
-        );
-
-
-        const rect =
-            range.getBoundingClientRect();
-
-
-        /*
-         * Puste znaki, np. whitespace.
-         */
-
-        if (
-            rect.width <= 0 ||
-            rect.height <= 0
-        ) {
-
-            continue;
-
-        }
-
-
-        /*
-         * Rzeczywisty X litery z DOM,
-         * cofnięty z ekranu do lokalnych
-         * współrzędnych canvasu.
-         */
-
-        const localX =
-            (
-                rect.left -
-                originalLeft
-            ) /
-            scaleX;
-
-
-        /*
-         * NIE dodajemy letter-spacing.
-         *
-         * DOM już je uwzględnił.
-         */
-
-
-        drawCtx.fillText(
-            char,
-            localX,
-            baseline
-        );
-
-    }
-
-
-    /*
-     * =========================================
-     * RASTER
-     * =========================================
-     */
+    /* =========================================
+       JEDEN fillText()
+       ========================================= */
+
+    ctx.fillText(
+        text,
+        drawX,
+        baseline
+    );
+
+
+    /* =========================================
+       RASTER
+       ========================================= */
 
     const pixels =
-        drawCtx.getImageData(
+        ctx.getImageData(
             0,
             0,
             width,
@@ -2763,14 +2614,11 @@ function buildTextMask(element) {
     let inkLeft =
         width;
 
-
     let inkRight =
         -1;
 
-
     let inkTop =
         height;
-
 
     let inkBottom =
         -1;
@@ -2800,48 +2648,35 @@ function buildTextMask(element) {
             ) {
 
                 mask[
-                    y * width +
-                    x
+                    y * width + x
                 ] = 1;
 
 
                 if (
                     x < inkLeft
                 ) {
-
-                    inkLeft =
-                        x;
-
+                    inkLeft = x;
                 }
 
 
                 if (
                     x > inkRight
                 ) {
-
-                    inkRight =
-                        x;
-
+                    inkRight = x;
                 }
 
 
                 if (
                     y < inkTop
                 ) {
-
-                    inkTop =
-                        y;
-
+                    inkTop = y;
                 }
 
 
                 if (
                     y > inkBottom
                 ) {
-
-                    inkBottom =
-                        y;
-
+                    inkBottom = y;
                 }
 
             }
@@ -2854,9 +2689,7 @@ function buildTextMask(element) {
     if (
         inkRight < 0
     ) {
-
         return null;
-
     }
 
 
@@ -2998,64 +2831,32 @@ function textPixelHit(
         return false;
     }
 
-
     const style =
         getComputedStyle(element);
-
 
     if (
         style.display === "none" ||
         style.visibility === "hidden" ||
         Number(style.opacity) === 0
     ) {
-
         return false;
-
     }
 
-
-    const textNode =
-        element.firstChild;
-
-
-    if (
-        !textNode ||
-        textNode.nodeType !== Node.TEXT_NODE
-    ) {
-
-        return false;
-
-    }
-
-
-    /*
-     * =========================================
-     * MASKA
-     * =========================================
-     */
 
     const mask =
         getTextMask(element);
-
 
     if (!mask) {
         return false;
     }
 
 
-    /*
-     * =========================================
-     * GEOMETRIA ELEMENTU
-     * =========================================
-     */
-
-    const elementRect =
+    const rect =
         element.getBoundingClientRect();
 
 
     const baseWidth =
         element.offsetWidth;
-
 
     const baseHeight =
         element.offsetHeight;
@@ -3065,19 +2866,20 @@ function textPixelHit(
         baseWidth <= 0 ||
         baseHeight <= 0
     ) {
-
         return false;
-
     }
 
 
+    /* =========================================
+       SKALA ELEMENTU
+       ========================================= */
+
     const scaleX =
-        elementRect.width /
+        rect.width /
         baseWidth;
 
-
     const scaleY =
-        elementRect.height /
+        rect.height /
         baseHeight;
 
 
@@ -3085,17 +2887,13 @@ function textPixelHit(
         scaleX === 0 ||
         scaleY === 0
     ) {
-
         return false;
-
     }
 
 
-    /*
-     * =========================================
-     * TRANSFORM ORIGIN
-     * =========================================
-     */
+    /* =========================================
+       TRANSFORM ORIGIN
+       ========================================= */
 
     const originParts =
         style.transformOrigin
@@ -3118,7 +2916,6 @@ function textPixelHit(
 
         }
 
-
         return (
             parseFloat(value) || 0
         );
@@ -3140,29 +2937,26 @@ function textPixelHit(
         );
 
 
-    /*
-     * =========================================
-     * TOP-LEFT H1 PRZED SCALE
-     * =========================================
-     */
+    /* =========================================
+       ODTWORZENIE POZYCJI H1
+       PRZED scale()
+       ========================================= */
 
     const originalLeft =
-        elementRect.left -
+        rect.left -
         originX *
         (1 - scaleX);
 
 
     const originalTop =
-        elementRect.top -
+        rect.top -
         originY *
         (1 - scaleY);
 
 
-    /*
-     * =========================================
-     * EKRAN -> LOKALNE WSPÓŁRZĘDNE MASKI
-     * =========================================
-     */
+    /* =========================================
+       SCREEN → LOCAL CANVAS
+       ========================================= */
 
     const localX =
         (
@@ -3180,22 +2974,11 @@ function textPixelHit(
         scaleY;
 
 
-    /*
-     * =========================================
-     * PIXEL
-     * =========================================
-     */
-
     const px =
-        Math.floor(
-            localX
-        );
-
+        Math.floor(localX);
 
     const py =
-        Math.floor(
-            localY
-        );
+        Math.floor(localY);
 
 
     if (
@@ -3204,16 +2987,13 @@ function textPixelHit(
         px >= mask.width ||
         py >= mask.height
     ) {
-
         return false;
-
     }
 
 
     return (
         mask.mask[
-            py *
-            mask.width +
+            py * mask.width +
             px
         ] === 1
     );
