@@ -2557,7 +2557,7 @@ function pointInsideText(
 
 
 /* =========================================
-   CZY ELEMENT JEST RZECZYWIŚCIE WIDOCZNY
+   CZY ELEMENT JEST RZECZYWIŚCIE CYANOWANY
    ========================================= */
 
 function elementIsForeground(
@@ -2571,10 +2571,25 @@ function elementIsForeground(
     }
 
 
+    /*
+     * Nie interesuje nas sam kursor.
+     */
+    if (
+        element === customCursor
+    ) {
+        return false;
+    }
+
+
+    /*
+     * Kontenery strony nie są foregroundem.
+     */
     if (
         element === document.documentElement ||
         element === document.body ||
-        element === customCursor
+        element === document.querySelector("main") ||
+        element === document.querySelector("header") ||
+        element === document.querySelector("footer")
     ) {
         return false;
     }
@@ -2589,19 +2604,23 @@ function elementIsForeground(
 
 
     /*
-     * NIEWIDOCZNE
+     * Element niewidoczny.
      */
     if (
         Number(style.opacity) === 0 ||
-        style.visibility === "hidden"
+        style.visibility === "hidden" ||
+        style.display === "none"
     ) {
         return false;
     }
 
 
     /*
-     * ZDJĘCIA
+     * =====================================
+     * OBRAZY / VIDEO / SVG
+     * =====================================
      */
+
     if (
         tag === "img" ||
         tag === "video" ||
@@ -2612,11 +2631,63 @@ function elementIsForeground(
 
 
     /*
-     * KOLOROWE TŁO
+     * =====================================
+     * KOŁA ARTYSTÓW
+     * =====================================
      */
+
+    if (
+        element.classList.contains(
+            "artist-circle"
+        )
+    ) {
+        return true;
+    }
+
+
+    if (
+        element.classList.contains(
+            "profile-image-wrapper"
+        )
+    ) {
+        return true;
+    }
+
+
+    /*
+     * =====================================
+     * IMAGE TEXT
+     * =====================================
+     *
+     * Sam box h1 nie może być cyan.
+     * Cyan ma pojawić się tylko na literach.
+     */
+
+    if (
+        element.classList.contains(
+            "image-text"
+        )
+    ) {
+
+        return pointInsideText(
+            element,
+            x,
+            y
+        );
+
+    }
+
+
+    /*
+     * =====================================
+     * PRAWDZIWY KOLOROWY BACKGROUND
+     * =====================================
+     */
+
     if (
         style.backgroundColor &&
-        style.backgroundColor !== "transparent"
+        style.backgroundColor !== "transparent" &&
+        style.backgroundColor !== "rgba(0, 0, 0, 0)"
     ) {
 
         if (
@@ -2624,15 +2695,20 @@ function elementIsForeground(
                 style.backgroundColor
             )
         ) {
+
             return true;
+
         }
 
     }
 
 
     /*
+     * =====================================
      * BACKGROUND IMAGE
+     * =====================================
      */
+
     if (
         style.backgroundImage &&
         style.backgroundImage !== "none"
@@ -2642,8 +2718,11 @@ function elementIsForeground(
 
 
     /*
+     * =====================================
      * TEKST
+     * =====================================
      */
+
     const textTags = new Set([
         "a",
         "button",
@@ -2666,6 +2745,12 @@ function elementIsForeground(
         textTags.has(tag)
     ) {
 
+        /*
+         * Najpierw naprawdę sprawdzamy,
+         * czy punkt wpada na GLYPH tekstu,
+         * a nie tylko jego prostokąt.
+         */
+
         if (
             !pointInsideText(
                 element,
@@ -2677,50 +2762,27 @@ function elementIsForeground(
         }
 
 
+        /*
+         * Transparentny tekst nie jest foregroundem.
+         */
+
         if (
-            element.classList.contains(
-                "image-text"
-            )
+            !style.color ||
+            style.color === "transparent"
         ) {
-            return true;
+            return false;
         }
 
 
-        if (
-            style.color &&
-            style.color !== "transparent"
-        ) {
+        /*
+         * Jeżeli tekst jest beżowy,
+         * pozostaje magenta.
+         */
 
-            return !isBackgroundColor(
-                style.color
-            );
+        return !isBackgroundColor(
+            style.color
+        );
 
-        }
-
-    }
-
-
-    /*
-     * KOŁO ARTYSTY
-     */
-    if (
-        element.classList.contains(
-            "artist-circle"
-        )
-    ) {
-        return true;
-    }
-
-
-    /*
-     * ZDJĘCIE PROFILOWE
-     */
-    if (
-        element.classList.contains(
-            "profile-image-wrapper"
-        )
-    ) {
-        return true;
     }
 
 
@@ -2728,8 +2790,9 @@ function elementIsForeground(
 
 }
 
+
 /* =========================================
-   CZY PUNKT JEST NAD OBIEKTEM
+   CZY PUNKT LEŻY NA RZECZYWISTYM OBIEKCIE
    ========================================= */
 
 function isCyanPoint(
@@ -2737,23 +2800,71 @@ function isCyanPoint(
     y
 ) {
 
-    const element =
-        document.elementFromPoint(
+    /*
+     * Bierzemy CAŁY stos elementów
+     * znajdujących się pod punktem.
+     *
+     * To jest ważniejsze niż
+     * pojedynczy elementFromPoint().
+     */
+
+    const elements =
+        document.elementsFromPoint(
             x,
             y
         );
 
 
-    if (!element) {
+    if (
+        !elements ||
+        elements.length === 0
+    ) {
         return false;
     }
 
 
-    return elementIsForeground(
-        element,
-        x,
-        y
-    );
+    /*
+     * Szukamy pierwszego rzeczywistego
+     * foregroundu.
+     */
+
+    for (
+        const element
+        of elements
+    ) {
+
+        /*
+         * Pomijamy sam cursor.
+         */
+        if (
+            element === customCursor
+        ) {
+            continue;
+        }
+
+
+        if (
+            elementIsForeground(
+                element,
+                x,
+                y
+            )
+        ) {
+
+            return true;
+
+        }
+
+    }
+
+
+    /*
+     * Nic kolorowego pod spodem.
+     *
+     * ZOSTAJE MAGENTA.
+     */
+
+    return false;
 
 }
 function drawCursorMask() {
