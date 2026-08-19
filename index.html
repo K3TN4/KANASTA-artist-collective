@@ -2839,108 +2839,7 @@ function invalidateTextMasks() {
 
 
     
-function getRenderedTextLocalLeft(
-    element,
-    textRect
-) {
 
-    const elementRect =
-        element.getBoundingClientRect();
-
-    const baseWidth =
-        element.offsetWidth;
-
-    if (
-        baseWidth <= 0 ||
-        textRect.width <= 0
-    ) {
-
-        return null;
-
-    }
-
-    /*
-     * Aktualna skala elementu.
-     */
-
-    const scaleX =
-        elementRect.width /
-        baseWidth;
-
-    if (scaleX === 0) {
-
-        return null;
-
-    }
-
-    /*
-     * Transform-origin.
-     */
-
-    const style =
-        getComputedStyle(
-            element
-        );
-
-    const originParts =
-        style.transformOrigin
-            .split(" ");
-
-    function parseOrigin(
-        value,
-        size
-    ) {
-
-        if (
-            value.endsWith("%")
-        ) {
-
-            return (
-                parseFloat(value) /
-                100
-            ) * size;
-
-        }
-
-        return (
-            parseFloat(value) ||
-            0
-        );
-
-    }
-
-    const originX =
-        parseOrigin(
-            originParts[0] || "50%",
-            baseWidth
-        );
-
-    /*
-     * Oryginalny, nieskalowany
-     * lewy brzeg elementu.
-     */
-
-    const originalLeft =
-        elementRect.left -
-        originX *
-        (1 - scaleX);
-
-    /*
-     * Rzeczywisty lewy brzeg
-     * tekstu DOM, sprowadzony
-     * do lokalnych współrzędnych H1.
-     */
-
-    const localTextLeft =
-        (
-            textRect.left -
-            originalLeft
-        ) /
-        scaleX;
-
-    return localTextLeft;
-
-}
 /* =========================================================
    TEXT PIXEL TEST
    ========================================================= */
@@ -2957,18 +2856,14 @@ function textPixelHit(
     }
 
     const style =
-        getComputedStyle(
-            element
-        );
+        getComputedStyle(element);
 
     if (
         style.display === "none" ||
         style.visibility === "hidden" ||
         Number(style.opacity) === 0
     ) {
-
         return false;
-
     }
 
 
@@ -2983,12 +2878,9 @@ function textPixelHit(
 
     if (
         !textNode ||
-        textNode.nodeType !==
-        Node.TEXT_NODE
+        textNode.nodeType !== Node.TEXT_NODE
     ) {
-
         return false;
-
     }
 
 
@@ -3007,22 +2899,18 @@ function textPixelHit(
         textRect.width <= 0 ||
         textRect.height <= 0
     ) {
-
         return false;
-
     }
 
 
     /*
      * =========================================
-     * MASKA CANVAS
+     * MASKA
      * =========================================
      */
 
     const mask =
-        getTextMask(
-            element
-        );
+        getTextMask(element);
 
     if (!mask) {
         return false;
@@ -3031,8 +2919,16 @@ function textPixelHit(
 
     /*
      * =========================================
-     * BOUNDING BOX RZECZYWISTEGO TEKSTU
+     * X — 100% Z RZECZYWISTEGO DOM
      * =========================================
+     *
+     * textRect jest już po:
+     *
+     * scale(1.06)
+     *
+     * więc NIE cofamy tutaj skali.
+     *
+     * To jest najważniejsza zmiana.
      */
 
     if (
@@ -3041,41 +2937,71 @@ function textPixelHit(
         screenY < textRect.top ||
         screenY > textRect.bottom
     ) {
-
         return false;
-
     }
 
 
     /*
      * =========================================
-     * ELEMENT PO SCALE()
+     * X NORMALIZOWANY
      * =========================================
+     *
+     * 0 = prawdziwy lewy brzeg tekstu
+     * 1 = prawdziwy prawy brzeg tekstu
+     *
+     * Dzięki temu napis pozostaje idealnie
+     * wycentrowany razem z oryginalnym H1.
+     */
+
+    const normalizedX =
+        (
+            screenX -
+            textRect.left
+        ) /
+        textRect.width;
+
+
+    /*
+     * =========================================
+     * X MASKI
+     * =========================================
+     */
+
+    const maskInkWidth =
+        mask.inkRight -
+        mask.inkLeft +
+        1;
+
+
+    let maskX =
+        mask.inkLeft +
+        normalizedX *
+        (
+            maskInkWidth - 1
+        );
+
+
+    /*
+     * =========================================
+     * Y
+     * =========================================
+     *
+     * Y zostawiamy w układzie H1,
+     * ponieważ ten sposób już działa poprawnie.
      */
 
     const elementRect =
         element.getBoundingClientRect();
 
-    const baseWidth =
-        element.offsetWidth;
-
     const baseHeight =
         element.offsetHeight;
 
-
     if (
-        baseWidth <= 0 ||
         baseHeight <= 0
     ) {
-
         return false;
-
     }
 
-
-    const scaleX =
-        elementRect.width /
-        baseWidth;
 
     const scaleY =
         elementRect.height /
@@ -3083,29 +3009,25 @@ function textPixelHit(
 
 
     if (
-        scaleX === 0 ||
         scaleY === 0
     ) {
-
         return false;
-
     }
 
 
     /*
-     * =========================================
-     * TRANSFORM ORIGIN
-     * =========================================
+     * Transform-origin Y.
      */
 
     const transformOrigin =
         getComputedStyle(
             element
-        ).transformOrigin
-            .split(" ");
+        )
+        .transformOrigin
+        .split(" ");
 
 
-    function parseOrigin(
+    function parseOriginY(
         value,
         size
     ) {
@@ -3129,29 +3051,17 @@ function textPixelHit(
     }
 
 
-    const originX =
-        parseOrigin(
-            transformOrigin[0] || "50%",
-            baseWidth
-        );
-
     const originY =
-        parseOrigin(
+        parseOriginY(
             transformOrigin[1] || "50%",
             baseHeight
         );
 
 
     /*
-     * =========================================
-     * ORYGINALNY TOP-LEFT H1
-     * =========================================
+     * Oryginalny top elementu
+     * przed scale().
      */
-
-    const originalLeft =
-        elementRect.left -
-        originX *
-        (1 - scaleX);
 
     const originalTop =
         elementRect.top -
@@ -3160,22 +3070,8 @@ function textPixelHit(
 
 
     /*
-     * =========================================
-     * EKRAN -> LOKALNE WSPÓŁRZĘDNE H1
-     * =========================================
-     *
-     * Tutaj NIE odejmujemy już żadnego
-     * textOffsetY.
-     *
-     * To właśnie przywraca poprawne Y.
+     * Punkt ekranu -> lokalny Y.
      */
-
-    const localX =
-        (
-            screenX -
-            originalLeft
-        ) /
-        scaleX;
 
     const localY =
         (
@@ -3185,81 +3081,21 @@ function textPixelHit(
         scaleY;
 
 
-    /*
-     * =========================================
-     * KOREKCJA TYLKO X
-     * =========================================
-     *
-     * Canvas może mieć minimalnie inną
-     * pozycję pierwszego glifu niż DOM.
-     *
-     * Obliczamy rzeczywistą pozycję tekstu
-     * DOM w układzie lokalnym H1.
-     */
-
-    const renderedTextLocalLeft =
-        getRenderedTextLocalLeft(
-            element,
-            textRect
-        );
-
-
-    let maskX =
-        localX;
-
-
-    if (
-        renderedTextLocalLeft !== null
-    ) {
-
-        /*
-         * mask.inkLeft = początek tekstu
-         * w canvasie.
-         *
-         * renderedTextLocalLeft =
-         * rzeczywisty początek tekstu DOM.
-         */
-
-        const xCorrection =
-            renderedTextLocalLeft -
-            mask.inkLeft;
-
-        maskX =
-            localX -
-            xCorrection;
-
-    }
-
-
-    /*
-     * =========================================
-     * Y BEZ KOREKCJI
-     * =========================================
-     *
-     * To jest kluczowe.
-     *
-     * Y już wcześniej było poprawne.
-     */
-
     const maskY =
         localY;
 
 
     /*
      * =========================================
-     * CANVAS PIXEL
+     * PIXEL MASKI
      * =========================================
      */
 
     const px =
-        Math.floor(
-            maskX
-        );
+        Math.floor(maskX);
 
     const py =
-        Math.floor(
-            maskY
-        );
+        Math.floor(maskY);
 
 
     if (
@@ -3268,9 +3104,7 @@ function textPixelHit(
         px >= mask.width ||
         py >= mask.height
     ) {
-
         return false;
-
     }
 
 
@@ -3283,7 +3117,6 @@ function textPixelHit(
     );
 
 }
-
 /* =========================================================
    CIRCLE PIXEL TEST
    ========================================================= */
