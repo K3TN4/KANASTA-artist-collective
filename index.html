@@ -2641,14 +2641,26 @@ function elementIsForeground(
     }
 
 
-    /*
-     * BORDER
-     */
+    /* =====================================
+   BORDER
+   ===================================== */
+
+const borderVisible =
+    style.borderTopStyle !== "none" ||
+    style.borderRightStyle !== "none" ||
+    style.borderBottomStyle !== "none" ||
+    style.borderLeftStyle !== "none";
+
+
+if (borderVisible) {
+
     const borders = [
+
         style.borderTopColor,
         style.borderRightColor,
         style.borderBottomColor,
         style.borderLeftColor
+
     ];
 
 
@@ -2665,9 +2677,12 @@ function elementIsForeground(
             }
         )
     ) {
+
         return true;
+
     }
 
+}
 
     /*
      * TEKST
