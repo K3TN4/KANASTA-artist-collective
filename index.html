@@ -2892,6 +2892,9 @@ function isCyanPoint(
 /* =========================================
    RYSOWANIE KULKI
    ========================================= */
+/* =========================================
+   RYSOWANIE KULKI
+   ========================================= */
 
 function drawCursorMask() {
 
@@ -2903,10 +2906,10 @@ function drawCursorMask() {
 
 
     /*
-     * Wyczyść canvas.
+     * Czyścimy tylko warstwę canvasu.
      *
-     * Magenta nie jest już rysowany tutaj.
-     * Magenta jest CSS-em na całym canvasie.
+     * Magenta pochodzi z CSS:
+     * background: #ed3d66;
      */
     ctx.clearRect(
         0,
@@ -2917,8 +2920,8 @@ function drawCursorMask() {
 
 
     /*
-     * Wszystko, co narysujemy teraz,
-     * będzie ograniczone do koła.
+     * Ograniczamy rysowanie
+     * do okręgu.
      */
     ctx.save();
 
@@ -2943,7 +2946,6 @@ function drawCursorMask() {
 
     const sampleCount =
         CURSOR.samples;
-
 
     const step =
         size /
@@ -2979,9 +2981,8 @@ function drawCursorMask() {
 
 
             /*
-             * Punkt ekranowy,
-             * który odpowiada temu fragmentowi
-             * kulki.
+             * Punkt odpowiadający
+             * fragmentowi kulki.
              */
             const screenX =
                 cursorX +
@@ -2994,8 +2995,9 @@ function drawCursorMask() {
 
 
             /*
-             * Czy pod tym konkretnym fragmentem
-             * znajduje się obiekt?
+             * Jeżeli pod tym fragmentem
+             * znajduje się obiekt,
+             * malujemy go na cyan.
              */
             if (
                 isCyanPoint(
@@ -3023,38 +3025,6 @@ function drawCursorMask() {
 
 
     ctx.restore();
-
-}
-
-    /*
-     * =====================================
-     * 3. LEKKIE WYGŁADZENIE
-     * =====================================
-     *
-     * Bardzo małe,
-     * żeby nie zrobić blur.
-     */
-
-   
-
-
-    ctx.beginPath();
-
-    ctx.arc(
-        radius,
-        radius,
-        radius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fillStyle =
-        "white";
-
-    ctx.fill();
-
-
- 
 
 }
 
