@@ -2676,90 +2676,7 @@ function buildTextMask(element) {
     };
 
 }
-    /*
-     * Pobieramy rzeczywistą bitmapę.
-     */
-
-    const pixels =
-        drawCtx.getImageData(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-
-    const mask =
-        new Uint8Array(
-            canvas.width *
-            canvas.height
-        );
-
-
-    /*
-     * Zamieniamy alpha na prostą
-     * maskę 0 / 1.
-     */
-
-    for (
-        let y = 0;
-        y < canvas.height;
-        y++
-    ) {
-
-        for (
-            let x = 0;
-            x < canvas.width;
-            x++
-        ) {
-
-            const index =
-                (
-                    y *
-                    canvas.width +
-                    x
-                ) * 4;
-
-
-            const alpha =
-                pixels.data[
-                    index + 3
-                ];
-
-
-            if (
-                alpha > 20
-            ) {
-
-                mask[
-                    y *
-                    canvas.width +
-                    x
-                ] = 1;
-
-            }
-
-        }
-
-    }
-
-
-    return {
-
-        canvas,
-
-        mask,
-
-        width:
-            canvas.width,
-
-        height:
-            canvas.height
-
-    };
-
-}
-
+   
 
 /* =========================================================
    GET TEXT MASK
@@ -2921,7 +2838,7 @@ function textPixelHit(
      * do bounding boxa elementu.
      */
 
- const localX =
+const localX =
     screenX -
     rect.left;
 
@@ -2939,38 +2856,24 @@ const py =
         localY
     );
 
+if (
+    px < 0 ||
+    py < 0 ||
+    px >= mask.width ||
+    py >= mask.height
+) {
 
-    const px =
-        Math.floor(
-            localX
-        );
+    return false;
 
-    const py =
-        Math.floor(
-            localY
-        );
+}
 
-
-    if (
-        px < 0 ||
-        py < 0 ||
-        px >= mask.width ||
-        py >= mask.height
-    ) {
-
-        return false;
-
-    }
-
-
-    return (
-        mask.mask[
-            py *
-            mask.width +
-            px
-        ] === 1
-    );
-
+return (
+    mask.mask[
+        py *
+        mask.width +
+        px
+    ] === 1
+);
 }
 
 
@@ -3364,7 +3267,6 @@ function animateCustomCursor(
         mouseX -
         cursorX;
 
-
     const dy =
         mouseY -
         cursorY;
@@ -3374,13 +3276,39 @@ function animateCustomCursor(
         dx *
         CURSOR.follow;
 
-
     cursorY +=
         dy *
         CURSOR.follow;
 
 
-  
+    /*
+     * VELOCITY
+     */
+
+    velocityX =
+        cursorX -
+        lastX;
+
+    velocityY =
+        cursorY -
+        lastY;
+
+
+    lastX =
+        cursorX;
+
+    lastY =
+        cursorY;
+
+
+    /*
+     * SOFT BODY
+     *
+     * ZOSTAJE TAK JAK WCZEŚNIEJ.
+     * JEDYNA RÓŻNICA:
+     * NIE MA ROTACJI.
+     */
+
     const speed =
         Math.sqrt(
             velocityX *
@@ -3407,28 +3335,28 @@ function animateCustomCursor(
         );
 
 
-    const angle =
-        Math.atan2(
-            velocityY,
-            velocityX
-        );
-
-
     /*
-     * POSITION
+     * POSITION + STRETCH
+     *
+     * BRAK rotate()
      */
 
     customCursor.style.transform = `
-    translate3d(
-        ${cursorX}px,
-        ${cursorY}px,
-        0
-    )
-    translate(
-        -50%,
-        -50%
-    )
-`;
+        translate3d(
+            ${cursorX}px,
+            ${cursorY}px,
+            0
+        )
+        translate(
+            -50%,
+            -50%
+        )
+        scale(
+            ${stretch},
+            ${scaleY}
+        )
+    `;
+
 
     /*
      * KOLOR
