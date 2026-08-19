@@ -2974,69 +2974,211 @@ function textPixelHit(
      * jest już uwzględnione.
      */
 
-    const normalizedX =
-        (
-            screenX -
-            textRect.left
-        ) /
-        textRect.width;
-
-
-    const normalizedY =
-        (
-            screenY -
-            textRect.top
-        ) /
-        textRect.height;
-
-
-    /*
+       /*
      * =========================================
-     * RZECZYWISTY INK BOUNDING BOX MASKI
+     * MAPOWANIE 1:1 Z RZECZYWISTYM TEKSTEM DOM
      * =========================================
      *
-     * Nie korzystamy z całego canvasu.
-     * Bierzemy tylko faktyczne piksele liter.
+     * NIE używamy już inkLeft / inkRight.
+     *
+     * Range mówi nam dokładnie, gdzie przeglądarka
+     * narysowała tekst na ekranie.
+     *
+     * Następnie cofamy tylko transform: scale()
+     * do układu lokalnego elementu.
      */
 
-    const maskInkWidth =
-        mask.inkRight -
-        mask.inkLeft +
-        1;
+    const elementRect =
+        element.getBoundingClientRect();
+
+    const baseWidth =
+        element.offsetWidth;
+
+    const baseHeight =
+        element.offsetHeight;
 
 
-    const maskInkHeight =
-        mask.inkBottom -
-        mask.inkTop +
-        1;
+    if (
+        baseWidth <= 0 ||
+        baseHeight <= 0
+    ) {
+
+        return false;
+
+    }
 
 
     /*
      * =========================================
-     * MAPOWANIE DOM -> CANVAS MASK
+     * SKALA H1
+     * =========================================
+     */
+
+    const scaleX =
+        elementRect.width /
+        baseWidth;
+
+    const scaleY =
+        elementRect.height /
+        baseHeight;
+
+
+    if (
+        scaleX === 0 ||
+        scaleY === 0
+    ) {
+
+        return false;
+
+    }
+
+
+    /*
+     * =========================================
+     * TRANSFORM ORIGIN
+     * =========================================
+     *
+     * Dla KANASTA:
+     *
+     * 50% 50%
+     */
+
+    const transformOrigin =
+        getComputedStyle(
+            element
+        ).transformOrigin.split(" ");
+
+
+    function parseOrigin(
+        value,
+        size
+    ) {
+
+        if (
+            value.endsWith("%")
+        ) {
+
+            return (
+                parseFloat(value) /
+                100
+            ) * size;
+
+        }
+
+        return (
+            parseFloat(value) ||
+            0
+        );
+
+    }
+
+
+    const originX =
+        parseOrigin(
+            transformOrigin[0] || "50%",
+            baseWidth
+        );
+
+
+    const originY =
+        parseOrigin(
+            transformOrigin[1] || "50%",
+            baseHeight
+        );
+
+
+    /*
+     * =========================================
+     * NIEPRZESKALOWANY TOP-LEFT ELEMENTU
+     * =========================================
+     */
+
+    const originalLeft =
+        elementRect.left -
+        originX *
+        (1 - scaleX);
+
+
+    const originalTop =
+        elementRect.top -
+        originY *
+        (1 - scaleY);
+
+
+    /*
+     * =========================================
+     * POZYCJA TEKSTU WEWNĄTRZ ELEMENTU
+     * =========================================
+     *
+     * Range pochodzi bezpośrednio z DOM-u.
+     */
+
+    const textOffsetX =
+        (
+            textRect.left -
+            elementRect.left
+        ) /
+        scaleX;
+
+
+    const textOffsetY =
+        (
+            textRect.top -
+            elementRect.top
+        ) /
+        scaleY;
+
+
+    /*
+     * =========================================
+     * PUNKT KURSORA -> LOKALNY ELEMENT
      * =========================================
      */
 
     const localX =
-    mask.inkLeft +
-    normalizedX *
-    (maskInkWidth - 1);
+        (
+            screenX -
+            originalLeft
+        ) /
+        scaleX;
 
-const localY =
-    mask.inkTop +
-    normalizedY *
-    (maskInkHeight - 1);
+
+    const localY =
+        (
+            screenY -
+            originalTop
+        ) /
+        scaleY;
+
+
+    /*
+     * =========================================
+     * PRZESUNIĘCIE DO PRAWDZIWEGO TEKSTU
+     * =========================================
+     *
+     * Range określa pozycję tekstu,
+     * canvas maska jest w układzie elementu.
+     */
+
+    const maskX =
+        localX -
+        textOffsetX;
+
+
+    const maskY =
+        localY -
+        textOffsetY;
 
 
     const px =
         Math.floor(
-            localX
+            maskX
         );
 
 
     const py =
         Math.floor(
-            localY
+            maskY
         );
 
 
@@ -3058,6 +3200,7 @@ const localY =
             mask.width +
             px
         ] === 1
+    
     );
 
 }
