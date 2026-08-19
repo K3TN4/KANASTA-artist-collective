@@ -1186,6 +1186,7 @@ main h1.image-text {
 
 
     <!-- JAVASCRIPT -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
    <script>
 
@@ -2344,148 +2345,252 @@ document.addEventListener(
 
 
 /* =========================================
-   HEX -> RGB
+   PIXEL PERFECT CURSOR MASK
+   =========================================
+
+   ZASADA:
+
+   #FAED8F  -> WHITE  -> MAGENTA
+   wszystko inne -> BLACK -> CYAN
+
+   Maska jest prawdziwym rasterem strony.
+   Nie sprawdzamy:
+   - borderów
+   - klas
+   - elementów DOM
+   - nazw tagów
+
+   Liczy się tylko rzeczywisty piksel.
    ========================================= */
 
-function hexToRgb(hex) {
 
-    const value =
-        hex.replace(
-            "#",
-            ""
-        );
+const customCursor =
+    document.getElementById("customCursor");
 
+const cursorCanvas =
+    customCursor;
 
-    return {
-
-        r:
-            parseInt(
-                value.substring(0, 2),
-                16
-            ),
-
-        g:
-            parseInt(
-                value.substring(2, 4),
-                16
-            ),
-
-        b:
-            parseInt(
-                value.substring(4, 6),
-                16
-            )
-
-    };
-
-}
+const ctx =
+    cursorCanvas.getContext("2d", {
+        alpha: true
+    });
 
 
-const BACKGROUND_RGB =
-    hexToRgb(
-        CURSOR_COLORS.background
+/* =========================================
+   COLORS
+   ========================================= */
+
+const CURSOR_COLORS = {
+
+    background: "#FAED8F",
+
+    pink: "#ed3d66",
+
+    cyan: "#59e0b3"
+
+};
+
+
+/* =========================================
+   CURSOR SETTINGS
+   ========================================= */
+
+const CURSOR = {
+
+    size: 18,
+
+    follow: 0.24,
+
+    maxStretch: 1.10,
+
+    stretchStrength: 0.006,
+
+    samples: 15,
+
+    colorFPS: 30
+
+};
+
+
+/* =========================================
+   MOUSE
+   ========================================= */
+
+let mouseX =
+    window.innerWidth / 2;
+
+let mouseY =
+    window.innerHeight / 2;
+
+let cursorX =
+    mouseX;
+
+let cursorY =
+    mouseY;
+
+let lastX =
+    cursorX;
+
+let lastY =
+    cursorY;
+
+let velocityX = 0;
+let velocityY = 0;
+
+let previousMaskTime = 0;
+
+
+/* =========================================
+   DPR
+   ========================================= */
+
+const DPR =
+    Math.min(
+        window.devicePixelRatio || 1,
+        2
     );
 
 
+cursorCanvas.width =
+    CURSOR.size * DPR;
+
+cursorCanvas.height =
+    CURSOR.size * DPR;
+
+ctx.scale(
+    DPR,
+    DPR
+);
+
+ctx.imageSmoothingEnabled = true;
+
+
 /* =========================================
-   RGB PARSER
+   MOUSE MOVE
    ========================================= */
 
-function parseRgb(
-    color
-) {
+window.addEventListener(
+    "mousemove",
+    event => {
 
-    if (
-        !color ||
-        color === "transparent"
-    ) {
+        mouseX =
+            event.clientX;
 
-        return null;
+        mouseY =
+            event.clientY;
 
+    },
+    {
+        passive: true
     }
+);
 
 
-    const match =
-        color.match(
-            /rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?\s*\)/
+/* =========================================
+   HIDE / SHOW
+   ========================================= */
+
+document.addEventListener(
+    "mouseleave",
+    () => {
+
+        customCursor.classList.add(
+            "is-hidden"
         );
 
+    }
+);
 
-    if (!match) {
 
-        return null;
+document.addEventListener(
+    "mouseenter",
+    event => {
+
+        customCursor.classList.remove(
+            "is-hidden"
+        );
+
+        mouseX =
+            event.clientX;
+
+        mouseY =
+            event.clientY;
+
+        cursorX =
+            mouseX;
+
+        cursorY =
+            mouseY;
 
     }
-
-
-    return {
-
-        r:
-            Number(match[1]),
-
-        g:
-            Number(match[2]),
-
-        b:
-            Number(match[3]),
-
-        a:
-            match[4] === undefined
-                ? 1
-                : Number(match[4])
-
-    };
-
-}
+);
 
 
 /* =========================================
-   CZY KOLOR = BEŻ
+   PIXEL MASK
    ========================================= */
 
-function isBackgroundColor(
-    color
+let maskCanvas = null;
+let maskCtx = null;
+
+let maskWidth = 0;
+let maskHeight = 0;
+
+let maskReady = false;
+
+let maskBuilding = false;
+
+
+/* =========================================
+   BEIGE COLOR
+   ========================================= */
+
+const BACKGROUND_RGB = {
+
+    r: 250,
+    g: 237,
+    b: 143
+
+};
+
+
+/*
+ * Tolerancja dla antyaliasingu.
+ *
+ * Dzięki temu piksele bardzo bliskie
+ * #FAED8F nadal są traktowane jako WHITE.
+ */
+
+const BACKGROUND_TOLERANCE = 8;
+
+
+/* =========================================
+   IS BEIGE PIXEL
+   ========================================= */
+
+function isBeigePixel(
+    r,
+    g,
+    b
 ) {
-
-    const rgb =
-        parseRgb(color);
-
-
-    if (!rgb) {
-
-        return true;
-
-    }
-
-
-    /*
-     * Mała tolerancja,
-     * ponieważ browser może czasem
-     * zwrócić lekko zmieniony kolor.
-     */
-    const tolerance = 3;
-
 
     return (
 
         Math.abs(
-            rgb.r -
-            BACKGROUND_RGB.r
-        ) <= tolerance
+            r - BACKGROUND_RGB.r
+        ) <= BACKGROUND_TOLERANCE
 
         &&
 
         Math.abs(
-            rgb.g -
-            BACKGROUND_RGB.g
-        ) <= tolerance
+            g - BACKGROUND_RGB.g
+        ) <= BACKGROUND_TOLERANCE
 
         &&
 
         Math.abs(
-            rgb.b -
-            BACKGROUND_RGB.b
-        ) <= tolerance
+            b - BACKGROUND_RGB.b
+        ) <= BACKGROUND_TOLERANCE
 
     );
 
@@ -2493,63 +2598,272 @@ function isBackgroundColor(
 
 
 /* =========================================
-   CZY PUNKT LEŻY W TEKŚCIE
+   BUILD PAGE MASK
    ========================================= */
 
-function pointInsideText(
-    element,
-    x,
-    y
-) {
+async function buildPageMask() {
 
     if (
-        !element ||
-        !element.textContent ||
-        !element.textContent.trim()
+        maskBuilding
     ) {
-
-        return false;
-
+        return;
     }
+
+
+    maskBuilding = true;
 
 
     try {
 
-        const range =
-            document.createRange();
+        /*
+         * Czekamy aż fonty zostaną faktycznie
+         * wyrenderowane.
+         */
+
+        if (
+            document.fonts &&
+            document.fonts.ready
+        ) {
+
+            await document.fonts.ready;
+
+        }
 
 
-        range.selectNodeContents(
-            element
+        /*
+         * Poczekaj jedną klatkę,
+         * żeby layout był ustabilizowany.
+         */
+
+        await new Promise(
+            resolve =>
+                requestAnimationFrame(
+                    resolve
+                )
         );
 
 
-        const rects =
-            Array.from(
-                range.getClientRects()
+        /*
+         * =====================================
+         * RENDER WIDOKU
+         * =====================================
+         *
+         * NIE CAŁĄ STRONĘ.
+         *
+         * Tylko aktualny viewport.
+         *
+         * Dzięki temu:
+         * - fixed działa poprawnie
+         * - menu działa poprawnie
+         * - profil działa poprawnie
+         * - scroll nie powoduje błędnej geometrii
+         */
+
+        const renderedCanvas =
+            await html2canvas(
+                document.body,
+                {
+
+                    x:
+                        window.scrollX,
+
+                    y:
+                        window.scrollY,
+
+                    width:
+                        window.innerWidth,
+
+                    height:
+                        window.innerHeight,
+
+                    windowWidth:
+                        window.innerWidth,
+
+                    windowHeight:
+                        window.innerHeight,
+
+                    scrollX:
+                        window.scrollX,
+
+                    scrollY:
+                        window.scrollY,
+
+                    backgroundColor:
+                        CURSOR_COLORS.background,
+
+                    scale: 1,
+
+                    useCORS: true,
+
+                    allowTaint: false,
+
+                    logging: false,
+
+                    /*
+                     * Cursor NIE wchodzi do maski.
+                     */
+
+                    ignoreElements:
+                        element =>
+                            element ===
+                            customCursor
+
+                }
             );
 
 
-        return rects.some(
-            rect => {
+        /*
+         * =====================================
+         * MASK CANVAS
+         * =====================================
+         */
 
-                return (
+        maskWidth =
+            window.innerWidth;
 
-                    x >= rect.left &&
-                    x <= rect.right &&
+        maskHeight =
+            window.innerHeight;
 
-                    y >= rect.top &&
-                    y <= rect.bottom
 
-                );
+        maskCanvas =
+            document.createElement(
+                "canvas"
+            );
+
+
+        maskCanvas.width =
+            maskWidth;
+
+        maskCanvas.height =
+            maskHeight;
+
+
+        maskCtx =
+            maskCanvas.getContext(
+                "2d",
+                {
+                    willReadFrequently: true
+                }
+            );
+
+
+        /*
+         * Wrzucamy screenshot.
+         */
+
+        maskCtx.drawImage(
+            renderedCanvas,
+            0,
+            0
+        );
+
+
+        /*
+         * =====================================
+         * RASTER
+         * =====================================
+         */
+
+        const imageData =
+            maskCtx.getImageData(
+                0,
+                0,
+                maskWidth,
+                maskHeight
+            );
+
+
+        const data =
+            imageData.data;
+
+
+        /*
+         * =====================================
+         * ZMIENIAMY SCREENSHOT
+         * W:
+         *
+         * BEŻ -> WHITE
+         * RESZTA -> BLACK
+         * =====================================
+         */
+
+        for (
+            let i = 0;
+            i < data.length;
+            i += 4
+        ) {
+
+            const r =
+                data[i];
+
+            const g =
+                data[i + 1];
+
+            const b =
+                data[i + 2];
+
+
+            if (
+                isBeigePixel(
+                    r,
+                    g,
+                    b
+                )
+            ) {
+
+                /*
+                 * WHITE
+                 */
+
+                data[i] = 255;
+                data[i + 1] = 255;
+                data[i + 2] = 255;
+                data[i + 3] = 255;
 
             }
+            else {
+
+                /*
+                 * BLACK
+                 */
+
+                data[i] = 0;
+                data[i + 1] = 0;
+                data[i + 2] = 0;
+                data[i + 3] = 255;
+
+            }
+
+        }
+
+
+        /*
+         * Zapisujemy finalną maskę.
+         */
+
+        maskCtx.putImageData(
+            imageData,
+            0,
+            0
         );
 
-    }
-    catch {
 
-        return false;
+        maskReady = true;
+
+    }
+    catch (error) {
+
+        console.error(
+            "Cursor mask error:",
+            error
+        );
+
+        maskReady = false;
+
+    }
+    finally {
+
+        maskBuilding = false;
 
     }
 
@@ -2557,319 +2871,82 @@ function pointInsideText(
 
 
 /* =========================================
-   CZY ELEMENT JEST RZECZYWIŚCIE CYANOWANY
+   READ MASK PIXEL
    ========================================= */
 
-function elementIsForeground(
-    element,
+function maskPixelIsBlack(
     x,
     y
 ) {
 
-    if (!element) {
-        return false;
-    }
-
-    /*
-     * KURSOR NIGDY NIE JEST ŹRÓDŁEM CYANU
-     */
-    if (element === customCursor) {
-        return false;
-    }
-
-    /*
-     * BODY / HTML / GŁÓWNE KONTENERY
-     * NIE SĄ SAME W SOBIE FOREGROUNDEM
-     */
     if (
-        element === document.documentElement ||
-        element === document.body ||
-        element === document.querySelector("main") ||
-        element === document.querySelector("header") ||
-        element === document.querySelector("footer")
-    ) {
-        return false;
-    }
-
-    const tag =
-        element.tagName?.toLowerCase();
-
-    const style =
-        getComputedStyle(element);
-
-
-    /*
-     * =====================================
-     * NIEWIDOCZNE
-     * =====================================
-     */
-
-    if (
-        style.display === "none" ||
-        style.visibility === "hidden" ||
-        Number(style.opacity) === 0
+        !maskReady ||
+        !maskCtx
     ) {
         return false;
     }
 
 
     /*
-     * =====================================
-     * BORDERY — CELOWO IGNORUJEMY
-     * =====================================
-     *
-     * ŻADEN border nie może zmieniać koloru
-     * kursora.
-     *
-     * To naprawia Twój obecny problem.
+     * Pozycja kursora jest viewportowa,
+     * więc sprawdzamy dokładnie viewport.
      */
+
+    const px =
+        Math.floor(x);
+
+    const py =
+        Math.floor(y);
 
 
     /*
-     * =====================================
-     * OBRAZY
-     * =====================================
+     * Poza viewportem:
+     * traktujemy jako WHITE.
      */
 
     if (
-        tag === "img" ||
-        tag === "video" ||
-        tag === "svg"
-    ) {
-        return true;
-    }
-
-
-    /*
-     * =====================================
-     * TŁO ELEMENTU
-     * =====================================
-     *
-     * Liczy się tylko rzeczywiste backgroundColor.
-     *
-     * BEŻ JEST WYŁĄCZONY.
-     */
-
-    if (
-        style.backgroundColor &&
-        style.backgroundColor !== "transparent" &&
-        style.backgroundColor !== "rgba(0, 0, 0, 0)"
+        px < 0 ||
+        py < 0 ||
+        px >= maskWidth ||
+        py >= maskHeight
     ) {
 
-        if (
-            !isBackgroundColor(
-                style.backgroundColor
-            )
-        ) {
-            return true;
-        }
+        return false;
 
     }
 
 
     /*
-     * =====================================
-     * BACKGROUND IMAGE
-     * =====================================
+     * Czytamy jeden rzeczywisty piksel.
      */
 
-    if (
-        style.backgroundImage &&
-        style.backgroundImage !== "none"
-    ) {
-        return true;
-    }
+    const pixel =
+        maskCtx.getImageData(
+            px,
+            py,
+            1,
+            1
+        ).data;
 
 
     /*
-     * =====================================
-     * IMAGE TEXT
-     * =====================================
+     * Czarny = CYAN.
+     * Biały = MAGENTA.
      */
 
-    if (
-        element.classList.contains("image-text")
-    ) {
+    return (
+        pixel[0] < 128 &&
+        pixel[1] < 128 &&
+        pixel[2] < 128
+    );
 
-        return pointInsideText(
-            element,
-            x,
-            y
-        );
-
-    }
-
-
-    /*
-     * =====================================
-     * TEKST
-     * =====================================
-     */
-
-    const textTags = new Set([
-        "a",
-        "button",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
-        "p",
-        "span",
-        "strong",
-        "em",
-        "small",
-        "label"
-    ]);
-
-
-    if (
-        textTags.has(tag)
-    ) {
-
-        /*
-         * Punkt musi być rzeczywiście
-         * wewnątrz tekstu.
-         */
-
-        if (
-            !pointInsideText(
-                element,
-                x,
-                y
-            )
-        ) {
-            return false;
-        }
-
-
-        /*
-         * Transparentny tekst = brak koloru.
-         */
-
-        if (
-            !style.color ||
-            style.color === "transparent"
-        ) {
-            return false;
-        }
-
-
-        /*
-         * BEŻOWY TEKST = NIE CYAN
-         *
-         * Każdy inny kolor = CYAN.
-         */
-
-        return !isBackgroundColor(
-            style.color
-        );
-
-    }
-
-
-    /*
-     * =====================================
-     * KOŁA ARTYSTÓW
-     * =====================================
-     *
-     * Samo koło jest kolorowym obiektem
-     * dzięki zdjęciu / wnętrzu.
-     *
-     * Border NIE MA ZNACZENIA.
-     */
-
-    if (
-        element.classList.contains(
-            "artist-circle"
-        )
-    ) {
-        return true;
-    }
-
-
-    /*
-     * =====================================
-     * PROFILOWE ZDJĘCIE
-     * =====================================
-     */
-
-    if (
-        element.classList.contains(
-            "profile-image-wrapper"
-        )
-    ) {
-        return true;
-    }
-
-
-    return false;
 }
+
+
 /* =========================================
-   CZY PUNKT LEŻY NA RZECZYWISTYM OBIEKCIE
+   DRAW CURSOR MASK
    ========================================= */
 
-function isCyanPoint(
-    x,
-    y
-) {
-
-    const elements =
-        document.elementsFromPoint(
-            x,
-            y
-        );
-
-    if (
-        !elements ||
-        elements.length === 0
-    ) {
-        return false;
-    }
-
-
-    for (
-        const element of elements
-    ) {
-
-        /*
-         * Ignorujemy kursor.
-         */
-
-        if (
-            element === customCursor
-        ) {
-            continue;
-        }
-
-
-        /*
-         * Znaleziono rzeczywisty kolorowy
-         * element pod tym fragmentem.
-         */
-
-        if (
-            elementIsForeground(
-                element,
-                x,
-                y
-            )
-        ) {
-
-            return true;
-        }
-
-    }
-
-
-    /*
-     * Nic kolorowego.
-     * Zostaje MAGENTA.
-     */
-
-    return false;
-}
 function drawCursorMask() {
 
     const size =
@@ -2880,11 +2957,15 @@ function drawCursorMask() {
 
 
     /*
-     * Czyścimy tylko warstwę canvasu.
+     * Czyścimy bitmapę canvasu.
      *
-     * Magenta pochodzi z CSS:
-     * background: #ed3d66;
+     * CSS background pozostaje:
+     *
+     * #ed3d66
+     *
+     * czyli MAGENTA.
      */
+
     ctx.clearRect(
         0,
         0,
@@ -2894,9 +2975,11 @@ function drawCursorMask() {
 
 
     /*
-     * Ograniczamy rysowanie
-     * do okręgu.
+     * =====================================
+     * CIRCLE CLIP
+     * =====================================
      */
+
     ctx.save();
 
     ctx.beginPath();
@@ -2914,7 +2997,7 @@ function drawCursorMask() {
 
     /*
      * =====================================
-     * CYAN MASK
+     * PIXEL GRID
      * =====================================
      */
 
@@ -2925,6 +3008,12 @@ function drawCursorMask() {
         size /
         sampleCount;
 
+
+    /*
+     * =====================================
+     * SAMPLE MASK
+     * =====================================
+     */
 
     for (
         let row = 0;
@@ -2955,13 +3044,28 @@ function drawCursorMask() {
 
 
             /*
-             * Punkt odpowiadający
-             * fragmentowi kulki.
+             * Pomijamy punkty poza kołem.
              */
+
+            if (
+                Math.sqrt(
+                    localX * localX +
+                    localY * localY
+                ) > radius
+            ) {
+
+                continue;
+
+            }
+
+
+            /*
+             * Dokładny ekranowy piksel.
+             */
+
             const screenX =
                 cursorX +
                 localX;
-
 
             const screenY =
                 cursorY +
@@ -2969,12 +3073,15 @@ function drawCursorMask() {
 
 
             /*
-             * Jeżeli pod tym fragmentem
-             * znajduje się obiekt,
-             * malujemy go na cyan.
+             * =================================
+             * BLACK MASK
+             * =================================
+             *
+             * BLACK -> CYAN
              */
+
             if (
-                isCyanPoint(
+                maskPixelIsBlack(
                     screenX,
                     screenY
                 )
@@ -2987,8 +3094,8 @@ function drawCursorMask() {
                 ctx.fillRect(
                     col * step,
                     row * step,
-                    step + 0.8,
-                    step + 0.8
+                    step + 0.6,
+                    step + 0.6
                 );
 
             }
@@ -3002,6 +3109,279 @@ function drawCursorMask() {
 
 }
 
+
+/* =========================================
+   REBUILD MASK ON LOAD
+   ========================================= */
+
+window.addEventListener(
+    "load",
+    () => {
+
+        setTimeout(
+            buildPageMask,
+            100
+        );
+
+    }
+);
+
+
+/* =========================================
+   RESIZE
+   ========================================= */
+
+let resizeTimer = null;
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        clearTimeout(
+            resizeTimer
+        );
+
+        resizeTimer =
+            setTimeout(
+                buildPageMask,
+                150
+            );
+
+    }
+);
+
+
+/* =========================================
+   SCROLL
+   =========================================
+   
+   Maskę odświeżamy po przewinięciu,
+   bo fixed / sticky / profil / menu
+   mogą zmienić zawartość viewportu.
+   ========================================= */
+
+let scrollMaskTimer = null;
+
+window.addEventListener(
+    "scroll",
+    () => {
+
+        clearTimeout(
+            scrollMaskTimer
+        );
+
+        scrollMaskTimer =
+            setTimeout(
+                buildPageMask,
+                80
+            );
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+/* =========================================
+   MUTATIONS
+   =========================================
+   
+   Przy otwieraniu menu/profilu
+   maska zostanie przebudowana.
+   ========================================= */
+
+const cursorMaskObserver =
+    new MutationObserver(
+        () => {
+
+            clearTimeout(
+                scrollMaskTimer
+            );
+
+            scrollMaskTimer =
+                setTimeout(
+                    buildPageMask,
+                    80
+                );
+
+        }
+    );
+
+
+cursorMaskObserver.observe(
+    document.body,
+    {
+        attributes: true,
+        childList: true,
+        subtree: true,
+        attributeFilter: [
+            "class",
+            "style"
+        ]
+    }
+);
+
+
+/* =========================================
+   FLUID CURSOR
+   ========================================= */
+
+function animateCustomCursor(
+    timestamp
+) {
+
+    /*
+     * =====================================
+     * FOLLOW
+     * =====================================
+     */
+
+    const dx =
+        mouseX -
+        cursorX;
+
+    const dy =
+        mouseY -
+        cursorY;
+
+
+    cursorX +=
+        dx *
+        CURSOR.follow;
+
+    cursorY +=
+        dy *
+        CURSOR.follow;
+
+
+    /*
+     * =====================================
+     * VELOCITY
+     * =====================================
+     */
+
+    velocityX =
+        cursorX -
+        lastX;
+
+    velocityY =
+        cursorY -
+        lastY;
+
+
+    lastX =
+        cursorX;
+
+    lastY =
+        cursorY;
+
+
+    const speed =
+        Math.sqrt(
+            velocityX * velocityX +
+            velocityY * velocityY
+        );
+
+
+    /*
+     * =====================================
+     * SOFT BODY
+     * =====================================
+     */
+
+    const stretch =
+        Math.min(
+            CURSOR.maxStretch,
+
+            1 +
+            speed *
+            CURSOR.stretchStrength
+        );
+
+
+    const scaleY =
+        1 /
+        Math.sqrt(
+            stretch
+        );
+
+
+    const angle =
+        Math.atan2(
+            velocityY,
+            velocityX
+        );
+
+
+    /*
+     * =====================================
+     * POSITION
+     * =====================================
+     */
+
+    customCursor.style.transform = `
+        translate3d(
+            ${cursorX}px,
+            ${cursorY}px,
+            0
+        )
+        translate(
+            -50%,
+            -50%
+        )
+        rotate(
+            ${angle}rad
+        )
+        scale(
+            ${stretch},
+            ${scaleY}
+        )
+    `;
+
+
+    /*
+     * =====================================
+     * COLOR UPDATE
+     * =====================================
+     */
+
+    const maskInterval =
+        1000 /
+        CURSOR.colorFPS;
+
+
+    if (
+        timestamp -
+        previousMaskTime
+        >=
+        maskInterval
+    ) {
+
+        drawCursorMask();
+
+        previousMaskTime =
+            timestamp;
+
+    }
+
+
+    requestAnimationFrame(
+        animateCustomCursor
+    );
+
+}
+
+
+/* =========================================
+   START
+   ========================================= */
+
+requestAnimationFrame(
+    animateCustomCursor
+);
+
+</script>
 
 /* =========================================
    FLUID MOVEMENT
