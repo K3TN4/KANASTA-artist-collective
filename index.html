@@ -1826,25 +1826,14 @@ const mobileMultiplier =
              * Każde ma własny obrót.
              */
 
-            const rotation =
-    rotationEase *
-    (
-        260 *
-        individualSpeed +
-        index *
-        31
-    ) *
-    (isMobile ? 0.8 : 1);
+            const rotation = 0;
 
 
             /*
              * Dodatkowa nieregularność.
              */
 
-            const lateRotation =
-                spreadEase *
-                index *
-                20;
+            const lateRotation = 0;
 
 
             /*
@@ -1874,9 +1863,6 @@ const mobileMultiplier =
         calc(${x}px + var(--hover-x)),
         ${y}px,
         0
-    )
-    rotate(
-        ${rotation + lateRotation}deg
     )
     scale(
         calc(${individualScale} * var(--hover-scale))
