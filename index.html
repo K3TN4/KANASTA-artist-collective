@@ -2362,26 +2362,17 @@ function transformText(
    BUILD TEXT MASK
    ========================================================= */
 
-function buildTextMask(
-    element
-) {
+function buildTextMask(element) {
 
     if (!element) {
         return null;
     }
 
-
     const style =
         getComputedStyle(element);
 
-
     const rect =
         element.getBoundingClientRect();
-
-
-    /*
-     * Element jest niewidoczny.
-     */
 
     if (
         rect.width <= 0 ||
@@ -2390,37 +2381,23 @@ function buildTextMask(
         style.visibility === "hidden" ||
         Number(style.opacity) === 0
     ) {
-
         return null;
-
     }
-
-
-    /*
-     * Tekst.
-     */
 
     let text =
         element.textContent
             .replace(/\s+/g, " ")
             .trim();
 
-
     if (!text) {
         return null;
     }
-
 
     text =
         transformText(
             text,
             style.textTransform
         );
-
-
-    /*
-     * Canvas potrzebuje fontu.
-     */
 
     const font =
         [
@@ -2433,147 +2410,160 @@ function buildTextMask(
         .filter(Boolean)
         .join(" ");
 
-
-    /*
-     * Letter spacing.
-     */
-
     const letterSpacing =
         parseFloat(
             style.letterSpacing
         ) || 0;
 
-
     /*
-     * Padding zabezpiecza końce tekstu.
+     * MASKA MA DOKŁADNIE TAKI SAM
+     * ROZMIAR JAK ELEMENT DOM.
      */
 
-    const padding =
-        8;
-
-
-    const canvas =
-        document.createElement(
-            "canvas"
+    const width =
+        Math.max(
+            1,
+            Math.ceil(rect.width)
         );
 
+    const height =
+        Math.max(
+            1,
+            Math.ceil(rect.height)
+        );
 
-    /*
-     * Najpierw mierzymy tekst.
-     */
+    const canvas =
+        document.createElement("canvas");
 
-    const measureCtx =
+    canvas.width =
+        width;
+
+    canvas.height =
+        height;
+
+    const drawCtx =
         canvas.getContext("2d");
 
+    const measureCtx =
+        document.createElement("canvas")
+            .getContext("2d");
 
     measureCtx.font =
         font;
 
+    drawCtx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    drawCtx.font =
+        font;
+
+    drawCtx.fillStyle =
+        "#000000";
+
+    drawCtx.textBaseline =
+        "alphabetic";
+
+    /*
+     * REALNE METRYKI GLYPHU
+     */
+
+    const metrics =
+        measureCtx.measureText(
+            text
+        );
+
+    const ascent =
+        metrics.actualBoundingBoxAscent ||
+        parseFloat(style.fontSize) ||
+        16;
+
+    const descent =
+        metrics.actualBoundingBoxDescent ||
+        0;
+
+    const textPixelHeight =
+        ascent + descent;
+
+    /*
+     * POZYCJA PIONOWA
+     *
+     * Środek rzeczywistych liter
+     * ustawiamy w środku elementu.
+     */
+
+    const baseline =
+        (
+            height +
+            textPixelHeight
+        ) / 2 -
+        descent;
+
+    /*
+     * SZEROKOŚĆ TEKSTU
+     */
 
     let textWidth =
         measureCtx.measureText(
             text
         ).width;
 
-
-    /*
-     * Dodajemy letter-spacing.
-     */
-
     if (
         text.length > 1
     ) {
-
         textWidth +=
             letterSpacing *
             (
                 text.length - 1
             );
-
     }
 
-
-    const fontSize =
-        parseFloat(
-            style.fontSize
-        ) || 16;
-
-
-    const textHeight =
-        Math.max(
-            fontSize * 1.5,
-            rect.height
-        );
-
-
-    canvas.width =
-        Math.ceil(
-            textWidth +
-            padding * 2
-        );
-
-    canvas.height =
-        Math.ceil(
-            textHeight +
-            padding * 2
-        );
-
-
-    const drawCtx =
-        canvas.getContext(
-            "2d"
-        );
-
-
-    drawCtx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    drawCtx.font =
-        font;
-
-
-    drawCtx.fillStyle =
-        "#000000";
-
-
-    drawCtx.textBaseline =
-        "middle";
-
-
     /*
-     * Wyrównanie tekstu.
+     * POZYCJA X
      */
 
-    let drawX =
-        padding;
-
+    let startX = 0;
 
     if (
         style.textAlign === "center"
     ) {
 
-        drawX =
-            canvas.width / 2;
-
-        drawCtx.textAlign =
-            "center";
+        startX =
+            (
+                width -
+                textWidth
+            ) / 2;
 
     }
     else if (
         style.textAlign === "right"
     ) {
 
-        drawX =
-            canvas.width -
-            padding;
+        startX =
+            width -
+            textWidth;
+
+    }
+
+    /*
+     * DRAW GLYPH
+     */
+
+    if (
+        letterSpacing === 0
+    ) {
 
         drawCtx.textAlign =
-            "right";
+            "left";
+
+        drawCtx.fillText(
+            text,
+            startX,
+            baseline
+        );
 
     }
     else {
@@ -2581,88 +2571,8 @@ function buildTextMask(
         drawCtx.textAlign =
             "left";
 
-    }
-
-
-    const drawY =
-        canvas.height / 2;
-
-
-    /*
-     * Jeżeli nie ma letter-spacing,
-     * wystarczy jedno fillText.
-     */
-
-    if (
-        letterSpacing === 0
-    ) {
-
-        drawCtx.fillText(
-            text,
-            drawX,
-            drawY
-        );
-
-    }
-    else {
-
-        /*
-         * Rysujemy znak po znaku,
-         * żeby zachować letter-spacing.
-         */
-
-        let totalWidth =
-            0;
-
-
-        for (
-            let i = 0;
-            i < text.length;
-            i++
-        ) {
-
-            totalWidth +=
-                measureCtx.measureText(
-                    text[i]
-                ).width;
-
-
-            if (
-                i <
-                text.length - 1
-            ) {
-
-                totalWidth +=
-                    letterSpacing;
-
-            }
-
-        }
-
-
         let x =
-            drawX;
-
-
-        if (
-            style.textAlign === "center"
-        ) {
-
-            x =
-                drawX -
-                totalWidth / 2;
-
-        }
-        else if (
-            style.textAlign === "right"
-        ) {
-
-            x =
-                drawX -
-                totalWidth;
-
-        }
-
+            startX;
 
         for (
             let i = 0;
@@ -2673,13 +2583,11 @@ function buildTextMask(
             const char =
                 text[i];
 
-
             drawCtx.fillText(
                 char,
                 x,
-                drawY
+                baseline
             );
-
 
             x +=
                 measureCtx.measureText(
@@ -2691,7 +2599,83 @@ function buildTextMask(
 
     }
 
+    /*
+     * RASTER
+     */
 
+    const pixels =
+        drawCtx.getImageData(
+            0,
+            0,
+            width,
+            height
+        );
+
+    const mask =
+        new Uint8Array(
+            width *
+            height
+        );
+
+    for (
+        let y = 0;
+        y < height;
+        y++
+    ) {
+
+        for (
+            let x = 0;
+            x < width;
+            x++
+        ) {
+
+            const index =
+                (
+                    y *
+                    width +
+                    x
+                ) * 4;
+
+            const alpha =
+                pixels.data[
+                    index + 3
+                ];
+
+            if (
+                alpha > 20
+            ) {
+
+                mask[
+                    y *
+                    width +
+                    x
+                ] = 1;
+
+            }
+
+        }
+
+    }
+
+    return {
+
+        canvas,
+
+        mask,
+
+        width,
+
+        height,
+
+        rectWidth:
+            rect.width,
+
+        rectHeight:
+            rect.height
+
+    };
+
+}
     /*
      * Pobieramy rzeczywistą bitmapę.
      */
@@ -2781,20 +2765,48 @@ function buildTextMask(
    GET TEXT MASK
    ========================================================= */
 
-function getTextMask(
-    element
-) {
+function getTextMask(element) {
 
     if (!element) {
         return null;
     }
 
+    const rect =
+        element.getBoundingClientRect();
 
     let cached =
-        textMasks.get(
+        textMasks.get(element);
+
+    /*
+     * Jeżeli element zmienił rozmiar
+     * np. przez :hover,
+     * przebuduj maskę.
+     */
+
+    if (
+        cached &&
+        (
+            Math.abs(
+                cached.rectWidth -
+                rect.width
+            ) > 0.5
+
+            ||
+
+            Math.abs(
+                cached.rectHeight -
+                rect.height
+            ) > 0.5
+        )
+    ) {
+
+        cached = null;
+
+        textMasks.delete(
             element
         );
 
+    }
 
     if (!cached) {
 
@@ -2802,7 +2814,6 @@ function getTextMask(
             buildTextMask(
                 element
             );
-
 
         if (cached) {
 
@@ -2814,7 +2825,6 @@ function getTextMask(
         }
 
     }
-
 
     return cached;
 
@@ -2911,30 +2921,23 @@ function textPixelHit(
      * do bounding boxa elementu.
      */
 
-    const localX =
-        (
-            (
-                screenX -
-                rect.left
-            )
-            /
-            rect.width
-        )
-        *
-        mask.width;
+ const localX =
+    screenX -
+    rect.left;
 
+const localY =
+    screenY -
+    rect.top;
 
-    const localY =
-        (
-            (
-                screenY -
-                rect.top
-            )
-            /
-            rect.height
-        )
-        *
-        mask.height;
+const px =
+    Math.floor(
+        localX
+    );
+
+const py =
+    Math.floor(
+        localY
+    );
 
 
     const px =
@@ -3377,31 +3380,7 @@ function animateCustomCursor(
         CURSOR.follow;
 
 
-    /*
-     * VELOCITY
-     */
-
-    velocityX =
-        cursorX -
-        lastX;
-
-
-    velocityY =
-        cursorY -
-        lastY;
-
-
-    lastX =
-        cursorX;
-
-    lastY =
-        cursorY;
-
-
-    /*
-     * SOFT BODY
-     */
-
+  
     const speed =
         Math.sqrt(
             velocityX *
@@ -3440,24 +3419,16 @@ function animateCustomCursor(
      */
 
     customCursor.style.transform = `
-        translate3d(
-            ${cursorX}px,
-            ${cursorY}px,
-            0
-        )
-        translate(
-            -50%,
-            -50%
-        )
-        rotate(
-            ${angle}rad
-        )
-        scale(
-            ${stretch},
-            ${scaleY}
-        )
-    `;
-
+    translate3d(
+        ${cursorX}px,
+        ${cursorY}px,
+        0
+    )
+    translate(
+        -50%,
+        -50%
+    )
+`;
 
     /*
      * KOLOR
