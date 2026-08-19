@@ -2148,221 +2148,7 @@ function toggleBio() {
    ========================================= */
 
 
-const customCursor =
-    document.getElementById(
-        "customCursor"
-    );
-
-
-const cursorCanvas =
-    customCursor;
-
-
-const ctx =
-    cursorCanvas.getContext(
-        "2d",
-        {
-            alpha: true
-        }
-    );
-
-
-/* =========================================
-   KOLORY
-   ========================================= */
-
-const CURSOR_COLORS = {
-
-    background: "#FAED8F",
-
-    pink: "#ed3d66",
-
-    cyan: "#59e0b3"
-
-};
-
-
-/* =========================================
-   ROZMIAR
-   ========================================= */
-
-const CURSOR = {
-
-    size: 18,
-
-    /*
-     * Jak szybko kulka dogania mysz.
-     */
-    follow: 0.24,
-
-    /*
-     * Maksymalna ilość "soft"
-     * przy gwałtownym ruchu.
-     */
-    maxStretch: 1.10,
-
-    stretchStrength: 0.006,
-
-    /*
-     * Próbkowanie koloru.
-     *
-     * 11 x 11 daje:
-     * wystarczającą szczegółowość
-     * bez zabijania wydajności.
-     */
-    samples: 11,
-
-    /*
-     * Kolor jest odświeżany 30 razy/s,
-     * a ruch 60+ razy/s.
-     *
-     * Dzięki temu kolor nie powoduje
-     * zacięć przy ruchu.
-     */
-    colorFPS: 30
-
-};
-
-
-/* =========================================
-   INTERNAL
-   ========================================= */
-
-let mouseX =
-    window.innerWidth / 2;
-
-let mouseY =
-    window.innerHeight / 2;
-
-
-let cursorX =
-    mouseX;
-
-let cursorY =
-    mouseY;
-
-
-let lastX =
-    cursorX;
-
-let lastY =
-    cursorY;
-
-
-let velocityX = 0;
-let velocityY = 0;
-
-
-let previousMaskTime = 0;
-
-
-/* =========================================
-   DEVICE PIXEL RATIO
-   ========================================= */
-
-const DPR =
-    Math.min(
-        window.devicePixelRatio || 1,
-        2
-    );
-
-
-cursorCanvas.width =
-    CURSOR.size * DPR;
-
-cursorCanvas.height =
-    CURSOR.size * DPR;
-
-
-ctx.scale(
-    DPR,
-    DPR
-);
-
-ctx.imageSmoothingEnabled =
-    true;
-
-
-/* =========================================
-   MOUSE
-   ========================================= */
-
-window.addEventListener(
-    "mousemove",
-    event => {
-
-        mouseX =
-            event.clientX;
-
-        mouseY =
-            event.clientY;
-
-    },
-    {
-        passive: true
-    }
-);
-
-
-/* =========================================
-   HIDE / SHOW
-   ========================================= */
-
-document.addEventListener(
-    "mouseleave",
-    () => {
-
-        customCursor.classList.add(
-            "is-hidden"
-        );
-
-    }
-);
-
-
-document.addEventListener(
-    "mouseenter",
-    event => {
-
-        customCursor.classList.remove(
-            "is-hidden"
-        );
-
-        mouseX =
-            event.clientX;
-
-        mouseY =
-            event.clientY;
-
-        cursorX =
-            mouseX;
-
-        cursorY =
-            mouseY;
-
-    }
-);
-
-
-/* =========================================
-   PIXEL PERFECT CURSOR MASK
-   =========================================
-
-   ZASADA:
-
-   #FAED8F  -> WHITE  -> MAGENTA
-   wszystko inne -> BLACK -> CYAN
-
-   Maska jest prawdziwym rasterem strony.
-   Nie sprawdzamy:
-   - borderów
-   - klas
-   - elementów DOM
-   - nazw tagów
-
-   Liczy się tylko rzeczywisty piksel.
-   ========================================= */
-
+/* PIXEL MASK CURSOR */
 
 const customCursor =
     document.getElementById("customCursor");
@@ -2375,64 +2161,29 @@ const ctx =
         alpha: true
     });
 
-
-/* =========================================
-   COLORS
-   ========================================= */
-
 const CURSOR_COLORS = {
-
     background: "#FAED8F",
-
     pink: "#ed3d66",
-
     cyan: "#59e0b3"
-
 };
-
-
-/* =========================================
-   CURSOR SETTINGS
-   ========================================= */
 
 const CURSOR = {
-
     size: 18,
-
     follow: 0.24,
-
     maxStretch: 1.10,
-
     stretchStrength: 0.006,
-
-    samples: 15,
-
+    samples: 18,
     colorFPS: 30
-
 };
 
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
 
-/* =========================================
-   MOUSE
-   ========================================= */
+let cursorX = mouseX;
+let cursorY = mouseY;
 
-let mouseX =
-    window.innerWidth / 2;
-
-let mouseY =
-    window.innerHeight / 2;
-
-let cursorX =
-    mouseX;
-
-let cursorY =
-    mouseY;
-
-let lastX =
-    cursorX;
-
-let lastY =
-    cursorY;
+let lastX = cursorX;
+let lastY = cursorY;
 
 let velocityX = 0;
 let velocityY = 0;
@@ -2440,95 +2191,7 @@ let velocityY = 0;
 let previousMaskTime = 0;
 
 
-/* =========================================
-   DPR
-   ========================================= */
-
-const DPR =
-    Math.min(
-        window.devicePixelRatio || 1,
-        2
-    );
-
-
-cursorCanvas.width =
-    CURSOR.size * DPR;
-
-cursorCanvas.height =
-    CURSOR.size * DPR;
-
-ctx.scale(
-    DPR,
-    DPR
-);
-
-ctx.imageSmoothingEnabled = true;
-
-
-/* =========================================
-   MOUSE MOVE
-   ========================================= */
-
-window.addEventListener(
-    "mousemove",
-    event => {
-
-        mouseX =
-            event.clientX;
-
-        mouseY =
-            event.clientY;
-
-    },
-    {
-        passive: true
-    }
-);
-
-
-/* =========================================
-   HIDE / SHOW
-   ========================================= */
-
-document.addEventListener(
-    "mouseleave",
-    () => {
-
-        customCursor.classList.add(
-            "is-hidden"
-        );
-
-    }
-);
-
-
-document.addEventListener(
-    "mouseenter",
-    event => {
-
-        customCursor.classList.remove(
-            "is-hidden"
-        );
-
-        mouseX =
-            event.clientX;
-
-        mouseY =
-            event.clientY;
-
-        cursorX =
-            mouseX;
-
-        cursorY =
-            mouseY;
-
-    }
-);
-
-
-/* =========================================
-   PIXEL MASK
-   ========================================= */
+/* MASK */
 
 let maskCanvas = null;
 let maskCtx = null;
@@ -2537,138 +2200,60 @@ let maskWidth = 0;
 let maskHeight = 0;
 
 let maskReady = false;
-
 let maskBuilding = false;
 
 
-/* =========================================
-   BEIGE COLOR
-   ========================================= */
-
 const BACKGROUND_RGB = {
-
     r: 250,
     g: 237,
     b: 143
-
 };
 
-
-/*
- * Tolerancja dla antyaliasingu.
- *
- * Dzięki temu piksele bardzo bliskie
- * #FAED8F nadal są traktowane jako WHITE.
- */
-
-const BACKGROUND_TOLERANCE = 8;
+const BACKGROUND_TOLERANCE = 10;
 
 
-/* =========================================
-   IS BEIGE PIXEL
-   ========================================= */
-
-function isBeigePixel(
-    r,
-    g,
-    b
-) {
+function isBeigePixel(r, g, b) {
 
     return (
-
-        Math.abs(
-            r - BACKGROUND_RGB.r
-        ) <= BACKGROUND_TOLERANCE
-
-        &&
-
-        Math.abs(
-            g - BACKGROUND_RGB.g
-        ) <= BACKGROUND_TOLERANCE
-
-        &&
-
-        Math.abs(
-            b - BACKGROUND_RGB.b
-        ) <= BACKGROUND_TOLERANCE
-
+        Math.abs(r - BACKGROUND_RGB.r) <= BACKGROUND_TOLERANCE &&
+        Math.abs(g - BACKGROUND_RGB.g) <= BACKGROUND_TOLERANCE &&
+        Math.abs(b - BACKGROUND_RGB.b) <= BACKGROUND_TOLERANCE
     );
-
 }
 
-
-/* =========================================
-   BUILD PAGE MASK
-   ========================================= */
 
 async function buildPageMask() {
 
     if (
-        maskBuilding
+        maskBuilding ||
+        typeof html2canvas === "undefined"
     ) {
         return;
     }
 
-
     maskBuilding = true;
 
-
     try {
-
-        /*
-         * Czekamy aż fonty zostaną faktycznie
-         * wyrenderowane.
-         */
 
         if (
             document.fonts &&
             document.fonts.ready
         ) {
-
             await document.fonts.ready;
-
         }
-
-
-        /*
-         * Poczekaj jedną klatkę,
-         * żeby layout był ustabilizowany.
-         */
 
         await new Promise(
             resolve =>
-                requestAnimationFrame(
-                    resolve
-                )
+                requestAnimationFrame(resolve)
         );
 
-
-        /*
-         * =====================================
-         * RENDER WIDOKU
-         * =====================================
-         *
-         * NIE CAŁĄ STRONĘ.
-         *
-         * Tylko aktualny viewport.
-         *
-         * Dzięki temu:
-         * - fixed działa poprawnie
-         * - menu działa poprawnie
-         * - profil działa poprawnie
-         * - scroll nie powoduje błędnej geometrii
-         */
 
         const renderedCanvas =
             await html2canvas(
                 document.body,
                 {
-
-                    x:
-                        window.scrollX,
-
-                    y:
-                        window.scrollY,
+                    x: window.scrollX,
+                    y: window.scrollY,
 
                     width:
                         window.innerWidth,
@@ -2699,24 +2284,13 @@ async function buildPageMask() {
 
                     logging: false,
 
-                    /*
-                     * Cursor NIE wchodzi do maski.
-                     */
-
                     ignoreElements:
                         element =>
                             element ===
                             customCursor
-
                 }
             );
 
-
-        /*
-         * =====================================
-         * MASK CANVAS
-         * =====================================
-         */
 
         maskWidth =
             window.innerWidth;
@@ -2726,10 +2300,7 @@ async function buildPageMask() {
 
 
         maskCanvas =
-            document.createElement(
-                "canvas"
-            );
-
+            document.createElement("canvas");
 
         maskCanvas.width =
             maskWidth;
@@ -2747,22 +2318,12 @@ async function buildPageMask() {
             );
 
 
-        /*
-         * Wrzucamy screenshot.
-         */
-
         maskCtx.drawImage(
             renderedCanvas,
             0,
             0
         );
 
-
-        /*
-         * =====================================
-         * RASTER
-         * =====================================
-         */
 
         const imageData =
             maskCtx.getImageData(
@@ -2778,13 +2339,8 @@ async function buildPageMask() {
 
 
         /*
-         * =====================================
-         * ZMIENIAMY SCREENSHOT
-         * W:
-         *
-         * BEŻ -> WHITE
-         * RESZTA -> BLACK
-         * =====================================
+         * BEŻ = WHITE
+         * RESZTA = BLACK
          */
 
         for (
@@ -2793,15 +2349,9 @@ async function buildPageMask() {
             i += 4
         ) {
 
-            const r =
-                data[i];
-
-            const g =
-                data[i + 1];
-
-            const b =
-                data[i + 2];
-
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
 
             if (
                 isBeigePixel(
@@ -2811,21 +2361,12 @@ async function buildPageMask() {
                 )
             ) {
 
-                /*
-                 * WHITE
-                 */
-
                 data[i] = 255;
                 data[i + 1] = 255;
                 data[i + 2] = 255;
                 data[i + 3] = 255;
 
-            }
-            else {
-
-                /*
-                 * BLACK
-                 */
+            } else {
 
                 data[i] = 0;
                 data[i + 1] = 0;
@@ -2833,13 +2374,8 @@ async function buildPageMask() {
                 data[i + 3] = 255;
 
             }
-
         }
 
-
-        /*
-         * Zapisujemy finalną maskę.
-         */
 
         maskCtx.putImageData(
             imageData,
@@ -2847,11 +2383,9 @@ async function buildPageMask() {
             0
         );
 
-
         maskReady = true;
 
-    }
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "Cursor mask error:",
@@ -2860,24 +2394,15 @@ async function buildPageMask() {
 
         maskReady = false;
 
-    }
-    finally {
+    } finally {
 
         maskBuilding = false;
 
     }
-
 }
 
 
-/* =========================================
-   READ MASK PIXEL
-   ========================================= */
-
-function maskPixelIsBlack(
-    x,
-    y
-) {
+function maskPixelIsBlack(x, y) {
 
     if (
         !maskReady ||
@@ -2886,23 +2411,8 @@ function maskPixelIsBlack(
         return false;
     }
 
-
-    /*
-     * Pozycja kursora jest viewportowa,
-     * więc sprawdzamy dokładnie viewport.
-     */
-
-    const px =
-        Math.floor(x);
-
-    const py =
-        Math.floor(y);
-
-
-    /*
-     * Poza viewportem:
-     * traktujemy jako WHITE.
-     */
+    const px = Math.floor(x);
+    const py = Math.floor(y);
 
     if (
         px < 0 ||
@@ -2910,15 +2420,8 @@ function maskPixelIsBlack(
         px >= maskWidth ||
         py >= maskHeight
     ) {
-
         return false;
-
     }
-
-
-    /*
-     * Czytamy jeden rzeczywisty piksel.
-     */
 
     const pixel =
         maskCtx.getImageData(
@@ -2928,24 +2431,13 @@ function maskPixelIsBlack(
             1
         ).data;
 
-
-    /*
-     * Czarny = CYAN.
-     * Biały = MAGENTA.
-     */
-
     return (
         pixel[0] < 128 &&
         pixel[1] < 128 &&
         pixel[2] < 128
     );
-
 }
 
-
-/* =========================================
-   DRAW CURSOR MASK
-   ========================================= */
 
 function drawCursorMask() {
 
@@ -2956,16 +2448,6 @@ function drawCursorMask() {
         size / 2;
 
 
-    /*
-     * Czyścimy bitmapę canvasu.
-     *
-     * CSS background pozostaje:
-     *
-     * #ed3d66
-     *
-     * czyli MAGENTA.
-     */
-
     ctx.clearRect(
         0,
         0,
@@ -2973,12 +2455,6 @@ function drawCursorMask() {
         size
     );
 
-
-    /*
-     * =====================================
-     * CIRCLE CLIP
-     * =====================================
-     */
 
     ctx.save();
 
@@ -2995,35 +2471,22 @@ function drawCursorMask() {
     ctx.clip();
 
 
-    /*
-     * =====================================
-     * PIXEL GRID
-     * =====================================
-     */
-
-    const sampleCount =
+    const samples =
         CURSOR.samples;
 
     const step =
-        size /
-        sampleCount;
+        size / samples;
 
-
-    /*
-     * =====================================
-     * SAMPLE MASK
-     * =====================================
-     */
 
     for (
         let row = 0;
-        row < sampleCount;
+        row < samples;
         row++
     ) {
 
         for (
             let col = 0;
-            col < sampleCount;
+            col < samples;
             col++
         ) {
 
@@ -3034,7 +2497,6 @@ function drawCursorMask() {
                 step -
                 radius;
 
-
             const localY =
                 (
                     row + 0.5
@@ -3043,42 +2505,22 @@ function drawCursorMask() {
                 radius;
 
 
-            /*
-             * Pomijamy punkty poza kołem.
-             */
-
             if (
                 Math.sqrt(
                     localX * localX +
                     localY * localY
                 ) > radius
             ) {
-
                 continue;
-
             }
 
 
-            /*
-             * Dokładny ekranowy piksel.
-             */
-
             const screenX =
-                cursorX +
-                localX;
+                cursorX + localX;
 
             const screenY =
-                cursorY +
-                localY;
+                cursorY + localY;
 
-
-            /*
-             * =================================
-             * BLACK MASK
-             * =================================
-             *
-             * BLACK -> CYAN
-             */
 
             if (
                 maskPixelIsBlack(
@@ -3090,91 +2532,32 @@ function drawCursorMask() {
                 ctx.fillStyle =
                     CURSOR_COLORS.cyan;
 
-
                 ctx.fillRect(
                     col * step,
                     row * step,
-                    step + 0.6,
-                    step + 0.6
+                    step + 0.8,
+                    step + 0.8
                 );
 
             }
-
         }
-
     }
 
-
     ctx.restore();
-
 }
 
 
-/* =========================================
-   REBUILD MASK ON LOAD
-   ========================================= */
+/* MOUSE */
 
 window.addEventListener(
-    "load",
-    () => {
+    "mousemove",
+    event => {
 
-        setTimeout(
-            buildPageMask,
-            100
-        );
+        mouseX =
+            event.clientX;
 
-    }
-);
-
-
-/* =========================================
-   RESIZE
-   ========================================= */
-
-let resizeTimer = null;
-
-window.addEventListener(
-    "resize",
-    () => {
-
-        clearTimeout(
-            resizeTimer
-        );
-
-        resizeTimer =
-            setTimeout(
-                buildPageMask,
-                150
-            );
-
-    }
-);
-
-
-/* =========================================
-   SCROLL
-   =========================================
-   
-   Maskę odświeżamy po przewinięciu,
-   bo fixed / sticky / profil / menu
-   mogą zmienić zawartość viewportu.
-   ========================================= */
-
-let scrollMaskTimer = null;
-
-window.addEventListener(
-    "scroll",
-    () => {
-
-        clearTimeout(
-            scrollMaskTimer
-        );
-
-        scrollMaskTimer =
-            setTimeout(
-                buildPageMask,
-                80
-            );
+        mouseY =
+            event.clientY;
 
     },
     {
@@ -3183,59 +2566,45 @@ window.addEventListener(
 );
 
 
-/* =========================================
-   MUTATIONS
-   =========================================
-   
-   Przy otwieraniu menu/profilu
-   maska zostanie przebudowana.
-   ========================================= */
+document.addEventListener(
+    "mouseleave",
+    () => {
 
-const cursorMaskObserver =
-    new MutationObserver(
-        () => {
+        customCursor.classList.add(
+            "is-hidden"
+        );
 
-            clearTimeout(
-                scrollMaskTimer
-            );
-
-            scrollMaskTimer =
-                setTimeout(
-                    buildPageMask,
-                    80
-                );
-
-        }
-    );
-
-
-cursorMaskObserver.observe(
-    document.body,
-    {
-        attributes: true,
-        childList: true,
-        subtree: true,
-        attributeFilter: [
-            "class",
-            "style"
-        ]
     }
 );
 
 
-/* =========================================
-   FLUID CURSOR
-   ========================================= */
+document.addEventListener(
+    "mouseenter",
+    event => {
 
-function animateCustomCursor(
-    timestamp
-) {
+        customCursor.classList.remove(
+            "is-hidden"
+        );
 
-    /*
-     * =====================================
-     * FOLLOW
-     * =====================================
-     */
+        mouseX =
+            event.clientX;
+
+        mouseY =
+            event.clientY;
+
+        cursorX =
+            mouseX;
+
+        cursorY =
+            mouseY;
+
+    }
+);
+
+
+/* ANIMATION */
+
+function animateCustomCursor(timestamp) {
 
     const dx =
         mouseX -
@@ -3254,12 +2623,6 @@ function animateCustomCursor(
         dy *
         CURSOR.follow;
 
-
-    /*
-     * =====================================
-     * VELOCITY
-     * =====================================
-     */
 
     velocityX =
         cursorX -
@@ -3284,12 +2647,6 @@ function animateCustomCursor(
         );
 
 
-    /*
-     * =====================================
-     * SOFT BODY
-     * =====================================
-     */
-
     const stretch =
         Math.min(
             CURSOR.maxStretch,
@@ -3302,9 +2659,7 @@ function animateCustomCursor(
 
     const scaleY =
         1 /
-        Math.sqrt(
-            stretch
-        );
+        Math.sqrt(stretch);
 
 
     const angle =
@@ -3313,12 +2668,6 @@ function animateCustomCursor(
             velocityX
         );
 
-
-    /*
-     * =====================================
-     * POSITION
-     * =====================================
-     */
 
     customCursor.style.transform = `
         translate3d(
@@ -3340,22 +2689,15 @@ function animateCustomCursor(
     `;
 
 
-    /*
-     * =====================================
-     * COLOR UPDATE
-     * =====================================
-     */
-
-    const maskInterval =
+    const interval =
         1000 /
         CURSOR.colorFPS;
 
 
     if (
         timestamp -
-        previousMaskTime
-        >=
-        maskInterval
+        previousMaskTime >=
+        interval
     ) {
 
         drawCursorMask();
@@ -3369,180 +2711,105 @@ function animateCustomCursor(
     requestAnimationFrame(
         animateCustomCursor
     );
-
 }
 
 
-/* =========================================
-   START
-   ========================================= */
+/* BUILD MASK */
 
-requestAnimationFrame(
-    animateCustomCursor
+window.addEventListener(
+    "load",
+    () => {
+
+        setTimeout(
+            buildPageMask,
+            300
+        );
+
+    }
 );
 
-</script>
 
-/* =========================================
-   FLUID MOVEMENT
-   ========================================= */
+/* REBUILD AFTER RESIZE */
 
-function animateCustomCursor(
-    timestamp
-) {
+let resizeTimer = null;
 
-    /*
-     * =====================================
-     * FOLLOW
-     * =====================================
-     */
+window.addEventListener(
+    "resize",
+    () => {
 
-    const dx =
-        mouseX -
-        cursorX;
-
-
-    const dy =
-        mouseY -
-        cursorY;
-
-
-    cursorX +=
-        dx *
-        CURSOR.follow;
-
-
-    cursorY +=
-        dy *
-        CURSOR.follow;
-
-
-    /*
-     * =====================================
-     * VELOCITY
-     * =====================================
-     */
-
-    velocityX =
-        cursorX -
-        lastX;
-
-
-    velocityY =
-        cursorY -
-        lastY;
-
-
-    lastX =
-        cursorX;
-
-    lastY =
-        cursorY;
-
-
-    const speed =
-        Math.sqrt(
-            velocityX *
-                velocityX +
-            velocityY *
-                velocityY
+        clearTimeout(
+            resizeTimer
         );
 
-
-    /*
-     * =====================================
-     * SUBTELNY SOFT BODY
-     * =====================================
-     */
-
-    const stretch =
-        Math.min(
-            CURSOR.maxStretch,
-
-            1 +
-            speed *
-            CURSOR.stretchStrength
-        );
-
-
-    const scaleY =
-        1 /
-        Math.sqrt(
-            stretch
-        );
-
-
-    const angle =
-        Math.atan2(
-            velocityY,
-            velocityX
-        );
-
-
-    /*
-     * =====================================
-     * POSITION
-     * =====================================
-     */
-
-    customCursor.style.transform = `
-        translate3d(
-            ${cursorX}px,
-            ${cursorY}px,
-            0
-        )
-        translate(
-            -50%,
-            -50%
-        )
-        rotate(
-            ${angle}rad
-        )
-        scale(
-            ${stretch},
-            ${scaleY}
-        )
-    `;
-
-
-    /*
-     * =====================================
-     * COLOR MASK
-     * =====================================
-     *
-     * Ruch:
-     * 60+ FPS
-     *
-     * Kolor:
-     * 30 FPS
-     */
-
-    const maskInterval =
-        1000 /
-        CURSOR.colorFPS;
-
-
-    if (
-        timestamp -
-            previousMaskTime
-        >=
-        maskInterval
-    ) {
-
-        drawCursorMask();
-
-        previousMaskTime =
-            timestamp;
+        resizeTimer =
+            setTimeout(
+                buildPageMask,
+                250
+            );
 
     }
+);
 
 
-    requestAnimationFrame(
-        animateCustomCursor
+/* REBUILD AFTER SCROLL */
+
+let scrollTimer = null;
+
+window.addEventListener(
+    "scroll",
+    () => {
+
+        clearTimeout(
+            scrollTimer
+        );
+
+        scrollTimer =
+            setTimeout(
+                buildPageMask,
+                120
+            );
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+/* REBUILD AFTER MENU / PROFILE */
+
+const maskObserver =
+    new MutationObserver(
+        () => {
+
+            clearTimeout(
+                scrollTimer
+            );
+
+            scrollTimer =
+                setTimeout(
+                    buildPageMask,
+                    120
+                );
+
+        }
     );
 
-}
 
+maskObserver.observe(
+    document.body,
+    {
+        subtree: true,
+        attributes: true,
+        attributeFilter: [
+            "class",
+            "style"
+        ]
+    }
+);
+
+
+/* START */
 
 requestAnimationFrame(
     animateCustomCursor
