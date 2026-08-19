@@ -2789,21 +2789,50 @@ function textPixelHit(
      * =========================================
      */
 
-    const localX =
-        (
-            screenX -
-            h1Geometry.originalLeft
-        ) /
-        h1Geometry.scaleX;
+    const MASK_SCALE_X = 1.035;
+const MASK_SCALE_Y = 1.035;
+
+const localX =
+    (
+        screenX -
+        h1Geometry.originalLeft
+    ) /
+    h1Geometry.scaleX;
+
+const localY =
+    (
+        screenY -
+        h1Geometry.originalTop
+    ) /
+    h1Geometry.scaleY;
 
 
-    const localY =
-        (
-            screenY -
-            h1Geometry.originalTop
-        ) /
-        h1Geometry.scaleY;
+/*
+ * Powiększamy SAMĄ MASKĘ wokół jej środka.
+ * Pozycja H1 pozostaje bez zmian.
+ */
 
+const maskCenterX =
+    h1Mask.width / 2;
+
+const maskCenterY =
+    h1Mask.height / 2;
+
+const maskX =
+    maskCenterX +
+    (
+        localX -
+        maskCenterX
+    ) /
+    MASK_SCALE_X;
+
+const maskY =
+    maskCenterY +
+    (
+        localY -
+        maskCenterY
+    ) /
+    MASK_SCALE_Y;
 
     /*
      * =========================================
@@ -2812,15 +2841,14 @@ function textPixelHit(
      */
 
     const px =
-        Math.floor(
-            localX
-        );
+    Math.floor(
+        maskX
+    );
 
-
-    const py =
-        Math.floor(
-            localY
-        );
+const py =
+    Math.floor(
+        maskY
+    );
 
 
     if (
