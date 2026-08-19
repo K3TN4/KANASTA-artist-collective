@@ -2616,51 +2616,129 @@ function buildTextMask(element) {
      * =========================================
      */
 
-    const pixels =
-        drawCtx.getImageData(
-            0,
-            0,
-            width,
-            height
-        );
+   const pixels =
+    drawCtx.getImageData(
+        0,
+        0,
+        width,
+        height
+    );
 
-    const mask =
-        new Uint8Array(
-            width * height
-        );
+const mask =
+    new Uint8Array(
+        width * height
+    );
+
+/*
+ * Znajdujemy rzeczywistą
+ * lewą krawędź pikseli tekstu
+ * narysowanego przez Canvas.
+ */
+
+let inkLeft =
+    width;
+
+let inkRight =
+    -1;
+
+let inkTop =
+    height;
+
+let inkBottom =
+    -1;
+
+for (
+    let y = 0;
+    y < height;
+    y++
+) {
 
     for (
-        let y = 0;
-        y < height;
-        y++
+        let x = 0;
+        x < width;
+        x++
     ) {
 
-        for (
-            let x = 0;
-            x < width;
-            x++
+        const index =
+            (
+                y * width +
+                x
+            ) * 4;
+
+        if (
+            pixels.data[index + 3] > 20
         ) {
 
-            const index =
-                (
-                    y * width +
-                    x
-                ) * 4;
+            mask[
+                y * width +
+                x
+            ] = 1;
 
-            if (
-                pixels.data[index + 3] > 20
-            ) {
+            if (x < inkLeft) {
+                inkLeft = x;
+            }
 
-                mask[
-                    y * width +
-                    x
-                ] = 1;
+            if (x > inkRight) {
+                inkRight = x;
+            }
 
+            if (y < inkTop) {
+                inkTop = y;
+            }
+
+            if (y > inkBottom) {
+                inkBottom = y;
             }
 
         }
 
     }
+
+}
+
+/*
+ * Jeżeli tekst nie został narysowany,
+ * nie tworzymy maski.
+ */
+
+if (
+    inkRight < 0
+) {
+
+    return null;
+
+}
+
+return {
+
+    canvas,
+
+    mask,
+
+    width,
+
+    height,
+
+    rectWidth:
+        width,
+
+    rectHeight:
+        height,
+
+    /*
+     * Rzeczywista lewa krawędź
+     * pikseli naszej maski.
+     */
+
+    inkLeft,
+
+    inkRight,
+
+    inkTop,
+
+    inkBottom
+
+};
 
     return {
 
@@ -2874,9 +2952,100 @@ function screenPointToTextLocal(
 
 }
 
+       function getRenderedTextLocalLeft(
+    element
+) {
+
+    if (!element) {
+        return null;
+    }
+
+    const textNode =
+        element.firstChild;
+
+    if (
+        !textNode ||
+        textNode.nodeType !==
+        Node.TEXT_NODE
+    ) {
+        return null;
+    }
+
+    const range =
+        document.createRange();
+
+    range.selectNodeContents(
+        textNode
+    );
+
+    const rangeRect =
+        range.getBoundingClientRect();
+
+    const rect =
+        element.getBoundingClientRect();
+
+    const baseWidth =
+        element.offsetWidth;
+
+    if (
+        baseWidth <= 0 ||
+        rangeRect.width <= 0
+    ) {
+        return null;
+    }
+
+    /*
+     * Aktualna skala elementu.
+     */
+
+    const scaleX =
+        rect.width /
+        baseWidth;
+
+    if (scaleX === 0) {
+        return null;
+    }
+
+    /*
+     * Prawdziwy transform-origin.
+     */
+
+    const origin =
+        getTransformOrigin(
+            element
+        );
+
+    /*
+     * Oryginalny, nieskalowany
+     * lewy brzeg elementu.
+     */
+
+    const originalLeft =
+        rect.left -
+        origin.x *
+        (1 - scaleX);
+
+    /*
+     * Zamieniamy prawdziwą
+     * pozycję tekstu z ekranu
+     * na lokalny układ DOM.
+     */
+
+    const localTextLeft =
+        (
+            rangeRect.left -
+            originalLeft
+        ) /
+        scaleX;
+
+    return localTextLeft;
+
+}
+
 /* =========================================================
    TEXT PIXEL TEST
    ========================================================= */
+       
 
 function textPixelHit(
     element,
@@ -2907,7 +3076,7 @@ function textPixelHit(
         element.getBoundingClientRect();
 
     /*
-     * Szybki test bounding boxa.
+     * Szybki bounding-box test.
      */
 
     if (
@@ -2931,12 +3100,8 @@ function textPixelHit(
     }
 
     /*
-     * =========================================
-     * COFNIĘCIE TRANSFORM: SCALE()
-     * =========================================
-     *
-     * Zamieniamy współrzędne ekranu
-     * na współrzędne ORYGINALNEJ maski.
+     * Cofamy scale()
+     * do lokalnych współrzędnych DOM.
      */
 
     const local =
@@ -2949,6 +3114,42 @@ function textPixelHit(
     if (!local) {
         return false;
     }
+
+    /*
+     * =========================================
+     * KLUCZOWA POPRAWKA X
+     * =========================================
+     *
+     * Canvas może mieć minimalnie inną
+     * szerokość glifów niż prawdziwy tekst.
+     *
+     * Dlatego przesuwamy maskę tak,
+     * aby jej rzeczywista lewa krawędź
+     * pokryła się z prawdziwą lewą krawędzią
+     * tekstu DOM.
+     */
+
+    const renderedTextLeft =
+        getRenderedTextLocalLeft(
+            element
+        );
+
+    if (
+        renderedTextLeft !== null
+    ) {
+
+        const xOffset =
+            renderedTextLeft -
+            mask.inkLeft;
+
+        local.x -= xOffset;
+
+    }
+
+    /*
+     * Y zostawiamy dokładnie tak,
+     * jak był — bo wysokość już się zgadza.
+     */
 
     const px =
         Math.floor(
