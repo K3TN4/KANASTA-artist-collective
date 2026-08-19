@@ -2839,7 +2839,108 @@ function invalidateTextMasks() {
 
 
     
+function getRenderedTextLocalLeft(
+    element,
+    textRect
+) {
 
+    const elementRect =
+        element.getBoundingClientRect();
+
+    const baseWidth =
+        element.offsetWidth;
+
+    if (
+        baseWidth <= 0 ||
+        textRect.width <= 0
+    ) {
+
+        return null;
+
+    }
+
+    /*
+     * Aktualna skala elementu.
+     */
+
+    const scaleX =
+        elementRect.width /
+        baseWidth;
+
+    if (scaleX === 0) {
+
+        return null;
+
+    }
+
+    /*
+     * Transform-origin.
+     */
+
+    const style =
+        getComputedStyle(
+            element
+        );
+
+    const originParts =
+        style.transformOrigin
+            .split(" ");
+
+    function parseOrigin(
+        value,
+        size
+    ) {
+
+        if (
+            value.endsWith("%")
+        ) {
+
+            return (
+                parseFloat(value) /
+                100
+            ) * size;
+
+        }
+
+        return (
+            parseFloat(value) ||
+            0
+        );
+
+    }
+
+    const originX =
+        parseOrigin(
+            originParts[0] || "50%",
+            baseWidth
+        );
+
+    /*
+     * Oryginalny, nieskalowany
+     * lewy brzeg elementu.
+     */
+
+    const originalLeft =
+        elementRect.left -
+        originX *
+        (1 - scaleX);
+
+    /*
+     * Rzeczywisty lewy brzeg
+     * tekstu DOM, sprowadzony
+     * do lokalnych współrzędnych H1.
+     */
+
+    const localTextLeft =
+        (
+            textRect.left -
+            originalLeft
+        ) /
+        scaleX;
+
+    return localTextLeft;
+
+}
 /* =========================================================
    TEXT PIXEL TEST
    ========================================================= */
@@ -2873,24 +2974,12 @@ function textPixelHit(
 
     /*
      * =========================================
-     * PRAWDZIWY RENDEROWANY TEKST
+     * RZECZYWISTY TEKST DOM
      * =========================================
-     *
-     * Range daje nam rzeczywisty bounding box
-     * wyrenderowanych znaków.
-     *
-     * To UWZGLĘDNIA:
-     *
-     * - scale(1.06)
-     * - pozycję X
-     * - pozycję Y
-     * - font
-     * - letter spacing
      */
 
     const textNode =
         element.firstChild;
-
 
     if (
         !textNode ||
@@ -2906,11 +2995,9 @@ function textPixelHit(
     const range =
         document.createRange();
 
-
     range.selectNodeContents(
         textNode
     );
-
 
     const textRect =
         range.getBoundingClientRect();
@@ -2928,7 +3015,7 @@ function textPixelHit(
 
     /*
      * =========================================
-     * MASKA
+     * MASKA CANVAS
      * =========================================
      */
 
@@ -2937,7 +3024,6 @@ function textPixelHit(
             element
         );
 
-
     if (!mask) {
         return false;
     }
@@ -2945,7 +3031,7 @@ function textPixelHit(
 
     /*
      * =========================================
-     * BOUNDING BOX
+     * BOUNDING BOX RZECZYWISTEGO TEKSTU
      * =========================================
      */
 
@@ -2963,29 +3049,8 @@ function textPixelHit(
 
     /*
      * =========================================
-     * NORMALIZOWANA POZYCJA W TEKŚCIE
+     * ELEMENT PO SCALE()
      * =========================================
-     *
-     * 0 = lewa krawędź tekstu
-     * 1 = prawa krawędź tekstu
-     *
-     * Range pochodzi bezpośrednio
-     * z DOM-u, więc scale(1.06)
-     * jest już uwzględnione.
-     */
-
-       /*
-     * =========================================
-     * MAPOWANIE 1:1 Z RZECZYWISTYM TEKSTEM DOM
-     * =========================================
-     *
-     * NIE używamy już inkLeft / inkRight.
-     *
-     * Range mówi nam dokładnie, gdzie przeglądarka
-     * narysowała tekst na ekranie.
-     *
-     * Następnie cofamy tylko transform: scale()
-     * do układu lokalnego elementu.
      */
 
     const elementRect =
@@ -3007,12 +3072,6 @@ function textPixelHit(
 
     }
 
-
-    /*
-     * =========================================
-     * SKALA H1
-     * =========================================
-     */
 
     const scaleX =
         elementRect.width /
@@ -3037,16 +3096,13 @@ function textPixelHit(
      * =========================================
      * TRANSFORM ORIGIN
      * =========================================
-     *
-     * Dla KANASTA:
-     *
-     * 50% 50%
      */
 
     const transformOrigin =
         getComputedStyle(
             element
-        ).transformOrigin.split(" ");
+        ).transformOrigin
+            .split(" ");
 
 
     function parseOrigin(
@@ -3079,7 +3135,6 @@ function textPixelHit(
             baseWidth
         );
 
-
     const originY =
         parseOrigin(
             transformOrigin[1] || "50%",
@@ -3089,7 +3144,7 @@ function textPixelHit(
 
     /*
      * =========================================
-     * NIEPRZESKALOWANY TOP-LEFT ELEMENTU
+     * ORYGINALNY TOP-LEFT H1
      * =========================================
      */
 
@@ -3097,7 +3152,6 @@ function textPixelHit(
         elementRect.left -
         originX *
         (1 - scaleX);
-
 
     const originalTop =
         elementRect.top -
@@ -3107,32 +3161,13 @@ function textPixelHit(
 
     /*
      * =========================================
-     * POZYCJA TEKSTU WEWNĄTRZ ELEMENTU
+     * EKRAN -> LOKALNE WSPÓŁRZĘDNE H1
      * =========================================
      *
-     * Range pochodzi bezpośrednio z DOM-u.
-     */
-
-    const textOffsetX =
-        (
-            textRect.left -
-            elementRect.left
-        ) /
-        scaleX;
-
-
-    const textOffsetY =
-        (
-            textRect.top -
-            elementRect.top
-        ) /
-        scaleY;
-
-
-    /*
-     * =========================================
-     * PUNKT KURSORA -> LOKALNY ELEMENT
-     * =========================================
+     * Tutaj NIE odejmujemy już żadnego
+     * textOffsetY.
+     *
+     * To właśnie przywraca poprawne Y.
      */
 
     const localX =
@@ -3141,7 +3176,6 @@ function textPixelHit(
             originalLeft
         ) /
         scaleX;
-
 
     const localY =
         (
@@ -3153,28 +3187,74 @@ function textPixelHit(
 
     /*
      * =========================================
-     * PRZESUNIĘCIE DO PRAWDZIWEGO TEKSTU
+     * KOREKCJA TYLKO X
      * =========================================
      *
-     * Range określa pozycję tekstu,
-     * canvas maska jest w układzie elementu.
+     * Canvas może mieć minimalnie inną
+     * pozycję pierwszego glifu niż DOM.
+     *
+     * Obliczamy rzeczywistą pozycję tekstu
+     * DOM w układzie lokalnym H1.
      */
 
-    const maskX =
-        localX -
-        textOffsetX;
+    const renderedTextLocalLeft =
+        getRenderedTextLocalLeft(
+            element,
+            textRect
+        );
 
+
+    let maskX =
+        localX;
+
+
+    if (
+        renderedTextLocalLeft !== null
+    ) {
+
+        /*
+         * mask.inkLeft = początek tekstu
+         * w canvasie.
+         *
+         * renderedTextLocalLeft =
+         * rzeczywisty początek tekstu DOM.
+         */
+
+        const xCorrection =
+            renderedTextLocalLeft -
+            mask.inkLeft;
+
+        maskX =
+            localX -
+            xCorrection;
+
+    }
+
+
+    /*
+     * =========================================
+     * Y BEZ KOREKCJI
+     * =========================================
+     *
+     * To jest kluczowe.
+     *
+     * Y już wcześniej było poprawne.
+     */
 
     const maskY =
-        localY -
-        textOffsetY;
+        localY;
 
+
+    /*
+     * =========================================
+     * CANVAS PIXEL
+     * =========================================
+     */
 
     const px =
         Math.floor(
             maskX
         );
-
 
     const py =
         Math.floor(
@@ -3200,11 +3280,9 @@ function textPixelHit(
             mask.width +
             px
         ] === 1
-    
     );
 
 }
-
 
 /* =========================================================
    CIRCLE PIXEL TEST
