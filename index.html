@@ -2371,12 +2371,37 @@ function buildTextMask(element) {
     const style =
         getComputedStyle(element);
 
-    const rect =
-        element.getBoundingClientRect();
+    /*
+     * WAŻNE:
+     *
+     * offsetWidth / offsetHeight
+     * = rzeczywisty rozmiar elementu
+     * PRZED transform: scale().
+     *
+     * Dzięki temu maska opisuje prawdziwe
+     * kształty liter, a nie ich powiększony
+     * bounding box.
+     */
+
+    const width =
+        Math.max(
+            1,
+            Math.ceil(
+                element.offsetWidth
+            )
+        );
+
+    const height =
+        Math.max(
+            1,
+            Math.ceil(
+                element.offsetHeight
+            )
+        );
 
     if (
-        rect.width <= 0 ||
-        rect.height <= 0 ||
+        width <= 0 ||
+        height <= 0 ||
         style.display === "none" ||
         style.visibility === "hidden" ||
         Number(style.opacity) === 0
@@ -2415,25 +2440,10 @@ function buildTextMask(element) {
             style.letterSpacing
         ) || 0;
 
-    /*
-     * MASKA MA DOKŁADNIE TAKI SAM
-     * ROZMIAR JAK ELEMENT DOM.
-     */
-
-    const width =
-        Math.max(
-            1,
-            Math.ceil(rect.width)
-        );
-
-    const height =
-        Math.max(
-            1,
-            Math.ceil(rect.height)
-        );
-
     const canvas =
-        document.createElement("canvas");
+        document.createElement(
+            "canvas"
+        );
 
     canvas.width =
         width;
@@ -2442,10 +2452,13 @@ function buildTextMask(element) {
         height;
 
     const drawCtx =
-        canvas.getContext("2d");
+        canvas.getContext(
+            "2d"
+        );
 
     const measureCtx =
-        document.createElement("canvas")
+        document
+            .createElement("canvas")
             .getContext("2d");
 
     measureCtx.font =
@@ -2468,7 +2481,7 @@ function buildTextMask(element) {
         "alphabetic";
 
     /*
-     * REALNE METRYKI GLYPHU
+     * METRYKI RZECZYWISTEGO TEKSTU
      */
 
     const metrics =
@@ -2486,13 +2499,11 @@ function buildTextMask(element) {
         0;
 
     const textPixelHeight =
-        ascent + descent;
+        ascent +
+        descent;
 
     /*
-     * POZYCJA PIONOWA
-     *
-     * Środek rzeczywistych liter
-     * ustawiamy w środku elementu.
+     * CENTROWANIE PIONOWE
      */
 
     const baseline =
@@ -2525,7 +2536,8 @@ function buildTextMask(element) {
      * POZYCJA X
      */
 
-    let startX = 0;
+    let startX =
+        0;
 
     if (
         style.textAlign === "center"
@@ -2549,15 +2561,15 @@ function buildTextMask(element) {
     }
 
     /*
-     * DRAW GLYPH
+     * RYSOWANIE
      */
+
+    drawCtx.textAlign =
+        "left";
 
     if (
         letterSpacing === 0
     ) {
-
-        drawCtx.textAlign =
-            "left";
 
         drawCtx.fillText(
             text,
@@ -2567,9 +2579,6 @@ function buildTextMask(element) {
 
     }
     else {
-
-        drawCtx.textAlign =
-            "left";
 
         let x =
             startX;
@@ -2600,7 +2609,9 @@ function buildTextMask(element) {
     }
 
     /*
-     * RASTER
+     * =========================================
+     * RASTER MASK
+     * =========================================
      */
 
     const pixels =
@@ -2668,10 +2679,10 @@ function buildTextMask(element) {
         height,
 
         rectWidth:
-            rect.width,
+            width,
 
         rectHeight:
-            rect.height
+            height
 
     };
 
@@ -2682,38 +2693,36 @@ function buildTextMask(element) {
    GET TEXT MASK
    ========================================================= */
 
-function getTextMask(element) {
+function getTextMask(
+    element
+) {
 
     if (!element) {
         return null;
     }
 
-    const rect =
-        element.getBoundingClientRect();
+    const width =
+        element.offsetWidth;
+
+    const height =
+        element.offsetHeight;
 
     let cached =
-        textMasks.get(element);
+        textMasks.get(
+            element
+        );
 
     /*
-     * Jeżeli element zmienił rozmiar
-     * np. przez :hover,
-     * przebuduj maskę.
+     * Przebudowa tylko wtedy,
+     * gdy zmienił się PRAWDZIWY layout,
+     * a nie transform: scale().
      */
 
     if (
         cached &&
         (
-            Math.abs(
-                cached.rectWidth -
-                rect.width
-            ) > 0.5
-
-            ||
-
-            Math.abs(
-                cached.rectHeight -
-                rect.height
-            ) > 0.5
+            cached.rectWidth !== width ||
+            cached.rectHeight !== height
         )
     ) {
 
@@ -2747,7 +2756,6 @@ function getTextMask(element) {
 
 }
 
-
 /* =========================================================
    INVALIDATE TEXT MASKS
    ========================================================= */
@@ -2773,6 +2781,112 @@ function invalidateTextMasks() {
 
 }
 
+       function screenPointToTextLocal(
+    element,
+    screenX,
+    screenY
+) {
+
+    const rect =
+        element.getBoundingClientRect();
+
+    const localWidth =
+        element.offsetWidth;
+
+    const localHeight =
+        element.offsetHeight;
+
+    if (
+        localWidth <= 0 ||
+        localHeight <= 0
+    ) {
+        return null;
+    }
+
+    /*
+     * Aktualny rozmiar po transform: scale()
+     */
+
+    const scaleX =
+        rect.width /
+        localWidth;
+
+    const scaleY =
+        rect.height /
+        localHeight;
+
+    if (
+        scaleX === 0 ||
+        scaleY === 0
+    ) {
+        return null;
+    }
+
+    /*
+     * transform-origin
+     *
+     * np.:
+     *
+     * 0px 50%       -> logo
+     * 100% 50%      -> menu
+     * 50% 50%       -> KANASTA
+     */
+
+    const originParts =
+        styleTransformOrigin(
+            element
+        );
+
+    const originX =
+        originParts.x;
+
+    const originY =
+        originParts.y;
+
+    /*
+     * Pozycja punktu transform-origin
+     * na ekranie po przeskalowaniu.
+     */
+
+    const transformedOriginX =
+        rect.left +
+        originX *
+        scaleX;
+
+    const transformedOriginY =
+        rect.top +
+        originY *
+        scaleY;
+
+    /*
+     * Cofamy scale().
+     */
+
+    const localX =
+        originX +
+        (
+            screenX -
+            transformedOriginX
+        ) /
+        scaleX;
+
+    const localY =
+        originY +
+        (
+            screenY -
+            transformedOriginY
+        ) /
+        scaleY;
+
+    return {
+
+        x: localX,
+
+        y: localY
+
+    };
+
+}
 
 /* =========================================================
    TEXT PIXEL TEST
@@ -2788,12 +2902,10 @@ function textPixelHit(
         return false;
     }
 
-
     const style =
         getComputedStyle(
             element
         );
-
 
     if (
         style.display === "none" ||
@@ -2805,10 +2917,12 @@ function textPixelHit(
 
     }
 
-
     const rect =
         element.getBoundingClientRect();
 
+    /*
+     * Szybki test bounding boxa.
+     */
 
     if (
         screenX < rect.left ||
@@ -2821,65 +2935,129 @@ function textPixelHit(
 
     }
 
-
     const mask =
         getTextMask(
             element
         );
 
-
     if (!mask) {
         return false;
     }
 
-
     /*
-     * Normalizujemy pozycję punktu
-     * do bounding boxa elementu.
+     * =========================================
+     * COFNIĘCIE TRANSFORM: SCALE()
+     * =========================================
+     *
+     * Zamieniamy współrzędne ekranu
+     * na współrzędne ORYGINALNEJ maski.
      */
 
-const localX =
-    screenX -
-    rect.left;
+    const local =
+        screenPointToTextLocal(
+            element,
+            screenX,
+            screenY
+        );
 
-const localY =
-    screenY -
-    rect.top;
+    if (!local) {
+        return false;
+    }
 
-const px =
-    Math.floor(
-        localX
+    const px =
+        Math.floor(
+            local.x
+        );
+
+    const py =
+        Math.floor(
+            local.y
+        );
+
+    if (
+        px < 0 ||
+        py < 0 ||
+        px >= mask.width ||
+        py >= mask.height
+    ) {
+
+        return false;
+
+    }
+
+    return (
+        mask.mask[
+            py *
+            mask.width +
+            px
+        ] === 1
     );
 
-const py =
-    Math.floor(
-        localY
-    );
-
-if (
-    px < 0 ||
-    py < 0 ||
-    px >= mask.width ||
-    py >= mask.height
-) {
-
-    return false;
-
-}
-
-return (
-    mask.mask[
-        py *
-        mask.width +
-        px
-    ] === 1
-);
 }
 
 
 /* =========================================================
    CIRCLE PIXEL TEST
    ========================================================= */
+
+       function styleTransformOrigin(
+    element
+) {
+
+    const style =
+        getComputedStyle(
+            element
+        );
+
+    const parts =
+        style.transformOrigin
+            .split(" ");
+
+    const width =
+        element.offsetWidth;
+
+    const height =
+        element.offsetHeight;
+
+    function parseOrigin(
+        value,
+        size
+    ) {
+
+        if (
+            value.includes("%")
+        ) {
+
+            return (
+                parseFloat(value) /
+                100
+            ) * size;
+
+        }
+
+        return parseFloat(
+            value
+        ) || 0;
+
+    }
+
+    return {
+
+        x:
+            parseOrigin(
+                parts[0] || "50%",
+                width
+            ),
+
+        y:
+            parseOrigin(
+                parts[1] || "50%",
+                height
+            )
+
+    };
+
+}
 
 function circlePixelHit(
     circle,
