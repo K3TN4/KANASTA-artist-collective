@@ -1983,42 +1983,7 @@ window.addEventListener(
 
 updateArtistOrbit();
 
-updateH1Geometry();
 
-       mainH1.addEventListener(
-    "mouseenter",
-    () => {
-
-        requestAnimationFrame(
-            () => {
-
-                updateH1Geometry();
-
-                drawCursor();
-
-            }
-        );
-
-    }
-);
-
-
-mainH1.addEventListener(
-    "mouseleave",
-    () => {
-
-        requestAnimationFrame(
-            () => {
-
-                updateH1Geometry();
-
-                drawCursor();
-
-            }
-        );
-
-    }
-);
 /* =========================================
    CLAMP
    ========================================= */
@@ -2880,6 +2845,48 @@ function textPixelHit(
 
 }
 
+
+       /* =========================================================
+   H1 INIT
+   ========================================================= */
+
+updateH1Geometry();
+
+
+mainH1.addEventListener(
+    "mouseenter",
+    () => {
+
+        requestAnimationFrame(
+            () => {
+
+                updateH1Geometry();
+
+                drawCursor();
+
+            }
+        );
+
+    }
+);
+
+
+mainH1.addEventListener(
+    "mouseleave",
+    () => {
+
+        requestAnimationFrame(
+            () => {
+
+                updateH1Geometry();
+
+                drawCursor();
+
+            }
+        );
+
+    }
+);
 /* =========================================================
    ANY TARGET PIXEL?
    ========================================================= */
