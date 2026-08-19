@@ -2641,49 +2641,6 @@ function elementIsForeground(
     }
 
 
-    /* =====================================
-   BORDER
-   ===================================== */
-
-const borderVisible =
-    style.borderTopStyle !== "none" ||
-    style.borderRightStyle !== "none" ||
-    style.borderBottomStyle !== "none" ||
-    style.borderLeftStyle !== "none";
-
-
-if (borderVisible) {
-
-    const borders = [
-
-        style.borderTopColor,
-        style.borderRightColor,
-        style.borderBottomColor,
-        style.borderLeftColor
-
-    ];
-
-
-    if (
-        borders.some(
-            border => {
-
-                return (
-                    border !== "transparent" &&
-                    border !== "rgba(0, 0, 0, 0)" &&
-                    !isBackgroundColor(border)
-                );
-
-            }
-        )
-    ) {
-
-        return true;
-
-    }
-
-}
-
     /*
      * TEKST
      */
@@ -2709,10 +2666,6 @@ if (borderVisible) {
         textTags.has(tag)
     ) {
 
-        /*
-         * Czy punkt naprawdę znajduje się
-         * w obszarze tekstu.
-         */
         if (
             !pointInsideText(
                 element,
@@ -2724,10 +2677,6 @@ if (borderVisible) {
         }
 
 
-        /*
-         * Twój KANASTA jest image-text,
-         * więc ma transparentny text-fill.
-         */
         if (
             element.classList.contains(
                 "image-text"
@@ -2752,7 +2701,7 @@ if (borderVisible) {
 
 
     /*
-     * KOŁA ARTYSTÓW
+     * KOŁO ARTYSTY
      */
     if (
         element.classList.contains(
@@ -2764,7 +2713,7 @@ if (borderVisible) {
 
 
     /*
-     * PROFIL
+     * ZDJĘCIE PROFILOWE
      */
     if (
         element.classList.contains(
@@ -2778,7 +2727,6 @@ if (borderVisible) {
     return false;
 
 }
-
 
 /* =========================================
    CZY PUNKT JEST NAD OBIEKTEM
