@@ -1982,6 +1982,43 @@ window.addEventListener(
 
 
 updateArtistOrbit();
+
+updateH1Geometry();
+
+       mainH1.addEventListener(
+    "mouseenter",
+    () => {
+
+        requestAnimationFrame(
+            () => {
+
+                updateH1Geometry();
+
+                drawCursor();
+
+            }
+        );
+
+    }
+);
+
+
+mainH1.addEventListener(
+    "mouseleave",
+    () => {
+
+        requestAnimationFrame(
+            () => {
+
+                updateH1Geometry();
+
+                drawCursor();
+
+            }
+        );
+
+    }
+);
 /* =========================================
    CLAMP
    ========================================= */
@@ -2306,114 +2343,62 @@ const CURSOR_TEXT_TARGETS = [
 
 
 /* =========================================================
-   TEXT MASK CACHE
+   H1 PIXEL MATCH
    ========================================================= */
 
-const textMasks =
-    new WeakMap();
+const mainH1 =
+    document.querySelector(
+        "main h1.image-text"
+    );
+
+
+let h1Mask = null;
 
 
 /* =========================================================
-   TEXT TRANSFORM
+   BUILD H1 MASK
    ========================================================= */
 
-function transformText(
-    text,
-    textTransform
-) {
+function buildH1Mask() {
 
-    if (
-        textTransform === "uppercase"
-    ) {
-
-        return text.toUpperCase();
-
-    }
-
-
-    if (
-        textTransform === "lowercase"
-    ) {
-
-        return text.toLowerCase();
-
-    }
-
-
-    if (
-        textTransform === "capitalize"
-    ) {
-
-        return text.replace(
-            /\b\w/g,
-            char =>
-                char.toUpperCase()
-        );
-
-    }
-
-
-    return text;
-
-}
-
-
-/* =========================================================
-   BUILD TEXT MASK
-   ========================================================= */
-
-function buildTextMask(element) {
-
-    if (!element) {
+    if (!mainH1) {
         return null;
     }
 
     const style =
-        getComputedStyle(element);
+        getComputedStyle(mainH1);
 
     const width =
         Math.max(
             1,
-            Math.ceil(element.offsetWidth)
+            Math.ceil(
+                mainH1.offsetWidth
+            )
         );
 
     const height =
         Math.max(
             1,
-            Math.ceil(element.offsetHeight)
+            Math.ceil(
+                mainH1.offsetHeight
+            )
         );
 
     if (
         width <= 0 ||
-        height <= 0 ||
-        style.display === "none" ||
-        style.visibility === "hidden" ||
-        Number(style.opacity) === 0
+        height <= 0
     ) {
         return null;
     }
 
-    const textNode =
-        element.firstChild;
-
-    if (
-        !textNode ||
-        textNode.nodeType !== Node.TEXT_NODE
-    ) {
-        return null;
-    }
 
     const text =
-        textNode.textContent;
+        mainH1.firstChild?.textContent || "";
 
     if (!text) {
         return null;
     }
 
-
-    /* =========================================
-       CANVAS
-       ========================================= */
 
     const canvas =
         document.createElement("canvas");
@@ -2424,19 +2409,24 @@ function buildTextMask(element) {
     canvas.height =
         height;
 
-    const ctx =
-        canvas.getContext("2d");
 
-    if (!ctx) {
+    const drawCtx =
+        canvas.getContext(
+            "2d"
+        );
+
+    if (!drawCtx) {
         return null;
     }
 
 
-    /* =========================================
-       FONT
-       ========================================= */
+    /*
+     * =========================================
+     * FONT
+     * =========================================
+     */
 
-    const font =
+    drawCtx.font =
         [
             style.fontStyle,
             style.fontVariant,
@@ -2447,115 +2437,66 @@ function buildTextMask(element) {
         .filter(Boolean)
         .join(" ");
 
-    ctx.font =
-        font;
-
 
     /*
-     * KLUCZ:
-     * canvas dostaje DOKŁADNIE ten sam
-     * letter-spacing co CSS.
+     * =========================================
+     * SPACING
+     * =========================================
      *
-     * Nie liczymy już znaków ręcznie.
+     * Canvas musi dostać dokładnie ten sam
+     * letter-spacing co DOM.
      */
 
     if (
-        "letterSpacing" in ctx
+        "letterSpacing" in drawCtx
     ) {
-        ctx.letterSpacing =
+
+        drawCtx.letterSpacing =
             style.letterSpacing;
-    }
 
-
-    if (
-        "wordSpacing" in ctx
-    ) {
-        ctx.wordSpacing =
-            style.wordSpacing;
     }
 
 
     /*
-     * Staramy się zachować sposób
-     * renderowania tekstu.
+     * =========================================
+     * ALIGN
+     * =========================================
      */
 
-    if (
-        "fontKerning" in ctx
-    ) {
-        ctx.fontKerning =
-            style.fontKerning;
-    }
+    drawCtx.textAlign =
+        "center";
 
-
-    if (
-        "textRendering" in ctx &&
-        style.textRendering
-    ) {
-        ctx.textRendering =
-            style.textRendering;
-    }
-
-
-    ctx.fillStyle =
-        "#000";
-
-    ctx.textAlign =
-        style.textAlign === "center"
-            ? "center"
-            : style.textAlign === "right"
-                ? "right"
-                : "left";
-
-    ctx.textBaseline =
+    drawCtx.textBaseline =
         "alphabetic";
 
-
-    /* =========================================
-       X
-       ========================================= */
-
-    let drawX;
-
-    if (
-        ctx.textAlign === "center"
-    ) {
-
-        drawX =
-            width / 2;
-
-    }
-    else if (
-        ctx.textAlign === "right"
-    ) {
-
-        drawX =
-            width;
-
-    }
-    else {
-
-        drawX =
-            0;
-
-    }
+    drawCtx.fillStyle =
+        "#000";
 
 
-    /* =========================================
-       Y
-       ========================================= */
+    /*
+     * =========================================
+     * Y
+     * =========================================
+     */
 
     const fontSize =
-        parseFloat(style.fontSize) || 16;
+        parseFloat(
+            style.fontSize
+        ) || 16;
+
 
     const lineHeight =
         style.lineHeight === "normal"
             ? fontSize * 1.2
-            : parseFloat(style.lineHeight);
+            : parseFloat(
+                style.lineHeight
+            );
 
 
     const metrics =
-        ctx.measureText(text);
+        drawCtx.measureText(
+            text
+        );
 
 
     const ascent =
@@ -2569,7 +2510,10 @@ function buildTextMask(element) {
 
 
     const lineBoxTop =
-        (height - lineHeight) / 2;
+        (
+            height -
+            lineHeight
+        ) / 2;
 
 
     const baseline =
@@ -2581,23 +2525,32 @@ function buildTextMask(element) {
         ) / 2;
 
 
-    /* =========================================
-       JEDEN fillText()
-       ========================================= */
+    /*
+     * =========================================
+     * RYSUJEMY CAŁE "KANASTA"
+     * JAKO JEDEN TEKST
+     * =========================================
+     *
+     * Zero Range.
+     * Zero osobnego ustawiania liter.
+     * Zero ręcznych offsetów X.
+     */
 
-    ctx.fillText(
+    drawCtx.fillText(
         text,
-        drawX,
+        width / 2,
         baseline
     );
 
 
-    /* =========================================
-       RASTER
-       ========================================= */
+    /*
+     * =========================================
+     * RASTER
+     * =========================================
+     */
 
     const pixels =
-        ctx.getImageData(
+        drawCtx.getImageData(
             0,
             0,
             width,
@@ -2609,19 +2562,6 @@ function buildTextMask(element) {
         new Uint8Array(
             width * height
         );
-
-
-    let inkLeft =
-        width;
-
-    let inkRight =
-        -1;
-
-    let inkTop =
-        height;
-
-    let inkBottom =
-        -1;
 
 
     for (
@@ -2648,36 +2588,9 @@ function buildTextMask(element) {
             ) {
 
                 mask[
-                    y * width + x
+                    y * width +
+                    x
                 ] = 1;
-
-
-                if (
-                    x < inkLeft
-                ) {
-                    inkLeft = x;
-                }
-
-
-                if (
-                    x > inkRight
-                ) {
-                    inkRight = x;
-                }
-
-
-                if (
-                    y < inkTop
-                ) {
-                    inkTop = y;
-                }
-
-
-                if (
-                    y > inkBottom
-                ) {
-                    inkBottom = y;
-                }
 
             }
 
@@ -2686,214 +2599,85 @@ function buildTextMask(element) {
     }
 
 
-    if (
-        inkRight < 0
-    ) {
-        return null;
-    }
-
-
     return {
-
-        canvas,
 
         mask,
 
         width,
 
-        height,
-
-        rectWidth:
-            width,
-
-        rectHeight:
-            height,
-
-        inkLeft,
-
-        inkRight,
-
-        inkTop,
-
-        inkBottom
+        height
 
     };
 
 }
 
-/* =========================================================
-   GET TEXT MASK
-   ========================================================= */
-
-function getTextMask(
-    element
-) {
-
-    if (!element) {
-        return null;
-    }
-
-    const width =
-        element.offsetWidth;
-
-    const height =
-        element.offsetHeight;
-
-    let cached =
-        textMasks.get(
-            element
-        );
-
-    /*
-     * Przebudowa tylko wtedy,
-     * gdy zmienił się PRAWDZIWY layout,
-     * a nie transform: scale().
-     */
-
-    if (
-        cached &&
-        (
-            cached.rectWidth !== width ||
-            cached.rectHeight !== height
-        )
-    ) {
-
-        cached = null;
-
-        textMasks.delete(
-            element
-        );
-
-    }
-
-    if (!cached) {
-
-        cached =
-            buildTextMask(
-                element
-            );
-
-        if (cached) {
-
-            textMasks.set(
-                element,
-                cached
-            );
-
-        }
-
-    }
-
-    return cached;
-
-}
 
 /* =========================================================
-   INVALIDATE TEXT MASKS
+   INVALIDATE
    ========================================================= */
 
-function invalidateTextMasks() {
+function invalidateH1Mask() {
 
-    for (
-        const target
-        of CURSOR_TEXT_TARGETS
-    ) {
-
-        if (
-            target.element
-        ) {
-
-            textMasks.delete(
-                target.element
-            );
-
-        }
-
-    }
+    h1Mask =
+        null;
 
 }
 
 
-    
-
 /* =========================================================
-   TEXT PIXEL TEST
+   H1 GEOMETRY
    ========================================================= */
-       
 
-function textPixelHit(
-    element,
-    screenX,
-    screenY
-) {
-
-    if (!element) {
-        return false;
-    }
-
-    const style =
-        getComputedStyle(element);
-
-    if (
-        style.display === "none" ||
-        style.visibility === "hidden" ||
-        Number(style.opacity) === 0
-    ) {
-        return false;
-    }
+let h1Geometry =
+    null;
 
 
-    const mask =
-        getTextMask(element);
+function updateH1Geometry() {
 
-    if (!mask) {
-        return false;
+    if (!mainH1) {
+        h1Geometry = null;
+        return;
     }
 
 
     const rect =
-        element.getBoundingClientRect();
+        mainH1.getBoundingClientRect();
 
 
     const baseWidth =
-        element.offsetWidth;
+        mainH1.offsetWidth;
+
 
     const baseHeight =
-        element.offsetHeight;
+        mainH1.offsetHeight;
 
 
     if (
         baseWidth <= 0 ||
         baseHeight <= 0
     ) {
-        return false;
+
+        h1Geometry = null;
+        return;
+
     }
 
-
-    /* =========================================
-       SKALA ELEMENTU
-       ========================================= */
 
     const scaleX =
         rect.width /
         baseWidth;
+
 
     const scaleY =
         rect.height /
         baseHeight;
 
 
-    if (
-        scaleX === 0 ||
-        scaleY === 0
-    ) {
-        return false;
-    }
+    const style =
+        getComputedStyle(
+            mainH1
+        );
 
-
-    /* =========================================
-       TRANSFORM ORIGIN
-       ========================================= */
 
     const originParts =
         style.transformOrigin
@@ -2916,8 +2700,10 @@ function textPixelHit(
 
         }
 
+
         return (
-            parseFloat(value) || 0
+            parseFloat(value) ||
+            0
         );
 
     }
@@ -2925,174 +2711,174 @@ function textPixelHit(
 
     const originX =
         parseOrigin(
-            originParts[0] || "50%",
+            originParts[0] ||
+            "50%",
             baseWidth
         );
 
 
     const originY =
         parseOrigin(
-            originParts[1] || "50%",
+            originParts[1] ||
+            "50%",
             baseHeight
         );
 
 
-    /* =========================================
-       ODTWORZENIE POZYCJI H1
-       PRZED scale()
-       ========================================= */
+    /*
+     * Rzeczywisty top-left H1
+     * przed scale().
+     */
 
     const originalLeft =
         rect.left -
         originX *
-        (1 - scaleX);
+        (
+            1 -
+            scaleX
+        );
 
 
     const originalTop =
         rect.top -
         originY *
-        (1 - scaleY);
+        (
+            1 -
+            scaleY
+        );
 
 
-    /* =========================================
-       SCREEN → LOCAL CANVAS
-       ========================================= */
+    h1Geometry = {
+
+        rect,
+
+        baseWidth,
+
+        baseHeight,
+
+        scaleX,
+
+        scaleY,
+
+        originalLeft,
+
+        originalTop
+
+    };
+
+}
+
+
+/* =========================================================
+   H1 PIXEL TEST
+   ========================================================= */
+
+function textPixelHit(
+    element,
+    screenX,
+    screenY
+) {
+
+    /*
+     * Ten specjalny system dotyczy wyłącznie
+     * głównego KANASTA.
+     */
+
+    if (
+        element !== mainH1
+    ) {
+
+        return false;
+
+    }
+
+
+    if (!h1Geometry) {
+
+        updateH1Geometry();
+
+    }
+
+
+    if (!h1Geometry) {
+        return false;
+    }
+
+
+    if (!h1Mask) {
+
+        h1Mask =
+            buildH1Mask();
+
+    }
+
+
+    if (!h1Mask) {
+        return false;
+    }
+
+
+    /*
+     * =========================================
+     * SCREEN -> LOCAL H1
+     * =========================================
+     */
 
     const localX =
         (
             screenX -
-            originalLeft
+            h1Geometry.originalLeft
         ) /
-        scaleX;
+        h1Geometry.scaleX;
 
 
     const localY =
         (
             screenY -
-            originalTop
+            h1Geometry.originalTop
         ) /
-        scaleY;
+        h1Geometry.scaleY;
 
+
+    /*
+     * =========================================
+     * PIXEL
+     * =========================================
+     */
 
     const px =
-        Math.floor(localX);
+        Math.floor(
+            localX
+        );
+
 
     const py =
-        Math.floor(localY);
+        Math.floor(
+            localY
+        );
 
 
     if (
         px < 0 ||
         py < 0 ||
-        px >= mask.width ||
-        py >= mask.height
+        px >= h1Mask.width ||
+        py >= h1Mask.height
     ) {
+
         return false;
+
     }
 
 
     return (
-        mask.mask[
-            py * mask.width +
+        h1Mask.mask[
+            py *
+            h1Mask.width +
             px
         ] === 1
     );
 
 }
-/* =========================================================
-   CIRCLE PIXEL TEST
-   ========================================================= */
-
-    
-
-function circlePixelHit(
-    circle,
-    screenX,
-    screenY
-) {
-
-    if (!circle) {
-        return false;
-    }
-
-
-    const style =
-        getComputedStyle(
-            circle
-        );
-
-
-    if (
-        style.display === "none" ||
-        style.visibility === "hidden" ||
-        Number(style.opacity) === 0
-    ) {
-
-        return false;
-
-    }
-
-
-    const rect =
-        circle.getBoundingClientRect();
-
-
-    if (
-        screenX < rect.left ||
-        screenX > rect.right ||
-        screenY < rect.top ||
-        screenY > rect.bottom
-    ) {
-
-        return false;
-
-    }
-
-
-    const centerX =
-        rect.left +
-        rect.width / 2;
-
-
-    const centerY =
-        rect.top +
-        rect.height / 2;
-
-
-    const radiusX =
-        rect.width / 2;
-
-
-    const radiusY =
-        rect.height / 2;
-
-
-    const dx =
-        (
-            screenX -
-            centerX
-        )
-        /
-        radiusX;
-
-
-    const dy =
-        (
-            screenY -
-            centerY
-        )
-        /
-        radiusY;
-
-
-    return (
-        dx * dx +
-        dy * dy
-        <= 1
-    );
-
-}
-
 
 /* =========================================================
    ANY TARGET PIXEL?
@@ -3534,7 +3320,9 @@ window.addEventListener(
             setTimeout(
                 () => {
 
-                    invalidateTextMasks();
+                    invalidateH1Mask();
+
+                    updateH1Geometry();
 
                     drawCursor();
 
@@ -3545,10 +3333,21 @@ window.addEventListener(
     }
 );
 
-
 /* =========================================================
    START
    ========================================================= */
+
+       document.fonts.ready.then(
+    () => {
+
+        invalidateH1Mask();
+
+        updateH1Geometry();
+
+        drawCursor();
+
+    }
+);
 
 requestAnimationFrame(
     animateCustomCursor
