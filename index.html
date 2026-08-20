@@ -3210,6 +3210,74 @@ function parseCursorOrigin(
 let cursorHitTargets = [];
 
 
+       function getDOMTextInkBounds(element) {
+
+    if (!element) {
+        return null;
+    }
+
+    const range = document.createRange();
+
+    try {
+        range.selectNodeContents(element);
+    } catch (error) {
+        return null;
+    }
+
+    const rects = Array.from(
+        range.getClientRects()
+    ).filter(
+        rect =>
+            rect.width > 0 &&
+            rect.height > 0
+    );
+
+    if (!rects.length) {
+        return null;
+    }
+
+    let top = Infinity;
+    let bottom = -Infinity;
+    let left = Infinity;
+    let right = -Infinity;
+
+    for (const rect of rects) {
+
+        top =
+            Math.min(
+                top,
+                rect.top
+            );
+
+        bottom =
+            Math.max(
+                bottom,
+                rect.bottom
+            );
+
+        left =
+            Math.min(
+                left,
+                rect.left
+            );
+
+        right =
+            Math.max(
+                right,
+                rect.right
+            );
+
+    }
+
+    return {
+        top,
+        bottom,
+        left,
+        right,
+        width: right - left,
+        height: bottom - top
+    };
+}
 /* =========================================================
    BUILD TEXT TARGET
    ========================================================= */
@@ -3266,6 +3334,12 @@ function prepareTextTarget(
 const maskBounds =
     getMaskBounds(mask);
 
+const domInkBounds =
+    getDOMTextInkBounds(element);
+
+if (!domInkBounds) {
+    return null;
+}
 
     const rect =
         element.getBoundingClientRect();
@@ -3301,6 +3375,17 @@ const maskBounds =
     const scaleY =
         rect.height /
         height;
+
+    const domInkTopLocal =
+    (
+        domInkBounds.top -
+        rect.top
+    ) /
+    scaleY;
+
+const dynamicYOffset =
+    domInkTopLocal -
+    maskBounds.top;
 
 
     /*
@@ -3360,6 +3445,8 @@ const maskBounds =
 
     maskBounds,
 
+    domInkBounds,
+
     width: mask.width,
     height: mask.height,
 
@@ -3371,7 +3458,7 @@ const maskBounds =
     originalLeft,
     originalTop,
 
-    yOffset: 0
+    yOffset: dynamicYOffset
 
 };
 }
@@ -3546,12 +3633,14 @@ function textTargetPixelHit(
      */
 
     const localY =
-        (
-            screenY -
-            rect.top
-        ) / target.scaleY;
+    (
+        screenY -
+        rect.top
+    ) /
+    target.scaleY -
+    target.yOffset;
 
-
+    
     const px =
         Math.floor(localX);
 
