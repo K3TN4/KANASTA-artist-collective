@@ -2461,17 +2461,6 @@ function buildH1Mask() {
  * znaków zwrócony przez canvas.
  */
 
-const glyphTop =
-    metrics.actualBoundingBoxAscent ||
-    fontSize * 0.8;
-
-const glyphBottom =
-    metrics.actualBoundingBoxDescent ||
-    fontSize * 0.2;
-
-const glyphHeight =
-    glyphTop +
-    glyphBottom;
 
 
 /*
@@ -2484,32 +2473,14 @@ const lineBoxTop =
         lineHeight
     ) / 2;
 
-
-/*
- * Chcemy, aby środek
- * rzeczywistych glyphów
- * pokrywał się ze środkiem
- * line boxa DOM.
- */
-
-const targetGlyphCenter =
-    lineBoxTop +
-    lineHeight / 2;
-
-
-/*
- * Baseline wynikający
- * z tej pozycji.
- */
-
 const baseline =
-    targetGlyphCenter -
+    lineBoxTop +
     (
-        glyphBottom -
-        glyphTop
+        lineHeight -
+        ascent +
+        descent
     ) / 2 +
-    glyphTop;
-
+    ascent;
     /*
      * =========================================
      * RYSUJEMY CAŁE "KANASTA"
@@ -2920,17 +2891,6 @@ function buildGenericTextMask(
  * =====================================================
  */
 
-const glyphTop =
-    metrics.actualBoundingBoxAscent ||
-    fontSize * 0.8;
-
-const glyphBottom =
-    metrics.actualBoundingBoxDescent ||
-    fontSize * 0.2;
-
-const glyphHeight =
-    glyphTop +
-    glyphBottom;
 
 
 /*
@@ -2943,29 +2903,14 @@ const lineBoxTop =
         lineHeight
     ) / 2;
 
-
-/*
- * Środek rzeczywistego tekstu
- * ma pokrywać się ze środkiem line boxa.
- */
-
-const targetGlyphCenter =
-    lineBoxTop +
-    lineHeight / 2;
-
-
-/*
- * Wyliczamy baseline.
- */
-
 const baseline =
-    targetGlyphCenter -
+    lineBoxTop +
     (
-        glyphBottom -
-        glyphTop
+        lineHeight -
+        ascent +
+        descent
     ) / 2 +
-    glyphTop;
-
+    ascent;
 
     /*
      * X
@@ -3081,7 +3026,53 @@ const baseline =
 
 }
 
+function getMaskBounds(maskData) {
 
+    const {
+        mask,
+        width,
+        height
+    } = maskData;
+
+    let minY = height;
+    let maxY = -1;
+
+    for (let y = 0; y < height; y++) {
+
+        const rowStart = y * width;
+
+        for (let x = 0; x < width; x++) {
+
+            if (mask[rowStart + x] === 1) {
+
+                minY = Math.min(minY, y);
+                maxY = Math.max(maxY, y);
+
+            }
+
+        }
+
+    }
+
+    if (maxY < 0) {
+        return {
+            top: 0,
+            bottom: 0,
+            height: 0,
+            center: height / 2
+        };
+    }
+
+    return {
+
+        top: minY,
+        bottom: maxY,
+        height: maxY - minY + 1,
+        center: (minY + maxY + 1) / 2
+
+    };
+
+}
 /* =========================================================
    GET CACHED TEXT MASK
    ========================================================= */
@@ -3268,10 +3259,12 @@ function prepareTextTarget(
                 element
             );
 
-
     if (!mask) {
-        return null;
-    }
+    return null;
+}
+
+const maskBounds =
+    getMaskBounds(mask);
 
 
     const rect =
@@ -3365,32 +3358,22 @@ function prepareTextTarget(
 
     mask,
 
-    width:
-        mask.width,
+    maskBounds,
 
-    height:
-        mask.height,
+    width: mask.width,
+    height: mask.height,
 
     rect,
 
     scaleX,
-
     scaleY,
 
     originalLeft,
-
     originalTop,
 
-    /*
-     * Korekta pionowa maski.
-     *
-     * H1 ma line-height 0.9,
-     * dlatego jego canvasowy raster
-     * może być minimalnie przesunięty.
-     */
-   
-};
+    yOffset: 0
 
+};
 }
 
 
@@ -3536,15 +3519,7 @@ function textTargetPixelHit(
     screenY
 ) {
 
-    const rect =
-        target.rect;
-
-
-    /*
-     * ==========================================
-     * RECTANGLE TEST
-     * ==========================================
-     */
+    const rect = target.rect;
 
     if (
         screenX < rect.left ||
@@ -3555,49 +3530,33 @@ function textTargetPixelHit(
         return false;
     }
 
-
     /*
-     * ==========================================
-     * SCREEN -> LOCAL
-     *
-     * Używamy pozycji elementu
-     * PRZED transform.
-     *
-     * To jest kluczowe dla scale().
-     * ==========================================
+     * X pozostaje dokładnie tak jak wcześniej.
      */
 
     const localX =
         (
             screenX -
-            target.originalLeft
-        ) /
-        target.scaleX;
+            rect.left
+        ) / target.scaleX;
 
+
+    /*
+     * Y również liczymy względem rect DOM.
+     */
 
     const localY =
         (
             screenY -
-            target.originalTop
-        ) /
-        target.scaleY;
+            rect.top
+        ) / target.scaleY;
 
-
-    /*
-     * ==========================================
-     * PIXEL
-     * ==========================================
-     */
 
     const px =
-        Math.floor(
-            localX
-        );
+        Math.floor(localX);
 
     const py =
-        Math.floor(
-            localY
-        );
+        Math.floor(localY);
 
 
     if (
@@ -3612,9 +3571,7 @@ function textTargetPixelHit(
 
     return (
         target.mask.mask[
-            py *
-            target.width +
-            px
+            py * target.width + px
         ] === 1
     );
 
