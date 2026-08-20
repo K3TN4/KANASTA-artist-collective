@@ -2459,12 +2459,13 @@ function buildH1Mask() {
 
 
     const baseline =
-        lineBoxTop +
-        (
-            lineHeight +
-            ascent -
-            descent
-        ) / 2;
+    lineBoxTop +
+    (
+        lineHeight -
+        ascent +
+        descent
+    ) / 2 +
+    ascent;
 
 
     /*
@@ -2872,18 +2873,18 @@ function buildGenericTextMask(
      */
 
     const baseline =
-        (
-            height -
-            lineHeight
-        ) / 2
-        +
-        (
-            lineHeight -
-            ascent +
-            descent
-        ) / 2
-        +
-        ascent;
+    (
+        height -
+        lineHeight
+    ) / 2
+    +
+    (
+        lineHeight -
+        ascent +
+        descent
+    ) / 2
+    +
+    ascent;
 
 
     /*
@@ -3278,29 +3279,41 @@ function prepareTextTarget(
 
     return {
 
-        type: "text",
+    type: "text",
 
-        element,
+    element,
 
-        mask,
+    mask,
 
-        width:
-            mask.width,
+    width:
+        mask.width,
 
-        height:
-            mask.height,
+    height:
+        mask.height,
 
-        rect,
+    rect,
 
-        scaleX,
+    scaleX,
 
-        scaleY,
+    scaleY,
 
-        originalLeft,
+    originalLeft,
 
-        originalTop
+    originalTop,
 
-    };
+    /*
+     * Korekta pionowa maski.
+     *
+     * H1 ma line-height 0.9,
+     * dlatego jego canvasowy raster
+     * może być minimalnie przesunięty.
+     */
+    yOffset:
+        element === mainH1
+            ? 3
+            : 0
+
+};
 
 }
 
@@ -3491,11 +3504,13 @@ function textTargetPixelHit(
         target.scaleX;
 
     const localY =
-        (
-            screenY -
-            rect.top
-        ) /
-        target.scaleY;
+    (
+        screenY -
+        rect.top
+    ) /
+    target.scaleY
+    -
+    target.yOffset;
 
 
     /*
