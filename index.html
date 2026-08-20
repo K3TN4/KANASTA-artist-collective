@@ -2650,7 +2650,15 @@ const originalTop =
 
 
     cursorH1Overlay.style.clipPath =
-    "none";
+    `
+    ellipse(
+        ${visibleRadiusX}px
+        ${visibleRadiusY}px
+        at
+        ${cursorX}px
+        ${cursorY}px
+    )
+    `;
 }
 /* =========================================================
    BUILD H1 MASK
