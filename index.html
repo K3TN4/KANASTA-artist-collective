@@ -2451,22 +2451,64 @@ function buildH1Mask() {
         0;
 
 
-    const lineBoxTop =
-        (
-            height -
-            lineHeight
-        ) / 2;
+    /*
+ * =====================================================
+ * DOKŁADNA POZYCJA GLYPHÓW
+ * =====================================================
+ *
+ * Nie centrujemy baseline'a.
+ * Centrujemy rzeczywisty bounding box
+ * znaków zwrócony przez canvas.
+ */
+
+const glyphTop =
+    metrics.actualBoundingBoxAscent ||
+    fontSize * 0.8;
+
+const glyphBottom =
+    metrics.actualBoundingBoxDescent ||
+    fontSize * 0.2;
+
+const glyphHeight =
+    glyphTop +
+    glyphBottom;
 
 
-    const baseline =
-    lineBoxTop +
+/*
+ * DOM line box.
+ */
+
+const lineBoxTop =
     (
-        lineHeight -
-        ascent +
-        descent
-    ) / 2 +
-    ascent;
+        height -
+        lineHeight
+    ) / 2;
 
+
+/*
+ * Chcemy, aby środek
+ * rzeczywistych glyphów
+ * pokrywał się ze środkiem
+ * line boxa DOM.
+ */
+
+const targetGlyphCenter =
+    lineBoxTop +
+    lineHeight / 2;
+
+
+/*
+ * Baseline wynikający
+ * z tej pozycji.
+ */
+
+const baseline =
+    targetGlyphCenter -
+    (
+        glyphBottom -
+        glyphTop
+    ) / 2 +
+    glyphTop;
 
     /*
      * =========================================
@@ -2872,19 +2914,57 @@ function buildGenericTextMask(
      * Dopasowujemy ją do środka line boxa.
      */
 
-    const baseline =
+    /*
+ * =====================================================
+ * DOKŁADNA POZYCJA GLYPHÓW
+ * =====================================================
+ */
+
+const glyphTop =
+    metrics.actualBoundingBoxAscent ||
+    fontSize * 0.8;
+
+const glyphBottom =
+    metrics.actualBoundingBoxDescent ||
+    fontSize * 0.2;
+
+const glyphHeight =
+    glyphTop +
+    glyphBottom;
+
+
+/*
+ * Line box DOM.
+ */
+
+const lineBoxTop =
     (
         height -
         lineHeight
-    ) / 2
-    +
+    ) / 2;
+
+
+/*
+ * Środek rzeczywistego tekstu
+ * ma pokrywać się ze środkiem line boxa.
+ */
+
+const targetGlyphCenter =
+    lineBoxTop +
+    lineHeight / 2;
+
+
+/*
+ * Wyliczamy baseline.
+ */
+
+const baseline =
+    targetGlyphCenter -
     (
-        lineHeight -
-        ascent +
-        descent
-    ) / 2
-    +
-    ascent;
+        glyphBottom -
+        glyphTop
+    ) / 2 +
+    glyphTop;
 
 
     /*
@@ -3308,11 +3388,7 @@ function prepareTextTarget(
      * dlatego jego canvasowy raster
      * może być minimalnie przesunięty.
      */
-    yOffset:
-        element === mainH1
-            ? 3
-            : 0
-
+   
 };
 
 }
@@ -3465,7 +3541,9 @@ function textTargetPixelHit(
 
 
     /*
-     * 1. SZYBKI TEST PROSTOKĄTA
+     * ==========================================
+     * RECTANGLE TEST
+     * ==========================================
      */
 
     if (
@@ -3479,42 +3557,36 @@ function textTargetPixelHit(
 
 
     /*
-     * 2. POZYCJA LOKALNA
+     * ==========================================
+     * SCREEN -> LOCAL
      *
-     * Dla elementów bez transformacji
-     * najprościej i najdokładniej jest
-     * liczyć bezpośrednio względem rect.
+     * Używamy pozycji elementu
+     * PRZED transform.
      *
-     * Dzięki temu zwykłe:
-     *
-     * MENU
-     * LOGO
-     * ARTISTS
-     * CONTACT
-     * subtitle
-     *
-     * trafiają dokładnie w swój prostokąt.
+     * To jest kluczowe dla scale().
+     * ==========================================
      */
 
     const localX =
         (
             screenX -
-            rect.left
+            target.originalLeft
         ) /
         target.scaleX;
 
+
     const localY =
-    (
-        screenY -
-        rect.top
-    ) /
-    target.scaleY
-    -
-    target.yOffset;
+        (
+            screenY -
+            target.originalTop
+        ) /
+        target.scaleY;
 
 
     /*
-     * 3. MASK PIXEL
+     * ==========================================
+     * PIXEL
+     * ==========================================
      */
 
     const px =
@@ -3528,10 +3600,6 @@ function textTargetPixelHit(
         );
 
 
-    /*
-     * 4. POZA MASKĄ
-     */
-
     if (
         px < 0 ||
         py < 0 ||
@@ -3542,10 +3610,6 @@ function textTargetPixelHit(
     }
 
 
-    /*
-     * 5. PRAWDZIWY PIXEL TEKSTU
-     */
-
     return (
         target.mask.mask[
             py *
@@ -3555,8 +3619,6 @@ function textTargetPixelHit(
     );
 
 }
-
-
 /* =========================================================
    CIRCLE PIXEL TEST
    ========================================================= */
