@@ -3135,165 +3135,79 @@ function invalidateGenericTextMasks() {
 }
 
 /* =========================================================
-   TEXT PIXEL TEST
+   OPTIMIZED PIXEL HIT TEST
+   =========================================================
+   
+   WAŻNE:
+   - fizyka kulki pozostaje bez zmian
+   - nie wykonujemy już DOM queries dla każdego piksela
+   - geometria elementów jest liczona tylko raz na drawCursor()
+   - 324 próbki kulki korzystają wyłącznie z gotowych danych
    ========================================================= */
 
-function textPixelHit(
-    element,
-    screenX,
-    screenY
-) {
+let cursorHitTargets = [];
 
-    if (!element) {
-        return false;
+
+/* =========================================================
+   TRANSFORM ORIGIN
+   ========================================================= */
+
+function parseTransformOrigin(value, size) {
+
+    if (!value) {
+        return 0;
     }
 
-
-    /*
-     * =====================================================
-     * 1. GŁÓWNE KANASTA
-     * =====================================================
-     *
-     * Zachowujemy Twój obecny, specjalny matcher H1.
-     */
-
-    if (
-        element === mainH1
-    ) {
-
-        if (!h1Geometry) {
-
-            updateH1Geometry();
-
-        }
-
-        if (!h1Geometry) {
-            return false;
-        }
-
-        if (!h1Mask) {
-
-            h1Mask =
-                buildH1Mask();
-
-        }
-
-        if (!h1Mask) {
-            return false;
-        }
-
-
-        const MASK_SCALE_X =
-            1.035;
-
-        const MASK_SCALE_Y =
-            1.035;
-
-
-        const localX =
-            (
-                screenX -
-                h1Geometry.originalLeft
-            ) /
-            h1Geometry.scaleX;
-
-
-        const localY =
-            (
-                screenY -
-                h1Geometry.originalTop
-            ) /
-            h1Geometry.scaleY;
-
-
-        const maskCenterX =
-            h1Mask.width / 2;
-
-        const maskCenterY =
-            h1Mask.height / 2;
-
-
-        const maskX =
-            maskCenterX +
-            (
-                localX -
-                maskCenterX
-            ) /
-            MASK_SCALE_X;
-
-
-        const maskY =
-            maskCenterY +
-            (
-                localY -
-                maskCenterY
-            ) /
-            MASK_SCALE_Y;
-
-
-        const px =
-            Math.floor(
-                maskX
-            );
-
-        const py =
-            Math.floor(
-                maskY
-            );
-
-
-        if (
-            px < 0 ||
-            py < 0 ||
-            px >= h1Mask.width ||
-            py >= h1Mask.height
-        ) {
-            return false;
-        }
-
+    if (value.endsWith("%")) {
 
         return (
-            h1Mask.mask[
-                py *
-                h1Mask.width +
-                px
-            ] === 1
-        );
+            parseFloat(value) / 100
+        ) * size;
 
     }
 
+    return parseFloat(value) || 0;
+}
 
-    /*
-     * =====================================================
-     * 2. POZOSTAŁE TEKSTY
-     * =====================================================
-     */
+
+/* =========================================================
+   BUILD TEXT HIT TARGET
+   ========================================================= */
+
+function buildTextHitTarget(element) {
+
+    if (!element) {
+        return null;
+    }
+
+    const style =
+        getComputedStyle(element);
+
+    if (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        Number(style.opacity) === 0
+    ) {
+        return null;
+    }
 
     const mask =
-        getGenericTextMask(
-            element
-        );
+        element === mainH1
+            ? (
+                h1Mask ||
+                (
+                    h1Mask =
+                    buildH1Mask()
+                )
+            )
+            : getGenericTextMask(element);
 
     if (!mask) {
-        return false;
+        return null;
     }
-
-
-    /*
-     * Aktualny prostokąt elementu.
-     *
-     * Dzięki getBoundingClientRect()
-     * uwzględniamy również:
-     *
-     * transform: scale(...)
-     *
-     * więc MENU / LOGO itd. mogą się
-     * powiększać bez rozjechania kursora.
-     */
 
     const rect =
         element.getBoundingClientRect();
-
 
     const baseWidth =
         element.offsetWidth;
@@ -3301,20 +3215,14 @@ function textPixelHit(
     const baseHeight =
         element.offsetHeight;
 
-
     if (
         baseWidth <= 0 ||
-        baseHeight <= 0
+        baseHeight <= 0 ||
+        rect.width <= 0 ||
+        rect.height <= 0
     ) {
-        return false;
+        return null;
     }
-
-
-    /*
-     * =====================================================
-     * SKALA
-     * =====================================================
-     */
 
     const scaleX =
         rect.width /
@@ -3324,77 +3232,28 @@ function textPixelHit(
         rect.height /
         baseHeight;
 
-
     if (
         scaleX === 0 ||
         scaleY === 0
     ) {
-        return false;
+        return null;
     }
-
-
-    /*
-     * =====================================================
-     * TRANSFORM ORIGIN
-     * =====================================================
-     */
-
-    const style =
-        getComputedStyle(
-            element
-        );
-
 
     const originParts =
         style.transformOrigin
             .split(" ");
 
-
-    function parseOrigin(
-        value,
-        size
-    ) {
-
-        if (
-            value.endsWith("%")
-        ) {
-
-            return (
-                parseFloat(value) /
-                100
-            ) * size;
-
-        }
-
-        return (
-            parseFloat(value) ||
-            0
-        );
-
-    }
-
-
     const originX =
-        parseOrigin(
-            originParts[0] ||
-            "50%",
+        parseTransformOrigin(
+            originParts[0] || "50%",
             baseWidth
         );
 
-
     const originY =
-        parseOrigin(
-            originParts[1] ||
-            "50%",
+        parseTransformOrigin(
+            originParts[1] || "50%",
             baseHeight
         );
-
-
-    /*
-     * =====================================================
-     * TOP-LEFT PRZED TRANSFORM
-     * =====================================================
-     */
 
     const originalLeft =
         rect.left -
@@ -3404,7 +3263,6 @@ function textPixelHit(
             scaleX
         );
 
-
     const originalTop =
         rect.top -
         originY *
@@ -3413,27 +3271,214 @@ function textPixelHit(
             scaleY
         );
 
+    return {
+
+        type: "text",
+
+        element,
+
+        mask,
+
+        maskWidth:
+            mask.width,
+
+        maskHeight:
+            mask.height,
+
+        rect,
+
+        baseWidth,
+
+        baseHeight,
+
+        scaleX,
+
+        scaleY,
+
+        originalLeft,
+
+        originalTop
+
+    };
+
+}
+
+
+/* =========================================================
+   BUILD CIRCLE HIT TARGET
+   ========================================================= */
+
+function buildCircleHitTarget(circle) {
+
+    if (!circle) {
+        return null;
+    }
+
+    const style =
+        getComputedStyle(circle);
+
+    if (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        Number(style.opacity) === 0
+    ) {
+        return null;
+    }
+
+    const rect =
+        circle.getBoundingClientRect();
+
+    if (
+        rect.width <= 0 ||
+        rect.height <= 0
+    ) {
+        return null;
+    }
+
+    return {
+
+        type: "circle",
+
+        element: circle,
+
+        rect,
+
+        centerX:
+            rect.left +
+            rect.width / 2,
+
+        centerY:
+            rect.top +
+            rect.height / 2,
+
+        radiusX:
+            rect.width / 2,
+
+        radiusY:
+            rect.height / 2
+
+    };
+
+}
+
+
+/* =========================================================
+   BUILD COMPLETE HIT CACHE
+   ========================================================= */
+
+function updateCursorHitTargets() {
+
+    const nextTargets = [];
+
 
     /*
-     * =====================================================
+     * =========================================
+     * TEXT
+     * =========================================
+     */
+
+    for (
+        const target
+        of CURSOR_TEXT_TARGETS
+    ) {
+
+        const prepared =
+            buildTextHitTarget(
+                target.element
+            );
+
+        if (prepared) {
+
+            nextTargets.push(
+                prepared
+            );
+
+        }
+
+    }
+
+
+    /*
+     * =========================================
+     * CIRCLES
+     * =========================================
+     */
+
+    for (
+        const circle
+        of artistCircles
+    ) {
+
+        const prepared =
+            buildCircleHitTarget(
+                circle
+            );
+
+        if (prepared) {
+
+            nextTargets.push(
+                prepared
+            );
+
+        }
+
+    }
+
+
+    cursorHitTargets =
+        nextTargets;
+
+}
+
+
+/* =========================================================
+   FAST TEXT PIXEL TEST
+   ========================================================= */
+
+function cachedTextPixelHit(
+    target,
+    screenX,
+    screenY
+) {
+
+    const rect =
+        target.rect;
+
+
+    /*
+     * SZYBKI TEST RECTANGLE
+     *
+     * Jeżeli piksel nie znajduje się nawet
+     * w prostokącie tekstu, kończymy natychmiast.
+     */
+
+    if (
+        screenX < rect.left ||
+        screenX > rect.right ||
+        screenY < rect.top ||
+        screenY > rect.bottom
+    ) {
+        return false;
+    }
+
+
+    /*
      * SCREEN -> LOCAL
-     * =====================================================
      */
 
     const localX =
         (
             screenX -
-            originalLeft
+            target.originalLeft
         ) /
-        scaleX;
-
+        target.scaleX;
 
     const localY =
         (
             screenY -
-            originalTop
+            target.originalTop
         ) /
-        scaleY;
+        target.scaleY;
 
 
     const px =
@@ -3447,53 +3492,52 @@ function textPixelHit(
         );
 
 
+    /*
+     * POZA MASKĄ
+     */
+
     if (
         px < 0 ||
         py < 0 ||
-        px >= mask.width ||
-        py >= mask.height
+        px >= target.maskWidth ||
+        py >= target.maskHeight
     ) {
         return false;
     }
 
 
+    /*
+     * WŁAŚCIWY PIXEL TEST
+     */
+
     return (
-        mask.mask[
+        target.mask[
             py *
-            mask.width +
+            target.maskWidth +
             px
         ] === 1
     );
 
 }
 
-           /* =========================================================
-   CIRCLE PIXEL TEST
+
+/* =========================================================
+   FAST CIRCLE TEST
    ========================================================= */
 
-function circlePixelHit(
-    circle,
+function cachedCirclePixelHit(
+    target,
     screenX,
     screenY
 ) {
 
-    if (!circle) {
-        return false;
-    }
-
-    const style =
-        getComputedStyle(circle);
-
-    if (
-        style.display === "none" ||
-        style.visibility === "hidden" ||
-        Number(style.opacity) === 0
-    ) {
-        return false;
-    }
-
     const rect =
-        circle.getBoundingClientRect();
+        target.rect;
+
+
+    /*
+     * Najpierw zwykły rectangle test.
+     */
 
     if (
         screenX < rect.left ||
@@ -3504,41 +3548,36 @@ function circlePixelHit(
         return false;
     }
 
-    const centerX =
-        rect.left +
-        rect.width / 2;
 
-    const centerY =
-        rect.top +
-        rect.height / 2;
-
-    const radiusX =
-        rect.width / 2;
-
-    const radiusY =
-        rect.height / 2;
+    /*
+     * Następnie dokładny test koła.
+     */
 
     const dx =
         (
             screenX -
-            centerX
-        ) / radiusX;
+            target.centerX
+        ) /
+        target.radiusX;
 
     const dy =
         (
             screenY -
-            centerY
-        ) / radiusY;
+            target.centerY
+        ) /
+        target.radiusY;
+
 
     return (
         dx * dx +
         dy * dy <= 1
     );
+
 }
 
 
 /* =========================================================
-   ANY TARGET PIXEL
+   FINAL PIXEL TEST
    ========================================================= */
 
 function isCyanPixel(
@@ -3547,47 +3586,57 @@ function isCyanPixel(
 ) {
 
     /*
-     * 1. TEKST
+     * UWAGA:
+     *
+     * Nie dotykamy już DOM.
+     * Nie wywołujemy:
+     *
+     * getBoundingClientRect()
+     * getComputedStyle()
+     * offsetWidth
+     * offsetHeight
+     *
+     * dla każdego pojedynczego piksela.
      */
+
 
     for (
         const target
-        of CURSOR_TEXT_TARGETS
+        of cursorHitTargets
     ) {
 
         if (
-            textPixelHit(
-                target.element,
-                screenX,
-                screenY
-            )
+            target.type === "text"
         ) {
 
-            return true;
+            if (
+                cachedTextPixelHit(
+                    target,
+                    screenX,
+                    screenY
+                )
+            ) {
+
+                return true;
+
+            }
 
         }
-
-    }
-
-
-    /*
-     * 2. KOŁA
-     */
-
-    for (
-        const circle
-        of artistCircles
-    ) {
-
-        if (
-            circlePixelHit(
-                circle,
-                screenX,
-                screenY
-            )
+        else if (
+            target.type === "circle"
         ) {
 
-            return true;
+            if (
+                cachedCirclePixelHit(
+                    target,
+                    screenX,
+                    screenY
+                )
+            ) {
+
+                return true;
+
+            }
 
         }
 
@@ -3595,13 +3644,23 @@ function isCyanPixel(
 
 
     return false;
-}
 
+}
 /* =========================================================
    DRAW CURSOR
    ========================================================= */
 
 function drawCursor() {
+
+    /*
+     * Najważniejsza optymalizacja:
+     *
+     * najpierw raz pobieramy geometrię wszystkich
+     * elementów, a dopiero potem sprawdzamy piksele.
+     */
+
+    updateCursorHitTargets();
+
 
     const size =
         CURSOR.size;
@@ -3992,8 +4051,7 @@ drawCursor();
 
         invalidateH1Mask();
 invalidateGenericTextMasks();
-updateH1Geometry();
-drawCursor();
+
 
     }
 );
