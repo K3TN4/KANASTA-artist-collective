@@ -6,9 +6,7 @@
 
     <title>KANASTA — artist collective</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
+ 
 
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2285,46 +2283,6 @@ let velocityY = 0;
 
 let previousColorTime = 0;
 
-const CURSOR_TEXT_TARGETS = [
-
-    document.querySelector(
-        "main h1.image-text"
-    ),
-
-    document.getElementById(
-        "homeLogo"
-    ),
-
-    document.getElementById(
-        "menuButton"
-    ),
-
-    document.querySelector(
-        ".subtitle"
-    ),
-
-    document.querySelector(
-        ".menu-close"
-    ),
-
-    ...Array.from(
-        document.querySelectorAll(
-            ".menu-item"
-        )
-    ),
-
-    ...Array.from(
-        document.querySelectorAll(
-            ".section-header h2"
-        )
-    ),
-
-    ...Array.from(
-        document.querySelectorAll(
-            ".section-placeholder"
-        )
-    )
-].filter(Boolean);
 
 /* =========================================================
    H1 PIXEL MATCH
@@ -2607,113 +2565,6 @@ function invalidateH1Mask() {
 
 }
 
-
-
-
-    const scaleX =
-        rect.width /
-        baseWidth;
-
-
-    const scaleY =
-        rect.height /
-        baseHeight;
-
-
-    const style =
-        getComputedStyle(
-            mainH1
-        );
-
-
-    const originParts =
-        style.transformOrigin
-            .split(" ");
-
-
-    function parseOrigin(
-        value,
-        size
-    ) {
-
-        if (
-            value.endsWith("%")
-        ) {
-
-            return (
-                parseFloat(value) /
-                100
-            ) * size;
-
-        }
-
-
-        return (
-            parseFloat(value) ||
-            0
-        );
-
-    }
-
-
-    const originX =
-        parseOrigin(
-            originParts[0] ||
-            "50%",
-            baseWidth
-        );
-
-
-    const originY =
-        parseOrigin(
-            originParts[1] ||
-            "50%",
-            baseHeight
-        );
-
-
-    /*
-     * Rzeczywisty top-left H1
-     * przed scale().
-     */
-
-    const originalLeft =
-        rect.left -
-        originX *
-        (
-            1 -
-            scaleX
-        );
-
-
-    const originalTop =
-        rect.top -
-        originY *
-        (
-            1 -
-            scaleY
-        );
-
-
-    h1Geometry = {
-
-        rect,
-
-        baseWidth,
-
-        baseHeight,
-
-        scaleX,
-
-        scaleY,
-
-        originalLeft,
-
-        originalTop
-
-    };
-
-}
 /* =========================================================
    FAST CURSOR COLOR SYSTEM
    =========================================================
