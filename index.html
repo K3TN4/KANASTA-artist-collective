@@ -2030,8 +2030,20 @@ homeLogo.addEventListener(
 );
 
 menuButton.addEventListener("click", function () {
+
     menuOverlay.classList.add("active");
-    menuButton.style.visibility = "hidden";
+
+    menuButton.style.visibility =
+        "hidden";
+
+    requestAnimationFrame(() => {
+
+        invalidateGenericTextMasks();
+
+        updateCursorHitTargets();
+
+    });
+
 });
 
 menuClose.addEventListener("click", function () {
@@ -2772,23 +2784,126 @@ function updateH1Geometry() {
     };
 
 }
+/* =========================================================
+   FAST CURSOR COLOR SYSTEM
+   =========================================================
 
-       /* =========================================================
-   GENERIC TEXT MASK
+   ZASADA:
+
+   1. Tekst dostaje własną maskę w pamięci.
+   2. Maska jest tworzona tylko wtedy, kiedy zmienił się
+      rozmiar elementu.
+   3. Geometria DOM jest pobierana raz na aktualizację koloru.
+   4. Każdy piksel kulki wykonuje już tylko prostą operację
+      matematyczną i odczyt z Uint8Array.
+   ========================================================= */
+
+
+/* =========================================================
+   GENERIC TEXT MASK CACHE
    ========================================================= */
 
 const genericTextMasks =
     new WeakMap();
 
 
-function buildGenericTextMask(element) {
+/* =========================================================
+   TEXT TARGETS
+   ========================================================= */
+
+const CURSOR_TEXT_TARGETS = [
+
+    /*
+     * GŁÓWNY KANASTA
+     */
+    document.querySelector(
+        "main h1.image-text"
+    ),
+
+    /*
+     * HEADER
+     */
+    document.getElementById(
+        "homeLogo"
+    ),
+
+    document.getElementById(
+        "menuButton"
+    ),
+
+    /*
+     * SUBTITLE
+     */
+    document.querySelector(
+        ".subtitle"
+    ),
+
+    /*
+     * MENU
+     */
+    document.querySelector(
+        ".menu-close"
+    ),
+
+    ...Array.from(
+        document.querySelectorAll(
+            ".menu-item"
+        )
+    ),
+
+    /*
+     * SECTION HEADERS
+     *
+     * ARTISTS
+     * WORKS
+     * EXHIBITIONS
+     * ABOUT
+     * CONTACT
+     */
+    ...Array.from(
+        document.querySelectorAll(
+            ".section-header h2"
+        )
+    ),
+
+    /*
+     * PLACEHOLDERY
+     */
+    ...Array.from(
+        document.querySelectorAll(
+            ".section-placeholder"
+        )
+    )
+].filter(Boolean);
+
+
+/* =========================================================
+   GENERIC TEXT MASK
+   ========================================================= */
+
+function buildGenericTextMask(
+    element
+) {
 
     if (!element) {
         return null;
     }
 
+
     const style =
-        getComputedStyle(element);
+        getComputedStyle(
+            element
+        );
+
+
+    if (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        Number(style.opacity) === 0
+    ) {
+        return null;
+    }
+
 
     const width =
         Math.max(
@@ -2798,6 +2913,7 @@ function buildGenericTextMask(element) {
             )
         );
 
+
     const height =
         Math.max(
             1,
@@ -2806,31 +2922,31 @@ function buildGenericTextMask(element) {
             )
         );
 
+
     if (
         width <= 0 ||
-        height <= 0 ||
-        style.display === "none" ||
-        style.visibility === "hidden" ||
-        Number(style.opacity) === 0
+        height <= 0
     ) {
         return null;
     }
 
-    const text =
-    element.textContent
-        .replace(/\s+/g, " ")
-        .trim();
 
-if (!text) {
-    return null;
-}
+    const text =
+        element.textContent
+            .replace(/\s+/g, " ")
+            .trim();
+
 
     if (!text) {
         return null;
     }
 
+
     const canvas =
-        document.createElement("canvas");
+        document.createElement(
+            "canvas"
+        );
+
 
     canvas.width =
         width;
@@ -2838,12 +2954,21 @@ if (!text) {
     canvas.height =
         height;
 
+
     const drawCtx =
-        canvas.getContext("2d");
+        canvas.getContext(
+            "2d"
+        );
+
 
     if (!drawCtx) {
         return null;
     }
+
+
+    /*
+     * FONT
+     */
 
     drawCtx.font =
         [
@@ -2856,39 +2981,39 @@ if (!text) {
         .filter(Boolean)
         .join(" ");
 
-    if (
-        "letterSpacing" in drawCtx
-    ) {
-        drawCtx.letterSpacing =
-            style.letterSpacing;
-    }
-
-    drawCtx.textBaseline =
-        "alphabetic";
-
-    drawCtx.fillStyle =
-        "#000";
 
     /*
-     * =========================================
-     * TEKST ALIGN
-     * =========================================
+     * LETTER SPACING
      */
 
     if (
-        style.textAlign === "right"
+        "letterSpacing" in drawCtx
     ) {
 
-        drawCtx.textAlign =
-            "right";
+        drawCtx.letterSpacing =
+            style.letterSpacing;
 
     }
-    else if (
+
+
+    /*
+     * ALIGN
+     */
+
+    if (
         style.textAlign === "center"
     ) {
 
         drawCtx.textAlign =
             "center";
+
+    }
+    else if (
+        style.textAlign === "right"
+    ) {
+
+        drawCtx.textAlign =
+            "right";
 
     }
     else {
@@ -2898,10 +3023,16 @@ if (!text) {
 
     }
 
+
+    drawCtx.textBaseline =
+        "alphabetic";
+
+    drawCtx.fillStyle =
+        "#000";
+
+
     /*
-     * =========================================
-     * FONT METRICS
-     * =========================================
+     * FONT SIZE
      */
 
     const fontSize =
@@ -2909,53 +3040,84 @@ if (!text) {
             style.fontSize
         ) || 16;
 
-    const lineHeight =
-        style.lineHeight === "normal"
-            ? fontSize * 1.2
-            : parseFloat(
-                style.lineHeight
-            );
+
+    /*
+     * LINE HEIGHT
+     */
+
+    let lineHeight =
+        parseFloat(
+            style.lineHeight
+        );
+
+
+    if (
+        !Number.isFinite(
+            lineHeight
+        )
+    ) {
+
+        lineHeight =
+            fontSize *
+            1.2;
+
+    }
+
+
+    /*
+     * FONT METRICS
+     */
 
     const metrics =
         drawCtx.measureText(
             text
         );
 
+
     const ascent =
         metrics.actualBoundingBoxAscent ||
-        fontSize;
+        fontSize * 0.8;
+
 
     const descent =
         metrics.actualBoundingBoxDescent ||
-        0;
+        fontSize * 0.2;
 
-    const lineBoxTop =
+
+    /*
+     * BASELINE
+     *
+     * Dopasowujemy ją do środka line boxa.
+     */
+
+    const baseline =
         (
             height -
             lineHeight
-        ) / 2;
-
-    const baseline =
-        lineBoxTop +
+        ) / 2
+        +
         (
-            lineHeight +
-            ascent -
+            lineHeight -
+            ascent +
             descent
-        ) / 2;
+        ) / 2
+        +
+        ascent;
+
 
     /*
-     * =========================================
      * X
-     * =========================================
      */
 
-    let drawX = 0;
+    let x =
+        0;
+
 
     if (
         style.textAlign === "center"
     ) {
 
-        drawX =
+        x =
             width / 2;
 
     }
@@ -2963,27 +3125,25 @@ if (!text) {
         style.textAlign === "right"
     ) {
 
-        drawX =
+        x =
             width;
 
     }
 
+
     /*
-     * =========================================
-     * RYSOWANIE
-     * =========================================
+     * DRAW
      */
 
     drawCtx.fillText(
         text,
-        drawX,
+        x,
         baseline
     );
 
+
     /*
-     * =========================================
-     * MASKA
-     * =========================================
+     * RASTER
      */
 
     const pixels =
@@ -2994,11 +3154,13 @@ if (!text) {
             height
         );
 
+
     const mask =
         new Uint8Array(
             width *
             height
         );
+
 
     for (
         let y = 0;
@@ -3019,8 +3181,11 @@ if (!text) {
                     x
                 ) * 4;
 
+
             if (
-                pixels.data[index + 3] > 20
+                pixels.data[
+                    index + 3
+                ] > 20
             ) {
 
                 mask[
@@ -3035,6 +3200,7 @@ if (!text) {
 
     }
 
+
     return {
 
         mask,
@@ -3043,16 +3209,20 @@ if (!text) {
 
         height,
 
-        rectWidth:
-            width,
+        elementWidth:
+            element.offsetWidth,
 
-        rectHeight:
-            height
+        elementHeight:
+            element.offsetHeight
 
     };
 
 }
 
+
+/* =========================================================
+   GET CACHED TEXT MASK
+   ========================================================= */
 
 function getGenericTextMask(
     element
@@ -3062,22 +3232,31 @@ function getGenericTextMask(
         return null;
     }
 
+
     const width =
         element.offsetWidth;
 
+
     const height =
         element.offsetHeight;
+
 
     let cached =
         genericTextMasks.get(
             element
         );
 
+
+    /*
+     * Jeżeli element zmienił rozmiar,
+     * tworzymy maskę ponownie.
+     */
+
     if (
         cached &&
         (
-            cached.rectWidth !== width ||
-            cached.rectHeight !== height
+            cached.elementWidth !== width ||
+            cached.elementHeight !== height
         )
     ) {
 
@@ -3090,12 +3269,14 @@ function getGenericTextMask(
 
     }
 
+
     if (!cached) {
 
         cached =
             buildGenericTextMask(
                 element
             );
+
 
         if (cached) {
 
@@ -3108,24 +3289,24 @@ function getGenericTextMask(
 
     }
 
+
     return cached;
+
 }
-
-
-function invalidateGenericTextMasks() {
+    function invalidateGenericTextMasks() {
 
     for (
-        const target
+        const element
         of CURSOR_TEXT_TARGETS
     ) {
 
         if (
-            target.element &&
-            target.element !== mainH1
+            element &&
+            element !== mainH1
         ) {
 
             genericTextMasks.delete(
-                target.element
+                element
             );
 
         }
@@ -3135,53 +3316,65 @@ function invalidateGenericTextMasks() {
 }
 
 /* =========================================================
-   OPTIMIZED PIXEL HIT TEST
-   =========================================================
-   
-   WAŻNE:
-   - fizyka kulki pozostaje bez zmian
-   - nie wykonujemy już DOM queries dla każdego piksela
-   - geometria elementów jest liczona tylko raz na drawCursor()
-   - 324 próbki kulki korzystają wyłącznie z gotowych danych
+   TRANSFORM ORIGIN
+   ========================================================= */
+
+function parseCursorOrigin(
+    value,
+    size
+) {
+
+    if (!value) {
+        return 0;
+    }
+
+
+    if (
+        value.endsWith("%")
+    ) {
+
+        return (
+            parseFloat(value) /
+            100
+        ) *
+        size;
+
+    }
+
+
+    return (
+        parseFloat(value) ||
+        0
+    );
+
+}
+
+
+/* =========================================================
+   PREPARED TARGETS
    ========================================================= */
 
 let cursorHitTargets = [];
 
 
 /* =========================================================
-   TRANSFORM ORIGIN
+   BUILD TEXT TARGET
    ========================================================= */
 
-function parseTransformOrigin(value, size) {
-
-    if (!value) {
-        return 0;
-    }
-
-    if (value.endsWith("%")) {
-
-        return (
-            parseFloat(value) / 100
-        ) * size;
-
-    }
-
-    return parseFloat(value) || 0;
-}
-
-
-/* =========================================================
-   BUILD TEXT HIT TARGET
-   ========================================================= */
-
-function buildTextHitTarget(element) {
+function prepareTextTarget(
+    element
+) {
 
     if (!element) {
         return null;
     }
 
+
     const style =
-        getComputedStyle(element);
+        getComputedStyle(
+            element
+        );
+
 
     if (
         style.display === "none" ||
@@ -3191,8 +3384,16 @@ function buildTextHitTarget(element) {
         return null;
     }
 
+
+    /*
+     * GŁÓWNY KANASTA
+     *
+     * Używamy jego specjalnej maski.
+     */
+
     const mask =
         element === mainH1
+
             ? (
                 h1Mask ||
                 (
@@ -3200,60 +3401,81 @@ function buildTextHitTarget(element) {
                     buildH1Mask()
                 )
             )
-            : getGenericTextMask(element);
+
+            : getGenericTextMask(
+                element
+            );
+
 
     if (!mask) {
         return null;
     }
 
+
     const rect =
         element.getBoundingClientRect();
 
-    const baseWidth =
+
+    const width =
         element.offsetWidth;
 
-    const baseHeight =
+
+    const height =
         element.offsetHeight;
 
+
     if (
-        baseWidth <= 0 ||
-        baseHeight <= 0 ||
+        width <= 0 ||
+        height <= 0 ||
         rect.width <= 0 ||
         rect.height <= 0
     ) {
         return null;
     }
 
+
+    /*
+     * SKALA TRANSFORM
+     */
+
     const scaleX =
         rect.width /
-        baseWidth;
+        width;
+
 
     const scaleY =
         rect.height /
-        baseHeight;
+        height;
 
-    if (
-        scaleX === 0 ||
-        scaleY === 0
-    ) {
-        return null;
-    }
 
-    const originParts =
+    /*
+     * TRANSFORM ORIGIN
+     */
+
+    const origin =
         style.transformOrigin
             .split(" ");
 
+
     const originX =
-        parseTransformOrigin(
-            originParts[0] || "50%",
-            baseWidth
+        parseCursorOrigin(
+            origin[0] ||
+            "50%",
+            width
         );
 
+
     const originY =
-        parseTransformOrigin(
-            originParts[1] || "50%",
-            baseHeight
+        parseCursorOrigin(
+            origin[1] ||
+            "50%",
+            height
         );
+
+
+    /*
+     * POZYCJA ELEMENTU PRZED TRANSFORM
+     */
 
     const originalLeft =
         rect.left -
@@ -3263,6 +3485,7 @@ function buildTextHitTarget(element) {
             scaleX
         );
 
+
     const originalTop =
         rect.top -
         originY *
@@ -3270,6 +3493,7 @@ function buildTextHitTarget(element) {
             1 -
             scaleY
         );
+
 
     return {
 
@@ -3279,17 +3503,13 @@ function buildTextHitTarget(element) {
 
         mask,
 
-        maskWidth:
+        width:
             mask.width,
 
-        maskHeight:
+        height:
             mask.height,
 
         rect,
-
-        baseWidth,
-
-        baseHeight,
 
         scaleX,
 
@@ -3305,17 +3525,23 @@ function buildTextHitTarget(element) {
 
 
 /* =========================================================
-   BUILD CIRCLE HIT TARGET
+   PREPARE CIRCLE
    ========================================================= */
 
-function buildCircleHitTarget(circle) {
+function prepareCircleTarget(
+    circle
+) {
 
     if (!circle) {
         return null;
     }
 
+
     const style =
-        getComputedStyle(circle);
+        getComputedStyle(
+            circle
+        );
+
 
     if (
         style.display === "none" ||
@@ -3325,8 +3551,10 @@ function buildCircleHitTarget(circle) {
         return null;
     }
 
+
     const rect =
         circle.getBoundingClientRect();
+
 
     if (
         rect.width <= 0 ||
@@ -3335,11 +3563,10 @@ function buildCircleHitTarget(circle) {
         return null;
     }
 
+
     return {
 
         type: "circle",
-
-        element: circle,
 
         rect,
 
@@ -3363,34 +3590,33 @@ function buildCircleHitTarget(circle) {
 
 
 /* =========================================================
-   BUILD COMPLETE HIT CACHE
+   UPDATE CACHE
    ========================================================= */
 
 function updateCursorHitTargets() {
 
-    const nextTargets = [];
+    const targets = [];
 
 
     /*
-     * =========================================
-     * TEXT
-     * =========================================
+     * TEKSTY
      */
 
     for (
-        const target
+        const element
         of CURSOR_TEXT_TARGETS
     ) {
 
-        const prepared =
-            buildTextHitTarget(
-                target.element
+        const target =
+            prepareTextTarget(
+                element
             );
 
-        if (prepared) {
 
-            nextTargets.push(
-                prepared
+        if (target) {
+
+            targets.push(
+                target
             );
 
         }
@@ -3399,9 +3625,7 @@ function updateCursorHitTargets() {
 
 
     /*
-     * =========================================
-     * CIRCLES
-     * =========================================
+     * KOŁA
      */
 
     for (
@@ -3409,15 +3633,16 @@ function updateCursorHitTargets() {
         of artistCircles
     ) {
 
-        const prepared =
-            buildCircleHitTarget(
+        const target =
+            prepareCircleTarget(
                 circle
             );
 
-        if (prepared) {
 
-            nextTargets.push(
-                prepared
+        if (target) {
+
+            targets.push(
+                target
             );
 
         }
@@ -3426,16 +3651,16 @@ function updateCursorHitTargets() {
 
 
     cursorHitTargets =
-        nextTargets;
+        targets;
 
 }
 
 
 /* =========================================================
-   FAST TEXT PIXEL TEST
+   TEXT PIXEL TEST
    ========================================================= */
 
-function cachedTextPixelHit(
+function textTargetPixelHit(
     target,
     screenX,
     screenY
@@ -3446,10 +3671,9 @@ function cachedTextPixelHit(
 
 
     /*
-     * SZYBKI TEST RECTANGLE
+     * NAJPIERW RECTANGLE TEST
      *
-     * Jeżeli piksel nie znajduje się nawet
-     * w prostokącie tekstu, kończymy natychmiast.
+     * Bardzo tani test.
      */
 
     if (
@@ -3458,7 +3682,9 @@ function cachedTextPixelHit(
         screenY < rect.top ||
         screenY > rect.bottom
     ) {
+
         return false;
+
     }
 
 
@@ -3473,6 +3699,7 @@ function cachedTextPixelHit(
         ) /
         target.scaleX;
 
+
     const localY =
         (
             screenY -
@@ -3485,6 +3712,7 @@ function cachedTextPixelHit(
         Math.floor(
             localX
         );
+
 
     const py =
         Math.floor(
@@ -3499,21 +3727,23 @@ function cachedTextPixelHit(
     if (
         px < 0 ||
         py < 0 ||
-        px >= target.maskWidth ||
-        py >= target.maskHeight
+        px >= target.width ||
+        py >= target.height
     ) {
+
         return false;
+
     }
 
 
     /*
-     * WŁAŚCIWY PIXEL TEST
+     * MASK PIXEL
      */
 
     return (
-        target.mask[
+        target.mask.mask[
             py *
-            target.maskWidth +
+            target.width +
             px
         ] === 1
     );
@@ -3522,10 +3752,10 @@ function cachedTextPixelHit(
 
 
 /* =========================================================
-   FAST CIRCLE TEST
+   CIRCLE PIXEL TEST
    ========================================================= */
 
-function cachedCirclePixelHit(
+function circleTargetPixelHit(
     target,
     screenX,
     screenY
@@ -3536,7 +3766,7 @@ function cachedCirclePixelHit(
 
 
     /*
-     * Najpierw zwykły rectangle test.
+     * RECTANGLE
      */
 
     if (
@@ -3545,12 +3775,14 @@ function cachedCirclePixelHit(
         screenY < rect.top ||
         screenY > rect.bottom
     ) {
+
         return false;
+
     }
 
 
     /*
-     * Następnie dokładny test koła.
+     * KOŁO
      */
 
     const dx =
@@ -3559,6 +3791,7 @@ function cachedCirclePixelHit(
             target.centerX
         ) /
         target.radiusX;
+
 
     const dy =
         (
@@ -3585,21 +3818,6 @@ function isCyanPixel(
     screenY
 ) {
 
-    /*
-     * UWAGA:
-     *
-     * Nie dotykamy już DOM.
-     * Nie wywołujemy:
-     *
-     * getBoundingClientRect()
-     * getComputedStyle()
-     * offsetWidth
-     * offsetHeight
-     *
-     * dla każdego pojedynczego piksela.
-     */
-
-
     for (
         const target
         of cursorHitTargets
@@ -3610,7 +3828,7 @@ function isCyanPixel(
         ) {
 
             if (
-                cachedTextPixelHit(
+                textTargetPixelHit(
                     target,
                     screenX,
                     screenY
@@ -3622,12 +3840,10 @@ function isCyanPixel(
             }
 
         }
-        else if (
-            target.type === "circle"
-        ) {
+        else {
 
             if (
-                cachedCirclePixelHit(
+                circleTargetPixelHit(
                     target,
                     screenX,
                     screenY
@@ -4030,9 +4246,13 @@ window.addEventListener(
             setTimeout(
                 () => {
 
-                    invalidateH1Mask();
+                    
+invalidateH1Mask();
+
 invalidateGenericTextMasks();
+
 updateH1Geometry();
+
 drawCursor();
 
                 },
