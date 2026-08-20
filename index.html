@@ -3755,23 +3755,15 @@ const maskBounds =
      * POZYCJA ELEMENTU PRZED TRANSFORM
      */
 
-    const originalLeft =
-        rect.left -
-        originX *
-        (
-            1 -
-            scaleX
-        );
+   const originalLeft =
+    rect.left +
+    originX *
+    (scaleX - 1);
 
-
-    const originalTop =
-        rect.top -
-        originY *
-        (
-            1 -
-            scaleY
-        );
-
+const originalTop =
+    rect.top +
+    originY *
+    (scaleY - 1);
 
     return {
 
