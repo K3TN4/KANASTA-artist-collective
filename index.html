@@ -2285,79 +2285,46 @@ let velocityY = 0;
 
 let previousColorTime = 0;
 
-
-/* =========================================================
-   TARGETS
-   =========================================================
-   
-   TO SĄ JEDYNE RZECZY, KTÓRE MOGĄ ZMIENIĆ
-   KOLOR KULKI NA CYAN.
-   ========================================================= */
-
 const CURSOR_TEXT_TARGETS = [
 
-    /*
-     * GŁÓWNY NAPIS
-     */
-    {
-        element:
-            document.querySelector("main h1.image-text")
-    },
-
-    /*
-     * HEADER
-     */
-    {
-        element:
-            document.getElementById("menuButton")
-    },
-
-    {
-        element:
-            document.getElementById("homeLogo")
-    },
-
-    /*
-     * SUBTITLE
-     */
-    {
-        element:
-            document.querySelector(".subtitle")
-    },
-
-    /*
-     * MENU OVERLAY
-     */
-    {
-        element:
-            document.querySelector(".menu-close")
-    },
-
-    ...Array.from(
-        document.querySelectorAll(".menu-item")
-    ).map(
-        element => ({ element })
+    document.querySelector(
+        "main h1.image-text"
     ),
 
-    /*
-     * GŁÓWNE NAZWY SEKCJI:
-     * ARTISTS / WORKS / EXHIBITIONS / ABOUT / CONTACT
-     */
-    ...Array.from(
-        document.querySelectorAll(".section-header h2")
-    ).map(
-        element => ({ element })
+    document.getElementById(
+        "homeLogo"
     ),
 
-    /*
-     * PLACEHOLDERY
-     */
+    document.getElementById(
+        "menuButton"
+    ),
+
+    document.querySelector(
+        ".subtitle"
+    ),
+
+    document.querySelector(
+        ".menu-close"
+    ),
+
     ...Array.from(
-        document.querySelectorAll(".section-placeholder")
-    ).map(
-        element => ({ element })
+        document.querySelectorAll(
+            ".menu-item"
+        )
+    ),
+
+    ...Array.from(
+        document.querySelectorAll(
+            ".section-header h2"
+        )
+    ),
+
+    ...Array.from(
+        document.querySelectorAll(
+            ".section-placeholder"
+        )
     )
-];
+].filter(Boolean);
 
 /* =========================================================
    H1 PIXEL MATCH
@@ -4270,8 +4237,12 @@ drawCursor();
     () => {
 
         invalidateH1Mask();
-invalidateGenericTextMasks();
 
+        invalidateGenericTextMasks();
+
+        updateCursorHitTargets();
+
+        drawCursor();
 
     }
 );
