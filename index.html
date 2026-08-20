@@ -2333,17 +2333,23 @@ const mainH1 =
         "main h1.image-text"
     );
 
-       const cursorH1Overlay =
+const cursorH1Overlay =
     document.getElementById(
         "cursorH1Overlay"
     );
 
-       let cursorH1Clone = null;
+let cursorH1Clone =
+    null;
 
-let h1Mask = null;
+let h1Mask =
+    null;
 
 
-      function createCursorH1Clone() {
+/* =========================================================
+   CREATE KANASTA CLONE
+   ========================================================= */
+
+function createCursorH1Clone() {
 
     if (
         !mainH1 ||
@@ -2409,7 +2415,12 @@ let h1Mask = null;
     );
 }
 
-      function updateCursorH1Overlay() {
+
+/* =========================================================
+   UPDATE KANASTA CLONE
+   ========================================================= */
+
+function updateCursorH1Overlay() {
 
     if (
         !mainH1 ||
@@ -2429,9 +2440,14 @@ let h1Mask = null;
         return;
     }
 
+    const style =
+        getComputedStyle(
+            mainH1
+        );
+
+
     /*
-     * Klon ma otrzymać dokładnie tę samą
-     * geometrię ekranu co prawdziwy H1.
+     * Dokładna pozycja rzeczywistego H1.
      */
 
     cursorH1Clone.style.left =
@@ -2446,13 +2462,9 @@ let h1Mask = null;
     cursorH1Clone.style.height =
         `${rect.height}px`;
 
+
     /*
-     * Bardzo ważne:
-     *
-     * Nie wykonujemy drugi raz scale().
-     *
-     * getBoundingClientRect() zwraca już
-     * wynik transformacji H1.
+     * Nie robimy ponownie scale().
      */
 
     cursorH1Clone.style.transform =
@@ -2461,13 +2473,10 @@ let h1Mask = null;
     cursorH1Clone.style.transformOrigin =
         "top left";
 
-    /*
-     * Rozmiar tekstu musi odpowiadać
-     * rzeczywistemu H1.
-     */
 
-    const style =
-        getComputedStyle(mainH1);
+    /*
+     * Te same właściwości tekstu.
+     */
 
     cursorH1Clone.style.fontFamily =
         style.fontFamily;
@@ -2496,18 +2505,15 @@ let h1Mask = null;
     cursorH1Clone.style.textTransform =
         style.textTransform;
 
-    /*
-     * Pozycjonowanie tekstu w klonie.
-     */
-
     cursorH1Clone.style.display =
         "block";
 
     cursorH1Clone.style.whiteSpace =
         "nowrap";
 
+
     /*
-     * Cyan.
+     * CYAN
      */
 
     cursorH1Clone.style.webkitTextFillColor =
@@ -2515,69 +2521,16 @@ let h1Mask = null;
 
     cursorH1Clone.style.color =
         "#59e0b3";
-}
-    const originX =
-        parseOrigin(
-            origin[0] || "50%",
-            width
-        );
 
-    const originY =
-        parseOrigin(
-            origin[1] || "50%",
-            height
-        );
-
-    const originalLeft =
-        rect.left -
-        originX *
-        (1 - scaleX);
-
-    const originalTop =
-        rect.top -
-        originY *
-        (1 - scaleY);
 
     /*
-     * Ten sam rozmiar layoutu
-     * co oryginał.
+     * =====================================================
+     * CLIP KULKI
+     * =====================================================
      */
 
-    cursorH1Clone.style.width =
-        `${width}px`;
-
-    cursorH1Clone.style.height =
-        `${height}px`;
-
-    cursorH1Clone.style.left =
-        `${originalLeft}px`;
-
-    cursorH1Clone.style.top =
-        `${originalTop}px`;
-
-    /*
-     * Odtwarzamy skalowanie hover.
-     */
-
-    cursorH1Clone.style.transformOrigin =
-        style.transformOrigin;
-
-    cursorH1Clone.style.transform =
-        `scale(${scaleX}, ${scaleY})`;
-
-    /*
-     * Sama maska kursora.
-     */
-
-    const radiusX =
-    CURSOR.size / 2;
-
-const radiusY =
-    CURSOR.size / 2;
-
-    /*
-     * Aktualny stretch kursora.
-     */
+    const radius =
+        CURSOR.size / 2;
 
     const dx =
         mouseX -
@@ -2601,19 +2554,19 @@ const radiusY =
             CURSOR.stretchStrength
         );
 
-    const scaleCursorY =
+    const cursorScaleY =
         1 /
         Math.sqrt(
             stretch
         );
 
     const visibleRadiusX =
-        radiusX *
+        radius *
         stretch;
 
     const visibleRadiusY =
-        radiusY *
-        scaleCursorY;
+        radius *
+        cursorScaleY;
 
     cursorH1Overlay.style.clipPath =
         `
@@ -2626,8 +2579,6 @@ const radiusY =
         )
         `;
 }
-
-
 
 /* =========================================================
    BUILD H1 MASK
