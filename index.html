@@ -31,6 +31,43 @@
     );
 }
 
+        #cursorTextOverlay {
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 100000;
+
+    overflow: hidden;
+
+    clip-path: circle(
+        9px at -100px -100px
+    );
+}
+
+#cursorTextOverlay .cursor-text-clone {
+    position: fixed;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    pointer-events: none;
+
+    background: none !important;
+    background-image: none !important;
+
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+
+    -webkit-text-fill-color: #59e0b3 !important;
+    color: #59e0b3 !important;
+
+    opacity: 1 !important;
+
+    z-index: 100001;
+}
+
 #cursorH1Overlay h1 {
     position: fixed;
 
@@ -912,7 +949,9 @@ main h1.image-text {
     height="32"
 ></canvas>
 
-    <div id="cursorH1Overlay"></div>
+<div id="cursorH1Overlay"></div>
+
+<div id="cursorTextOverlay"></div>
 
     <!-- HEADER -->
 
@@ -2076,9 +2115,9 @@ menuButton.addEventListener("click", function () {
 
     requestAnimationFrame(() => {
 
-        invalidateGenericTextMasks();
+        createCursorTextClones();
 
-        updateCursorHitTargets();
+        updateCursorTextClones();
 
     });
 
@@ -2156,6 +2195,21 @@ function closeArtist() {
     document
         .getElementById("artistProfile")
         .classList.remove("active");
+
+    menuClose.addEventListener("click", function () {
+
+    menuOverlay.classList.remove("active");
+
+    menuButton.style.visibility =
+        "visible";
+
+    requestAnimationFrame(() => {
+
+        updateCursorTextClones();
+
+    });
+
+});
 
 }
 
@@ -2338,13 +2392,496 @@ const cursorH1Overlay =
         "cursorH1Overlay"
     );
 
+const cursorTextOverlay =
+    document.getElementById(
+        "cursorTextOverlay"
+    );
+
 let cursorH1Clone =
     null;
 
 let h1Mask =
     null;
 
+       const CURSOR_DOM_TEXT_TARGETS = [
 
+    document.getElementById(
+        "homeLogo"
+    ),
+
+    document.getElementById(
+        "menuButton"
+    ),
+
+    document.querySelector(
+        ".subtitle"
+    ),
+
+    document.querySelector(
+        ".menu-close"
+    ),
+
+    ...Array.from(
+        document.querySelectorAll(
+            ".menu-item"
+        )
+    ),
+
+    ...Array.from(
+        document.querySelectorAll(
+            ".section-header h2"
+        )
+    ),
+
+    ...Array.from(
+        document.querySelectorAll(
+            ".section-placeholder"
+        )
+    )
+
+].filter(Boolean);
+
+       
+const cursorTextClones =
+    new Map();
+
+       function createCursorTextClones() {
+
+    if (!cursorTextOverlay) {
+        return;
+    }
+
+    cursorTextClones.forEach(
+        clone => clone.remove()
+    );
+
+    cursorTextClones.clear();
+
+
+    CURSOR_DOM_TEXT_TARGETS.forEach(
+        element => {
+
+            if (!element) {
+                return;
+            }
+
+            const clone =
+                element.cloneNode(true);
+
+            clone.className =
+                "cursor-text-clone";
+
+            clone.removeAttribute("id");
+
+            clone.style.position =
+                "fixed";
+
+            clone.style.margin =
+                "0";
+
+            clone.style.padding =
+                "0";
+
+            clone.style.pointerEvents =
+                "none";
+
+            clone.style.background =
+                "none";
+
+            clone.style.backgroundImage =
+                "none";
+
+            clone.style.webkitBackgroundClip =
+                "initial";
+
+            clone.style.backgroundClip =
+                "initial";
+
+            clone.style.webkitTextFillColor =
+                "#59e0b3";
+
+            clone.style.color =
+                "#59e0b3";
+
+            clone.style.opacity =
+                "1";
+
+            clone.style.zIndex =
+                "100001";
+
+
+            /*
+             * Ważne:
+             *
+             * klon ma być dokładną kopią DOM,
+             * więc nie zmieniamy textContent.
+             *
+             * text-transform z CSS zostanie zachowany.
+             */
+
+            cursorTextOverlay.appendChild(
+                clone
+            );
+
+            cursorTextClones.set(
+                element,
+                clone
+            );
+
+        }
+    );
+}
+
+   function updateCursorTextClones() {
+
+    if (
+        !cursorTextOverlay
+    ) {
+        return;
+    }
+
+
+    /*
+     * =====================================================
+     * KULKA — dokładnie ten sam stretch co canvas
+     * =====================================================
+     */
+
+    const radius =
+        CURSOR.size / 2;
+
+
+    const dx =
+        mouseX -
+        cursorX;
+
+    const dy =
+        mouseY -
+        cursorY;
+
+
+    const currentVelocity =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+
+    const stretch =
+        Math.min(
+            CURSOR.maxStretch,
+            1 +
+            currentVelocity *
+            CURSOR.stretchStrength
+        );
+
+
+    const cursorScaleY =
+        1 /
+        Math.sqrt(
+            stretch
+        );
+
+
+    const visibleRadiusX =
+        radius *
+        stretch;
+
+
+    const visibleRadiusY =
+        radius *
+        cursorScaleY;
+
+
+    /*
+     * =====================================================
+     * CLIP — cyan istnieje tylko wewnątrz kulki
+     * =====================================================
+     */
+
+    cursorTextOverlay.style.clipPath =
+        `
+        ellipse(
+            ${visibleRadiusX}px
+            ${visibleRadiusY}px
+            at
+            ${cursorX}px
+            ${cursorY}px
+        )
+        `;
+
+
+    /*
+     * =====================================================
+     * POZYCJONUJEMY KAŻDY TEKST
+     * =====================================================
+     */
+
+    CURSOR_DOM_TEXT_TARGETS.forEach(
+        element => {
+
+            const clone =
+                cursorTextClones.get(
+                    element
+                );
+
+
+            if (
+                !element ||
+                !clone
+            ) {
+                return;
+            }
+
+
+            const style =
+                getComputedStyle(
+                    element
+                );
+
+
+            /*
+             * Ukryte elementy
+             */
+
+            if (
+                style.display === "none" ||
+                style.visibility === "hidden" ||
+                Number(style.opacity) === 0
+            ) {
+
+                clone.style.display =
+                    "none";
+
+                return;
+            }
+
+
+            const rect =
+                element.getBoundingClientRect();
+
+
+            const width =
+                element.offsetWidth;
+
+
+            const height =
+                element.offsetHeight;
+
+
+            if (
+                width <= 0 ||
+                height <= 0 ||
+                rect.width <= 0 ||
+                rect.height <= 0
+            ) {
+
+                clone.style.display =
+                    "none";
+
+                return;
+            }
+
+
+            clone.style.display =
+                "block";
+
+
+            /*
+             * =================================================
+             * SKALA
+             * =================================================
+             */
+
+            const scaleX =
+                rect.width /
+                width;
+
+
+            const scaleY =
+                rect.height /
+                height;
+
+
+            /*
+             * =================================================
+             * TRANSFORM ORIGIN
+             * =================================================
+             */
+
+            const origin =
+                style.transformOrigin
+                    .split(" ");
+
+
+            const originX =
+                parseCursorOrigin(
+                    origin[0] ||
+                    "50%",
+                    width
+                );
+
+
+            const originY =
+                parseCursorOrigin(
+                    origin[1] ||
+                    "50%",
+                    height
+                );
+
+
+            /*
+             * =================================================
+             * BOX PRZED TRANSFORM
+             * =================================================
+             *
+             * To jest ta sama matematyka,
+             * która naprawiła KANASTA.
+             */
+
+            const originalLeft =
+                rect.left +
+                originX *
+                (scaleX - 1);
+
+
+            const originalTop =
+                rect.top +
+                originY *
+                (scaleY - 1);
+
+
+            /*
+             * =================================================
+             * ROZMIAR
+             * =================================================
+             */
+
+            clone.style.width =
+                `${width}px`;
+
+            clone.style.height =
+                `${height}px`;
+
+
+            /*
+             * =================================================
+             * POZYCJA
+             * =================================================
+             */
+
+            clone.style.left =
+                `${originalLeft}px`;
+
+            clone.style.top =
+                `${originalTop}px`;
+
+
+            /*
+             * =================================================
+             * TRANSFORM
+             * =================================================
+             */
+
+            clone.style.transformOrigin =
+                style.transformOrigin;
+
+
+            clone.style.transform =
+                `
+                scale(
+                    ${scaleX},
+                    ${scaleY}
+                )
+                `;
+
+
+            /*
+             * =================================================
+             * FONT
+             * =================================================
+             */
+
+            clone.style.fontFamily =
+                style.fontFamily;
+
+            clone.style.fontSize =
+                style.fontSize;
+
+            clone.style.fontWeight =
+                style.fontWeight;
+
+            clone.style.fontStyle =
+                style.fontStyle;
+
+            clone.style.fontVariant =
+                style.fontVariant;
+
+            clone.style.fontStretch =
+                style.fontStretch;
+
+            clone.style.lineHeight =
+                style.lineHeight;
+
+            clone.style.letterSpacing =
+                style.letterSpacing;
+
+            clone.style.textAlign =
+                style.textAlign;
+
+            clone.style.textTransform =
+                style.textTransform;
+
+            clone.style.textDecoration =
+                style.textDecoration;
+
+            clone.style.textRendering =
+                style.textRendering;
+
+
+            /*
+             * =================================================
+             * DODATKOWE WŁAŚCIWOŚCI LAYOUTU
+             * =================================================
+             */
+
+            clone.style.boxSizing =
+                style.boxSizing;
+
+            clone.style.display =
+                "block";
+
+            clone.style.whiteSpace =
+                "nowrap";
+
+
+            /*
+             * =================================================
+             * KOLOR
+             * =================================================
+             */
+
+            clone.style.background =
+                "none";
+
+            clone.style.backgroundImage =
+                "none";
+
+            clone.style.webkitBackgroundClip =
+                "initial";
+
+            clone.style.backgroundClip =
+                "initial";
+
+            clone.style.webkitTextFillColor =
+                "#59e0b3";
+
+            clone.style.color =
+                "#59e0b3";
+
+        }
+    );
+}
 /* =========================================================
    CREATE KANASTA CLONE
    ========================================================= */
@@ -2969,68 +3506,11 @@ const genericTextMasks =
    TEXT TARGETS
    ========================================================= */
 
-const CURSOR_TEXT_TARGETS = [
+/* =========================================================
+   STARY CANVAS TEXT SYSTEM — WYŁĄCZONY
+   ========================================================= */
 
-    /*
-     * GŁÓWNY KANASTA
-     */
-    
-
-    /*
-     * HEADER
-     */
-    document.getElementById(
-        "homeLogo"
-    ),
-
-    document.getElementById(
-        "menuButton"
-    ),
-
-    /*
-     * SUBTITLE
-     */
-    document.querySelector(
-        ".subtitle"
-    ),
-
-    /*
-     * MENU
-     */
-    document.querySelector(
-        ".menu-close"
-    ),
-
-    ...Array.from(
-        document.querySelectorAll(
-            ".menu-item"
-        )
-    ),
-
-    /*
-     * SECTION HEADERS
-     *
-     * ARTISTS
-     * WORKS
-     * EXHIBITIONS
-     * ABOUT
-     * CONTACT
-     */
-    ...Array.from(
-        document.querySelectorAll(
-            ".section-header h2"
-        )
-    ),
-
-    /*
-     * PLACEHOLDERY
-     */
-    ...Array.from(
-        document.querySelectorAll(
-            ".section-placeholder"
-        )
-    )
-].filter(Boolean);
+const CURSOR_TEXT_TARGETS = [];
 
 
 /* =========================================================
@@ -4416,7 +4896,7 @@ function animateCustomCursor(
      * BRAK rotate()
      */
 
-    customCursor.style.transform = `
+   customCursor.style.transform = `
         translate3d(
             ${cursorX}px,
             ${cursorY}px,
@@ -4432,8 +4912,9 @@ function animateCustomCursor(
         )
     `;
 
-    updateCursorH1Overlay();
+updateCursorH1Overlay();
 
+updateCursorTextClones();
 
     /*
      * KOLOR
@@ -4515,9 +4996,13 @@ window.addEventListener(
 
         createCursorH1Clone();
 
+        createCursorTextClones();
+
         updateCursorHitTargets();
 
         updateCursorH1Overlay();
+
+        updateCursorTextClones();
 
         drawCursor();
 
