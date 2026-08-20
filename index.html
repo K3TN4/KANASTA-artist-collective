@@ -2196,7 +2196,9 @@ function closeArtist() {
         .getElementById("artistProfile")
         .classList.remove("active");
 
-    menuClose.addEventListener("click", function () {
+}
+
+       menuClose.addEventListener("click", function () {
 
     menuOverlay.classList.remove("active");
 
@@ -2210,8 +2212,6 @@ function closeArtist() {
     });
 
 });
-
-}
 
 
 /* READ BIO */
@@ -4963,23 +4963,27 @@ window.addEventListener(
             cursorResizeTimer
         );
 
-        cursorResizeTimer =
-            setTimeout(
-                () => {
+      cursorResizeTimer =
+    setTimeout(
+        () => {
 
-                    invalidateH1Mask();
+            invalidateH1Mask();
 
-                    invalidateGenericTextMasks();
+            invalidateGenericTextMasks();
 
-                    createCursorH1Clone();
+            createCursorH1Clone();
 
-                    updateCursorH1Overlay();
+            createCursorTextClones();
 
-                    drawCursor();
+            updateCursorH1Overlay();
 
-                },
-                100
-            );
+            updateCursorTextClones();
+
+            drawCursor();
+
+        },
+        100
+    );
 
     }
 );
