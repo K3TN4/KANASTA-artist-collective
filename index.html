@@ -2067,8 +2067,50 @@ updateArtistOrbit();
 
 
 
+function setCursorView(
+    view
+) {
+
+    cursorView =
+        view;
+
+    createCursorTextClones();
+
+    updateCursorTextClones();
+
+    updateCursorH1Overlay();
+
+    updateCursorHitTargets();
+
+    drawCursor();
+}
+
+       
+function activatePageCursorView() {
+
+    setCursorView(
+        "page"
+    );
+
+}
 
 
+       function activateMenuCursorView() {
+
+    setCursorView(
+        "menu"
+    );
+
+}
+
+
+       function activateProfileCursorView() {
+
+    setCursorView(
+        "profile"
+    );
+
+}
 
 /* MENU */
 
@@ -2083,21 +2125,19 @@ homeLogo.addEventListener(
     "click",
     function () {
 
-        /*
-         * Zamknij menu
-         */
-        menuOverlay.classList.remove("active");
+        menuOverlay.classList.remove(
+            "active"
+        );
 
-        /*
-         * Zamknij profil artysty
-         */
         document
             .getElementById("artistProfile")
             .classList.remove("active");
 
-        /*
-         * Wróć na początek strony
-         */
+        menuButton.style.visibility =
+            "visible";
+
+        activatePageCursorView();
+
         window.scrollTo({
             top: 0,
             behavior: "smooth"
@@ -2106,52 +2146,71 @@ homeLogo.addEventListener(
     }
 );
 
-menuButton.addEventListener("click", function () {
+menuButton.addEventListener(
+    "click",
+    function () {
 
-    menuOverlay.classList.add("active");
+        menuOverlay.classList.add(
+            "active"
+        );
 
-    menuButton.style.visibility =
-        "hidden";
+        menuButton.style.visibility =
+            "hidden";
 
-    requestAnimationFrame(() => {
+        activateMenuCursorView();
 
-        createCursorTextClones();
-
-        updateCursorTextClones();
-
-    });
-
-});
+    }
+);
 
 menuClose.addEventListener("click", function () {
     menuOverlay.classList.remove("active");
     menuButton.style.visibility = "visible";
 });
 
-document.querySelectorAll(".menu-item").forEach(function (item) {
+document.querySelectorAll(".menu-item").forEach(
+    function (item) {
 
-    item.addEventListener("click", function () {
+        item.addEventListener(
+            "click",
+            function () {
 
-        const target = this.getAttribute("href");
+                const target =
+                    this.getAttribute(
+                        "href"
+                    );
 
-        menuOverlay.classList.remove("active");
+                menuOverlay.classList.remove(
+                    "active"
+                );
 
-        setTimeout(function () {
+                activatePageCursorView();
 
-            const section = document.querySelector(target);
+                setTimeout(
+                    function () {
 
-            if (section) {
-                section.scrollIntoView({
-                    behavior: "smooth"
-                });
+                        const section =
+                            document.querySelector(
+                                target
+                            );
+
+                        if (section) {
+
+                            section.scrollIntoView({
+                                behavior:
+                                    "smooth"
+                            });
+
+                        }
+
+                    },
+                    250
+                );
+
             }
+        );
 
-        }, 250);
-
-    });
-
-});
-
+    }
+);
 
 /* OPEN ARTIST */
 
@@ -2182,8 +2241,10 @@ function openArtist(artist) {
     };
 
     document
-        .getElementById("artistProfile")
-        .classList.add("active");
+    .getElementById("artistProfile")
+    .classList.add("active");
+
+activateProfileCursorView();
 
 }
 
@@ -2196,23 +2257,25 @@ function closeArtist() {
         .getElementById("artistProfile")
         .classList.remove("active");
 
+    activatePageCursorView();
+
 }
 
-       menuClose.addEventListener("click", function () {
+      menuClose.addEventListener(
+    "click",
+    function () {
 
-    menuOverlay.classList.remove("active");
+        menuOverlay.classList.remove(
+            "active"
+        );
 
-    menuButton.style.visibility =
-        "visible";
+        menuButton.style.visibility =
+            "visible";
 
-    requestAnimationFrame(() => {
+        activatePageCursorView();
 
-        updateCursorTextClones();
-
-    });
-
-});
-
+    }
+);
 
 /* READ BIO */
 
@@ -2403,6 +2466,15 @@ let cursorH1Clone =
 let h1Mask =
     null;
 
+       let cursorView =
+    "page";
+
+/*
+ * page  = normalna strona
+ * menu  = otwarte menu
+ * profile = otwarty profil artysty
+ */
+
        const CURSOR_DOM_TEXT_TARGETS = [
 
     document.getElementById(
@@ -2441,6 +2513,42 @@ let h1Mask =
 
 ].filter(Boolean);
 
+       const CURSOR_MENU_TEXT_TARGETS = [
+
+    document.querySelector(
+        ".menu-close"
+    ),
+
+    ...Array.from(
+        document.querySelectorAll(
+            ".menu-item"
+        )
+    )
+
+].filter(Boolean);
+
+       function getActiveCursorTextTargets() {
+
+    if (
+        cursorView === "menu"
+    ) {
+
+        return CURSOR_MENU_TEXT_TARGETS;
+
+    }
+
+    if (
+        cursorView === "profile"
+    ) {
+
+        return [];
+
+    }
+
+    return CURSOR_DOM_TEXT_TARGETS;
+
+}
+
        
 const cursorTextClones =
     new Map();
@@ -2458,7 +2566,7 @@ const cursorTextClones =
     cursorTextClones.clear();
 
 
-    CURSOR_DOM_TEXT_TARGETS.forEach(
+    getActiveCursorTextTargets().forEach(
         element => {
 
             if (!element) {
@@ -2509,16 +2617,6 @@ const cursorTextClones =
             clone.style.zIndex =
                 "100001";
 
-
-            /*
-             * Ważne:
-             *
-             * klon ma być dokładną kopią DOM,
-             * więc nie zmieniamy textContent.
-             *
-             * text-transform z CSS zostanie zachowany.
-             */
-
             cursorTextOverlay.appendChild(
                 clone
             );
@@ -2535,10 +2633,24 @@ const cursorTextClones =
    function updateCursorTextClones() {
 
     if (
-        !cursorTextOverlay
-    ) {
-        return;
-    }
+    !cursorTextOverlay
+) {
+    return;
+}
+
+if (
+    cursorView === "profile"
+) {
+
+    cursorTextOverlay.style.display =
+        "none";
+
+    return;
+
+}
+
+cursorTextOverlay.style.display =
+    "block";
 
 
     /*
@@ -2617,8 +2729,8 @@ const cursorTextClones =
      * =====================================================
      */
 
-    CURSOR_DOM_TEXT_TARGETS.forEach(
-        element => {
+    getActiveCursorTextTargets().forEach(
+    element => {
 
             const clone =
                 cursorTextClones.get(
@@ -2960,12 +3072,26 @@ function createCursorH1Clone() {
 function updateCursorH1Overlay() {
 
     if (
-        !mainH1 ||
-        !cursorH1Clone ||
-        !cursorH1Overlay
-    ) {
-        return;
-    }
+    !mainH1 ||
+    !cursorH1Clone ||
+    !cursorH1Overlay
+) {
+    return;
+}
+
+if (
+    cursorView !== "page"
+) {
+
+    cursorH1Overlay.style.display =
+        "none";
+
+    return;
+
+}
+
+cursorH1Overlay.style.display =
+    "block";
 
     const rect =
         mainH1.getBoundingClientRect();
@@ -4386,6 +4512,10 @@ function updateCursorHitTargets() {
      * KOŁA
      */
 
+   if (
+    cursorView === "page"
+) {
+
     for (
         const circle
         of artistCircles
@@ -4407,7 +4537,7 @@ function updateCursorHitTargets() {
 
     }
 
-
+}
     cursorHitTargets =
         targets;
 
