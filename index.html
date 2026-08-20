@@ -2492,14 +2492,14 @@ function updateCursorH1Overlay() {
        ===================================================== */
 
     const originalLeft =
-        rect.left -
-        originX *
-        (scaleX - 1);
+    rect.left +
+    originX *
+    (scaleX - 1);
 
-    const originalTop =
-        rect.top -
-        originY *
-        (scaleY - 1);
+const originalTop =
+    rect.top +
+    originY *
+    (scaleY - 1);
 
 
     /* =====================================================
