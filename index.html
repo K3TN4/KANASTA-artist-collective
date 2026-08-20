@@ -2433,7 +2433,15 @@ function updateCursorH1Overlay() {
     const rect =
         mainH1.getBoundingClientRect();
 
+    const width =
+        mainH1.offsetWidth;
+
+    const height =
+        mainH1.offsetHeight;
+
     if (
+        width <= 0 ||
+        height <= 0 ||
         rect.width <= 0 ||
         rect.height <= 0
     ) {
@@ -2441,42 +2449,99 @@ function updateCursorH1Overlay() {
     }
 
     const style =
-        getComputedStyle(
-            mainH1
+        getComputedStyle(mainH1);
+
+
+    /* =====================================================
+       SKALA RZECZYWISTEGO H1
+       ===================================================== */
+
+    const scaleX =
+        rect.width /
+        width;
+
+    const scaleY =
+        rect.height /
+        height;
+
+
+    /* =====================================================
+       TRANSFORM ORIGIN
+       ===================================================== */
+
+    const origin =
+        style.transformOrigin
+            .split(" ");
+
+
+    const originX =
+        parseCursorOrigin(
+            origin[0] || "50%",
+            width
+        );
+
+    const originY =
+        parseCursorOrigin(
+            origin[1] || "50%",
+            height
         );
 
 
-    /*
-     * Dokładna pozycja rzeczywistego H1.
-     */
+    /* =====================================================
+       POZYCJA BOXA PRZED TRANSFORMACJĄ
+       ===================================================== */
 
-    cursorH1Clone.style.left =
-        `${rect.left}px`;
+    const originalLeft =
+        rect.left -
+        originX *
+        (scaleX - 1);
 
-    cursorH1Clone.style.top =
-        `${rect.top}px`;
+    const originalTop =
+        rect.top -
+        originY *
+        (scaleY - 1);
+
+
+    /* =====================================================
+       KLON MUSI MIEĆ TEN SAM
+       ROZMIAR LAYOUTU CO ORYGINAŁ
+       ===================================================== */
 
     cursorH1Clone.style.width =
-        `${rect.width}px`;
+        `${width}px`;
 
     cursorH1Clone.style.height =
-        `${rect.height}px`;
+        `${height}px`;
 
 
-    /*
-     * Nie robimy ponownie scale().
-     */
+    /* =====================================================
+       POZYCJA
+       ===================================================== */
 
-    cursorH1Clone.style.transform =
-        "none";
+    cursorH1Clone.style.left =
+        `${originalLeft}px`;
+
+    cursorH1Clone.style.top =
+        `${originalTop}px`;
+
+
+    /* =====================================================
+       TEN SAM TRANSFORM
+       ===================================================== */
 
     cursorH1Clone.style.transformOrigin =
-        "top left";
+        style.transformOrigin;
+
+    cursorH1Clone.style.transform =
+        `scale(
+            ${scaleX},
+            ${scaleY}
+        )`;
 
 
-    /*
-     * Te same właściwości tekstu.
-     */
+    /* =====================================================
+       TEN SAM FONT
+       ===================================================== */
 
     cursorH1Clone.style.fontFamily =
         style.fontFamily;
@@ -2506,15 +2571,27 @@ function updateCursorH1Overlay() {
         style.textTransform;
 
     cursorH1Clone.style.display =
-        "block";
+        "inline-block";
 
     cursorH1Clone.style.whiteSpace =
         "nowrap";
 
 
-    /*
-     * CYAN
-     */
+    /* =====================================================
+       CYAN
+       ===================================================== */
+
+    cursorH1Clone.style.background =
+        "none";
+
+    cursorH1Clone.style.backgroundImage =
+        "none";
+
+    cursorH1Clone.style.webkitBackgroundClip =
+        "initial";
+
+    cursorH1Clone.style.backgroundClip =
+        "initial";
 
     cursorH1Clone.style.webkitTextFillColor =
         "#59e0b3";
@@ -2523,14 +2600,13 @@ function updateCursorH1Overlay() {
         "#59e0b3";
 
 
-    /*
-     * =====================================================
-     * CLIP KULKI
-     * =====================================================
-     */
+    /* =====================================================
+       KULKA KURSORA
+       ===================================================== */
 
     const radius =
         CURSOR.size / 2;
+
 
     const dx =
         mouseX -
@@ -2540,11 +2616,13 @@ function updateCursorH1Overlay() {
         mouseY -
         cursorY;
 
+
     const currentVelocity =
         Math.sqrt(
             dx * dx +
             dy * dy
         );
+
 
     const stretch =
         Math.min(
@@ -2554,11 +2632,13 @@ function updateCursorH1Overlay() {
             CURSOR.stretchStrength
         );
 
+
     const cursorScaleY =
         1 /
         Math.sqrt(
             stretch
         );
+
 
     const visibleRadiusX =
         radius *
@@ -2568,18 +2648,10 @@ function updateCursorH1Overlay() {
         radius *
         cursorScaleY;
 
-    cursorH1Overlay.style.clipPath =
-        `
-        ellipse(
-            ${visibleRadiusX}px
-            ${visibleRadiusY}px
-            at
-            ${cursorX}px
-            ${cursorY}px
-        )
-        `;
-}
 
+    cursorH1Overlay.style.clipPath =
+    "none";
+}
 /* =========================================================
    BUILD H1 MASK
    ========================================================= */
