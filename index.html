@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bakbak+One&family=Inria+Serif:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Jura:wght@300..700&family=Libre+Bodoni:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+
 
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2608,43 +2608,6 @@ function invalidateH1Mask() {
 }
 
 
-/* =========================================================
-   H1 GEOMETRY
-   ========================================================= */
-
-let h1Geometry =
-    null;
-
-
-function updateH1Geometry() {
-
-    if (!mainH1) {
-        h1Geometry = null;
-        return;
-    }
-
-
-    const rect =
-        mainH1.getBoundingClientRect();
-
-
-    const baseWidth =
-        mainH1.offsetWidth;
-
-
-    const baseHeight =
-        mainH1.offsetHeight;
-
-
-    if (
-        baseWidth <= 0 ||
-        baseHeight <= 0
-    ) {
-
-        h1Geometry = null;
-        return;
-
-    }
 
 
     const scaleX =
@@ -3638,9 +3601,7 @@ function textTargetPixelHit(
 
 
     /*
-     * NAJPIERW RECTANGLE TEST
-     *
-     * Bardzo tani test.
+     * 1. SZYBKI TEST PROSTOKĄTA
      */
 
     if (
@@ -3649,37 +3610,51 @@ function textTargetPixelHit(
         screenY < rect.top ||
         screenY > rect.bottom
     ) {
-
         return false;
-
     }
 
 
     /*
-     * SCREEN -> LOCAL
+     * 2. POZYCJA LOKALNA
+     *
+     * Dla elementów bez transformacji
+     * najprościej i najdokładniej jest
+     * liczyć bezpośrednio względem rect.
+     *
+     * Dzięki temu zwykłe:
+     *
+     * MENU
+     * LOGO
+     * ARTISTS
+     * CONTACT
+     * subtitle
+     *
+     * trafiają dokładnie w swój prostokąt.
      */
 
     const localX =
         (
             screenX -
-            target.originalLeft
+            rect.left
         ) /
         target.scaleX;
-
 
     const localY =
         (
             screenY -
-            target.originalTop
+            rect.top
         ) /
         target.scaleY;
 
+
+    /*
+     * 3. MASK PIXEL
+     */
 
     const px =
         Math.floor(
             localX
         );
-
 
     const py =
         Math.floor(
@@ -3688,7 +3663,7 @@ function textTargetPixelHit(
 
 
     /*
-     * POZA MASKĄ
+     * 4. POZA MASKĄ
      */
 
     if (
@@ -3697,14 +3672,12 @@ function textTargetPixelHit(
         px >= target.width ||
         py >= target.height
     ) {
-
         return false;
-
     }
 
 
     /*
-     * MASK PIXEL
+     * 5. PRAWDZIWY PIXEL TEKSTU
      */
 
     return (
@@ -4208,19 +4181,15 @@ window.addEventListener(
             cursorResizeTimer
         );
 
-
         cursorResizeTimer =
             setTimeout(
                 () => {
 
-                    
-invalidateH1Mask();
+                    invalidateH1Mask();
 
-invalidateGenericTextMasks();
+                    invalidateGenericTextMasks();
 
-updateH1Geometry();
-
-drawCursor();
+                    drawCursor();
 
                 },
                 100
@@ -4228,7 +4197,6 @@ drawCursor();
 
     }
 );
-
 /* =========================================================
    START
    ========================================================= */
