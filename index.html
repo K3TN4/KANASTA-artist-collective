@@ -15,6 +15,44 @@
 
            
     <style>
+
+        #cursorH1Overlay {
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 100000;
+
+    overflow: hidden;
+
+    clip-path: circle(
+        9px at -100px -100px
+    );
+}
+
+#cursorH1Overlay h1 {
+    position: fixed;
+
+    margin: 0 !important;
+
+    pointer-events: none;
+
+    background: none !important;
+    background-image: none !important;
+
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+
+    -webkit-text-fill-color: #59e0b3 !important;
+    color: #59e0b3 !important;
+
+    opacity: 1 !important;
+
+    z-index: 100001;
+}
+
+        
         @property --hover-x {
     syntax: "<length>";
     inherits: false;
@@ -873,6 +911,8 @@ main h1.image-text {
     width="32"
     height="32"
 ></canvas>
+
+    <div id="cursorH1Overlay"></div>
 
     <!-- HEADER -->
 
@@ -2293,8 +2333,300 @@ const mainH1 =
         "main h1.image-text"
     );
 
+       const cursorH1Overlay =
+    document.getElementById(
+        "cursorH1Overlay"
+    );
+
+       let cursorH1Clone = null;
 
 let h1Mask = null;
+
+
+      function createCursorH1Clone() {
+
+    if (
+        !mainH1 ||
+        !cursorH1Overlay
+    ) {
+        return;
+    }
+
+    if (cursorH1Clone) {
+
+        cursorH1Clone.remove();
+
+        cursorH1Clone =
+            null;
+    }
+
+    cursorH1Clone =
+        mainH1.cloneNode(true);
+
+    cursorH1Clone.removeAttribute("id");
+
+    cursorH1Clone.style.position =
+        "fixed";
+
+    cursorH1Clone.style.margin =
+        "0";
+
+    cursorH1Clone.style.padding =
+        "0";
+
+    cursorH1Clone.style.pointerEvents =
+        "none";
+
+    cursorH1Clone.style.background =
+        "none";
+
+    cursorH1Clone.style.backgroundImage =
+        "none";
+
+    cursorH1Clone.style.webkitBackgroundClip =
+        "initial";
+
+    cursorH1Clone.style.backgroundClip =
+        "initial";
+
+    cursorH1Clone.style.webkitTextFillColor =
+        "#59e0b3";
+
+    cursorH1Clone.style.color =
+        "#59e0b3";
+
+    cursorH1Clone.style.opacity =
+        "1";
+
+    cursorH1Clone.style.transform =
+        "none";
+
+    cursorH1Clone.style.zIndex =
+        "100001";
+
+    cursorH1Overlay.appendChild(
+        cursorH1Clone
+    );
+}
+
+      function updateCursorH1Overlay() {
+
+    if (
+        !mainH1 ||
+        !cursorH1Clone ||
+        !cursorH1Overlay
+    ) {
+        return;
+    }
+
+    const rect =
+        mainH1.getBoundingClientRect();
+
+    if (
+        rect.width <= 0 ||
+        rect.height <= 0
+    ) {
+        return;
+    }
+
+    /*
+     * Klon ma otrzymać dokładnie tę samą
+     * geometrię ekranu co prawdziwy H1.
+     */
+
+    cursorH1Clone.style.left =
+        `${rect.left}px`;
+
+    cursorH1Clone.style.top =
+        `${rect.top}px`;
+
+    cursorH1Clone.style.width =
+        `${rect.width}px`;
+
+    cursorH1Clone.style.height =
+        `${rect.height}px`;
+
+    /*
+     * Bardzo ważne:
+     *
+     * Nie wykonujemy drugi raz scale().
+     *
+     * getBoundingClientRect() zwraca już
+     * wynik transformacji H1.
+     */
+
+    cursorH1Clone.style.transform =
+        "none";
+
+    cursorH1Clone.style.transformOrigin =
+        "top left";
+
+    /*
+     * Rozmiar tekstu musi odpowiadać
+     * rzeczywistemu H1.
+     */
+
+    const style =
+        getComputedStyle(mainH1);
+
+    cursorH1Clone.style.fontFamily =
+        style.fontFamily;
+
+    cursorH1Clone.style.fontSize =
+        style.fontSize;
+
+    cursorH1Clone.style.fontWeight =
+        style.fontWeight;
+
+    cursorH1Clone.style.fontStyle =
+        style.fontStyle;
+
+    cursorH1Clone.style.fontVariant =
+        style.fontVariant;
+
+    cursorH1Clone.style.lineHeight =
+        style.lineHeight;
+
+    cursorH1Clone.style.letterSpacing =
+        style.letterSpacing;
+
+    cursorH1Clone.style.textAlign =
+        style.textAlign;
+
+    cursorH1Clone.style.textTransform =
+        style.textTransform;
+
+    /*
+     * Pozycjonowanie tekstu w klonie.
+     */
+
+    cursorH1Clone.style.display =
+        "block";
+
+    cursorH1Clone.style.whiteSpace =
+        "nowrap";
+
+    /*
+     * Cyan.
+     */
+
+    cursorH1Clone.style.webkitTextFillColor =
+        "#59e0b3";
+
+    cursorH1Clone.style.color =
+        "#59e0b3";
+}
+    const originX =
+        parseOrigin(
+            origin[0] || "50%",
+            width
+        );
+
+    const originY =
+        parseOrigin(
+            origin[1] || "50%",
+            height
+        );
+
+    const originalLeft =
+        rect.left -
+        originX *
+        (1 - scaleX);
+
+    const originalTop =
+        rect.top -
+        originY *
+        (1 - scaleY);
+
+    /*
+     * Ten sam rozmiar layoutu
+     * co oryginał.
+     */
+
+    cursorH1Clone.style.width =
+        `${width}px`;
+
+    cursorH1Clone.style.height =
+        `${height}px`;
+
+    cursorH1Clone.style.left =
+        `${originalLeft}px`;
+
+    cursorH1Clone.style.top =
+        `${originalTop}px`;
+
+    /*
+     * Odtwarzamy skalowanie hover.
+     */
+
+    cursorH1Clone.style.transformOrigin =
+        style.transformOrigin;
+
+    cursorH1Clone.style.transform =
+        `scale(${scaleX}, ${scaleY})`;
+
+    /*
+     * Sama maska kursora.
+     */
+
+    const radiusX =
+    CURSOR.size / 2;
+
+const radiusY =
+    CURSOR.size / 2;
+
+    /*
+     * Aktualny stretch kursora.
+     */
+
+    const dx =
+        mouseX -
+        cursorX;
+
+    const dy =
+        mouseY -
+        cursorY;
+
+    const currentVelocity =
+        Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+    const stretch =
+        Math.min(
+            CURSOR.maxStretch,
+            1 +
+            currentVelocity *
+            CURSOR.stretchStrength
+        );
+
+    const scaleCursorY =
+        1 /
+        Math.sqrt(
+            stretch
+        );
+
+    const visibleRadiusX =
+        radiusX *
+        stretch;
+
+    const visibleRadiusY =
+        radiusY *
+        scaleCursorY;
+
+    cursorH1Overlay.style.clipPath =
+        `
+        ellipse(
+            ${visibleRadiusX}px
+            ${visibleRadiusY}px
+            at
+            ${cursorX}px
+            ${cursorY}px
+        )
+        `;
+}
+
 
 
 /* =========================================================
@@ -2611,9 +2943,7 @@ const CURSOR_TEXT_TARGETS = [
     /*
      * GŁÓWNY KANASTA
      */
-    document.querySelector(
-        "main h1.image-text"
-    ),
+    
 
     /*
      * HEADER
@@ -3334,12 +3664,7 @@ function prepareTextTarget(
 const maskBounds =
     getMaskBounds(mask);
 
-const domInkBounds =
-    getDOMTextInkBounds(element);
 
-if (!domInkBounds) {
-    return null;
-}
 
     const rect =
         element.getBoundingClientRect();
@@ -3376,17 +3701,7 @@ if (!domInkBounds) {
         rect.height /
         height;
 
-    const domInkTopLocal =
-    (
-        domInkBounds.top -
-        rect.top
-    ) /
-    scaleY;
-
-const dynamicYOffset =
-    domInkTopLocal -
-    maskBounds.top;
-
+ 
 
     /*
      * TRANSFORM ORIGIN
@@ -3445,7 +3760,7 @@ const dynamicYOffset =
 
     maskBounds,
 
-    domInkBounds,
+   
 
     width: mask.width,
     height: mask.height,
@@ -3458,7 +3773,7 @@ const dynamicYOffset =
     originalLeft,
     originalTop,
 
-    yOffset: dynamicYOffset
+   
 
 };
 }
@@ -3617,36 +3932,25 @@ function textTargetPixelHit(
         return false;
     }
 
-    /*
-     * X pozostaje dokładnie tak jak wcześniej.
-     */
-
     const localX =
         (
             screenX -
             rect.left
-        ) / target.scaleX;
-
-
-    /*
-     * Y również liczymy względem rect DOM.
-     */
+        ) /
+        target.scaleX;
 
     const localY =
-    (
-        screenY -
-        rect.top
-    ) /
-    target.scaleY -
-    target.yOffset;
+        (
+            screenY -
+            rect.top
+        ) /
+        target.scaleY;
 
-    
     const px =
         Math.floor(localX);
 
     const py =
         Math.floor(localY);
-
 
     if (
         px < 0 ||
@@ -3657,13 +3961,11 @@ function textTargetPixelHit(
         return false;
     }
 
-
     return (
         target.mask.mask[
             py * target.width + px
         ] === 1
     );
-
 }
 /* =========================================================
    CIRCLE PIXEL TEST
@@ -4107,6 +4409,8 @@ function animateCustomCursor(
         )
     `;
 
+    updateCursorH1Overlay();
+
 
     /*
      * KOLOR
@@ -4163,6 +4467,10 @@ window.addEventListener(
 
                     invalidateGenericTextMasks();
 
+                    createCursorH1Clone();
+
+                    updateCursorH1Overlay();
+
                     drawCursor();
 
                 },
@@ -4182,7 +4490,11 @@ window.addEventListener(
 
         invalidateGenericTextMasks();
 
+        createCursorH1Clone();
+
         updateCursorHitTargets();
+
+        updateCursorH1Overlay();
 
         drawCursor();
 
