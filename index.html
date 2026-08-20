@@ -2284,11 +2284,17 @@ let previousColorTime = 0;
 
 const CURSOR_TEXT_TARGETS = [
 
+    /*
+     * GŁÓWNY NAPIS
+     */
     {
         element:
             document.querySelector("main h1.image-text")
     },
 
+    /*
+     * HEADER
+     */
     {
         element:
             document.getElementById("menuButton")
@@ -2296,16 +2302,50 @@ const CURSOR_TEXT_TARGETS = [
 
     {
         element:
+            document.getElementById("homeLogo")
+    },
+
+    /*
+     * SUBTITLE
+     */
+    {
+        element:
             document.querySelector(".subtitle")
     },
 
+    /*
+     * MENU OVERLAY
+     */
     {
         element:
-            document.getElementById("homeLogo")
-    }
+            document.querySelector(".menu-close")
+    },
 
+    ...Array.from(
+        document.querySelectorAll(".menu-item")
+    ).map(
+        element => ({ element })
+    ),
+
+    /*
+     * GŁÓWNE NAZWY SEKCJI:
+     * ARTISTS / WORKS / EXHIBITIONS / ABOUT / CONTACT
+     */
+    ...Array.from(
+        document.querySelectorAll(".section-header h2")
+    ).map(
+        element => ({ element })
+    ),
+
+    /*
+     * PLACEHOLDERY
+     */
+    ...Array.from(
+        document.querySelectorAll(".section-placeholder")
+    ).map(
+        element => ({ element })
+    )
 ];
-
 
 /* =========================================================
    H1 PIXEL MATCH
@@ -2733,9 +2773,369 @@ function updateH1Geometry() {
 
 }
 
+       /* =========================================================
+   GENERIC TEXT MASK
+   ========================================================= */
+
+const genericTextMasks =
+    new WeakMap();
+
+
+function buildGenericTextMask(element) {
+
+    if (!element) {
+        return null;
+    }
+
+    const style =
+        getComputedStyle(element);
+
+    const width =
+        Math.max(
+            1,
+            Math.ceil(
+                element.offsetWidth
+            )
+        );
+
+    const height =
+        Math.max(
+            1,
+            Math.ceil(
+                element.offsetHeight
+            )
+        );
+
+    if (
+        width <= 0 ||
+        height <= 0 ||
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        Number(style.opacity) === 0
+    ) {
+        return null;
+    }
+
+    const text =
+    element.textContent
+        .replace(/\s+/g, " ")
+        .trim();
+
+if (!text) {
+    return null;
+}
+
+    if (!text) {
+        return null;
+    }
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width =
+        width;
+
+    canvas.height =
+        height;
+
+    const drawCtx =
+        canvas.getContext("2d");
+
+    if (!drawCtx) {
+        return null;
+    }
+
+    drawCtx.font =
+        [
+            style.fontStyle,
+            style.fontVariant,
+            style.fontWeight,
+            style.fontSize,
+            style.fontFamily
+        ]
+        .filter(Boolean)
+        .join(" ");
+
+    if (
+        "letterSpacing" in drawCtx
+    ) {
+        drawCtx.letterSpacing =
+            style.letterSpacing;
+    }
+
+    drawCtx.textBaseline =
+        "alphabetic";
+
+    drawCtx.fillStyle =
+        "#000";
+
+    /*
+     * =========================================
+     * TEKST ALIGN
+     * =========================================
+     */
+
+    if (
+        style.textAlign === "right"
+    ) {
+
+        drawCtx.textAlign =
+            "right";
+
+    }
+    else if (
+        style.textAlign === "center"
+    ) {
+
+        drawCtx.textAlign =
+            "center";
+
+    }
+    else {
+
+        drawCtx.textAlign =
+            "left";
+
+    }
+
+    /*
+     * =========================================
+     * FONT METRICS
+     * =========================================
+     */
+
+    const fontSize =
+        parseFloat(
+            style.fontSize
+        ) || 16;
+
+    const lineHeight =
+        style.lineHeight === "normal"
+            ? fontSize * 1.2
+            : parseFloat(
+                style.lineHeight
+            );
+
+    const metrics =
+        drawCtx.measureText(
+            text
+        );
+
+    const ascent =
+        metrics.actualBoundingBoxAscent ||
+        fontSize;
+
+    const descent =
+        metrics.actualBoundingBoxDescent ||
+        0;
+
+    const lineBoxTop =
+        (
+            height -
+            lineHeight
+        ) / 2;
+
+    const baseline =
+        lineBoxTop +
+        (
+            lineHeight +
+            ascent -
+            descent
+        ) / 2;
+
+    /*
+     * =========================================
+     * X
+     * =========================================
+     */
+
+    let drawX = 0;
+
+    if (
+        style.textAlign === "center"
+    ) {
+
+        drawX =
+            width / 2;
+
+    }
+    else if (
+        style.textAlign === "right"
+    ) {
+
+        drawX =
+            width;
+
+    }
+
+    /*
+     * =========================================
+     * RYSOWANIE
+     * =========================================
+     */
+
+    drawCtx.fillText(
+        text,
+        drawX,
+        baseline
+    );
+
+    /*
+     * =========================================
+     * MASKA
+     * =========================================
+     */
+
+    const pixels =
+        drawCtx.getImageData(
+            0,
+            0,
+            width,
+            height
+        );
+
+    const mask =
+        new Uint8Array(
+            width *
+            height
+        );
+
+    for (
+        let y = 0;
+        y < height;
+        y++
+    ) {
+
+        for (
+            let x = 0;
+            x < width;
+            x++
+        ) {
+
+            const index =
+                (
+                    y *
+                    width +
+                    x
+                ) * 4;
+
+            if (
+                pixels.data[index + 3] > 20
+            ) {
+
+                mask[
+                    y *
+                    width +
+                    x
+                ] = 1;
+
+            }
+
+        }
+
+    }
+
+    return {
+
+        mask,
+
+        width,
+
+        height,
+
+        rectWidth:
+            width,
+
+        rectHeight:
+            height
+
+    };
+
+}
+
+
+function getGenericTextMask(
+    element
+) {
+
+    if (!element) {
+        return null;
+    }
+
+    const width =
+        element.offsetWidth;
+
+    const height =
+        element.offsetHeight;
+
+    let cached =
+        genericTextMasks.get(
+            element
+        );
+
+    if (
+        cached &&
+        (
+            cached.rectWidth !== width ||
+            cached.rectHeight !== height
+        )
+    ) {
+
+        cached =
+            null;
+
+        genericTextMasks.delete(
+            element
+        );
+
+    }
+
+    if (!cached) {
+
+        cached =
+            buildGenericTextMask(
+                element
+            );
+
+        if (cached) {
+
+            genericTextMasks.set(
+                element,
+                cached
+            );
+
+        }
+
+    }
+
+    return cached;
+}
+
+
+function invalidateGenericTextMasks() {
+
+    for (
+        const target
+        of CURSOR_TEXT_TARGETS
+    ) {
+
+        if (
+            target.element &&
+            target.element !== mainH1
+        ) {
+
+            genericTextMasks.delete(
+                target.element
+            );
+
+        }
+
+    }
+
+}
 
 /* =========================================================
-   H1 PIXEL TEST
+   TEXT PIXEL TEST
    ========================================================= */
 
 function textPixelHit(
@@ -2744,310 +3144,326 @@ function textPixelHit(
     screenY
 ) {
 
+    if (!element) {
+        return false;
+    }
+
+
     /*
-     * Ten specjalny system dotyczy wyłącznie
-     * głównego KANASTA.
+     * =====================================================
+     * 1. GŁÓWNE KANASTA
+     * =====================================================
+     *
+     * Zachowujemy Twój obecny, specjalny matcher H1.
      */
 
     if (
-        element !== mainH1
+        element === mainH1
     ) {
 
-        return false;
+        if (!h1Geometry) {
+
+            updateH1Geometry();
+
+        }
+
+        if (!h1Geometry) {
+            return false;
+        }
+
+        if (!h1Mask) {
+
+            h1Mask =
+                buildH1Mask();
+
+        }
+
+        if (!h1Mask) {
+            return false;
+        }
+
+
+        const MASK_SCALE_X =
+            1.035;
+
+        const MASK_SCALE_Y =
+            1.035;
+
+
+        const localX =
+            (
+                screenX -
+                h1Geometry.originalLeft
+            ) /
+            h1Geometry.scaleX;
+
+
+        const localY =
+            (
+                screenY -
+                h1Geometry.originalTop
+            ) /
+            h1Geometry.scaleY;
+
+
+        const maskCenterX =
+            h1Mask.width / 2;
+
+        const maskCenterY =
+            h1Mask.height / 2;
+
+
+        const maskX =
+            maskCenterX +
+            (
+                localX -
+                maskCenterX
+            ) /
+            MASK_SCALE_X;
+
+
+        const maskY =
+            maskCenterY +
+            (
+                localY -
+                maskCenterY
+            ) /
+            MASK_SCALE_Y;
+
+
+        const px =
+            Math.floor(
+                maskX
+            );
+
+        const py =
+            Math.floor(
+                maskY
+            );
+
+
+        if (
+            px < 0 ||
+            py < 0 ||
+            px >= h1Mask.width ||
+            py >= h1Mask.height
+        ) {
+            return false;
+        }
+
+
+        return (
+            h1Mask.mask[
+                py *
+                h1Mask.width +
+                px
+            ] === 1
+        );
 
     }
 
 
-    if (!h1Geometry) {
+    /*
+     * =====================================================
+     * 2. POZOSTAŁE TEKSTY
+     * =====================================================
+     */
 
-        updateH1Geometry();
+    const mask =
+        getGenericTextMask(
+            element
+        );
 
-    }
-
-
-    if (!h1Geometry) {
-        return false;
-    }
-
-
-    if (!h1Mask) {
-
-        h1Mask =
-            buildH1Mask();
-
-    }
-
-
-    if (!h1Mask) {
+    if (!mask) {
         return false;
     }
 
 
     /*
-     * =========================================
-     * SCREEN -> LOCAL H1
-     * =========================================
+     * Aktualny prostokąt elementu.
+     *
+     * Dzięki getBoundingClientRect()
+     * uwzględniamy również:
+     *
+     * transform: scale(...)
+     *
+     * więc MENU / LOGO itd. mogą się
+     * powiększać bez rozjechania kursora.
      */
 
-    const MASK_SCALE_X = 1.035;
-const MASK_SCALE_Y = 1.035;
-
-const localX =
-    (
-        screenX -
-        h1Geometry.originalLeft
-    ) /
-    h1Geometry.scaleX;
-
-const localY =
-    (
-        screenY -
-        h1Geometry.originalTop
-    ) /
-    h1Geometry.scaleY;
+    const rect =
+        element.getBoundingClientRect();
 
 
-/*
- * Powiększamy SAMĄ MASKĘ wokół jej środka.
- * Pozycja H1 pozostaje bez zmian.
- */
+    const baseWidth =
+        element.offsetWidth;
 
-const maskCenterX =
-    h1Mask.width / 2;
+    const baseHeight =
+        element.offsetHeight;
 
-const maskCenterY =
-    h1Mask.height / 2;
 
-const maskX =
-    maskCenterX +
-    (
-        localX -
-        maskCenterX
-    ) /
-    MASK_SCALE_X;
+    if (
+        baseWidth <= 0 ||
+        baseHeight <= 0
+    ) {
+        return false;
+    }
 
-const maskY =
-    maskCenterY +
-    (
-        localY -
-        maskCenterY
-    ) /
-    MASK_SCALE_Y;
 
     /*
-     * =========================================
-     * PIXEL
-     * =========================================
+     * =====================================================
+     * SKALA
+     * =====================================================
      */
+
+    const scaleX =
+        rect.width /
+        baseWidth;
+
+    const scaleY =
+        rect.height /
+        baseHeight;
+
+
+    if (
+        scaleX === 0 ||
+        scaleY === 0
+    ) {
+        return false;
+    }
+
+
+    /*
+     * =====================================================
+     * TRANSFORM ORIGIN
+     * =====================================================
+     */
+
+    const style =
+        getComputedStyle(
+            element
+        );
+
+
+    const originParts =
+        style.transformOrigin
+            .split(" ");
+
+
+    function parseOrigin(
+        value,
+        size
+    ) {
+
+        if (
+            value.endsWith("%")
+        ) {
+
+            return (
+                parseFloat(value) /
+                100
+            ) * size;
+
+        }
+
+        return (
+            parseFloat(value) ||
+            0
+        );
+
+    }
+
+
+    const originX =
+        parseOrigin(
+            originParts[0] ||
+            "50%",
+            baseWidth
+        );
+
+
+    const originY =
+        parseOrigin(
+            originParts[1] ||
+            "50%",
+            baseHeight
+        );
+
+
+    /*
+     * =====================================================
+     * TOP-LEFT PRZED TRANSFORM
+     * =====================================================
+     */
+
+    const originalLeft =
+        rect.left -
+        originX *
+        (
+            1 -
+            scaleX
+        );
+
+
+    const originalTop =
+        rect.top -
+        originY *
+        (
+            1 -
+            scaleY
+        );
+
+
+    /*
+     * =====================================================
+     * SCREEN -> LOCAL
+     * =====================================================
+     */
+
+    const localX =
+        (
+            screenX -
+            originalLeft
+        ) /
+        scaleX;
+
+
+    const localY =
+        (
+            screenY -
+            originalTop
+        ) /
+        scaleY;
+
 
     const px =
-    Math.floor(
-        maskX
-    );
+        Math.floor(
+            localX
+        );
 
-const py =
-    Math.floor(
-        maskY
-    );
+    const py =
+        Math.floor(
+            localY
+        );
 
 
     if (
         px < 0 ||
         py < 0 ||
-        px >= h1Mask.width ||
-        py >= h1Mask.height
+        px >= mask.width ||
+        py >= mask.height
     ) {
-
         return false;
-
     }
 
 
     return (
-        h1Mask.mask[
+        mask.mask[
             py *
-            h1Mask.width +
+            mask.width +
             px
         ] === 1
     );
-
-}
-
-
-       /* =========================================================
-   H1 INIT
-   ========================================================= */
-
-updateH1Geometry();
-
-
-mainH1.addEventListener(
-    "mouseenter",
-    () => {
-
-        requestAnimationFrame(
-            () => {
-
-                updateH1Geometry();
-
-                drawCursor();
-
-            }
-        );
-
-    }
-);
-
-
-mainH1.addEventListener(
-    "mouseleave",
-    () => {
-
-        requestAnimationFrame(
-            () => {
-
-                updateH1Geometry();
-
-                drawCursor();
-
-            }
-        );
-
-    }
-);
-
-       /* =========================================================
-   CIRCLE PIXEL TEST
-   ========================================================= */
-
-function circlePixelHit(
-    circle,
-    screenX,
-    screenY
-) {
-
-    if (!circle) {
-        return false;
-    }
-
-    const style =
-        getComputedStyle(circle);
-
-    if (
-        style.display === "none" ||
-        style.visibility === "hidden" ||
-        Number(style.opacity) === 0
-    ) {
-        return false;
-    }
-
-    const rect =
-        circle.getBoundingClientRect();
-
-    if (
-        screenX < rect.left ||
-        screenX > rect.right ||
-        screenY < rect.top ||
-        screenY > rect.bottom
-    ) {
-        return false;
-    }
-
-    const centerX =
-        rect.left +
-        rect.width / 2;
-
-    const centerY =
-        rect.top +
-        rect.height / 2;
-
-    const radiusX =
-        rect.width / 2;
-
-    const radiusY =
-        rect.height / 2;
-
-    const dx =
-        (
-            screenX -
-            centerX
-        ) /
-        radiusX;
-
-    const dy =
-        (
-            screenY -
-            centerY
-        ) /
-        radiusY;
-
-    return (
-        dx * dx +
-        dy * dy <= 1
-    );
-}
-/* =========================================================
-   ANY TARGET PIXEL?
-   ========================================================= */
-
-function isCyanPixel(
-    screenX,
-    screenY
-) {
-
-    /*
-     * -----------------------------------------
-     * 1. TEXT
-     * -----------------------------------------
-     */
-
-    for (
-        const target
-        of CURSOR_TEXT_TARGETS
-    ) {
-
-        if (
-            textPixelHit(
-                target.element,
-                screenX,
-                screenY
-            )
-        ) {
-
-            return true;
-
-        }
-
-    }
-
-
-    /*
-     * -----------------------------------------
-     * 2. ARTIST CIRCLES
-     * -----------------------------------------
-     */
-
-    for (
-        const circle
-        of artistCircles
-    ) {
-
-        if (
-            circlePixelHit(
-                circle,
-                screenX,
-                screenY
-            )
-        ) {
-
-            return true;
-
-        }
-
-    }
-
-
-    return false;
 
 }
 
@@ -3427,10 +3843,9 @@ window.addEventListener(
                 () => {
 
                     invalidateH1Mask();
-
-                    updateH1Geometry();
-
-                    drawCursor();
+invalidateGenericTextMasks();
+updateH1Geometry();
+drawCursor();
 
                 },
                 100
@@ -3447,10 +3862,9 @@ window.addEventListener(
     () => {
 
         invalidateH1Mask();
-
-        updateH1Geometry();
-
-        drawCursor();
+invalidateGenericTextMasks();
+updateH1Geometry();
+drawCursor();
 
     }
 );
