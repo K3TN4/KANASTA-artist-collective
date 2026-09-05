@@ -935,6 +935,234 @@ main h1.image-text {
     }
 
 }
+
+
+/* =========================================================
+   KANASTA — RESPONSIVE CALIBRATION
+   Desktop: proporcje zależne od wysokości ekranu, nie od
+   przypadkowego rozmiaru monitora. Mobile: osobny layout.
+   ========================================================= */
+
+:root {
+    --desktop-gutter: clamp(24px, 3.2vw, 56px);
+    --hero-title-size: clamp(150px, min(24vw, 43vh), 360px);
+    --hero-top: clamp(86px, 12vh, 150px);
+    --hero-subtitle-gap: clamp(14px, 2vh, 24px);
+    --orbit-width: min(1180px, 92vw);
+    --orbit-height: clamp(250px, 30vh, 330px);
+    --orbit-top: clamp(56%, 61vh, 66%);
+    --orbit-gap: clamp(20px, 2.7vw, 42px);
+    --orbit-circle: clamp(92px, 13vh, 130px);
+}
+
+/* Jeden stabilny punkt odniesienia dla poziomych ekranów. */
+@media (min-width: 701px) {
+    header {
+        padding: clamp(20px, 3vh, 32px) var(--desktop-gutter);
+    }
+
+    .logo,
+    .menu {
+        top: clamp(20px, 3vh, 32px);
+        font-size: clamp(12px, 1.35vh, 15px);
+    }
+
+    .logo { left: var(--desktop-gutter); }
+    .menu { right: var(--desktop-gutter); }
+
+    main {
+        min-height: 100svh;
+        padding: 0 var(--desktop-gutter);
+    }
+
+    main h1 {
+        margin-top: var(--hero-top);
+        font-size: var(--hero-title-size);
+        line-height: .9;
+    }
+
+    .subtitle {
+        margin-top: var(--hero-subtitle-gap);
+        font-size: clamp(11px, 1.55vh, 14px);
+        letter-spacing: clamp(.12em, .18vh, .18em);
+    }
+
+    .artist-orbit {
+        top: var(--orbit-top);
+        width: var(--orbit-width);
+        height: var(--orbit-height);
+    }
+
+    .artist-row-orbit {
+        gap: var(--orbit-gap);
+    }
+
+    .artist-circle {
+        flex-basis: var(--orbit-circle);
+        width: var(--orbit-circle);
+        height: var(--orbit-circle);
+    }
+
+    footer {
+        padding: clamp(20px, 3vh, 32px) var(--desktop-gutter);
+    }
+}
+
+/* =========================================================
+   MOBILE — czytelny, dotykowy układ niezależny od desktopu
+   ========================================================= */
+@media (max-width: 700px) {
+    html, body { min-width: 0; }
+    body { overflow-x: hidden; }
+
+    header {
+        padding: 18px 20px;
+        min-height: 58px;
+    }
+
+    .logo,
+    .menu {
+        top: 18px;
+        font-size: 11px;
+        letter-spacing: .14em;
+        min-height: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+    .logo { left: 20px; }
+    .menu { right: 20px; }
+
+    main {
+        min-height: 100svh;
+        padding: 0 16px;
+        justify-content: flex-start;
+    }
+
+    main h1 {
+        width: 100%;
+        margin-top: clamp(112px, 18svh, 170px);
+        font-size: clamp(58px, 17vw, 92px);
+        line-height: .92;
+        letter-spacing: .045em;
+        white-space: nowrap;
+    }
+
+    .subtitle {
+        margin-top: 14px;
+        max-width: 100%;
+        font-size: clamp(8px, 2.3vw, 11px);
+        letter-spacing: .11em;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .artist-orbit {
+        top: 61%;
+        left: 0;
+        width: 100%;
+        height: clamp(150px, 24svh, 220px);
+        padding: 0 20px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        pointer-events: auto;
+        touch-action: pan-x;
+        overscroll-behavior-x: contain;
+        scroll-behavior: smooth;
+    }
+
+    .artist-orbit::-webkit-scrollbar { display: none; }
+
+    .artist-row-orbit {
+        width: max-content;
+        min-width: max-content;
+        flex-shrink: 0;
+        justify-content: flex-start;
+        gap: 14px;
+    }
+
+    .artist-row-orbit + .artist-row-orbit { margin-top: 0; }
+    .artist-row-orbit:nth-child(2) { transform: translateX(34px); }
+
+    .artist-circle {
+        flex: 0 0 clamp(64px, 18vw, 82px);
+        width: clamp(64px, 18vw, 82px);
+        height: clamp(64px, 18vw, 82px);
+        border: 3px solid #ed3d66;
+        border-radius: 50% !important;
+    }
+
+    .artists,
+    .page-section {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .artists { padding-top: 90px; padding-bottom: 100px; }
+
+    .section-header {
+        margin-bottom: 48px;
+        gap: 12px;
+        font-size: 9px;
+    }
+
+    .section-header h2 {
+        font-size: clamp(42px, 13vw, 70px);
+    }
+
+    .artist-row {
+        grid-template-columns: 34px 1fr;
+        min-height: 64px;
+        padding: 17px 0;
+    }
+
+    .artist-row:hover { padding-left: 0; }
+    .artist-number { font-size: 9px; }
+    .artist-name { font-size: clamp(22px, 7vw, 34px); line-height: 1.05; }
+
+    .artist-photo {
+        right: 0;
+        width: 72px;
+        height: 72px;
+    }
+
+    .page-section {
+        min-height: 60svh;
+        padding-top: 90px;
+        padding-bottom: 100px;
+    }
+
+    .section-placeholder { margin-top: 70px; font-size: 10px; line-height: 1.5; }
+    .about-content, .contact-content { margin-top: 60px; }
+    .about-content p { font-size: 13px; }
+
+    .menu-overlay { padding: 18px 20px; }
+    .menu-close { top: 18px; right: 20px; min-height: 30px; display: flex; align-items: center; }
+    .menu-list { margin-top: 22svh; gap: 14px; }
+    .menu-item { font-size: clamp(34px, 11vw, 58px); line-height: 1; }
+    .menu-number { margin-right: 10px; font-size: 9px; }
+
+    .profile-content { padding: 90px 20px 70px; }
+    .profile-close { top: 18px; right: 20px; }
+    .profile-content h2 { font-size: clamp(46px, 13vw, 76px); margin-bottom: 40px; }
+    .profile-image-wrapper { width: min(58vw, 220px); height: min(58vw, 220px); margin-bottom: 42px; }
+    .profile-description > p:not(.profile-role) { font-size: 18px; line-height: 1.35; }
+
+    footer { padding: 20px; font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
     </style>
 </head>
 
