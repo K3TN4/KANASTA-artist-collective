@@ -407,7 +407,7 @@ body {
      * pozwala na swipe palcem
      */
     pointer-events: auto;
-    touch-action: pan-x;
+    touch-action: pan-y;
 
     /*
      * nie pozwala przeglądarce przejąć
@@ -949,8 +949,8 @@ main h1.image-text {
     --hero-top: clamp(86px, 12vh, 150px);
     --hero-subtitle-gap: clamp(14px, 2vh, 24px);
     --orbit-width: min(1180px, 92vw);
-    --orbit-height: clamp(250px, 30vh, 330px);
-    --orbit-top: clamp(56%, 61vh, 66%);
+    --orbit-height: clamp(240px, 27vh, 300px);
+    --orbit-top: clamp(70%, 76vh, 82%);
     --orbit-gap: clamp(20px, 2.7vw, 42px);
     --orbit-circle: clamp(92px, 13vh, 130px);
 }
@@ -1163,6 +1163,467 @@ main h1.image-text {
     *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
 
+
+
+/* Final desktop hero spacing: keep subtitle clear of the portrait cloud. */
+@media (min-width: 701px) {
+    main { min-height: 100svh; }
+    main h1 { margin-top: clamp(86px, 11vh, 128px); }
+    .subtitle { position: relative; z-index: 4; }
+    .artist-orbit { z-index: 1; top: clamp(70%, 76vh, 82%); }
+}
+
+
+
+/* Medium horizontal screens: do not force the 1920px composition onto 1280–1599px. */
+@media (min-width: 701px) and (max-width: 1599px) {
+    :root {
+        --hero-title-size: clamp(128px, 22vw, 300px);
+        --hero-top: clamp(78px, 10vh, 110px);
+        --orbit-width: min(1120px, 94vw);
+        --orbit-height: clamp(220px, 25vh, 270px);
+        --orbit-top: clamp(68%, 72vh, 77%);
+        --orbit-gap: clamp(14px, 1.8vw, 26px);
+        --orbit-circle: clamp(78px, 10vh, 108px);
+    }
+
+    main h1 { margin-top: var(--hero-top); }
+    .subtitle { margin-top: clamp(12px, 1.6vh, 18px); }
+    .artist-orbit { top: var(--orbit-top); }
+}
+
+/* Short landscape screens: keep the complete hero inside the first viewport. */
+@media (min-width: 701px) and (max-height: 800px) {
+    :root {
+        --hero-title-size: clamp(120px, 22vw, 260px);
+        --hero-top: 72px;
+        --orbit-height: 220px;
+        --orbit-top: 76%;
+        --orbit-circle: clamp(70px, 11vh, 94px);
+    }
+}
+
+
+
+/* Desktop structural layout: the portrait cloud follows the subtitle in
+   normal flow. Its position is therefore independent of monitor height. */
+@media (min-width: 701px) {
+    main {
+        min-height: 100svh;
+        align-items: center;
+    }
+
+    .artist-orbit {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        margin-top: clamp(34px, 5vh, 68px);
+        flex: 0 0 var(--orbit-height);
+    }
+}
+
+@media (min-width: 701px) and (max-width: 1599px) {
+    .artist-orbit {
+        margin-top: clamp(28px, 4vh, 52px);
+    }
+}
+
+
+
+/* =========================================================
+   INLINE ARTIST BIO — hover/focus preview in the artist list
+   ========================================================= */
+.artist-row {
+    overflow: visible;
+    align-items: start;
+    grid-template-rows: auto auto;
+}
+
+.artist-inline-panel {
+    grid-column: 2;
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition:
+        grid-template-rows .55s cubic-bezier(.22,1,.36,1),
+        opacity .35s ease,
+        max-height .55s cubic-bezier(.22,1,.36,1),
+        transform .55s cubic-bezier(.22,1,.36,1),
+        padding .55s cubic-bezier(.22,1,.36,1);
+    padding: 0;
+}
+
+.artist-inline-panel > * { min-height: 0; }
+.artist-row.is-preview .artist-inline-panel,
+.artist-row:focus-within .artist-inline-panel {
+    grid-template-rows: 1fr;
+    max-height: 190px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    padding: 8px 0 22px;
+}
+
+.artist-inline-bio {
+    position: relative;
+    max-width: min(620px, 70vw);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(13px, 1.25vw, 17px);
+    line-height: 1.55;
+    letter-spacing: .02em;
+    max-height: 4.65em;
+    overflow: hidden;
+    transition: max-height .65s cubic-bezier(.22,1,.36,1);
+}
+
+.artist-inline-bio::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2.2em;
+    background: linear-gradient(to bottom, rgba(250,237,143,0), #FAED8F 88%);
+    pointer-events: none;
+    transition: opacity .3s ease;
+}
+
+.artist-inline-panel.is-expanded .artist-inline-bio {
+    max-height: 40em;
+}
+.artist-inline-panel.is-expanded .artist-inline-bio::after { opacity: 0; }
+
+.artist-read-more {
+    justify-self: start;
+    margin-top: 10px;
+    border: 0;
+    border-bottom: 1px solid #1f1f14;
+    background: transparent;
+    padding: 0 0 4px;
+    color: #1f1f14;
+    font: 10px/1 Arial, Helvetica, sans-serif;
+    letter-spacing: .14em;
+    cursor: pointer;
+}
+
+@media (hover: hover) and (min-width: 701px) {
+    .artist-row:hover { padding-left: 20px; }
+}
+
+@media (max-width: 700px) {
+    .artist-row { grid-template-columns: 34px 1fr; }
+    .artist-inline-panel { grid-column: 2; }
+    .artist-row.is-preview .artist-inline-panel,
+    .artist-row:focus-within .artist-inline-panel { padding: 8px 0 18px; }
+    .artist-inline-bio { max-width: calc(100vw - 74px); font-size: 12px; }
+    .artist-row:focus-within { padding-left: 0; }
+}
+
+
+
+/* =========================================================
+   WORKS — four proportional, horizontally infinite rows
+   ========================================================= */
+#works.page-section { overflow: hidden; }
+.works-gallery {
+    --works-height: clamp(190px, 24vw, 340px);
+    --works-gap: clamp(8px, 1vw, 16px);
+    margin-top: clamp(54px, 7vw, 110px);
+    display: grid;
+    gap: var(--works-gap);
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    overflow: visible;
+}
+.works-row {
+    display: flex;
+    align-items: center;
+    gap: var(--works-gap);
+    min-width: max-content;
+    height: var(--works-height);
+    padding: 12px max(20px, 4vw);
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+    touch-action: pan-x;
+}
+.works-row::-webkit-scrollbar { display: none; }
+.works-card {
+    position: relative;
+    flex: 0 0 auto;
+    height: 100%;
+    width: auto;
+    aspect-ratio: var(--work-ratio, 1.25);
+    isolation: isolate;
+    transition: transform .55s cubic-bezier(.22,1,.36,1), filter .35s ease;
+    transform-origin: center center;
+    z-index: 1;
+}
+.works-card:hover,
+.works-card:focus-within {
+    transform: scale(1.045);
+    z-index: 20;
+    filter: saturate(1.08);
+}
+.works-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #111;
+}
+.works-card figcaption {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 8px 10px;
+    color: #FAED8F;
+    background: rgba(31,31,20,.82);
+    font: 9px/1.2 Arial, sans-serif;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity .3s ease;
+    pointer-events: none;
+}
+.works-card:hover figcaption,
+.works-card:focus-within figcaption { opacity: 1; }
+
+@media (max-width: 700px) {
+    .works-gallery {
+        --works-height: clamp(110px, 34vw, 170px);
+        --works-gap: 8px;
+        margin-top: 52px;
+        gap: 10px;
+    }
+    .works-row { padding: 10px 20px; }
+    .works-card:hover,
+    .works-card:focus-within { transform: scale(1.035); }
+}
+
+
+/* WORKS v7 overrides: 3 larger rows, equal vertical/horizontal gap, drag-safe */
+.works-gallery { gap: var(--works-gap); }
+.works-row { padding: var(--works-gap) max(20px, 4vw); cursor: grab; user-select: none; touch-action: pan-y; }
+.works-row.is-dragging { cursor: grabbing; scroll-behavior: auto; }
+.works-card img { pointer-events: none; }
+@media (max-width: 700px) {
+  .works-gallery { --works-height: clamp(140px, 39vw, 220px); gap: var(--works-gap); }
+  .works-row { padding: var(--works-gap) 20px; }
+}
+
+/* WORKS v8: equal gaps, desktop/touch drag, shared bottom scrollbar */
+.works-gallery { gap: var(--works-gap); }
+.works-row { padding-top: 0; padding-bottom: 0; touch-action: pan-y; cursor: grab; }
+.works-row.is-dragging { cursor: grabbing; }
+.works-scroll-control { display:flex; align-items:center; gap:18px; width:min(100% - 40px,1180px); margin:var(--works-gap) auto 0; padding:0; }
+.works-scroll-control label { flex:0 0 auto; font:9px/1 Arial,sans-serif; letter-spacing:.14em; color:#777; }
+#worksRange { flex:1 1 auto; min-width:0; accent-color:#ed3d66; cursor:ew-resize; }
+@media (max-width:700px) { .works-row { padding-top:0; padding-bottom:0; } .works-scroll-control { width:calc(100% - 40px); margin-top:var(--works-gap); gap:12px; } .works-scroll-control label { font-size:8px; } }
+
+
+/* WORKS v9: drag-only navigation, edge fade, staggered rows */
+.works-gallery {
+    position: relative;
+    gap: var(--works-gap);
+    padding: 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 3.5%, #000 96.5%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 3.5%, #000 96.5%, transparent 100%);
+}
+.works-row {
+    padding-left: 0;
+    padding-right: 0;
+    overflow-x: scroll;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+}
+.works-row::-webkit-scrollbar { display: none; }
+.works-scroll-control { margin-top: var(--works-gap); }
+@media (max-width: 700px) {
+    .works-row { padding-left: 0; padding-right: 0; }
+}
+
+
+
+/* WORKS v10: subtle edge fade and drag-only custom pink handle */
+.works-gallery {
+    -webkit-mask-image: linear-gradient(to right,
+        rgba(0,0,0,.82) 0%,
+        #000 12%,
+        #000 88%,
+        rgba(0,0,0,.82) 100%);
+    mask-image: linear-gradient(to right,
+        rgba(0,0,0,.82) 0%,
+        #000 12%,
+        #000 88%,
+        rgba(0,0,0,.82) 100%);
+}
+.works-row {
+    overflow-x: hidden;
+    overflow-y: visible;
+    scrollbar-width: none;
+}
+.works-scroll-control {
+    position: relative;
+    height: 28px;
+    margin-top: var(--works-gap);
+    display: flex;
+    align-items: center;
+}
+.works-scroll-control label { display: none; }
+#worksRange {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 2px;
+    margin: 0;
+    background: #ed3d66;
+    outline: none;
+    cursor: ew-resize;
+}
+#worksRange::-webkit-slider-runnable-track {
+    height: 2px;
+    background: #ed3d66;
+}
+#worksRange::-moz-range-track {
+    height: 2px;
+    background: #ed3d66;
+}
+#worksRange::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    margin-top: -11px;
+    border: 0;
+    border-radius: 50%;
+    background: #ed3d66;
+    cursor: grab;
+}
+#worksRange::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border: 0;
+    border-radius: 50%;
+    background: #ed3d66;
+    cursor: grab;
+}
+#worksRange:active::-webkit-slider-thumb,
+#worksRange:active::-moz-range-thumb { cursor: grabbing; }
+@media (max-width: 700px) {
+    .works-scroll-control { height: 26px; }
+    #worksRange::-webkit-slider-thumb { width: 22px; height: 22px; margin-top: -10px; }
+    #worksRange::-moz-range-thumb { width: 22px; height: 22px; }
+}
+
+.works-row.is-pressed, .works-row.is-dragging { cursor: grabbing; }
+
+
+/* WORKS v12 final: page wheel only, mouse/touch drag only, full-width pink handle */
+.works-row {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    touch-action: pan-y;
+    cursor: grab;
+}
+.works-scroll-control {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-top: clamp(24px, 3vw, 42px);
+    padding: 0 max(20px, 4vw);
+    height: 34px;
+}
+#worksRange {
+    width: 100%;
+    height: 3px;
+    margin: 0;
+    background: transparent;
+}
+#worksRange::-webkit-slider-runnable-track {
+    height: 3px;
+    border-radius: 99px;
+    background: #ed3d66;
+}
+#worksRange::-moz-range-track {
+    height: 3px;
+    border-radius: 99px;
+    background: #ed3d66;
+}
+#worksRange::-webkit-slider-thumb {
+    width: 30px;
+    height: 30px;
+    margin-top: -13.5px;
+    border-radius: 50%;
+    border: 0;
+    background: #ed3d66;
+    transition: transform .25s cubic-bezier(.22,1,.36,1);
+    cursor: grab;
+}
+#worksRange::-moz-range-thumb {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 0;
+    background: #ed3d66;
+    transition: transform .25s cubic-bezier(.22,1,.36,1);
+    cursor: grab;
+}
+#worksRange:hover::-webkit-slider-thumb,
+#worksRange:focus-visible::-webkit-slider-thumb { transform: scale(1.22); }
+#worksRange:hover::-moz-range-thumb,
+#worksRange:focus-visible::-moz-range-thumb { transform: scale(1.22); }
+#worksRange:active::-webkit-slider-thumb { transform: scale(1.48); cursor: grabbing; }
+#worksRange:active::-moz-range-thumb { transform: scale(1.48); cursor: grabbing; }
+@media (max-width: 700px) {
+    .works-scroll-control { padding: 0 20px; margin-top: 28px; }
+}
+
+
+/* WORKS v13: custom knob only — no native line/input and no wheel scrolling */
+.works-row { overflow-x: hidden !important; overflow-y: visible !important; }
+.works-scroll-control {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-top: clamp(34px, 4vw, 58px);
+    padding: 0 max(20px, 4vw);
+    height: 36px;
+    display: flex;
+    align-items: center;
+}
+.works-range {
+    position: relative;
+    width: 100%;
+    height: 36px;
+    cursor: ew-resize;
+    touch-action: pan-y;
+    user-select: none;
+}
+.works-range-knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ed3d66;
+    transform: translate(-50%, -50%);
+    transition: transform .25s cubic-bezier(.22,1,.36,1);
+    cursor: grab;
+}
+.works-range:hover .works-range-knob,
+.works-range:focus-visible .works-range-knob { transform: translate(-50%, -50%) scale(1.22); }
+.works-range.is-dragging .works-range-knob { transform: translate(-50%, -50%) scale(1.48); cursor: grabbing; }
+@media (max-width:700px) { .works-scroll-control { padding:0 20px; margin-top:32px; } }
+
     </style>
 </head>
 
@@ -1259,94 +1720,154 @@ main h1.image-text {
 
     <div class="artist-list">
 
-    <div class="artist-row" onclick="openArtist('patrycja')">
+    <div class="artist-row" onclick="openArtist('patrycja')" tabindex="0" role="button">
         <span class="artist-number">01</span>
         <span class="artist-name">Patrycja Boruch</span>
         <img class="artist-photo" src="images/patrycja-boruch.jpg" alt="Patrycja Boruch">
+        <div class="artist-inline-panel" data-inline-artist="patrycja" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('zuzanna')">
+    <div class="artist-row" onclick="openArtist('zuzanna')" tabindex="0" role="button">
         <span class="artist-number">02</span>
         <span class="artist-name">Zuzanna Frankowska</span>
         <img class="artist-photo" src="images/zuzanna-frankowska.jpg" alt="Zuzanna Frankowska">
+        <div class="artist-inline-panel" data-inline-artist="zuzanna" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('amelia')">
+    <div class="artist-row" onclick="openArtist('amelia')" tabindex="0" role="button">
         <span class="artist-number">03</span>
         <span class="artist-name">Amelia Korczak</span>
         <img class="artist-photo" src="images/amelia-korczak.jpg" alt="Amelia Korczak">
+        <div class="artist-inline-panel" data-inline-artist="amelia" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('adam')">
+    <div class="artist-row" onclick="openArtist('adam')" tabindex="0" role="button">
         <span class="artist-number">04</span>
         <span class="artist-name">Adam Pażucha</span>
         <img class="artist-photo" src="images/adam-pazucha.jpg" alt="Adam Pażucha">
+        <div class="artist-inline-panel" data-inline-artist="adam" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('antoni')">
+    <div class="artist-row" onclick="openArtist('antoni')" tabindex="0" role="button">
         <span class="artist-number">05</span>
         <span class="artist-name">Antoni Augustyniak</span>
         <img class="artist-photo" src="images/antoni-augustyniak.jpg" alt="Antoni Augustyniak">
+        <div class="artist-inline-panel" data-inline-artist="antoni" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('ada')">
+    <div class="artist-row" onclick="openArtist('ada')" tabindex="0" role="button">
         <span class="artist-number">06</span>
         <span class="artist-name">Ada Rosa</span>
         <img class="artist-photo" src="images/ada-rosa.jpg" alt="Ada Rosa">
+        <div class="artist-inline-panel" data-inline-artist="ada" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('anastazja')">
+    <div class="artist-row" onclick="openArtist('anastazja')" tabindex="0" role="button">
         <span class="artist-number">07</span>
         <span class="artist-name">Anastazja Gierlak</span>
         <img class="artist-photo" src="images/anastazja-gierlak.jpg" alt="Anastazja Gierlak">
+        <div class="artist-inline-panel" data-inline-artist="anastazja" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('anna')">
+    <div class="artist-row" onclick="openArtist('anna')" tabindex="0" role="button">
         <span class="artist-number">08</span>
         <span class="artist-name">Anna Esnekier</span>
         <img class="artist-photo" src="images/anna-esnekier.jpg" alt="Anna Esnekier">
+        <div class="artist-inline-panel" data-inline-artist="anna" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('gabriela')">
+    <div class="artist-row" onclick="openArtist('gabriela')" tabindex="0" role="button">
         <span class="artist-number">09</span>
         <span class="artist-name">Gabriela Bossowska</span>
         <img class="artist-photo" src="images/gabriela-bossowska.jpg" alt="Gabriela Bossowska">
+        <div class="artist-inline-panel" data-inline-artist="gabriela" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('marta-mioduszewska')">
+    <div class="artist-row" onclick="openArtist('marta-mioduszewska')" tabindex="0" role="button">
         <span class="artist-number">10</span>
         <span class="artist-name">Marta Mioduszewska</span>
         <img class="artist-photo" src="images/marta-mioduszewska.jpg" alt="Marta Mioduszewska">
+        <div class="artist-inline-panel" data-inline-artist="marta-mioduszewska" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('nina')">
+    <div class="artist-row" onclick="openArtist('nina')" tabindex="0" role="button">
         <span class="artist-number">11</span>
         <span class="artist-name">Nina Borowicz</span>
         <img class="artist-photo" src="images/nina-borowicz.jpg" alt="Nina Borowicz">
+        <div class="artist-inline-panel" data-inline-artist="nina" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('aleksandra')">
+    <div class="artist-row" onclick="openArtist('aleksandra')" tabindex="0" role="button">
         <span class="artist-number">12</span>
         <span class="artist-name">Aleksandra Sikora</span>
         <img class="artist-photo" src="images/aleksandra-sikora.jpg" alt="Aleksandra Sikora">
+        <div class="artist-inline-panel" data-inline-artist="aleksandra" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('marta-mendelejeva')">
+    <div class="artist-row" onclick="openArtist('marta-mendelejeva')" tabindex="0" role="button">
         <span class="artist-number">13</span>
         <span class="artist-name">Marta Mendelejeva</span>
         <img class="artist-photo" src="images/marta-mendelejeva.jpg" alt="Marta Mendelejeva">
+        <div class="artist-inline-panel" data-inline-artist="marta-mendelejeva" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('franek')">
+    <div class="artist-row" onclick="openArtist('franek')" tabindex="0" role="button">
         <span class="artist-number">14</span>
         <span class="artist-name">Franek Ciastoń</span>
         <img class="artist-photo" src="images/franek-ciaston.jpg" alt="Franek Ciastoń">
+        <div class="artist-inline-panel" data-inline-artist="franek" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
-    <div class="artist-row" onclick="openArtist('urszula')">
+    <div class="artist-row" onclick="openArtist('urszula')" tabindex="0" role="button">
         <span class="artist-number">15</span>
         <span class="artist-name">Urszula Smagowicz</span>
         <img class="artist-photo" src="images/urszula-smagowicz.jpg" alt="Urszula Smagowicz">
+        <div class="artist-inline-panel" data-inline-artist="urszula" aria-hidden="true">
+            <div class="artist-inline-bio" data-inline-bio>Biography coming soon.</div>
+            <button class="artist-read-more" type="button" data-read-more>READ MORE</button>
+        </div>
     </div>
 
 </div>
@@ -1362,8 +1883,14 @@ main h1.image-text {
         <span>KANASTA</span>
     </div>
 
-    <div class="section-placeholder">
-        WORKS COMING SOON
+    <div class="works-gallery" id="worksGallery" aria-label="Works gallery">
+        <div class="works-row" data-row="0"></div>
+        <div class="works-row" data-row="1"></div>
+        <div class="works-row" data-row="2"></div>
+    </div>
+    <div class="works-scroll-control">
+        <label for="worksRange">SCROLL WORKS</label>
+        <div id="worksRange" class="works-range" role="slider" tabindex="0" aria-label="Przewijaj prace w poziomie" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="500"><div class="works-range-knob"></div></div>
     </div>
 
         <section class="page-section" id="exhibitions">
@@ -2511,6 +3038,134 @@ function toggleBio() {
         .classList.toggle("active");
 
 }
+
+
+
+
+
+/* WORKS gallery data: replace these paths with the final works. */
+const worksData = [
+ {file:'images/works/work-01.jpg',title:'Work 01',ratio:1.35},{file:'images/works/work-02.jpg',title:'Work 02',ratio:.78},
+ {file:'images/works/work-03.jpg',title:'Work 03',ratio:1.8},{file:'images/works/work-04.jpg',title:'Work 04',ratio:1.1},
+ {file:'images/works/work-05.jpg',title:'Work 05',ratio:.72},{file:'images/works/work-06.jpg',title:'Work 06',ratio:1.55},
+ {file:'images/works/work-07.jpg',title:'Work 07',ratio:1.25},{file:'images/works/work-08.jpg',title:'Work 08',ratio:.9}
+];
+const worksRows=Array.from(document.querySelectorAll('.works-row'));
+const workKey=w=>w.file;
+function shuffledWorks(excluded=[]){const blocked=new Set(excluded),pool=worksData.filter(w=>!blocked.has(workKey(w)));for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}return pool.length?pool:[...worksData];}
+function createWorkCard(work){const card=document.createElement('figure');card.className='works-card';card.style.setProperty('--work-ratio',work.ratio);card.tabIndex=0;card.dataset.work=workKey(work);const img=document.createElement('img');img.src=work.file;img.alt=work.title;img.loading='lazy';img.draggable=false;const cap=document.createElement('figcaption');cap.textContent=work.title;card.append(img,cap);return card;}
+function fillWorksRow(row,rowIndex){const reverse=rowIndex%2;let previous=[];for(let copy=0;copy<3;copy++){const batch=shuffledWorks(previous);previous=batch.map(workKey).slice(-5);(reverse?batch.slice().reverse():batch).forEach(w=>row.appendChild(createWorkCard(w)));}const max=Math.max(0,row.scrollWidth-row.clientWidth);const offsets=[.18,.57,.34];requestAnimationFrame(()=>{row.scrollLeft=max*offsets[rowIndex%offsets.length];});}
+function extendWorksRow(row,side){const existing=Array.from(row.querySelectorAll('.works-card')).slice(-worksData.length).map(c=>c.dataset.work);const batch=shuffledWorks(existing).slice(0,6);const ordered=Number(row.dataset.row)%2?batch.slice().reverse():batch;const before=row.scrollWidth;const cards=ordered.map(createWorkCard);if(side==='start')cards.reverse().forEach(c=>row.prepend(c));else cards.forEach(c=>row.append(c));if(side==='start')row.scrollLeft+=row.scrollWidth-before;}
+worksRows.forEach(fillWorksRow);
+const worksRange = document.getElementById('worksRange');
+const worksRangeKnob = worksRange?.querySelector('.works-range-knob');
+let worksDragging = false;
+let worksRangeSync = false;
+function worksMaxScroll() { return Math.max(...worksRows.map(row => row.scrollWidth - row.clientWidth), 0); }
+function setWorksRatio(ratio, sourceRow = null) {
+    const clamped = Math.max(0, Math.min(1, ratio));
+    const max = worksMaxScroll();
+    worksRows.forEach(row => { row.scrollLeft = clamped * Math.max(0, row.scrollWidth - row.clientWidth); });
+    if (worksRange) {
+        worksRange.dataset.ratio = clamped;
+        worksRange.setAttribute('aria-valuenow', Math.round(clamped * 1000));
+        if (worksRangeKnob) worksRangeKnob.style.left = `${clamped * 100}%`;
+    }
+}
+function syncWorksRange(sourceRow = null) {
+    if (!worksRange || worksRangeSync) return;
+    const max = worksMaxScroll();
+    const current = sourceRow ? sourceRow.scrollLeft : (worksRows[0]?.scrollLeft || 0);
+    worksRangeSync = true;
+    setWorksRatio(max ? current / max : 0, sourceRow);
+    worksRangeSync = false;
+}
+function ratioFromPointer(event) {
+    const rect = worksRange.getBoundingClientRect();
+    return (event.clientX - rect.left) / rect.width;
+}
+function beginRangeDrag(event) {
+    event.preventDefault();
+    worksRange.classList.add('is-dragging');
+    setWorksRatio(ratioFromPointer(event));
+    worksRange.setPointerCapture?.(event.pointerId);
+}
+function moveRangeDrag(event) { if (worksRange.classList.contains('is-dragging')) { event.preventDefault(); setWorksRatio(ratioFromPointer(event)); } }
+function endRangeDrag() { worksRange?.classList.remove('is-dragging'); }
+if (worksRange) {
+    worksRange.addEventListener('pointerdown', beginRangeDrag);
+    worksRange.addEventListener('pointermove', moveRangeDrag, { passive: false });
+    worksRange.addEventListener('pointerup', endRangeDrag);
+    worksRange.addEventListener('pointercancel', endRangeDrag);
+    worksRange.addEventListener('keydown', event => {
+        const step = event.shiftKey ? .1 : .03;
+        const current = Number(worksRange.dataset.ratio || .5);
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+            event.preventDefault(); setWorksRatio(current + (event.key === 'ArrowRight' ? step : -step));
+        }
+    });
+}
+worksRows.forEach(row => {
+    row.addEventListener('scroll', () => {
+        const edge = Math.max(260, row.clientWidth * .7);
+        if (row.scrollLeft < edge) extendWorksRow(row, 'start');
+        if (row.scrollWidth - row.clientWidth - row.scrollLeft < edge) extendWorksRow(row, 'end');
+        syncWorksRange(row);
+    }, { passive: true });
+    let pointerDown = false, dragging = false, startX = 0, startY = 0, startScroll = 0;
+    row.addEventListener('pointerdown', event => {
+        if (event.target.closest('.works-scroll-control')) return;
+        pointerDown = true; dragging = false; startX = event.clientX; startY = event.clientY; startScroll = row.scrollLeft;
+        row.setPointerCapture?.(event.pointerId);
+    });
+    row.addEventListener('pointermove', event => {
+        if (!pointerDown) return;
+        const dx = event.clientX - startX, dy = event.clientY - startY;
+        if (!dragging && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) { dragging = true; worksDragging = true; row.classList.add('is-dragging'); }
+        if (dragging) { event.preventDefault(); row.scrollLeft = startScroll - dx; }
+    }, { passive: false });
+    const endDrag = () => { pointerDown = false; if (dragging) { row.classList.remove('is-dragging'); setTimeout(() => { dragging = false; worksDragging = false; }, 80); } };
+    row.addEventListener('pointerup', endDrag); row.addEventListener('pointercancel', endDrag); row.addEventListener('lostpointercapture', endDrag);
+    row.addEventListener('click', event => { if (dragging || worksDragging) { event.preventDefault(); event.stopPropagation(); } }, true);
+});
+window.addEventListener('resize', () => syncWorksRange());
+setTimeout(() => syncWorksRange(), 100);
+
+/* Inline previews: hover on desktop, focus/tap friendly on touch screens. */
+const artistRows = Array.from(document.querySelectorAll('.artist-row'));
+
+artistRows.forEach((row) => {
+    const key = row.getAttribute('onclick')?.match(/openArtist\('([^']+)'\)/)?.[1];
+    const panel = row.querySelector('.artist-inline-panel');
+    const bio = row.querySelector('[data-inline-bio]');
+    const readMore = row.querySelector('[data-read-more]');
+    if (!key || !panel || !bio || !readMore || !artists[key]) return;
+
+    bio.textContent = artists[key].bio || 'Biography coming soon.';
+
+    const setPreview = (open) => {
+        row.classList.toggle('is-preview', open);
+        panel.setAttribute('aria-hidden', String(!open));
+    };
+
+    row.addEventListener('mouseenter', () => setPreview(true));
+    row.addEventListener('mouseleave', () => {
+        if (!panel.classList.contains('is-expanded')) setPreview(false);
+    });
+    row.addEventListener('focusin', () => setPreview(true));
+    row.addEventListener('focusout', (event) => {
+        if (!row.contains(event.relatedTarget) && !panel.classList.contains('is-expanded')) setPreview(false);
+    });
+
+    readMore.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        panel.classList.toggle('is-expanded');
+        readMore.textContent = panel.classList.contains('is-expanded') ? 'SHOW LESS' : 'READ MORE';
+        setPreview(true);
+    });
+});
+
 
        /* =========================================================
    LIGHTWEIGHT PIXEL CURSOR
