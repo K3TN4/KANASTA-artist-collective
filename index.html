@@ -3045,20 +3045,20 @@ function toggleBio() {
 
 /* WORKS gallery data: replace these paths with the final works. */
 const worksData = [
-    { file: 'images/works/Antoni Augustyniak, portret Adasia Pazuchy. Olej na płótnie.png', title: 'Work 01' },
-    { file: 'images/works/Antoni Augustyniak_Astygmatyzm_glina_2026.png.png.png (7).png', title: 'Work 02' },
-    { file: 'images/works/Antoni Augustyniak_Lampa_2026.png.png.png', title: 'Work 03' },
-    { file: 'images/works/Antoni Augustyniak_Portret_gips_2026.png.png (9).png', title: 'Work 04' },
-    { file: 'images/works/Antoni Augustyniak_Szybka Pani_Techniki mieszane_2026.png.png.png (2).png', title: 'Work 05' },
-    { file: 'images/works/Antoni Augustyniak_Wąż_drewno, metal, aluminium_2026.png.png.png (2).png', title: 'Work 06' },
-    { file: 'images/works/Augustyniak_Antoni_Postać w formacie_Węgiel na papierze_100x210cm_2026.png', title: 'Work 07' },
-    { file: 'images/works/IMG_0544.png', title: 'Work 08' },
-    { file: 'images/works/IMG_0869.png', title: 'Work 09' }
+    { file: 'images/works/work01.png', title: 'Work 01' },
+    { file: 'images/works/work02.png', title: 'Work 02' },
+    { file: 'images/works/work03.png', title: 'Work 03' },
+    { file: 'images/works/work04.png', title: 'Work 04' },
+    { file: 'images/works/work05.png', title: 'Work 05' },
+    { file: 'images/works/work06.png', title: 'Work 06' },
+    { file: 'images/works/work07.png', title: 'Work 07' },
+    { file: 'images/works/work08.png', title: 'Work 08' },
+    { file: 'images/works/work09.png', title: 'Work 09' }
 ];
 const worksRows=Array.from(document.querySelectorAll('.works-row'));
 const workKey=w=>w.file;
 function shuffledWorks(excluded=[]){const blocked=new Set(excluded),pool=worksData.filter(w=>!blocked.has(workKey(w)));for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}return pool.length?pool:[...worksData];}
-function createWorkCard(work){const card=document.createElement('figure');card.className='works-card';card.style.setProperty('--work-ratio',work.ratio);card.tabIndex=0;card.dataset.work=workKey(work);const img=document.createElement('img');img.src=work.file;img.alt=work.title;img.loading='lazy';img.draggable=false;img.addEventListener('load',()=>{if(img.naturalWidth&&img.naturalHeight)card.style.setProperty('--work-ratio',img.naturalWidth/img.naturalHeight);});const cap=document.createElement('figcaption');cap.textContent=work.title;card.append(img,cap);return card;}
+function createWorkCard(work){const card=document.createElement('figure');card.className='works-card';card.style.setProperty('--work-ratio',work.ratio);card.tabIndex=0;card.dataset.work=workKey(work);const img=document.createElement('img');img.src=work.file;img.alt=work.title;img.loading='lazy';img.draggable=false;const cap=document.createElement('figcaption');cap.textContent=work.title;card.append(img,cap);return card;}
 function fillWorksRow(row,rowIndex){const reverse=rowIndex%2;let previous=[];for(let copy=0;copy<3;copy++){const batch=shuffledWorks(previous);previous=batch.map(workKey).slice(-5);(reverse?batch.slice().reverse():batch).forEach(w=>row.appendChild(createWorkCard(w)));}const max=Math.max(0,row.scrollWidth-row.clientWidth);const offsets=[.18,.57,.34];requestAnimationFrame(()=>{row.scrollLeft=max*offsets[rowIndex%offsets.length];});}
 function extendWorksRow(row,side){const existing=Array.from(row.querySelectorAll('.works-card')).slice(-worksData.length).map(c=>c.dataset.work);const batch=shuffledWorks(existing).slice(0,6);const ordered=Number(row.dataset.row)%2?batch.slice().reverse():batch;const before=row.scrollWidth;const cards=ordered.map(createWorkCard);if(side==='start')cards.reverse().forEach(c=>row.prepend(c));else cards.forEach(c=>row.append(c));if(side==='start')row.scrollLeft+=row.scrollWidth-before;}
 worksRows.forEach(fillWorksRow);
