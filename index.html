@@ -2330,6 +2330,58 @@ body.artist-profile-open .menu { visibility:hidden !important; opacity:0 !import
     .work-related-card { height:94px !important; }
 }
 
+
+
+/* WORK DETAIL v37 — proportional desktop sizing + smooth fullscreen zoom */
+@media (min-width:701px) {
+    .work-detail-image-wrap,
+    .work-detail-caption,
+    .work-detail-related {
+        width: min(51vw, 980px) !important;
+    }
+    .work-detail-image-wrap {
+        height: min(66.7vh, 720px) !important;
+    }
+}
+.work-detail-image-wrap {
+    transition:
+        width .48s cubic-bezier(.22,1,.36,1),
+        height .48s cubic-bezier(.22,1,.36,1),
+        top .48s cubic-bezier(.22,1,.36,1),
+        left .48s cubic-bezier(.22,1,.36,1),
+        transform .48s cubic-bezier(.22,1,.36,1),
+        background-color .35s ease;
+    will-change: width, height, transform;
+}
+.work-detail-image {
+    transition: transform .32s cubic-bezier(.22,1,.36,1) !important;
+    will-change: transform;
+}
+.work-detail.zoom-active .work-detail-image-wrap {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2600 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    background: #FAED8F !important;
+    transition:
+        width .48s cubic-bezier(.22,1,.36,1),
+        height .48s cubic-bezier(.22,1,.36,1),
+        top .48s cubic-bezier(.22,1,.36,1),
+        left .48s cubic-bezier(.22,1,.36,1);
+}
+.work-detail.zoom-active .work-detail-caption {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+.work-detail.zoom-active .work-detail-related { opacity: 0; pointer-events:none; }
+@media (max-width:700px) {
+    .work-detail-image-wrap { transition-duration:.38s; }
+    .work-detail.zoom-active .work-detail-image-wrap { width:100vw !important; height:100svh !important; }
+}
+
     </style>
 </head>
 
@@ -3984,8 +4036,6 @@ if (workZoomWrap) {
         const oldScale = workZoom.scale;
         const nextScale = Math.max(1, Math.min(24, oldScale * Math.exp(-event.deltaY * 0.0018)));
         if (Math.abs(nextScale - oldScale) < 0.0001) return;
-
-        // The transform origin is 0 0. Keep the exact point below the cursor fixed.
         const cursorX = event.clientX - box.left;
         const cursorY = event.clientY - box.top;
         const ratio = nextScale / oldScale;
