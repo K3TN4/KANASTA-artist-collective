@@ -2461,6 +2461,23 @@ body.artist-profile-open .menu { visibility:hidden !important; opacity:0 !import
 .work-detail-image-wrap { pointer-events:auto !important; cursor:zoom-in !important; }
 .work-detail-image { pointer-events:none !important; }
 
+
+
+/* WORKS/CURSOR v42 — one visible page scrollbar, reliable cards, direct cyan hit test */
+html { overflow-y: auto !important; overflow-x: hidden !important; }
+body { overflow-y: visible !important; overflow-x: hidden !important; }
+#works.page-section,
+.works-gallery,
+.works-row { overflow-x: clip !important; overflow-y: visible !important; }
+.works-row { scrollbar-width: none !important; }
+.works-row::-webkit-scrollbar { display:none !important; width:0 !important; height:0 !important; }
+.works-card { pointer-events:auto !important; cursor:pointer !important; }
+.works-card img { pointer-events:none !important; }
+.works-scroll-control { overflow:visible !important; }
+/* Do not cover clickable work cards with a decorative layer. */
+.works-gallery::before,
+.works-gallery::after { pointer-events:none !important; }
+
     </style>
 </head>
 
@@ -3922,7 +3939,7 @@ const worksData = [
 const worksRows=Array.from(document.querySelectorAll('.works-row'));
 const workKey=w=>w.file;
 function shuffledWorks(excluded=[]){const blocked=new Set(excluded),pool=worksData.filter(w=>!blocked.has(workKey(w)));for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}return pool.length?pool:[...worksData];}
-function createWorkCard(work){const card=document.createElement('figure');card.className='works-card';card.style.setProperty('--work-ratio',work.ratio);card.tabIndex=0;card.dataset.work=workKey(work);const img=document.createElement('img');img.src=work.file;img.alt=work.title;img.loading='lazy';img.draggable=false;const cap=document.createElement('figcaption');cap.textContent=work.title;card.append(img,cap);card.addEventListener('click',()=>{if(!document.body.classList.contains('works-mouse-dragging'))openWorkDetail(work,card);});return card;}
+function createWorkCard(work){const card=document.createElement('figure');card.className='works-card';card.style.setProperty('--work-ratio',work.ratio);card.tabIndex=0;card.dataset.work=workKey(work);const img=document.createElement('img');img.src=work.file;img.alt=work.title;img.loading='lazy';img.draggable=false;const cap=document.createElement('figcaption');cap.textContent=work.title;card.append(img,cap);card.addEventListener('click',(event)=>{event.stopPropagation();if(!document.body.classList.contains('works-mouse-dragging'))openWorkDetail(work,card);});card.addEventListener('pointerup',(event)=>{if(event.button===0&&!card.classList.contains('is-dragging'))card.focus();});return card;}
 function fillWorksRow(row,rowIndex){const reverse=rowIndex%2;let previous=[];for(let copy=0;copy<3;copy++){const batch=shuffledWorks(previous);previous=batch.map(workKey).slice(-5);(reverse?batch.slice().reverse():batch).forEach(w=>row.appendChild(createWorkCard(w)));}const max=Math.max(0,row.scrollWidth-row.clientWidth);const offsets=[.18,.57,.34];requestAnimationFrame(()=>{row.scrollLeft=max*offsets[rowIndex%offsets.length];});}
 function extendWorksRow(row,side){const existing=Array.from(row.querySelectorAll('.works-card')).slice(-worksData.length).map(c=>c.dataset.work);const batch=shuffledWorks(existing).slice(0,6);const ordered=Number(row.dataset.row)%2?batch.slice().reverse():batch;const before=row.scrollWidth;const cards=ordered.map(createWorkCard);if(side==='start')cards.reverse().forEach(c=>row.prepend(c));else cards.forEach(c=>row.append(c));if(side==='start')row.scrollLeft+=row.scrollWidth-before;}
 worksRows.forEach(fillWorksRow);
@@ -6408,71 +6425,24 @@ function prepareCircleTarget(
    ========================================================= */
 
 function updateCursorHitTargets() {
-
     const targets = [];
+    const activeText = typeof getActiveCursorTextTargets === 'function'
+        ? getActiveCursorTextTargets()
+        : [];
 
+    activeText.forEach(element => {
+        const target = prepareTextTarget(element);
+        if (target) targets.push(target);
+    });
 
-    /*
-     * TEKSTY
-     */
-
-    for (
-        const element
-        of CURSOR_TEXT_TARGETS
-    ) {
-
-        const target =
-            prepareTextTarget(
-                element
-            );
-
-
-        if (target) {
-
-            targets.push(
-                target
-            );
-
-        }
-
+    if (cursorView === 'page') {
+        artistCircles.forEach(circle => {
+            const target = prepareCircleTarget(circle);
+            if (target) targets.push(target);
+        });
     }
-
-
-    /*
-     * KOŁA
-     */
-
-   if (
-    cursorView === "page"
-) {
-
-    for (
-        const circle
-        of artistCircles
-    ) {
-
-        const target =
-            prepareCircleTarget(
-                circle
-            );
-
-
-        if (target) {
-
-            targets.push(
-                target
-            );
-
-        }
-
-    }
-
+    cursorHitTargets = targets;
 }
-    cursorHitTargets =
-        targets;
-
-}
-
 
 /* =========================================================
    TEXT PIXEL TEST
@@ -6485,6 +6455,9 @@ function textTargetPixelHit(
 ) {
 
     const rect = target.rect;
+    if (screenX >= rect.left && screenX <= rect.right && screenY >= rect.top && screenY <= rect.bottom) {
+        return true;
+    }
 
     if (
         screenX < rect.left ||
