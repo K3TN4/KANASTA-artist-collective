@@ -1642,6 +1642,23 @@ main h1.image-text {
 .works-row.is-pressed, .works-row.is-dragging { cursor: grabbing; }
 body.works-mouse-dragging, body.works-mouse-dragging * { cursor: grabbing !important; }
 .works-row img { pointer-events: none; -webkit-user-drag: none; }
+
+
+/* WORKS v18: native page wheel + horizontal drag with short inertia */
+.works-row { overflow: hidden !important; touch-action: pan-y !important; }
+.works-row.is-dragging { cursor: grabbing; }
+
+/* WORKS v19: let browser own vertical wheel scrolling; only mouse/touch drag moves rows */
+.works-row { overflow: hidden !important; touch-action: pan-y !important; }
+.works-card, .works-row img { pointer-events: auto; }
+
+
+/* WORKS v21: native vertical scrolling, deliberate horizontal drag only */
+html, body { overflow-y: auto !important; }
+#works.page-section { overflow-x: hidden; overflow-y: visible; }
+.works-gallery { overflow-x: hidden; overflow-y: visible; }
+.works-row { overflow: hidden !important; touch-action: pan-y !important; user-select: none; }
+.works-row img { pointer-events: none; -webkit-user-drag: none; }
     </style>
 </head>
 
@@ -3071,7 +3088,14 @@ const worksData = [
     { file: 'images/works/work06.png', title: 'Work 06' },
     { file: 'images/works/work07.png', title: 'Work 07' },
     { file: 'images/works/work08.png', title: 'Work 08' },
-    { file: 'images/works/work09.png', title: 'Work 09' }
+    { file: 'images/works/work09.png', title: 'Work 09' },
+    { file: 'images/works/work10.png', title: 'Work 10' },
+    { file: 'images/works/work11.png', title: 'Work 11' },
+    { file: 'images/works/work12.png', title: 'Work 12' },
+    { file: 'images/works/work13.png', title: 'Work 13' },
+    { file: 'images/works/work14.png', title: 'Work 14' },
+    { file: 'images/works/work15.png', title: 'Work 15' },
+    { file: 'images/works/work16.png', title: 'Work 16' }
 ];
 const worksRows=Array.from(document.querySelectorAll('.works-row'));
 const workKey=w=>w.file;
@@ -3082,139 +3106,142 @@ function extendWorksRow(row,side){const existing=Array.from(row.querySelectorAll
 worksRows.forEach(fillWorksRow);
 const worksRange = document.getElementById('worksRange');
 const worksRangeKnob = worksRange?.querySelector('.works-range-knob');
-let worksDragState = null;
-let worksRangeSyncing = false;
+let galleryDrag = null;
+let knobDrag = false;
+let inertiaFrame = 0;
+let inertiaVelocity = 0;
 
-function worksMaxScroll() {
-    return Math.max(0, ...worksRows.map(row => Math.max(0, row.scrollWidth - row.clientWidth)));
-}
-function worksSetRatio(value) {
-    const ratio = Math.max(0, Math.min(1, Number(value) || 0));
-    worksRows.forEach(row => {
-        const max = Math.max(0, row.scrollWidth - row.clientWidth);
-        row.scrollLeft = ratio * max;
-    });
+function rowMax(row) { return Math.max(0, row.scrollWidth - row.clientWidth); }
+function setGalleryRatio(raw) {
+    const ratio = Math.max(0, Math.min(1, Number(raw) || 0));
+    worksRows.forEach(row => { row.scrollLeft = ratio * rowMax(row); });
     if (worksRange) {
         worksRange.dataset.ratio = String(ratio);
         worksRange.setAttribute('aria-valuenow', String(Math.round(ratio * 1000)));
         if (worksRangeKnob) worksRangeKnob.style.left = `${ratio * 100}%`;
     }
 }
-function worksSyncRatio(row) {
-    if (!worksRange || worksRangeSyncing) return;
-    const max = Math.max(0, row.scrollWidth - row.clientWidth);
-    if (!max) return;
-    worksRangeSyncing = true;
-    const ratio = row.scrollLeft / max;
-    worksRange.dataset.ratio = String(ratio);
-    worksRange.setAttribute('aria-valuenow', String(Math.round(ratio * 1000)));
-    if (worksRangeKnob) worksRangeKnob.style.left = `${ratio * 100}%`;
-    worksRangeSyncing = false;
+function syncGalleryRatio(row) {
+    if (!worksRange) return;
+    const max = rowMax(row);
+    if (max > 0 && !knobDrag && !galleryDrag) setGalleryRatio(row.scrollLeft / max);
 }
-function worksRatioFromPointer(event) {
+function stopGalleryInertia() {
+    if (inertiaFrame) cancelAnimationFrame(inertiaFrame);
+    inertiaFrame = 0;
+    inertiaVelocity = 0;
+}
+function animateGalleryInertia(row) {
+    if (Math.abs(inertiaVelocity) < 0.08) { stopGalleryInertia(); return; }
+    row.scrollLeft -= inertiaVelocity;
+    inertiaVelocity *= 0.82;
+    inertiaFrame = requestAnimationFrame(() => animateGalleryInertia(row));
+}
+function knobRatioFromEvent(event) {
     const rect = worksRange.getBoundingClientRect();
-    return (event.clientX - rect.left) / rect.width;
+    return (event.clientX - rect.left) / Math.max(1, rect.width);
 }
 
+// The pink knob updates continuously while held.
 if (worksRange) {
     worksRange.addEventListener('pointerdown', event => {
-        event.preventDefault();
+        knobDrag = true;
+        stopGalleryInertia();
         worksRange.classList.add('is-dragging');
-        worksSetRatio(worksRatioFromPointer(event));
-        worksRange.setPointerCapture?.(event.pointerId);
-    });
-    worksRange.addEventListener('pointermove', event => {
-        if (!worksRange.classList.contains('is-dragging')) return;
+        setGalleryRatio(knobRatioFromEvent(event));
         event.preventDefault();
-        worksSetRatio(worksRatioFromPointer(event));
-    }, {passive:false});
-    const endRange = () => worksRange.classList.remove('is-dragging');
-    worksRange.addEventListener('pointerup', endRange);
-    worksRange.addEventListener('pointercancel', endRange);
-    worksRange.addEventListener('lostpointercapture', endRange);
-    worksRange.addEventListener('keydown', event => {
-        if (!['ArrowLeft','ArrowRight'].includes(event.key)) return;
-        event.preventDefault();
-        const step = event.shiftKey ? .1 : .03;
-        const current = Number(worksRange.dataset.ratio || .5);
-        worksSetRatio(current + (event.key === 'ArrowRight' ? step : -step));
     });
+    document.addEventListener('pointermove', event => {
+        if (!knobDrag) return;
+        event.preventDefault();
+        setGalleryRatio(knobRatioFromEvent(event));
+    }, { passive: false });
+    const releaseKnob = () => { knobDrag = false; worksRange.classList.remove('is-dragging'); };
+    document.addEventListener('pointerup', releaseKnob);
+    document.addEventListener('pointercancel', releaseKnob);
 }
 
 worksRows.forEach(row => {
     row.addEventListener('scroll', () => {
-        const edge = Math.max(260, row.clientWidth * .7);
+        const edge = Math.max(260, row.clientWidth * 0.7);
         if (row.scrollLeft < edge) extendWorksRow(row, 'start');
         if (row.scrollWidth - row.clientWidth - row.scrollLeft < edge) extendWorksRow(row, 'end');
-        worksSyncRatio(row);
+        syncGalleryRatio(row);
     }, { passive: true });
 
-    // Mouse drag: explicit left-button capture, independent of browser scrolling.
-    let mouseDrag = null;
+    // Mouse drag: no preventDefault until horizontal intent is proven.
     row.addEventListener('mousedown', event => {
         if (event.button !== 0 || event.target.closest('.works-scroll-control')) return;
-        mouseDrag = { startX: event.clientX, startScroll: row.scrollLeft, dragging: false };
+        stopGalleryInertia();
+        galleryDrag = { row, startX: event.clientX, startY: event.clientY,
+            startScroll: row.scrollLeft, axis: null, lastX: event.clientX, lastTime: performance.now() };
         row.classList.add('is-pressed');
     });
-    document.addEventListener('mousemove', event => {
-        if (!mouseDrag) return;
-        const dx = event.clientX - mouseDrag.startX;
-        if (!mouseDrag.dragging && Math.abs(dx) > 5) {
-            mouseDrag.dragging = true;
-            row.classList.remove('is-pressed');
-            row.classList.add('is-dragging');
-            document.body.classList.add('works-mouse-dragging');
-        }
-        if (mouseDrag.dragging) {
-            event.preventDefault();
-            row.scrollLeft = mouseDrag.startScroll - dx;
-        }
-    });
-    const endMouseDrag = () => {
-        if (!mouseDrag) return;
-        row.classList.remove('is-pressed', 'is-dragging');
-        document.body.classList.remove('works-mouse-dragging');
-        mouseDrag = null;
-    };
-    document.addEventListener('mouseup', endMouseDrag);
-    row.addEventListener('mouseleave', () => { /* document keeps the drag alive */ });
 
-    // Touch drag: only a predominantly horizontal gesture becomes gallery drag.
-    let touchDrag = null;
+    // Touch drag: vertical swipe is returned to native page scrolling.
     row.addEventListener('touchstart', event => {
         if (event.touches.length !== 1) return;
+        stopGalleryInertia();
         const t = event.touches[0];
-        touchDrag = { startX:t.clientX, startY:t.clientY, startScroll:row.scrollLeft, axis:null };
-    }, { passive:true });
-    row.addEventListener('touchmove', event => {
-        if (!touchDrag || event.touches.length !== 1) return;
-        const t = event.touches[0];
-        const dx = t.clientX - touchDrag.startX;
-        const dy = t.clientY - touchDrag.startY;
-        if (!touchDrag.axis && Math.hypot(dx,dy) > 8) {
-            touchDrag.axis = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
-        }
-        if (touchDrag.axis === 'horizontal') {
-            event.preventDefault();
-            row.scrollLeft = touchDrag.startScroll - dx;
-        } else if (touchDrag.axis === 'vertical') {
-            touchDrag = null;
-        }
-    }, { passive:false });
-    const endTouchDrag = () => { touchDrag = null; };
-    row.addEventListener('touchend', endTouchDrag, { passive:true });
-    row.addEventListener('touchcancel', endTouchDrag, { passive:true });
-
-    row.addEventListener('click', event => {
-        if (document.body.classList.contains('works-mouse-dragging')) {
-            event.preventDefault(); event.stopPropagation();
-        }
-    }, true);
+        galleryDrag = { row, startX: t.clientX, startY: t.clientY,
+            startScroll: row.scrollLeft, axis: null, lastX: t.clientX, lastTime: performance.now() };
+    }, { passive: true });
 });
 
-window.addEventListener('resize', () => worksRows.forEach(row => worksSyncRatio(row)));
-window.addEventListener('load', () => setTimeout(() => worksRows.forEach(row => worksSyncRatio(row)), 250));
-setTimeout(() => worksRows.forEach(row => worksSyncRatio(row)), 500);
+document.addEventListener('mousemove', event => {
+    const drag = galleryDrag;
+    if (!drag) return;
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+    if (!drag.axis && Math.hypot(dx, dy) >= 8) {
+        drag.axis = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
+        if (drag.axis === 'vertical') {
+            drag.row.classList.remove('is-pressed');
+            galleryDrag = null;
+            return;
+        }
+        drag.row.classList.remove('is-pressed');
+        drag.row.classList.add('is-dragging');
+    }
+    if (drag.axis !== 'horizontal') return;
+    event.preventDefault();
+    const now = performance.now();
+    const dt = Math.max(1, now - drag.lastTime);
+    inertiaVelocity = (event.clientX - drag.lastX) / dt * 12;
+    drag.row.scrollLeft = drag.startScroll - dx;
+    drag.lastX = event.clientX;
+    drag.lastTime = now;
+}, { passive: false });
+
+document.addEventListener('touchmove', event => {
+    const drag = galleryDrag;
+    if (!drag || event.touches.length !== 1) return;
+    const t = event.touches[0];
+    const dx = t.clientX - drag.startX;
+    const dy = t.clientY - drag.startY;
+    if (!drag.axis && Math.hypot(dx, dy) >= 8) {
+        drag.axis = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
+        if (drag.axis === 'vertical') { galleryDrag = null; return; }
+        drag.row.classList.add('is-dragging');
+    }
+    if (drag.axis === 'horizontal') {
+        event.preventDefault();
+        drag.row.scrollLeft = drag.startScroll - dx;
+    }
+}, { passive: false });
+
+function releaseGallery() {
+    const drag = galleryDrag;
+    if (!drag) return;
+    drag.row.classList.remove('is-pressed', 'is-dragging');
+    if (drag.axis === 'horizontal') inertiaFrame = requestAnimationFrame(() => animateGalleryInertia(drag.row));
+    galleryDrag = null;
+}
+document.addEventListener('mouseup', releaseGallery);
+document.addEventListener('touchend', releaseGallery, { passive: true });
+document.addEventListener('touchcancel', releaseGallery, { passive: true });
+window.addEventListener('resize', () => worksRows.forEach(syncGalleryRatio));
+setTimeout(() => worksRows.forEach(syncGalleryRatio), 500);
 
 /* Inline previews: hover on desktop, focus/tap friendly on touch screens. */
 const artistRows = Array.from(document.querySelectorAll('.artist-row'));
