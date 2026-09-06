@@ -2192,6 +2192,74 @@ body.artist-profile-open .menu { visibility:hidden !important; opacity:0 !import
     .work-related-card { height: 94px !important; }
 }
 
+
+
+/* WORK DETAIL v34 — larger artwork block, approved top margin, aligned label rail */
+.work-detail-inner {
+    padding-top: clamp(70px, 8vh, 96px) !important;
+    padding-bottom: 190px !important;
+}
+.work-detail-image-wrap {
+    width: min(94vw, 1380px) !important;
+    height: min(82vh, 900px) !important;
+    margin: 0 auto !important;
+    background: transparent !important;
+}
+.work-detail-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    background: transparent !important;
+}
+.work-detail-caption {
+    width: min(94vw, 1380px) !important;
+    margin: 0 auto !important;
+    padding: 8px 0 0 !important;
+    border-top: 1px solid #ed3d66 !important;
+}
+.work-detail-caption h2 {
+    margin: 0 !important;
+    font-size: clamp(44px, 6.4vw, 104px) !important;
+    line-height: .86 !important;
+}
+.work-detail-caption p { margin-top: 8px !important; }
+.work-detail-related {
+    width: min(94vw, 1380px) !important;
+    margin: clamp(160px, 24vh, 290px) auto 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    background: transparent !important;
+    scrollbar-width: none;
+}
+.work-detail-related::-webkit-scrollbar { display:none; }
+.work-related-card {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    height: 132px !important;
+    object-fit: contain !important;
+    background: transparent !important;
+}
+.work-detail.zoom-active .work-detail-image-wrap {
+    position: relative !important;
+    inset: auto !important;
+    width: min(94vw, 1380px) !important;
+    height: min(82vh, 900px) !important;
+    background: transparent !important;
+}
+@media (max-width:700px) {
+    .work-detail-inner { padding: 72px 20px 140px !important; }
+    .work-detail-image-wrap,
+    .work-detail-caption,
+    .work-detail-related { width: 100% !important; }
+    .work-detail-image-wrap { height: 67svh !important; }
+    .work-detail-related { margin-top: 140px !important; }
+    .work-related-card { height: 96px !important; }
+}
+
     </style>
 </head>
 
