@@ -2523,6 +2523,21 @@ body { overflow:visible !important; }
 /* Keep the cursor round; text shape comes from the pixel mask, never from a box. */
 .custom-cursor { border-radius:50% !important; overflow:hidden !important; }
 
+
+
+/* v46 — isolated WORKS viewer and restored pixel-shaped cursor */
+html, body { overflow-x:hidden !important; }
+body.work-detail-open { overflow:hidden !important; }
+.work-detail { position:fixed !important; inset:0 !important; overflow-y:auto !important; overflow-x:hidden !important; }
+.work-detail:not(.active) { pointer-events:none !important; }
+.work-detail.active { pointer-events:auto !important; }
+#works.page-section { overflow:visible !important; }
+.works-gallery { overflow:visible !important; }
+.works-row { overflow:visible !important; }
+.works-scroll-control { overflow:visible !important; }
+/* Remove the hard rectangle shortcut; the canvas/mask decides the letter pixels. */
+.custom-cursor.cursor-is-cyan { background:#ed3d66 !important; }
+
     </style>
 </head>
 
@@ -3984,7 +3999,7 @@ const worksData = [
 const worksRows=Array.from(document.querySelectorAll('.works-row'));
 const workKey=w=>w.file;
 function shuffledWorks(excluded=[]){const blocked=new Set(excluded),pool=worksData.filter(w=>!blocked.has(workKey(w)));for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}return pool.length?pool:[...worksData];}
-function createWorkCard(work){const card=document.createElement('figure');card.className='works-card';card.style.setProperty('--work-ratio',work.ratio);card.tabIndex=0;card.dataset.work=workKey(work);const img=document.createElement('img');img.src=work.file;img.alt=work.title;img.loading='lazy';img.draggable=false;const cap=document.createElement('figcaption');cap.textContent=work.title;card.append(img,cap);card.addEventListener('click',(event)=>{event.stopPropagation();if(!document.body.classList.contains('works-mouse-dragging'))openWorkDetail(work,card);});card.addEventListener('pointerup',(event)=>{if(event.button===0&&!card.classList.contains('is-dragging'))card.focus();});return card;}
+function createWorkCard(work){const card=document.createElement('figure');card.className='works-card';card.style.setProperty('--work-ratio',work.ratio);card.tabIndex=0;card.dataset.work=workKey(work);const img=document.createElement('img');img.src=work.file;img.alt=work.title;img.loading='lazy';img.draggable=false;const cap=document.createElement('figcaption');cap.textContent=work.title;card.append(img,cap);card.dataset.workTitle=work.title;card.addEventListener('click',(event)=>{event.preventDefault();event.stopImmediatePropagation();openWorkDetail(work,card);});card.addEventListener('pointerup',(event)=>{if(event.button===0&&!card.classList.contains('is-dragging'))card.focus();});return card;}
 function fillWorksRow(row,rowIndex){const reverse=rowIndex%2;let previous=[];for(let copy=0;copy<3;copy++){const batch=shuffledWorks(previous);previous=batch.map(workKey).slice(-5);(reverse?batch.slice().reverse():batch).forEach(w=>row.appendChild(createWorkCard(w)));}const max=Math.max(0,row.scrollWidth-row.clientWidth);const offsets=[.18,.57,.34];requestAnimationFrame(()=>{row.scrollLeft=max*offsets[rowIndex%offsets.length];});}
 function extendWorksRow(row,side){const existing=Array.from(row.querySelectorAll('.works-card')).slice(-worksData.length).map(c=>c.dataset.work);const batch=shuffledWorks(existing).slice(0,6);const ordered=Number(row.dataset.row)%2?batch.slice().reverse():batch;const before=row.scrollWidth;const cards=ordered.map(createWorkCard);if(side==='start')cards.reverse().forEach(c=>row.prepend(c));else cards.forEach(c=>row.append(c));if(side==='start')row.scrollLeft+=row.scrollWidth-before;}
 worksRows.forEach(fillWorksRow);
@@ -4162,7 +4177,7 @@ function openWorkDetail(work, card) {
     const idx=Math.max(0,worksData.indexOf(work)); number.textContent=`${String(idx+1).padStart(2,'0')} / ${worksData.length}`;
     related.innerHTML='';
     worksData.filter((_,i)=>i!==idx).slice(0,6).forEach(item=>{ const r=document.createElement('img'); r.src=item.file; r.alt=item.title; r.className='work-related-card'; r.addEventListener('click',()=>openWorkDetail(item)); related.appendChild(r); });
-    modal.classList.add('active'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('work-detail-open'); document.body.style.overflow='hidden';
+    modal.classList.add('active'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('work-detail-open'); document.body.style.overflow='hidden'; modal.style.pointerEvents='auto'; modal.style.zIndex='5000';
     resetWorkZoom();
 }
 
@@ -4270,6 +4285,22 @@ document.addEventListener('click', function(event) {
     document.body.dataset.workOpening='1';
     openWorkDetail(work, card);
     setTimeout(()=>delete document.body.dataset.workOpening, 0);
+}, true);
+
+
+
+/* v46 reliable work activation: capture on document, no overlay can block it. */
+document.addEventListener('click', (event) => {
+    const card = event.target.closest && event.target.closest('.works-card');
+    if (!card || document.body.dataset.workOpening === '1') return;
+    const work = worksData.find(item => item.file === card.dataset.work);
+    if (!work) return;
+    document.body.dataset.workOpening = '1';
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    history.pushState({work:work.file}, '', '/KANASTA-artist-collective/works');
+    openWorkDetail(work, card);
+    requestAnimationFrame(() => { delete document.body.dataset.workOpening; });
 }, true);
 
 /* Inline previews: hover on desktop, focus/tap friendly on touch screens. */
@@ -6712,7 +6743,6 @@ function cursorOverActiveText() {
 }
 
 function drawCursor() {
-    customCursor.classList.toggle('cursor-is-cyan', cursorOverActiveText());
 
     /*
      * Najważniejsza optymalizacja:
