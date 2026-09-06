@@ -1753,6 +1753,7 @@ html, body { overflow-y: auto !important; }
 }
 .work-detail-caption h2 { margin-top:6px; font-size:clamp(28px,4vw,64px); }
 .work-detail-caption p { margin-top:8px; }
+.work-detail-meta { margin-top:12px; font:10px/1.5 Arial,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:#777; }
 .work-detail-related {
     position:relative;
     z-index:4;
@@ -1765,6 +1766,60 @@ html, body { overflow-y: auto !important; }
 @media (max-width:700px) {
     .work-detail-caption { left:20px; bottom:20px; right:20px; }
     .work-detail-related { padding-left:20px; padding-right:20px; }
+}
+
+
+
+/* WORK DETAIL v26 — normal gallery composition + fullscreen only while zoomed */
+.work-detail { background:#FAED8F; overflow-y:auto; }
+.work-detail-inner { min-height:auto; padding:100px 0 90px; position:relative; }
+.work-detail-image-wrap {
+    position:relative;
+    inset:auto;
+    z-index:0;
+    width:min(82vw, 1040px);
+    height:min(66vh, 680px);
+    margin:0 auto;
+    background:transparent;
+    overflow:hidden;
+}
+.work-detail-image { width:100%; height:100%; object-fit:contain; background:transparent; }
+.work-detail-caption {
+    position:relative;
+    left:auto;
+    bottom:auto;
+    z-index:3;
+    width:min(82vw,1040px);
+    margin:0 auto;
+    padding:14px 0 0;
+    background:transparent;
+    backdrop-filter:none;
+    border-top:1px solid #ed3d66;
+}
+.work-detail-caption h2 { margin-top:6px; font-size:clamp(34px,5vw,72px); }
+.work-detail-caption p { margin-top:8px; }
+.work-detail-meta { margin-top:12px; font:10px/1.5 Arial,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:#777; }
+.work-detail-related {
+    position:relative;
+    z-index:4;
+    width:min(82vw,1040px);
+    margin:clamp(70px,10vh,120px) auto 0;
+    padding:0;
+    background:transparent;
+}
+.work-detail-related::before { content:'MORE WORKS'; display:block; margin-bottom:16px; color:#ed3d66; font:11px Cairo,sans-serif; letter-spacing:.16em; }
+.work-related-card { flex:0 0 150px; height:120px; }
+/* At zoom > 1 the artwork becomes the full-screen viewer. */
+.work-detail.zoom-active .work-detail-inner { padding:0; min-height:100vh; }
+.work-detail.zoom-active .work-detail-image-wrap { position:fixed; inset:0; z-index:2; width:100vw; height:100vh; background:#FAED8F; }
+.work-detail.zoom-active .work-detail-caption { position:fixed; left:32px; bottom:28px; width:auto; padding:12px 16px; background:rgba(250,237,143,.88); backdrop-filter:blur(6px); border-top:0; }
+.work-detail.zoom-active .work-detail-related { margin-top:100vh; }
+@media (max-width:700px) {
+ .work-detail-inner { padding:82px 20px 70px; }
+ .work-detail-image-wrap,.work-detail-caption,.work-detail-related { width:100%; }
+ .work-detail-image-wrap { height:58vh; }
+ .work-detail-caption { padding-top:12px; }
+ .work-detail.zoom-active .work-detail-caption { left:20px; right:20px; bottom:20px; }
 }
 
     </style>
@@ -2162,6 +2217,7 @@ html, body { overflow-y: auto !important; }
                 <span id="workDetailNumber">01 / 16</span>
                 <h2 id="workDetailTitle">Work 01</h2>
                 <p id="workDetailArtist">KANASTA · ARTIST COLLECTIVE</p>
+                <div class="work-detail-meta" id="workDetailMeta">TECHNIQUE · YEAR · DIMENSIONS</div>
             </div>
             <div class="work-detail-related" id="workDetailRelated"></div>
         </div>
@@ -3384,6 +3440,7 @@ function renderWorkZoom() {
     wrap.style.setProperty('--zoom-x', `${workZoom.x}px`);
     wrap.style.setProperty('--zoom-y', `${workZoom.y}px`);
     wrap.classList.toggle('is-zoomed', workZoom.scale > 1.01);
+    document.getElementById('workDetail')?.classList.toggle('zoom-active', workZoom.scale > 1.01);
 }
 function resetWorkZoom() {
     workZoom = { scale: 1, x: 0, y: 0, dragging: false, moved: false, startX: 0, startY: 0, originX: 0, originY: 0 };
