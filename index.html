@@ -2494,6 +2494,35 @@ body { overflow: visible !important; }
 body.work-detail-open .custom-cursor,
 body.artist-profile-open .custom-cursor { z-index:4000 !important; }
 
+
+
+/* v44 FINAL: isolate scroll containers and make cyan cursor deterministic */
+html { overflow-y:auto !important; overflow-x:hidden !important; }
+body { overflow-x:hidden !important; overflow-y:visible !important; }
+.works-gallery { overflow:visible !important; }
+.works-row { overflow:hidden !important; overflow-y:visible !important; min-width:0 !important; width:100% !important; }
+.works-scroll-control { overflow:visible !important; }
+.work-detail { scrollbar-width:none !important; }
+.work-detail::-webkit-scrollbar { display:none !important; width:0 !important; }
+body.work-detail-open { overflow:hidden !important; }
+body.work-detail-open .work-detail.active { overflow-y:auto !important; }
+.works-card { pointer-events:auto !important; z-index:50 !important; }
+.works-card img { pointer-events:none !important; }
+/* Cyan is a circle-state, not a rectangular overlay. */
+.custom-cursor.cursor-is-cyan { background:#59e0b3 !important; }
+
+
+
+/* v45 final corrections */
+/* Only the document owns the visible vertical scrollbar. */
+html { overflow-y:scroll !important; overflow-x:hidden !important; }
+body { overflow:visible !important; }
+.works-row, .works-gallery { overflow:visible !important; }
+.work-detail { scrollbar-width:none !important; }
+.work-detail::-webkit-scrollbar { display:none !important; width:0 !important; height:0 !important; }
+/* Keep the cursor round; text shape comes from the pixel mask, never from a box. */
+.custom-cursor { border-radius:50% !important; overflow:hidden !important; }
+
     </style>
 </head>
 
@@ -4214,7 +4243,7 @@ if (workZoomWrap) {
 /* v43 interaction fallback: direct delegation + /works route */
 document.addEventListener('click', event => {
     const card = event.target.closest?.('.works-card');
-    if (!card || document.body.classList.contains('works-mouse-dragging')) return;
+    if (!card) return;
     const work = worksData.find(item => item.file === card.dataset.work);
     if (work) {
         event.preventDefault();
@@ -4226,6 +4255,22 @@ document.addEventListener('click', event => {
 window.addEventListener('popstate', () => {
     if (!location.pathname.endsWith('/works')) closeWorkDetail();
 });
+
+
+
+/* v44 click fallback: works even when a gallery child captures the first click. */
+document.addEventListener('click', function(event) {
+    const card=event.target.closest && event.target.closest('.works-card');
+    if (!card) return;
+    const work=worksData.find(item=>item.file===card.dataset.work);
+    if (!work) return;
+    event.preventDefault();
+    history.pushState({work:work.file}, '', '/KANASTA-artist-collective/works');
+    if (document.body.dataset.workOpening==='1') return;
+    document.body.dataset.workOpening='1';
+    openWorkDetail(work, card);
+    setTimeout(()=>delete document.body.dataset.workOpening, 0);
+}, true);
 
 /* Inline previews: hover on desktop, focus/tap friendly on touch screens. */
 const artistRows = Array.from(document.querySelectorAll('.artist-row'));
@@ -6491,9 +6536,6 @@ function textTargetPixelHit(
 ) {
 
     const rect = target.rect;
-    if (screenX >= rect.left && screenX <= rect.right && screenY >= rect.top && screenY <= rect.bottom) {
-        return true;
-    }
 
     if (
         screenX < rect.left ||
@@ -6654,7 +6696,23 @@ function isCyanPixel(
    DRAW CURSOR
    ========================================================= */
 
+function cursorOverActiveText() {
+    const selectors = [
+        '#homeLogo', '#menuButton', '.menu-close', '.menu-item',
+        '.section-header h2', '.section-placeholder', '.profile-close',
+        '.profile-content h2', '.profile-role', '.profile-description > p',
+        '.work-detail-close', '.work-detail-caption h2',
+        '.work-detail-caption p', '.work-detail-meta'
+    ];
+    const x=mouseX, y=mouseY;
+    return selectors.some(selector => Array.from(document.querySelectorAll(selector)).some(el => {
+        const style=getComputedStyle(el), r=el.getBoundingClientRect();
+        return style.display!=='none' && style.visibility!=='hidden' && Number(style.opacity)!==0 && x>=r.left && x<=r.right && y>=r.top && y<=r.bottom;
+    }));
+}
+
 function drawCursor() {
+    customCursor.classList.toggle('cursor-is-cyan', cursorOverActiveText());
 
     /*
      * Najważniejsza optymalizacja:
