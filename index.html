@@ -2478,6 +2478,22 @@ body { overflow-y: visible !important; overflow-x: hidden !important; }
 .works-gallery::before,
 .works-gallery::after { pointer-events:none !important; }
 
+
+
+/* v43 FINAL OVERRIDES: one page scroll, one WORKS knob, dependable viewer and cyan cursor */
+html { overflow-y: auto !important; overflow-x: hidden !important; }
+body { overflow: visible !important; }
+#works.page-section, .works-gallery, .works-row { overflow: visible !important; }
+.works-row { position: relative; display:flex; min-width:0 !important; width:100% !important; }
+.works-scroll-control { display:block !important; width:100% !important; height:36px !important; overflow:visible !important; }
+.works-range { display:block !important; width:100% !important; height:36px !important; position:relative; }
+.works-range::before { content:none !important; }
+.works-range-knob { display:block !important; }
+/* Turquoise is driven by the element box, not fragile canvas text masks. */
+.cursor-text-clone { -webkit-text-fill-color:#59e0b3 !important; color:#59e0b3 !important; }
+body.work-detail-open .custom-cursor,
+body.artist-profile-open .custom-cursor { z-index:4000 !important; }
+
     </style>
 </head>
 
@@ -4159,6 +4175,8 @@ if (workZoomWrap) {
             detail.classList.add('zoom-active');
             document.body.style.overflow = 'hidden';
             activateProfileCursorView();
+            createCursorTextClones();
+            updateCursorHitTargets();
             renderWorkZoom();
         }
     });
@@ -4190,6 +4208,24 @@ if (workZoomWrap) {
     workZoomWrap.addEventListener('lostpointercapture', endPan);
 }
 
+
+
+
+/* v43 interaction fallback: direct delegation + /works route */
+document.addEventListener('click', event => {
+    const card = event.target.closest?.('.works-card');
+    if (!card || document.body.classList.contains('works-mouse-dragging')) return;
+    const work = worksData.find(item => item.file === card.dataset.work);
+    if (work) {
+        event.preventDefault();
+        event.stopPropagation();
+        history.pushState({ work: work.file }, '', '/KANASTA-artist-collective/works');
+        openWorkDetail(work, card);
+    }
+}, true);
+window.addEventListener('popstate', () => {
+    if (!location.pathname.endsWith('/works')) closeWorkDetail();
+});
 
 /* Inline previews: hover on desktop, focus/tap friendly on touch screens. */
 const artistRows = Array.from(document.querySelectorAll('.artist-row'));
