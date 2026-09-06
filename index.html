@@ -1719,6 +1719,54 @@ html, body { overflow-y: auto !important; }
     .work-detail-image-wrap.is-zoomed { cursor: grab; }
 }
 
+
+
+/* WORK DETAIL v25 — fullscreen artwork viewer, no black letterbox */
+.work-detail { background: #FAED8F; }
+.work-detail-inner { min-height:100vh; padding:0; position:relative; }
+.work-detail-image-wrap {
+    position:fixed;
+    inset:0;
+    z-index:0;
+    width:100vw;
+    height:100vh;
+    margin:0;
+    background:#FAED8F;
+    overflow:hidden;
+}
+.work-detail-image {
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    background:transparent;
+}
+.work-detail-caption {
+    position:fixed;
+    z-index:3;
+    left:32px;
+    bottom:28px;
+    width:auto;
+    margin:0;
+    padding:12px 16px;
+    background:rgba(250,237,143,.88);
+    backdrop-filter:blur(6px);
+}
+.work-detail-caption h2 { margin-top:6px; font-size:clamp(28px,4vw,64px); }
+.work-detail-caption p { margin-top:8px; }
+.work-detail-related {
+    position:relative;
+    z-index:4;
+    margin:100vh 0 0;
+    padding:28px 32px 40px;
+    width:100%;
+    background:#FAED8F;
+}
+.work-zoom-hint { opacity:.72; }
+@media (max-width:700px) {
+    .work-detail-caption { left:20px; bottom:20px; right:20px; }
+    .work-detail-related { padding-left:20px; padding-right:20px; }
+}
+
     </style>
 </head>
 
@@ -3328,7 +3376,7 @@ setTimeout(() => { activeRow = worksRows[0]; syncKnob(activeRow); }, 500);
 
 
 /* Work detail cards: click opens a Google Arts & Culture-inspired view. */
-let workZoom = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, originX: 0, originY: 0 };
+let workZoom = { scale: 1, x: 0, y: 0, dragging: false, moved: false, startX: 0, startY: 0, originX: 0, originY: 0 };
 function renderWorkZoom() {
     const wrap = document.getElementById('workDetailImageWrap');
     if (!wrap) return;
@@ -3338,7 +3386,7 @@ function renderWorkZoom() {
     wrap.classList.toggle('is-zoomed', workZoom.scale > 1.01);
 }
 function resetWorkZoom() {
-    workZoom = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, originX: 0, originY: 0 };
+    workZoom = { scale: 1, x: 0, y: 0, dragging: false, moved: false, startX: 0, startY: 0, originX: 0, originY: 0 };
     renderWorkZoom();
 }
 function openWorkDetail(work, card) {
@@ -3371,7 +3419,10 @@ if (workZoomWrap) {
     }, { passive: false });
 
     workZoomWrap.addEventListener('click', event => {
-        if (workZoom.dragging) return;
+        if (workZoom.dragging || workZoom.moved) {
+            workZoom.moved = false;
+            return;
+        }
         if (workZoom.scale <= 1.01) workZoom.scale = 3;
         else resetWorkZoom();
         renderWorkZoom();
@@ -3380,6 +3431,7 @@ if (workZoomWrap) {
     workZoomWrap.addEventListener('pointerdown', event => {
         if (workZoom.scale <= 1.01 || event.button === 2) return;
         workZoom.dragging = true;
+        workZoom.moved = false;
         workZoom.startX = event.clientX;
         workZoom.startY = event.clientY;
         workZoom.originX = workZoom.x;
@@ -3390,8 +3442,11 @@ if (workZoomWrap) {
     });
     workZoomWrap.addEventListener('pointermove', event => {
         if (!workZoom.dragging) return;
-        workZoom.x = workZoom.originX + event.clientX - workZoom.startX;
-        workZoom.y = workZoom.originY + event.clientY - workZoom.startY;
+        const moveX = event.clientX - workZoom.startX;
+        const moveY = event.clientY - workZoom.startY;
+        if (Math.hypot(moveX, moveY) > 3) workZoom.moved = true;
+        workZoom.x = workZoom.originX + moveX;
+        workZoom.y = workZoom.originY + moveY;
         renderWorkZoom();
         event.preventDefault();
     }, { passive: false });
