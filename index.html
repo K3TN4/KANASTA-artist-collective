@@ -1951,6 +1951,39 @@ html, body { overflow-y: auto !important; }
     .work-related-card { height: 88px; }
 }
 
+
+
+/* WORK DETAIL v29 — larger first view, details and related works below fold */
+body.work-detail-open .menu,
+body.artist-profile-open .menu { visibility:hidden !important; pointer-events:none; }
+.work-detail-inner { padding-top: clamp(70px, 8vh, 100px); padding-bottom: 130px; }
+.work-detail-image-wrap {
+    width: min(82vw, 1080px);
+    height: min(76vh, 760px);
+}
+.work-detail-caption {
+    width: min(82vw, 1080px);
+    padding-top: 8px;
+}
+.work-detail-caption h2 { font-size: clamp(38px, 5.8vw, 88px); }
+.work-detail-related {
+    width: min(82vw, 1080px);
+    margin-top: clamp(120px, 18vh, 210px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    cursor: grab;
+    touch-action: pan-x;
+}
+.work-detail-related:active { cursor: grabbing; }
+.work-related-card { height: 128px; background: transparent; }
+@media (max-width:700px) {
+    .work-detail-inner { padding: 72px 20px 110px; }
+    .work-detail-image-wrap,.work-detail-caption,.work-detail-related { width:100%; }
+    .work-detail-image-wrap { height: 62svh; }
+    .work-detail-related { margin-top: 120px; }
+    .work-related-card { height: 96px; }
+}
+
     </style>
 </head>
 
@@ -3339,6 +3372,8 @@ function openArtist(artist) {
     .getElementById("artistProfile")
     .classList.add("active");
 
+document.body.classList.add("artist-profile-open");
+
 activateProfileCursorView();
 
 }
@@ -3351,6 +3386,8 @@ function closeArtist() {
     document
         .getElementById("artistProfile")
         .classList.remove("active");
+
+    document.body.classList.remove("artist-profile-open");
 
     activatePageCursorView();
 
@@ -3586,11 +3623,11 @@ function openWorkDetail(work, card) {
     const idx=Math.max(0,worksData.indexOf(work)); number.textContent=`${String(idx+1).padStart(2,'0')} / ${worksData.length}`;
     related.innerHTML='';
     worksData.filter((_,i)=>i!==idx).slice(0,6).forEach(item=>{ const r=document.createElement('img'); r.src=item.file; r.alt=item.title; r.className='work-related-card'; r.addEventListener('click',()=>openWorkDetail(item)); related.appendChild(r); });
-    modal.classList.add('active'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+    modal.classList.add('active'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('work-detail-open'); document.body.style.overflow='hidden';
     resetWorkZoom();
 }
 
-function closeWorkDetail(){ const modal=document.getElementById('workDetail'); if(!modal)return; modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; resetWorkZoom(); }
+function closeWorkDetail(){ const modal=document.getElementById('workDetail'); if(!modal)return; modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); document.body.classList.remove('work-detail-open'); document.body.style.overflow=''; resetWorkZoom(); }
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeWorkDetail();});
 
 const workZoomWrap = document.getElementById('workDetailImageWrap');
