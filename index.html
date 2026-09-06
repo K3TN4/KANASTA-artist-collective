@@ -2423,6 +2423,26 @@ body.artist-profile-open .menu { visibility:hidden !important; opacity:0 !import
 }
 .work-detail.zoom-active .work-detail-image-wrap.is-panning { cursor: grabbing !important; }
 
+
+
+/* WORK DETAIL v40 — preserve 1920 layout, enlarge only medium desktop */
+@media (min-width:1600px) {
+    .work-detail-image-wrap,
+    .work-detail-caption,
+    .work-detail-related { width:min(70vw,980px) !important; }
+    .work-detail-image-wrap { height:min(70vh,720px) !important; }
+}
+@media (min-width:701px) and (max-width:1599px) {
+    .work-detail-image-wrap,
+    .work-detail-caption,
+    .work-detail-related { width:min(82vw,1120px) !important; }
+    .work-detail-image-wrap { height:min(calc(100svh - 190px),820px) !important; }
+}
+.work-detail-image-wrap { pointer-events:auto !important; cursor:zoom-in !important; }
+.work-detail-image { pointer-events:none !important; }
+.work-detail.zoom-active .work-detail-image-wrap { cursor:grab !important; }
+.work-detail.zoom-active .work-detail-image-wrap.is-panning { cursor:grabbing !important; }
+
     </style>
 </head>
 
@@ -4066,7 +4086,7 @@ function openWorkDetail(work, card) {
     resetWorkZoom();
 }
 
-function closeWorkDetail(){ const modal=document.getElementById('workDetail'); if(!modal)return; modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); document.body.classList.remove('work-detail-open'); document.body.style.overflow=''; resetWorkZoom(); }
+function closeWorkDetail(){ const modal=document.getElementById('workDetail'); if(!modal)return; modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); document.body.classList.remove('work-detail-open'); document.body.style.overflow=''; resetWorkZoom(); activatePageCursorView(); }
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeWorkDetail();});
 
 const workZoomWrap = document.getElementById('workDetailImageWrap');
@@ -4094,18 +4114,16 @@ if (workZoomWrap) {
     }, { passive: false });
 
     workZoomWrap.addEventListener('click', event => {
-        if (workZoom.moved) {
-            workZoom.moved = false;
-            return;
-        }
+        if (workZoom.moved) { workZoom.moved = false; return; }
         const detail = document.getElementById('workDetail');
+        if (!detail) return;
         if (!detail.classList.contains('zoom-active')) {
-            // Enter the dedicated viewer only after an explicit click.
             workZoom.scale = 1;
             workZoom.x = 0;
             workZoom.y = 0;
             detail.classList.add('zoom-active');
             document.body.style.overflow = 'hidden';
+            activateProfileCursorView();
             renderWorkZoom();
         }
     });
@@ -4430,7 +4448,11 @@ let h1Mask =
             document.querySelector('.profile-close'),
             document.querySelector('.profile-content h2'),
             document.querySelector('.profile-role'),
-            document.querySelector('.profile-description > p:not(.profile-role)')
+            document.querySelector('.profile-description > p:not(.profile-role)'),
+            document.querySelector('.work-detail-close'),
+            document.querySelector('.work-detail-caption h2'),
+            document.querySelector('.work-detail-caption p'),
+            document.querySelector('.work-detail-meta')
         ].filter(Boolean);
     }
 
