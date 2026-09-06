@@ -2111,6 +2111,87 @@ body.artist-profile-open .menu { visibility:hidden !important; opacity:0 !import
     .work-detail-related { margin-top:130px !important; }
 }
 
+
+
+/* WORK DETAIL v33 — Work 08 reference composition */
+.work-detail-inner {
+    padding-top: clamp(70px, 8vh, 96px) !important; /* preserve the approved top margin */
+    padding-bottom: 180px !important;
+}
+.work-detail-image-wrap {
+    width: min(88vw, 1220px) !important;
+    height: min(76vh, 790px) !important;
+    margin: 0 auto !important;
+    background: transparent !important;
+    overflow: hidden !important;
+}
+.work-detail-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    background: transparent !important;
+}
+/* The separator begins exactly where the artwork begins and ends where it ends. */
+.work-detail-caption {
+    width: min(88vw, 1220px) !important;
+    margin: 0 auto !important;
+    padding: 8px 0 0 !important;
+    border-top: 1px solid #ed3d66 !important;
+    background: transparent !important;
+}
+.work-detail-caption h2 {
+    margin: 0 !important;
+    font-size: clamp(42px, 6vw, 96px) !important;
+    line-height: .88 !important;
+}
+.work-detail-caption p { margin-top: 8px !important; }
+.work-detail-meta { margin-top: 10px !important; }
+.work-detail-related {
+    width: min(88vw, 1220px) !important;
+    margin: clamp(150px, 22vh, 260px) auto 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    background: transparent !important;
+    scrollbar-width: none;
+}
+.work-detail-related::-webkit-scrollbar { display:none; }
+.work-detail-related::before {
+    flex: 0 0 auto;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    margin-right: 12px;
+    color: #ed3d66;
+    font: 10px Cairo, sans-serif;
+    letter-spacing: .14em;
+}
+.work-related-card {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    height: 128px !important;
+    object-fit: contain !important;
+    background: transparent !important;
+}
+.work-detail.zoom-active .work-detail-image-wrap {
+    width: min(88vw, 1220px) !important;
+    height: min(76vh, 790px) !important;
+    position: relative !important;
+    inset: auto !important;
+    background: transparent !important;
+}
+@media (max-width:700px) {
+    .work-detail-inner { padding: 72px 20px 130px !important; }
+    .work-detail-image-wrap,
+    .work-detail-caption,
+    .work-detail-related { width: 100% !important; }
+    .work-detail-image-wrap { height: 64svh !important; }
+    .work-detail-related { margin-top: 130px !important; }
+    .work-related-card { height: 94px !important; }
+}
+
     </style>
 </head>
 
