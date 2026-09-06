@@ -2443,6 +2443,24 @@ body.artist-profile-open .menu { visibility:hidden !important; opacity:0 !import
 .work-detail.zoom-active .work-detail-image-wrap { cursor:grab !important; }
 .work-detail.zoom-active .work-detail-image-wrap.is-panning { cursor:grabbing !important; }
 
+
+
+/* WORK DETAIL v41 — keep 1920 untouched; only tune 1440 and interaction */
+@media (min-width:1600px) {
+    .work-detail-image-wrap { width:min(70vw,980px) !important; height:min(70vh,720px) !important; }
+    .work-detail-caption,.work-detail-related { width:min(70vw,980px) !important; }
+}
+@media (min-width:701px) and (max-width:1599px) {
+    .work-detail-image-wrap { width:min(82vw,1120px) !important; height:min(calc(100svh - 190px),820px) !important; }
+    .work-detail-caption,.work-detail-related { width:min(82vw,1120px) !important; }
+}
+/* One custom knob only: suppress every native scrollbar/track in WORKS. */
+.works-row,.works-gallery,.works-scroll-control { scrollbar-width:none !important; }
+.works-row::-webkit-scrollbar,.works-gallery::-webkit-scrollbar,.works-scroll-control::-webkit-scrollbar { display:none !important; width:0 !important; height:0 !important; }
+.works-row { overflow-x:hidden !important; overflow-y:visible !important; }
+.work-detail-image-wrap { pointer-events:auto !important; cursor:zoom-in !important; }
+.work-detail-image { pointer-events:none !important; }
+
     </style>
 </head>
 
@@ -4137,8 +4155,7 @@ if (workZoomWrap) {
         workZoom.originX = workZoom.x;
         workZoom.originY = workZoom.y;
         workZoomWrap.classList.add('is-panning');
-        workZoomWrap.setPointerCapture?.(event.pointerId);
-        // Do not cancel the click: at 1x this click enters the viewer.
+        // Keep the click event available for entering the viewer.
     });
     workZoomWrap.addEventListener('pointermove', event => {
         if (!workZoom.dragging) return;
@@ -4449,10 +4466,12 @@ let h1Mask =
             document.querySelector('.profile-content h2'),
             document.querySelector('.profile-role'),
             document.querySelector('.profile-description > p:not(.profile-role)'),
+            document.querySelector('.profile-close'),
             document.querySelector('.work-detail-close'),
             document.querySelector('.work-detail-caption h2'),
             document.querySelector('.work-detail-caption p'),
-            document.querySelector('.work-detail-meta')
+            document.querySelector('.work-detail-meta'),
+            document.querySelector('#workDetail .work-zoom-hint')
         ].filter(Boolean);
     }
 
