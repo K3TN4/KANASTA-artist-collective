@@ -86,6 +86,13 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* v21 — clone follows the transformed glyph box, including hover scale */
 #cursorText .clone{position:fixed!important;pointer-events:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important;white-space:nowrap!important;transform-origin:50% 50%!important}
+
+/* v23 artist-only related works: vertical, evenly spaced, variable but bounded cards */
+.related{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(260px,42vw),1fr))!important;gap:clamp(28px,4vw,72px)!important;overflow:visible!important;height:auto!important;margin-top:clamp(70px,10vh,130px)!important;align-items:start!important;cursor:default!important;touch-action:auto!important;padding:0 2vw 260px!important}
+.related img{width:100%!important;height:auto!important;max-height:420px!important;aspect-ratio:auto!important;object-fit:contain!important;flex:none!important;transition:transform .45s cubic-bezier(.22,1,.36,1)!important;transform-origin:center!important}
+.related img:nth-child(3n+1){max-width:420px}.related img:nth-child(3n+2){max-width:330px;margin-top:26px}.related img:nth-child(3n){max-width:500px;margin-top:8px}
+.related img:hover{transform:scale(1.035)!important;z-index:2}
+@media(max-width:700px){.related{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:24px!important;padding:0 0 120px!important}.related img{max-width:none!important;margin-top:0!important}}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -101,7 +108,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 <div class="viewer" id="viewer"><div class="viewer-top"><header class="top"><button class="viewerLogo">KANASTA</button><button class="close" id="viewerClose">CLOSE</button></header></div><div class="viewer-inner"><div class="viewer-image" id="viewerImage"><img id="viewerImg" alt=""></div><div class="viewer-caption"><small id="viewerNo"></small><h2 id="viewerTitle"></h2><p>KANASTA · ARTIST COLLECTIVE</p><small>TECHNIQUE · YEAR · DIMENSIONS</small></div><div class="related" id="related"></div></div></div>
 <script>
 const artists=[['Patrycja Boruch','patrycja-boruch.jpg'],['Zuzanna Frankowska','zuzanna-frankowska.jpg'],['Amelia Korczak','amelia-korczak.jpg'],['Adam Pażucha','adam-pazucha.jpg'],['Antoni Augustyniak','antoni-augustyniak.jpg'],['Ada Rosa','ada-rosa.jpg'],['Anastazja Gierlak','anastazja-gierlak.jpg'],['Anna Esnekier','anna-esnekier.jpg'],['Gabriela Bossowska','gabriela-bossowska.jpg'],['Marta Mioduszewska','marta-mioduszewska.jpg'],['Nina Borowicz','nina-borowicz.jpg'],['Aleksandra Sikora','aleksandra-sikora.jpg'],['Marta Mendelejeva','marta-mendelejeva.jpg'],['Franek Ciastoń','franek-ciaston.jpg'],['Urszula Smagowicz','urszula-smagowicz.jpg']];
-const works=Array.from({length:16},(_,i)=>{const n=String(i+1).padStart(2,'0');return{thumb:`images/works/thumbs/work${n}.webp`,view:`images/works/view/work${n}.webp`,full:`images/works/full/work${n}.webp`,title:`Work ${n}`}});
+const works=[];
 const $=s=>document.querySelector(s); const cursor=$('#cursor'); let activeWork=null;
 artists.forEach((a,i)=>{const c=document.createElement('div');c.className='circle';const im=new Image();im.src='images/'+a[1];im.alt=a[0];c.append(im);c.onclick=()=>openArtist(i);(i<7?$('#orbitA'):$('#orbitB')).append(c);const row=document.createElement('div');row.className='artist-row';row.innerHTML=`<span class="artist-no">${String(i+1).padStart(2,'0')}</span><span class="artist-name" role="button" tabindex="0">${a[0]}</span><img class="artist-photo" src="images/${a[1]}" alt=""><div class="bio">Biography coming soon.<button type="button" class="artist-read-more">READ MORE</button></div>`;row.onmouseenter=()=>row.classList.add('preview');row.onmouseleave=()=>row.classList.remove('preview');const name=row.querySelector('.artist-name');name.onclick=()=>openArtist(i);name.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')openArtist(i)};const more=row.querySelector('.artist-read-more');more.onclick=e=>{e.stopPropagation();row.classList.toggle('bio-open');more.textContent=row.classList.contains('bio-open')?'SHOW LESS':'READ MORE'};$('#artistList').append(row)});
 
@@ -172,4 +179,12 @@ function renderCursor(){
  syncCursorClone(cursorTarget());document.getElementById('cursorText').style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
 }
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});renderCursor();
+
+/* Antoni Augustyniak works: load filenames from the artist folder, so no manual renaming is needed. */
+const artistFolder='images/works/KANASTA-artists-folders/Antoni Augustyniak';
+const artistApi='https://api.github.com/repos/K3TN4/KANASTA-artist-collective/contents/'+artistFolder+'/thumbs';
+function artistAsset(folder,name){return folder+'/'+name.split('/').map(encodeURIComponent).join('/')}
+function addArtistCard(w,i){const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.onload=()=>{if(im.naturalWidth)card.style.aspectRatio=`${im.naturalWidth}/${im.naturalHeight}`};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};$('#worksRow').append(card);workCards.push(card)}
+async function loadArtistWorks(){try{const response=await fetch(artistApi,{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)throw new Error('GitHub folder unavailable');const files=await response.json();files.filter(x=>x.type==='file'&&/\.(png|jpe?g|webp)$/i.test(x.name)).sort((a,b)=>a.name.localeCompare(b.name,navigator.language,{numeric:true})).forEach((file,i)=>{const n=file.name;works.push({thumb:artistAsset(artistFolder+'/thumbs',n),view:artistAsset(artistFolder+'/view',n),full:artistAsset(artistFolder+'/full',n),title:`Work ${String(i+1).padStart(2,'0')}`,artist:'Antoni Augustyniak'});addArtistCard(works[i],i)});document.querySelector('.works .section-head span:last-child').textContent=works.length+' · ANTONI AUGUSTYNIAK';requestAnimationFrame(()=>{$('#worksRow').scrollLeft=0})}catch(error){console.error(error);const note=document.createElement('p');note.className='placeholder';note.textContent='WORKS — folder Antoniego nie jest jeszcze dostępny na GitHub Pages.';$('#worksRow').replaceWith(note)}}
+loadArtistWorks();
 </script></body></html>
