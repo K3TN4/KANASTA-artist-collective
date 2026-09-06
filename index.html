@@ -28,6 +28,21 @@ html,body,*{user-select:none;-webkit-user-select:none}
 .work-card,.work-card img,.viewer-image,.viewer-image img{user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
 .viewer-image img{outline:none}
 @media(min-width:701px) and (max-width:1599px){.viewer-inner{width:min(88vw,1180px)}.viewer-image{height:min(calc(100svh - 170px),850px)}}
+
+
+/* v9 — 1440-only work viewer calibration + stable black cursor */
+#cursor{background:#000!important;border-radius:50%!important;transform:translate(-50%,-50%);}
+#cursorText .clone{color:#fff!important;-webkit-text-fill-color:#fff!important;background:transparent!important;}
+.work-card,.work-card img,.viewer-image,.viewer-image img{user-select:none!important;-webkit-user-select:none!important;-webkit-user-drag:none!important;}
+@media(min-width:1600px){
+ .viewer-inner{width:min(70vw,980px)!important;}
+ .viewer-image{height:min(70vh,720px)!important;}
+}
+@media(min-width:701px) and (max-width:1599px){
+ .viewer-inner{width:min(88vw,1180px)!important;margin:clamp(70px,8vh,96px) auto 160px!important;}
+ .viewer-image{height:min(calc(100svh - 170px),850px)!important;}
+ .viewer-caption{margin-top:12px!important;}
+}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -82,7 +97,7 @@ $('#worksKnob').onpointerdown=e=>{knobDrag=true;$('#worksKnob').classList.add('d
 let drag=null;
 function randomWork(exclude=new Set()){const pool=works.filter(w=>!exclude.has(w.thumb));return pool[Math.floor(Math.random()*Math.max(1,pool.length))]||works[Math.floor(Math.random()*works.length)]}
 function appendRandom(side){const existing=[...$('#worksRow').querySelectorAll('.work-card')].map(c=>c.dataset.file);const w=randomWork(new Set(existing.slice(-Math.min(existing.length,12))));const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.onload=()=>{if(im.naturalWidth)card.style.aspectRatio=`${im.naturalWidth}/${im.naturalHeight}`};card.append(im);card.onmousedown=e=>{if(e.button===0){drag={x:e.clientX,s:$('#worksRow').scrollLeft,moved:false}}};card.onclick=()=>{if(!drag||!drag.moved)openWork(works.indexOf(w))};side==='left'?$('#worksRow').prepend(card):$('#worksRow').append(card)}
-$('#worksRow').onmousedown=e=>{if(e.button!==0)return;drag={x:e.clientX,s:$('#worksRow').scrollLeft,moved:false};e.preventDefault()};document.onmousemove=e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>5)drag.moved=true;$('#worksRow').scrollLeft=drag.s-dx;if($('#worksRow').scrollLeft<180)appendRandom('left');if($('#worksRow').scrollWidth-$('#worksRow').clientWidth-$('#worksRow').scrollLeft<180)appendRandom('right')};document.addEventListener('mouseup',()=>{if(drag)setTimeout(()=>drag=null,0)});
+$('#worksRow').onmousedown=e=>{if(e.button!==0)return;drag={x:e.clientX,s:$('#worksRow').scrollLeft,moved:false};e.preventDefault()};document.onmousemove=e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>5)drag.moved=true;$('#worksRow').scrollLeft=drag.s-dx;if($('#worksRow').scrollLeft<180)appendRandom('left');if($('#worksRow').scrollWidth-$('#worksRow').clientWidth-$('#worksRow').scrollLeft<180)appendRandom('right')};document.addEventListener('mouseup',()=>{if(drag){const wasMoved=drag.moved;setTimeout(()=>{drag=null;if(wasMoved)document.body.classList.add('suppress-work-click');setTimeout(()=>document.body.classList.remove('suppress-work-click'),80)},0)}});
 
 window.onmousemove=e=>{mouse.x=e.clientX;mouse.y=e.clientY};renderCursor();
 </script></body></html>
