@@ -28,11 +28,18 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 .top{padding-left:var(--g);padding-right:var(--g)}
 .circle{border-color:#fff!important}
 @media(max-width:700px){.circle{border-color:#fff!important}}
-@media(min-width:1200px) and (max-width:1599px){
- .viewer-inner{width:min(97vw,1440px)!important;margin:clamp(70px,8vh,96px) auto 40px!important}
- .viewer-image{height:min(calc(100svh - 115px),1120px)!important;margin-bottom:8px!important}
- .viewer-caption{margin-top:0!important;padding-top:12px!important}
+/* 1440p monitors: detect by viewport height, including 2560x1440 and display scaling. */
+@media (min-width:1800px) and (min-height:1050px) and (max-height:1599px){
+ .viewer-inner{width:min(96vw,1600px)!important;margin:clamp(70px,5vh,88px) auto 24px!important}
+ .viewer-image{height:calc(100svh - 190px)!important;max-height:none!important;margin-bottom:6px!important}
+ .viewer-caption{margin-top:0!important;padding-top:10px!important}
  .viewer-caption h2{margin-top:0!important}
+}
+/* 1440 CSS-wide viewports used by some scaled displays. */
+@media (min-width:1200px) and (max-width:1799px) and (min-height:1000px){
+ .viewer-inner{width:96vw!important;margin:5vh auto 24px!important}
+ .viewer-image{height:calc(100svh - 190px)!important;max-height:none!important;margin-bottom:6px!important}
+ .viewer-caption{margin-top:0!important;padding-top:10px!important}
 }
 </style></head>
 <body>
@@ -92,7 +99,7 @@ $('#worksRow').onmousedown=e=>{if(e.button!==0)return;drag={x:e.clientX,s:$('#wo
 
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
 let cursorFrame=0,cursorClone=null,cursorCloneTarget=null;
-function cursorTarget(){const el=document.elementFromPoint(mouse.x,mouse.y);return el&&el.closest('button,a,h1,h2,h3,.subtitle,.artist-name,.section-head,.section-head span,.viewer-caption,.viewer-caption h2,.circle,.artist-photo,.bio button');}
+function cursorTarget(){const el=document.elementFromPoint(mouse.x,mouse.y);return el&&el.closest('button,a,h1,h2,h3,.subtitle,.artist-name,.section-head,.section-head span,.viewer-caption,.viewer-caption h2,.top,.top button,.viewerLogo,.section-head,.section-head *,.circle,.artist-photo,.bio button');}
 function syncCursorClone(target){
  if(cursorCloneTarget!==target){if(cursorClone)cursorClone.remove();cursorClone=null;cursorCloneTarget=target;
   if(target){cursorClone=document.createElement('span');cursorClone.className='clone';cursorClone.textContent=target.textContent;document.getElementById('cursorText').append(cursorClone)}
@@ -100,7 +107,7 @@ function syncCursorClone(target){
  if(!target||!cursorClone)return;
  const r=target.getBoundingClientRect(),cs=getComputedStyle(target);
  cursorClone.style.left=r.left+'px';cursorClone.style.top=r.top+'px';cursorClone.style.width=r.width+'px';cursorClone.style.height=r.height+'px';
- cursorClone.style.fontFamily=cs.fontFamily;cursorClone.style.fontSize=cs.fontSize;cursorClone.style.fontWeight=cs.fontWeight;cursorClone.style.fontStyle=cs.fontStyle;cursorClone.style.lineHeight=cs.lineHeight;cursorClone.style.letterSpacing=cs.letterSpacing;cursorClone.style.textTransform=cs.textTransform;cursorClone.style.textAlign=cs.textAlign;cursorClone.style.transform=cs.transform;cursorClone.style.transformOrigin=cs.transformOrigin;cursorClone.style.whiteSpace='pre-wrap';cursorClone.style.display='block';
+ cursorClone.style.fontFamily=cs.fontFamily;cursorClone.style.fontSize=cs.fontSize;cursorClone.style.fontWeight=cs.fontWeight;cursorClone.style.fontStyle=cs.fontStyle;cursorClone.style.lineHeight=cs.lineHeight;cursorClone.style.letterSpacing=cs.letterSpacing;cursorClone.style.textTransform=cs.textTransform;cursorClone.style.textAlign=cs.textAlign;cursorClone.style.transform='none';cursorClone.style.transformOrigin='0 0';cursorClone.style.whiteSpace='pre-wrap';cursorClone.style.display='block';
 }
 function renderCursor(){
  if(!cursor||matchMedia('(max-width:700px)').matches){if(cursor)cursor.style.display='none';cancelAnimationFrame(cursorFrame);return}
