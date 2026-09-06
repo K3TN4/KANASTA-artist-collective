@@ -87,12 +87,12 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 /* v21 — clone follows the transformed glyph box, including hover scale */
 #cursorText .clone{position:fixed!important;pointer-events:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important;white-space:nowrap!important;transform-origin:50% 50%!important}
 
-/* v23 artist-only related works: vertical, evenly spaced, variable but bounded cards */
-.related{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(260px,42vw),1fr))!important;gap:clamp(18px,2.2vw,34px)!important;overflow:visible!important;height:auto!important;margin-top:clamp(70px,10vh,130px)!important;align-items:start!important;cursor:default!important;touch-action:auto!important;padding:0 2vw 260px!important}
-.related img{width:100%!important;height:auto!important;max-height:420px!important;aspect-ratio:auto!important;object-fit:contain!important;flex:none!important;transition:transform .45s cubic-bezier(.22,1,.36,1)!important;transform-origin:center!important}
-.related img:nth-child(3n+1){max-width:420px}.related img:nth-child(3n+2){max-width:330px;margin-top:0}.related img:nth-child(3n){max-width:500px;margin-top:0}
-.related img:hover{transform:scale(1.035)!important;z-index:2}
-@media(max-width:700px){.related{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:24px!important;padding:0 0 120px!important}.related img{max-width:none!important;margin-top:0!important}}
+/* v25 dense masonry artist gallery */
+.related{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;column-gap:clamp(4px,.45vw,8px)!important;row-gap:clamp(4px,.45vw,8px)!important;overflow:visible!important;height:auto!important;margin-top:clamp(70px,10vh,130px)!important;align-items:start!important;cursor:default!important;touch-action:auto!important;padding:0 4px 260px!important}
+.related img{width:100%!important;height:auto!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;object-fit:contain!important;flex:none!important;transition:transform .45s cubic-bezier(.22,1,.36,1)!important;transform-origin:center!important}
+.related img:hover{transform:scale(1.018)!important;z-index:2}
+@media (min-width:701px) and (max-width:1100px){.related{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+@media(max-width:700px){.related{grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:6px!important;row-gap:6px!important;padding:0 0 120px!important}.related img{max-width:none!important;margin-top:0!important}}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
