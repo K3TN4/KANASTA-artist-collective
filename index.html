@@ -23,6 +23,17 @@ main.hero{min-height:100svh;position:relative;display:flex;align-items:center;fl
 
 
 html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-card img{user-select:none!important;-webkit-user-select:none!important;-webkit-user-drag:none!important}#cursor{background:#000!important;border-radius:50%;display:block;will-change:left,top,transform}#cursorText .clone{color:#fff!important;-webkit-text-fill-color:#fff!important;background:transparent!important;pointer-events:none!important}
+
+/* v12 final calibration */
+.top{padding-left:var(--g);padding-right:var(--g)}
+.circle{border-color:#fff!important}
+@media(max-width:700px){.circle{border-color:#fff!important}}
+@media(min-width:1200px) and (max-width:1599px){
+ .viewer-inner{width:min(97vw,1440px)!important;margin:clamp(70px,8vh,96px) auto 40px!important}
+ .viewer-image{height:min(calc(100svh - 115px),1120px)!important;margin-bottom:8px!important}
+ .viewer-caption{margin-top:0!important;padding-top:12px!important}
+ .viewer-caption h2{margin-top:0!important}
+}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -82,7 +93,21 @@ $('#worksRow').onmousedown=e=>{if(e.button!==0)return;drag={x:e.clientX,s:$('#wo
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
 let cursorFrame=0,cursorClone=null,cursorCloneTarget=null;
 function cursorTarget(){const el=document.elementFromPoint(mouse.x,mouse.y);return el&&el.closest('button,a,h1,h2,h3,.subtitle,.artist-name,.section-head,.section-head span,.viewer-caption,.viewer-caption h2,.circle,.artist-photo,.bio button');}
-function makeCursorClone(target){if(cursorCloneTarget===target)return;if(cursorClone){cursorClone.remove();cursorClone=null}cursorCloneTarget=target;if(!target)return;const r=target.getBoundingClientRect(),cs=getComputedStyle(target);const c=document.createElement('span');c.className='clone';c.textContent=target.textContent;c.style.left=r.left+'px';c.style.top=r.top+'px';c.style.width=r.width+'px';c.style.height=r.height+'px';c.style.font=cs.font;c.style.letterSpacing=cs.letterSpacing;c.style.lineHeight=cs.lineHeight;c.style.textTransform=cs.textTransform;c.style.display='block';document.getElementById('cursorText').append(c);cursorClone=c}
-function renderCursor(){if(!cursor||matchMedia('(max-width:700px)').matches){cancelAnimationFrame(cursorFrame);return}mouse.px+=(mouse.x-mouse.px)*.28;mouse.py+=(mouse.y-mouse.py)*.28;mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;const speed=Math.hypot(mouse.vx,mouse.vy);const pulse=1+Math.min(.10,speed*.012);const tilt=Math.max(-3,Math.min(3,mouse.vx*.025));cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(-50%,-50%) scale(${pulse}) rotate(${tilt}deg)`;makeCursorClone(cursorTarget());const overlay=document.getElementById('cursorText');overlay.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)}
+function syncCursorClone(target){
+ if(cursorCloneTarget!==target){if(cursorClone)cursorClone.remove();cursorClone=null;cursorCloneTarget=target;
+  if(target){cursorClone=document.createElement('span');cursorClone.className='clone';cursorClone.textContent=target.textContent;document.getElementById('cursorText').append(cursorClone)}
+ }
+ if(!target||!cursorClone)return;
+ const r=target.getBoundingClientRect(),cs=getComputedStyle(target);
+ cursorClone.style.left=r.left+'px';cursorClone.style.top=r.top+'px';cursorClone.style.width=r.width+'px';cursorClone.style.height=r.height+'px';
+ cursorClone.style.fontFamily=cs.fontFamily;cursorClone.style.fontSize=cs.fontSize;cursorClone.style.fontWeight=cs.fontWeight;cursorClone.style.fontStyle=cs.fontStyle;cursorClone.style.lineHeight=cs.lineHeight;cursorClone.style.letterSpacing=cs.letterSpacing;cursorClone.style.textTransform=cs.textTransform;cursorClone.style.textAlign=cs.textAlign;cursorClone.style.transform=cs.transform;cursorClone.style.transformOrigin=cs.transformOrigin;cursorClone.style.whiteSpace='pre-wrap';cursorClone.style.display='block';
+}
+function renderCursor(){
+ if(!cursor||matchMedia('(max-width:700px)').matches){if(cursor)cursor.style.display='none';cancelAnimationFrame(cursorFrame);return}
+ cursor.style.display='block';mouse.px+=(mouse.x-mouse.px)*.32;mouse.py+=(mouse.y-mouse.py)*.32;mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
+ const speed=Math.hypot(mouse.vx,mouse.vy),pulse=1+Math.min(.10,speed*.012),tilt=Math.max(-3,Math.min(3,mouse.vx*.025));
+ cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(-50%,-50%) scale(${pulse}) rotate(${tilt}deg)`;
+ syncCursorClone(cursorTarget());document.getElementById('cursorText').style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
+}
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});renderCursor();
 </script></body></html>
