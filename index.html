@@ -1694,6 +1694,31 @@ html, body { overflow-y: auto !important; }
 @media (hover:none), (pointer:coarse) { #cursorH1Overlay,#cursorTextOverlay,.custom-cursor { display:none !important; } }
 @media (max-width:700px) { .menu,.profile-close,.menu-close,.work-detail-close { font-size:11px; top:18px; } .menu { right:20px; } .profile-close,.work-detail-close { right:20px; } .work-detail-inner { padding:82px 20px 55px; } .work-detail-image-wrap,.work-detail-caption,.work-detail-related { width:100%; } .work-detail-image-wrap { height:52vh; } }
 
+
+
+/* WORK DETAIL v24 — Google Arts & Culture-style image viewer */
+.work-detail-image-wrap {
+    overflow: hidden;
+    cursor: zoom-in;
+    touch-action: none;
+}
+.work-detail-image-wrap.is-zoomed { cursor: grab; }
+.work-detail-image-wrap.is-panning { cursor: grabbing; }
+.work-detail-image {
+    transform: translate3d(var(--zoom-x, 0px), var(--zoom-y, 0px), 0) scale(var(--zoom-scale, 1));
+    transform-origin: center center;
+    transition: transform .16s ease-out;
+    will-change: transform;
+}
+.work-detail-image-wrap.is-panning .work-detail-image { transition: none; }
+.work-detail-image-wrap:hover .work-detail-image { transform: translate3d(var(--zoom-x, 0px), var(--zoom-y, 0px), 0) scale(var(--zoom-scale, 1)); }
+.work-zoom-hint { transition: opacity .25s ease; }
+.work-detail-image-wrap.is-zoomed .work-zoom-hint { opacity: .72; }
+@media (max-width: 700px) {
+    .work-detail-image-wrap { cursor: default; }
+    .work-detail-image-wrap.is-zoomed { cursor: grab; }
+}
+
     </style>
 </head>
 
@@ -3303,6 +3328,19 @@ setTimeout(() => { activeRow = worksRows[0]; syncKnob(activeRow); }, 500);
 
 
 /* Work detail cards: click opens a Google Arts & Culture-inspired view. */
+let workZoom = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, originX: 0, originY: 0 };
+function renderWorkZoom() {
+    const wrap = document.getElementById('workDetailImageWrap');
+    if (!wrap) return;
+    wrap.style.setProperty('--zoom-scale', workZoom.scale);
+    wrap.style.setProperty('--zoom-x', `${workZoom.x}px`);
+    wrap.style.setProperty('--zoom-y', `${workZoom.y}px`);
+    wrap.classList.toggle('is-zoomed', workZoom.scale > 1.01);
+}
+function resetWorkZoom() {
+    workZoom = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, originX: 0, originY: 0 };
+    renderWorkZoom();
+}
 function openWorkDetail(work, card) {
     const modal=document.getElementById('workDetail');
     const img=document.getElementById('workDetailImage');
@@ -3313,11 +3351,56 @@ function openWorkDetail(work, card) {
     img.src=work.file; img.alt=work.title; title.textContent=work.title;
     const idx=Math.max(0,worksData.indexOf(work)); number.textContent=`${String(idx+1).padStart(2,'0')} / ${worksData.length}`;
     related.innerHTML='';
-    worksData.filter((_,i)=>i!==idx).slice(0,6).forEach((item)=>{ const r=document.createElement('img'); r.src=item.file; r.alt=item.title; r.className='work-related-card'; r.onclick=()=>openWorkDetail(item); related.appendChild(r); });
+    worksData.filter((_,i)=>i!==idx).slice(0,6).forEach(item=>{ const r=document.createElement('img'); r.src=item.file; r.alt=item.title; r.className='work-related-card'; r.addEventListener('click',()=>openWorkDetail(item)); related.appendChild(r); });
     modal.classList.add('active'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+    resetWorkZoom();
 }
-function closeWorkDetail(){ const modal=document.getElementById('workDetail'); if(!modal)return; modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+
+function closeWorkDetail(){ const modal=document.getElementById('workDetail'); if(!modal)return; modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; resetWorkZoom(); }
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeWorkDetail();});
+
+const workZoomWrap = document.getElementById('workDetailImageWrap');
+if (workZoomWrap) {
+    workZoomWrap.addEventListener('wheel', event => {
+        event.preventDefault();
+        const direction = event.deltaY < 0 ? 1 : -1;
+        const factor = direction > 0 ? 1.22 : 0.82;
+        workZoom.scale = Math.max(1, Math.min(24, workZoom.scale * factor));
+        if (workZoom.scale === 1) { workZoom.x = 0; workZoom.y = 0; }
+        renderWorkZoom();
+    }, { passive: false });
+
+    workZoomWrap.addEventListener('click', event => {
+        if (workZoom.dragging) return;
+        if (workZoom.scale <= 1.01) workZoom.scale = 3;
+        else resetWorkZoom();
+        renderWorkZoom();
+    });
+
+    workZoomWrap.addEventListener('pointerdown', event => {
+        if (workZoom.scale <= 1.01 || event.button === 2) return;
+        workZoom.dragging = true;
+        workZoom.startX = event.clientX;
+        workZoom.startY = event.clientY;
+        workZoom.originX = workZoom.x;
+        workZoom.originY = workZoom.y;
+        workZoomWrap.classList.add('is-panning');
+        workZoomWrap.setPointerCapture?.(event.pointerId);
+        event.preventDefault();
+    });
+    workZoomWrap.addEventListener('pointermove', event => {
+        if (!workZoom.dragging) return;
+        workZoom.x = workZoom.originX + event.clientX - workZoom.startX;
+        workZoom.y = workZoom.originY + event.clientY - workZoom.startY;
+        renderWorkZoom();
+        event.preventDefault();
+    }, { passive: false });
+    const endPan = () => { workZoom.dragging = false; workZoomWrap.classList.remove('is-panning'); };
+    workZoomWrap.addEventListener('pointerup', endPan);
+    workZoomWrap.addEventListener('pointercancel', endPan);
+    workZoomWrap.addEventListener('lostpointercapture', endPan);
+}
+
 
 /* Inline previews: hover on desktop, focus/tap friendly on touch screens. */
 const artistRows = Array.from(document.querySelectorAll('.artist-row'));
