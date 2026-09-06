@@ -2397,6 +2397,32 @@ body.artist-profile-open .menu { visibility:hidden !important; opacity:0 !import
 .work-detail.zoom-active .work-detail-image { transition: transform .34s cubic-bezier(.22,1,.36,1) !important; }
 .work-detail.zoom-active .work-zoom-hint { opacity:0; pointer-events:none; }
 
+
+
+/* WORK DETAIL v39 — 1440/1920 scale, reliable click entry, cyan text cursor */
+@media (min-width:701px) {
+    .work-detail-image-wrap,
+    .work-detail-caption,
+    .work-detail-related {
+        width: min(68vw, 1300px) !important;
+    }
+    .work-detail-image-wrap {
+        height: min(calc(100svh - 210px), 820px) !important;
+    }
+}
+.work-detail-image-wrap { cursor: zoom-in !important; }
+.work-detail-image-wrap:not(.is-zoomed) .work-detail-image {
+    transform: none !important;
+}
+.work-detail-image-wrap:hover .work-detail-image {
+    transform: translate3d(var(--zoom-x,0px),var(--zoom-y,0px),0) scale(var(--zoom-scale,1)) !important;
+}
+.work-detail.zoom-active .work-detail-image-wrap {
+    cursor: grab !important;
+    margin-top: 0 !important;
+}
+.work-detail.zoom-active .work-detail-image-wrap.is-panning { cursor: grabbing !important; }
+
     </style>
 </head>
 
@@ -4094,7 +4120,7 @@ if (workZoomWrap) {
         workZoom.originY = workZoom.y;
         workZoomWrap.classList.add('is-panning');
         workZoomWrap.setPointerCapture?.(event.pointerId);
-        event.preventDefault();
+        // Do not cancel the click: at 1x this click enters the viewer.
     });
     workZoomWrap.addEventListener('pointermove', event => {
         if (!workZoom.dragging) return;
@@ -4399,12 +4425,13 @@ let h1Mask =
 
     }
 
-    if (
-        cursorView === "profile"
-    ) {
-
-        return [];
-
+    if (cursorView === "profile") {
+        return [
+            document.querySelector('.profile-close'),
+            document.querySelector('.profile-content h2'),
+            document.querySelector('.profile-role'),
+            document.querySelector('.profile-description > p:not(.profile-role)')
+        ].filter(Boolean);
     }
 
     return CURSOR_DOM_TEXT_TARGETS;
