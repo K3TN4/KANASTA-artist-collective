@@ -84,6 +84,9 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 .hero .subtitle{position:relative;z-index:2;margin-top:clamp(20px,3vh,34px);line-height:1.25;letter-spacing:.16em}
 #worksKnob .knob{left:50%!important}
 @media(max-width:700px){.hero h1{font-size:clamp(54px,16vw,88px)!important;line-height:.88!important;letter-spacing:.02em!important}.hero .subtitle{margin-top:18px}}
+
+/* v21 — clone follows the transformed glyph box, including hover scale */
+#cursorText .clone{position:fixed!important;pointer-events:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important;white-space:nowrap!important;transform-origin:50% 50%!important}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -152,13 +155,18 @@ let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,p
 let cursorFrame=0,cursorClone=null,cursorCloneTarget=null;
 function cursorTarget(){const el=document.elementFromPoint(mouse.x,mouse.y);return el&&el.closest('button,a,h1,h2,h3,.subtitle,.artist-name,.section-head,.section-head span,.viewer-caption h2,.viewer-caption p,.viewer-caption small,.top button,.viewerLogo,.section-head span,.section-head h2,.artist-name,.subtitle,.placeholder,.about p,.contact,.contact *,.bio button,.menu-list a,.circle,.artist-photo');}
 function syncCursorClone(target){
- if(cursorCloneTarget!==target){if(cursorClone)cursorClone.remove();cursorClone=null;cursorCloneTarget=target;
-  if(target){cursorClone=document.createElement('span');cursorClone.className='clone';cursorClone.textContent=target.textContent;document.getElementById('cursorText').append(cursorClone)}
+ if(cursorCloneTarget!==target){
+  if(cursorClone)cursorClone.remove();cursorClone=null;cursorCloneTarget=target;
+  if(target){cursorClone=document.createElement('span');cursorClone.className='clone';cursorClone.textContent=target.textContent;cursorClone.setAttribute('aria-hidden','true');document.getElementById('cursorText').append(cursorClone)}
  }
  if(!target||!cursorClone)return;
  const r=target.getBoundingClientRect(),cs=getComputedStyle(target);
- cursorClone.style.left=r.left+'px';cursorClone.style.top=r.top+'px';cursorClone.style.width=r.width+'px';cursorClone.style.height=r.height+'px';
- cursorClone.style.fontFamily=cs.fontFamily;cursorClone.style.fontSize=cs.fontSize;cursorClone.style.fontWeight=cs.fontWeight;cursorClone.style.fontStyle=cs.fontStyle;cursorClone.style.lineHeight=cs.lineHeight;cursorClone.style.letterSpacing=cs.letterSpacing;cursorClone.style.textTransform=cs.textTransform;cursorClone.style.textAlign=cs.textAlign;cursorClone.style.transform='none';cursorClone.style.transformOrigin='0 0';cursorClone.style.whiteSpace='pre-wrap';cursorClone.style.display='block';
+ const baseW=Math.max(1,target.offsetWidth),baseH=Math.max(1,target.offsetHeight);
+ const scaleX=r.width/baseW,scaleY=r.height/baseH;
+ cursorClone.style.left=(r.left+r.width/2)+'px';cursorClone.style.top=(r.top+r.height/2)+'px';
+ cursorClone.style.width=baseW+'px';cursorClone.style.height=baseH+'px';
+ cursorClone.style.fontFamily=cs.fontFamily;cursorClone.style.fontSize=cs.fontSize;cursorClone.style.fontWeight=cs.fontWeight;cursorClone.style.fontStyle=cs.fontStyle;cursorClone.style.fontVariant=cs.fontVariant;cursorClone.style.fontStretch=cs.fontStretch;cursorClone.style.lineHeight=cs.lineHeight;cursorClone.style.letterSpacing=cs.letterSpacing;cursorClone.style.textTransform=cs.textTransform;cursorClone.style.textAlign=cs.textAlign;cursorClone.style.whiteSpace='nowrap';
+ cursorClone.style.transform=`translate(-50%,-50%) scale(${scaleX},${scaleY})`;cursorClone.style.transformOrigin='50% 50%';cursorClone.style.display='block';
 }
 function renderCursor(){
  if(!cursor||matchMedia('(max-width:700px)').matches){if(cursor)cursor.style.display='none';cancelAnimationFrame(cursorFrame);return}
