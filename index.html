@@ -1635,6 +1635,13 @@ main h1.image-text {
 }
 .works-row img, .works-card { user-select:none; -webkit-user-drag:none; }
 .works-row.is-dragging { cursor:grabbing; }
+
+
+/* WORKS v17: explicit mouse/touch drag; normal vertical page scroll stays native */
+.works-row { cursor: grab; user-select: none; -webkit-user-select: none; }
+.works-row.is-pressed, .works-row.is-dragging { cursor: grabbing; }
+body.works-mouse-dragging, body.works-mouse-dragging * { cursor: grabbing !important; }
+.works-row img { pointer-events: none; -webkit-user-drag: none; }
     </style>
 </head>
 
@@ -3142,56 +3149,68 @@ worksRows.forEach(row => {
         worksSyncRatio(row);
     }, { passive: true });
 
-    row.addEventListener('pointerdown', event => {
-        if (event.button !== undefined && event.button !== 0) return;
-        if (event.target.closest('.works-scroll-control')) return;
-        worksDragState = {
-            row,
-            pointerId: event.pointerId,
-            startX: event.clientX,
-            startY: event.clientY,
-            startScroll: row.scrollLeft,
-            axis: null
-        };
+    // Mouse drag: explicit left-button capture, independent of browser scrolling.
+    let mouseDrag = null;
+    row.addEventListener('mousedown', event => {
+        if (event.button !== 0 || event.target.closest('.works-scroll-control')) return;
+        mouseDrag = { startX: event.clientX, startScroll: row.scrollLeft, dragging: false };
         row.classList.add('is-pressed');
-        // Do not preventDefault here: a vertical gesture must still scroll the page.
     });
-});
-
-// Global tracker: it takes over only after the gesture is clearly horizontal.
-document.addEventListener('pointermove', event => {
-    if (!worksDragState) return;
-    const state = worksDragState;
-    const dx = event.clientX - state.startX;
-    const dy = event.clientY - state.startY;
-
-    if (!state.axis && Math.hypot(dx, dy) > 8) {
-        state.axis = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
-        if (state.axis === 'horizontal') {
-            state.row.classList.remove('is-pressed');
-            state.row.classList.add('is-dragging');
-            state.row.setPointerCapture?.(state.pointerId);
-        } else {
-            // Release immediately so the browser can perform normal vertical scrolling.
-            state.row.classList.remove('is-pressed');
-            worksDragState = null;
-            return;
+    document.addEventListener('mousemove', event => {
+        if (!mouseDrag) return;
+        const dx = event.clientX - mouseDrag.startX;
+        if (!mouseDrag.dragging && Math.abs(dx) > 5) {
+            mouseDrag.dragging = true;
+            row.classList.remove('is-pressed');
+            row.classList.add('is-dragging');
+            document.body.classList.add('works-mouse-dragging');
         }
-    }
+        if (mouseDrag.dragging) {
+            event.preventDefault();
+            row.scrollLeft = mouseDrag.startScroll - dx;
+        }
+    });
+    const endMouseDrag = () => {
+        if (!mouseDrag) return;
+        row.classList.remove('is-pressed', 'is-dragging');
+        document.body.classList.remove('works-mouse-dragging');
+        mouseDrag = null;
+    };
+    document.addEventListener('mouseup', endMouseDrag);
+    row.addEventListener('mouseleave', () => { /* document keeps the drag alive */ });
 
-    if (state.axis === 'horizontal') {
-        event.preventDefault();
-        state.row.scrollLeft = state.startScroll - dx;
-    }
-}, { passive: false });
+    // Touch drag: only a predominantly horizontal gesture becomes gallery drag.
+    let touchDrag = null;
+    row.addEventListener('touchstart', event => {
+        if (event.touches.length !== 1) return;
+        const t = event.touches[0];
+        touchDrag = { startX:t.clientX, startY:t.clientY, startScroll:row.scrollLeft, axis:null };
+    }, { passive:true });
+    row.addEventListener('touchmove', event => {
+        if (!touchDrag || event.touches.length !== 1) return;
+        const t = event.touches[0];
+        const dx = t.clientX - touchDrag.startX;
+        const dy = t.clientY - touchDrag.startY;
+        if (!touchDrag.axis && Math.hypot(dx,dy) > 8) {
+            touchDrag.axis = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
+        }
+        if (touchDrag.axis === 'horizontal') {
+            event.preventDefault();
+            row.scrollLeft = touchDrag.startScroll - dx;
+        } else if (touchDrag.axis === 'vertical') {
+            touchDrag = null;
+        }
+    }, { passive:false });
+    const endTouchDrag = () => { touchDrag = null; };
+    row.addEventListener('touchend', endTouchDrag, { passive:true });
+    row.addEventListener('touchcancel', endTouchDrag, { passive:true });
 
-function endWorksDrag() {
-    if (!worksDragState) return;
-    worksDragState.row.classList.remove('is-pressed', 'is-dragging');
-    worksDragState = null;
-}
-document.addEventListener('pointerup', endWorksDrag);
-document.addEventListener('pointercancel', endWorksDrag);
+    row.addEventListener('click', event => {
+        if (document.body.classList.contains('works-mouse-dragging')) {
+            event.preventDefault(); event.stopPropagation();
+        }
+    }, true);
+});
 
 window.addEventListener('resize', () => worksRows.forEach(row => worksSyncRatio(row)));
 window.addEventListener('load', () => setTimeout(() => worksRows.forEach(row => worksSyncRatio(row)), 250));
