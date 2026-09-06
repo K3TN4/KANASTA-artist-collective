@@ -1984,6 +1984,133 @@ body.artist-profile-open .menu { visibility:hidden !important; pointer-events:no
     .work-related-card { height: 96px; }
 }
 
+
+
+/* WORK DETAIL v30 — larger artwork, details below the fold, one horizontal rail */
+body.work-detail-open .menu,
+body.artist-profile-open .menu { visibility:hidden !important; opacity:0 !important; pointer-events:none !important; }
+.work-detail-close,
+.profile-close { right:32px !important; top:28px !important; z-index:3005; }
+.work-detail-inner { padding-top: clamp(70px, 8vh, 96px); padding-bottom: 150px; }
+.work-detail-image-wrap {
+    width: min(90vw, 1180px);
+    height: min(82vh, 820px);
+    margin: 0 auto;
+    background: transparent !important;
+}
+.work-detail-image { object-fit: contain; background: transparent !important; }
+.work-detail-caption {
+    width: min(90vw, 1180px);
+    margin: 0 auto;
+    padding-top: 8px;
+}
+.work-detail-caption h2 { font-size: clamp(40px, 6vw, 94px); }
+.work-detail-related {
+    display: flex;
+    flex-wrap: nowrap;
+    width: min(90vw, 1180px);
+    margin: clamp(130px, 20vh, 230px) auto 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 10px;
+    scrollbar-width: none;
+    background: transparent !important;
+}
+.work-detail-related::-webkit-scrollbar { display:none; }
+.work-related-card {
+    flex: 0 0 auto;
+    width: auto;
+    height: 128px;
+    object-fit: contain;
+    background: transparent !important;
+}
+@media (max-width:700px) {
+    .work-detail-inner { padding: 72px 20px 120px; }
+    .work-detail-image-wrap,.work-detail-caption,.work-detail-related { width:100%; }
+    .work-detail-image-wrap { height: 64svh; }
+    .work-detail-related { margin-top: 130px; }
+    .work-related-card { height: 94px; }
+    .work-detail-close,.profile-close { right:20px !important; top:18px !important; }
+}
+
+
+
+/* WORK DETAIL v31 — zoom is mathematically anchored to the cursor */
+.work-detail-image {
+    transform-origin: 0 0 !important;
+    transition: transform .12s linear;
+}
+.work-detail-image-wrap.is-panning .work-detail-image { transition:none; }
+
+
+
+/* WORK DETAIL v32 — fresh layout calibration, keep top margin and enlarge artwork */
+.work-detail { overflow-y:auto; }
+.work-detail-inner {
+    padding-top: clamp(70px, 8vh, 96px) !important;
+    padding-bottom: 150px !important;
+}
+.work-detail-image-wrap {
+    position: relative !important;
+    inset: auto !important;
+    width: min(94vw, 1320px) !important;
+    height: min(82vh, 850px) !important;
+    margin: 0 auto !important;
+    background: #FAED8F !important;
+    overflow: hidden !important;
+}
+.work-detail-image {
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    background:transparent !important;
+    transform-origin:0 0 !important;
+}
+.work-detail-caption {
+    position:relative !important;
+    left:auto !important;
+    right:auto !important;
+    bottom:auto !important;
+    width:min(94vw,1320px) !important;
+    margin:0 auto !important;
+    padding:8px 0 0 !important;
+    background:transparent !important;
+    border-top:1px solid #ed3d66 !important;
+    backdrop-filter:none !important;
+}
+.work-detail-caption h2 { font-size:clamp(42px,6vw,96px) !important; }
+.work-detail-related {
+    position:relative !important;
+    width:min(94vw,1320px) !important;
+    margin:clamp(150px,22vh,260px) auto 0 !important;
+    background:transparent !important;
+}
+/* Do not jump the layout when zoom starts: zoom remains inside its artwork viewport. */
+.work-detail.zoom-active .work-detail-inner { padding:inherit !important; min-height:auto !important; }
+.work-detail.zoom-active .work-detail-image-wrap {
+    position:relative !important;
+    inset:auto !important;
+    width:min(94vw,1320px) !important;
+    height:min(82vh,850px) !important;
+    background:#FAED8F !important;
+}
+.work-detail.zoom-active .work-detail-caption {
+    position:relative !important;
+    left:auto !important;
+    bottom:auto !important;
+    width:min(94vw,1320px) !important;
+    background:transparent !important;
+    border-top:1px solid #ed3d66 !important;
+}
+.work-detail.zoom-active .work-detail-related { margin-top:clamp(150px,22vh,260px) !important; }
+@media (max-width:700px) {
+    .work-detail-inner { padding:72px 20px 120px !important; }
+    .work-detail-image-wrap,.work-detail-caption,.work-detail-related { width:100% !important; }
+    .work-detail-image-wrap,.work-detail.zoom-active .work-detail-image-wrap { height:64svh !important; }
+    .work-detail-related { margin-top:130px !important; }
+}
+
     </style>
 </head>
 
@@ -3634,23 +3761,22 @@ const workZoomWrap = document.getElementById('workDetailImageWrap');
 if (workZoomWrap) {
     workZoomWrap.addEventListener('wheel', event => {
         event.preventDefault();
-        const rect = workZoomWrap.getBoundingClientRect();
+        const box = workZoomWrap.getBoundingClientRect();
         const oldScale = workZoom.scale;
-        const direction = event.deltaY < 0 ? 1 : -1;
-        const factor = direction > 0 ? 1.10 : 0.91;
-        const nextScale = Math.max(1, Math.min(24, oldScale * factor));
-        const px = event.clientX - (rect.left + rect.width / 2);
-        const py = event.clientY - (rect.top + rect.height / 2);
-        if (nextScale === 1) {
+        const nextScale = Math.max(1, Math.min(24, oldScale * Math.exp(-event.deltaY * 0.0018)));
+        if (Math.abs(nextScale - oldScale) < 0.0001) return;
+
+        // The transform origin is 0 0. Keep the exact point below the cursor fixed.
+        const cursorX = event.clientX - box.left;
+        const cursorY = event.clientY - box.top;
+        const ratio = nextScale / oldScale;
+        workZoom.x = cursorX - (cursorX - workZoom.x) * ratio;
+        workZoom.y = cursorY - (cursorY - workZoom.y) * ratio;
+        workZoom.scale = nextScale;
+        if (nextScale <= 1.001) {
             workZoom.scale = 1;
             workZoom.x = 0;
             workZoom.y = 0;
-        } else {
-            // Keep the pixel under the cursor fixed while the image scales.
-            const ratio = nextScale / oldScale;
-            workZoom.x = workZoom.x + px * (1 - ratio);
-            workZoom.y = workZoom.y + py * (1 - ratio);
-            workZoom.scale = nextScale;
         }
         renderWorkZoom();
     }, { passive: false });
