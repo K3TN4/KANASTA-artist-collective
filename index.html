@@ -1624,6 +1624,17 @@ main h1.image-text {
 .works-range.is-dragging .works-range-knob { transform: translate(-50%, -50%) scale(1.48); cursor: grabbing; }
 @media (max-width:700px) { .works-scroll-control { padding:0 20px; margin-top:32px; } }
 
+
+
+/* WORKS v15 — drag is handled on document, never by native wheel scrolling */
+.works-gallery { width:100vw; overflow:hidden; }
+.works-row {
+  width:100%; min-width:0 !important; max-width:100%; flex:0 0 100%;
+  overflow:hidden !important; overscroll-behavior:none !important;
+  touch-action:pan-y; cursor:grab; user-select:none;
+}
+.works-row img, .works-card { user-select:none; -webkit-user-drag:none; }
+.works-row.is-dragging { cursor:grabbing; }
     </style>
 </head>
 
@@ -3064,77 +3075,127 @@ function extendWorksRow(row,side){const existing=Array.from(row.querySelectorAll
 worksRows.forEach(fillWorksRow);
 const worksRange = document.getElementById('worksRange');
 const worksRangeKnob = worksRange?.querySelector('.works-range-knob');
-let worksDragging = false;
-let worksRangeSync = false;
-function worksMaxScroll() { return Math.max(...worksRows.map(row => row.scrollWidth - row.clientWidth), 0); }
-function setWorksRatio(ratio, sourceRow = null) {
-    const clamped = Math.max(0, Math.min(1, ratio));
-    const max = worksMaxScroll();
-    worksRows.forEach(row => { row.scrollLeft = clamped * Math.max(0, row.scrollWidth - row.clientWidth); });
+let worksDragState = null;
+let worksRangeSyncing = false;
+
+function worksMaxScroll() {
+    return Math.max(0, ...worksRows.map(row => Math.max(0, row.scrollWidth - row.clientWidth)));
+}
+function worksSetRatio(value) {
+    const ratio = Math.max(0, Math.min(1, Number(value) || 0));
+    worksRows.forEach(row => {
+        const max = Math.max(0, row.scrollWidth - row.clientWidth);
+        row.scrollLeft = ratio * max;
+    });
     if (worksRange) {
-        worksRange.dataset.ratio = clamped;
-        worksRange.setAttribute('aria-valuenow', Math.round(clamped * 1000));
-        if (worksRangeKnob) worksRangeKnob.style.left = `${clamped * 100}%`;
+        worksRange.dataset.ratio = String(ratio);
+        worksRange.setAttribute('aria-valuenow', String(Math.round(ratio * 1000)));
+        if (worksRangeKnob) worksRangeKnob.style.left = `${ratio * 100}%`;
     }
 }
-function syncWorksRange(sourceRow = null) {
-    if (!worksRange || worksRangeSync) return;
-    const max = worksMaxScroll();
-    const current = sourceRow ? sourceRow.scrollLeft : (worksRows[0]?.scrollLeft || 0);
-    worksRangeSync = true;
-    setWorksRatio(max ? current / max : 0, sourceRow);
-    worksRangeSync = false;
+function worksSyncRatio(row) {
+    if (!worksRange || worksRangeSyncing) return;
+    const max = Math.max(0, row.scrollWidth - row.clientWidth);
+    if (!max) return;
+    worksRangeSyncing = true;
+    const ratio = row.scrollLeft / max;
+    worksRange.dataset.ratio = String(ratio);
+    worksRange.setAttribute('aria-valuenow', String(Math.round(ratio * 1000)));
+    if (worksRangeKnob) worksRangeKnob.style.left = `${ratio * 100}%`;
+    worksRangeSyncing = false;
 }
-function ratioFromPointer(event) {
+function worksRatioFromPointer(event) {
     const rect = worksRange.getBoundingClientRect();
     return (event.clientX - rect.left) / rect.width;
 }
-function beginRangeDrag(event) {
-    event.preventDefault();
-    worksRange.classList.add('is-dragging');
-    setWorksRatio(ratioFromPointer(event));
-    worksRange.setPointerCapture?.(event.pointerId);
-}
-function moveRangeDrag(event) { if (worksRange.classList.contains('is-dragging')) { event.preventDefault(); setWorksRatio(ratioFromPointer(event)); } }
-function endRangeDrag() { worksRange?.classList.remove('is-dragging'); }
+
 if (worksRange) {
-    worksRange.addEventListener('pointerdown', beginRangeDrag);
-    worksRange.addEventListener('pointermove', moveRangeDrag, { passive: false });
-    worksRange.addEventListener('pointerup', endRangeDrag);
-    worksRange.addEventListener('pointercancel', endRangeDrag);
+    worksRange.addEventListener('pointerdown', event => {
+        event.preventDefault();
+        worksRange.classList.add('is-dragging');
+        worksSetRatio(worksRatioFromPointer(event));
+        worksRange.setPointerCapture?.(event.pointerId);
+    });
+    worksRange.addEventListener('pointermove', event => {
+        if (!worksRange.classList.contains('is-dragging')) return;
+        event.preventDefault();
+        worksSetRatio(worksRatioFromPointer(event));
+    }, {passive:false});
+    const endRange = () => worksRange.classList.remove('is-dragging');
+    worksRange.addEventListener('pointerup', endRange);
+    worksRange.addEventListener('pointercancel', endRange);
+    worksRange.addEventListener('lostpointercapture', endRange);
     worksRange.addEventListener('keydown', event => {
+        if (!['ArrowLeft','ArrowRight'].includes(event.key)) return;
+        event.preventDefault();
         const step = event.shiftKey ? .1 : .03;
         const current = Number(worksRange.dataset.ratio || .5);
-        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-            event.preventDefault(); setWorksRatio(current + (event.key === 'ArrowRight' ? step : -step));
-        }
+        worksSetRatio(current + (event.key === 'ArrowRight' ? step : -step));
     });
 }
+
 worksRows.forEach(row => {
     row.addEventListener('scroll', () => {
         const edge = Math.max(260, row.clientWidth * .7);
         if (row.scrollLeft < edge) extendWorksRow(row, 'start');
         if (row.scrollWidth - row.clientWidth - row.scrollLeft < edge) extendWorksRow(row, 'end');
-        syncWorksRange(row);
+        worksSyncRatio(row);
     }, { passive: true });
-    let pointerDown = false, dragging = false, startX = 0, startY = 0, startScroll = 0;
+
     row.addEventListener('pointerdown', event => {
+        if (event.button !== undefined && event.button !== 0) return;
         if (event.target.closest('.works-scroll-control')) return;
-        pointerDown = true; dragging = false; startX = event.clientX; startY = event.clientY; startScroll = row.scrollLeft;
-        row.setPointerCapture?.(event.pointerId);
+        worksDragState = {
+            row,
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startY: event.clientY,
+            startScroll: row.scrollLeft,
+            axis: null
+        };
+        row.classList.add('is-pressed');
+        // Do not preventDefault here: a vertical gesture must still scroll the page.
     });
-    row.addEventListener('pointermove', event => {
-        if (!pointerDown) return;
-        const dx = event.clientX - startX, dy = event.clientY - startY;
-        if (!dragging && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) { dragging = true; worksDragging = true; row.classList.add('is-dragging'); }
-        if (dragging) { event.preventDefault(); row.scrollLeft = startScroll - dx; }
-    }, { passive: false });
-    const endDrag = () => { pointerDown = false; if (dragging) { row.classList.remove('is-dragging'); setTimeout(() => { dragging = false; worksDragging = false; }, 80); } };
-    row.addEventListener('pointerup', endDrag); row.addEventListener('pointercancel', endDrag); row.addEventListener('lostpointercapture', endDrag);
-    row.addEventListener('click', event => { if (dragging || worksDragging) { event.preventDefault(); event.stopPropagation(); } }, true);
 });
-window.addEventListener('resize', () => syncWorksRange());
-setTimeout(() => syncWorksRange(), 100);
+
+// Global tracker: it takes over only after the gesture is clearly horizontal.
+document.addEventListener('pointermove', event => {
+    if (!worksDragState) return;
+    const state = worksDragState;
+    const dx = event.clientX - state.startX;
+    const dy = event.clientY - state.startY;
+
+    if (!state.axis && Math.hypot(dx, dy) > 8) {
+        state.axis = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
+        if (state.axis === 'horizontal') {
+            state.row.classList.remove('is-pressed');
+            state.row.classList.add('is-dragging');
+            state.row.setPointerCapture?.(state.pointerId);
+        } else {
+            // Release immediately so the browser can perform normal vertical scrolling.
+            state.row.classList.remove('is-pressed');
+            worksDragState = null;
+            return;
+        }
+    }
+
+    if (state.axis === 'horizontal') {
+        event.preventDefault();
+        state.row.scrollLeft = state.startScroll - dx;
+    }
+}, { passive: false });
+
+function endWorksDrag() {
+    if (!worksDragState) return;
+    worksDragState.row.classList.remove('is-pressed', 'is-dragging');
+    worksDragState = null;
+}
+document.addEventListener('pointerup', endWorksDrag);
+document.addEventListener('pointercancel', endWorksDrag);
+
+window.addEventListener('resize', () => worksRows.forEach(row => worksSyncRatio(row)));
+window.addEventListener('load', () => setTimeout(() => worksRows.forEach(row => worksSyncRatio(row)), 250));
+setTimeout(() => worksRows.forEach(row => worksSyncRatio(row)), 500);
 
 /* Inline previews: hover on desktop, focus/tap friendly on touch screens. */
 const artistRows = Array.from(document.querySelectorAll('.artist-row'));
