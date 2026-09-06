@@ -1822,6 +1822,45 @@ html, body { overflow-y: auto !important; }
  .work-detail.zoom-active .work-detail-caption { left:20px; right:20px; bottom:20px; }
 }
 
+
+
+/* WORK DETAIL v27 — reference layout + cursor-centred smooth zoom */
+.work-detail { overflow-y:auto; }
+.work-detail-inner { padding-top: clamp(88px, 10vh, 130px); padding-bottom: 110px; }
+.work-detail-image-wrap {
+    width: min(78vw, 980px);
+    height: min(64vh, 650px);
+    margin: 0 auto;
+    background: transparent;
+}
+.work-detail-image { background: transparent; }
+.work-detail-caption {
+    width: min(78vw, 980px);
+    margin: 0 auto;
+    padding-top: 10px;
+    border-top: 1px solid #ed3d66;
+}
+.work-detail-caption h2 { margin-top: 0; line-height: .9; }
+.work-detail-related {
+    width: min(78vw, 980px);
+    margin: clamp(100px, 14vh, 170px) auto 0;
+}
+.work-detail-related::before { margin-bottom: 18px; }
+.work-related-card {
+    height: 120px;
+    background: transparent;
+    object-fit: contain;
+}
+.work-detail.zoom-active .work-detail-image-wrap {
+    background: #FAED8F;
+}
+@media (max-width:700px) {
+    .work-detail-inner { padding: 82px 20px 90px; }
+    .work-detail-image-wrap,.work-detail-caption,.work-detail-related { width:100%; }
+    .work-detail-image-wrap { height: 56vh; }
+    .work-detail-related { margin-top: 100px; }
+}
+
     </style>
 </head>
 
@@ -3468,21 +3507,30 @@ const workZoomWrap = document.getElementById('workDetailImageWrap');
 if (workZoomWrap) {
     workZoomWrap.addEventListener('wheel', event => {
         event.preventDefault();
+        const rect = workZoomWrap.getBoundingClientRect();
+        const oldScale = workZoom.scale;
         const direction = event.deltaY < 0 ? 1 : -1;
-        const factor = direction > 0 ? 1.22 : 0.82;
-        workZoom.scale = Math.max(1, Math.min(24, workZoom.scale * factor));
-        if (workZoom.scale === 1) { workZoom.x = 0; workZoom.y = 0; }
+        const factor = direction > 0 ? 1.10 : 0.91;
+        const nextScale = Math.max(1, Math.min(24, oldScale * factor));
+        const px = event.clientX - (rect.left + rect.width / 2);
+        const py = event.clientY - (rect.top + rect.height / 2);
+        if (nextScale === 1) {
+            workZoom.scale = 1;
+            workZoom.x = 0;
+            workZoom.y = 0;
+        } else {
+            // Keep the pixel under the cursor fixed while the image scales.
+            const ratio = nextScale / oldScale;
+            workZoom.x = workZoom.x + px * (1 - ratio);
+            workZoom.y = workZoom.y + py * (1 - ratio);
+            workZoom.scale = nextScale;
+        }
         renderWorkZoom();
     }, { passive: false });
 
     workZoomWrap.addEventListener('click', event => {
-        if (workZoom.dragging || workZoom.moved) {
-            workZoom.moved = false;
-            return;
-        }
-        if (workZoom.scale <= 1.01) workZoom.scale = 3;
-        else resetWorkZoom();
-        renderWorkZoom();
+        // Clicking does not snap or reset the view; zoom is controlled by the wheel.
+        if (workZoom.moved) workZoom.moved = false;
     });
 
     workZoomWrap.addEventListener('pointerdown', event => {
