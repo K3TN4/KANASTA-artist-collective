@@ -1664,6 +1664,36 @@ html, body { overflow-y: auto !important; }
 #works.page-section { overflow-x:hidden; overflow-y:visible !important; }
 .works-gallery { overflow-x:hidden; overflow-y:visible !important; }
 .works-row { overflow:hidden !important; touch-action:pan-y !important; }
+
+
+/* UI consistency + work detail */
+.menu, .profile-close, .menu-close, .work-detail-close {
+    font-family: "Cairo", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #ed3d66;
+}
+.menu:hover, .profile-close:hover, .menu-close:hover, .work-detail-close:hover { transform: scale(1.18); }
+.profile-close { right: 32px; top: 28px; transition: transform .9s cubic-bezier(.22,1,.36,1); }
+.work-detail { position:fixed; inset:0; z-index:2500; background:#FAED8F; opacity:0; visibility:hidden; overflow-y:auto; transition:opacity .35s ease, visibility .35s ease; }
+.work-detail.active { opacity:1; visibility:visible; }
+.work-detail-close { position:fixed; top:28px; right:32px; border:0; background:none; cursor:pointer; z-index:2501; transition:transform .9s cubic-bezier(.22,1,.36,1); }
+.work-detail-inner { min-height:100vh; padding:110px 6vw 80px; }
+.work-detail-image-wrap { position:relative; width:min(86vw,1100px); height:min(62vh,700px); margin:0 auto; overflow:hidden; background:#111; cursor:zoom-in; }
+.work-detail-image { width:100%; height:100%; object-fit:contain; transform:scale(1); transform-origin:center; transition:transform .18s ease-out; pointer-events:none; }
+.work-detail-image-wrap:hover .work-detail-image { transform:scale(1.75); }
+.work-zoom-hint { position:absolute; right:14px; bottom:12px; padding:7px 9px; color:#FAED8F; background:#ed3d66; font:9px Arial,sans-serif; letter-spacing:.12em; pointer-events:none; }
+.work-detail-caption { width:min(86vw,1100px); margin:22px auto 0; }
+.work-detail-caption span { font:10px Arial,sans-serif; letter-spacing:.12em; color:#777; }
+.work-detail-caption h2 { margin-top:12px; font:clamp(36px,6vw,84px)/.95 "Bakbak One",sans-serif; color:#ed3d66; }
+.work-detail-caption p { margin-top:14px; font:11px Cairo,sans-serif; letter-spacing:.14em; text-transform:uppercase; }
+.work-detail-related { width:min(86vw,1100px); margin:55px auto 0; display:flex; gap:12px; overflow:hidden; }
+.work-related-card { flex:0 0 120px; height:100px; object-fit:contain; background:#111; cursor:pointer; }
+@media (hover:none), (pointer:coarse) { #cursorH1Overlay,#cursorTextOverlay,.custom-cursor { display:none !important; } }
+@media (max-width:700px) { .menu,.profile-close,.menu-close,.work-detail-close { font-size:11px; top:18px; } .menu { right:20px; } .profile-close,.work-detail-close { right:20px; } .work-detail-inner { padding:82px 20px 55px; } .work-detail-image-wrap,.work-detail-caption,.work-detail-related { width:100%; } .work-detail-image-wrap { height:52vh; } }
+
     </style>
 </head>
 
@@ -1925,8 +1955,6 @@ html, body { overflow-y: auto !important; }
 
     <div class="works-gallery" id="worksGallery" aria-label="Works gallery">
         <div class="works-row" data-row="0"></div>
-        <div class="works-row" data-row="1"></div>
-        <div class="works-row" data-row="2"></div>
     </div>
     <div class="works-scroll-control">
         <label for="worksRange">SCROLL WORKS</label>
@@ -2049,6 +2077,23 @@ html, body { overflow-y: auto !important; }
     </div>
 
 </div>
+    <!-- WORK DETAIL -->
+    <div class="work-detail" id="workDetail" aria-hidden="true">
+        <button class="work-detail-close" type="button" aria-label="Close" onclick="closeWorkDetail()">CLOSE</button>
+        <div class="work-detail-inner">
+            <div class="work-detail-image-wrap" id="workDetailImageWrap">
+                <img id="workDetailImage" class="work-detail-image" alt="">
+                <div class="work-zoom-hint">MOVE TO ZOOM</div>
+            </div>
+            <div class="work-detail-caption">
+                <span id="workDetailNumber">01 / 16</span>
+                <h2 id="workDetailTitle">Work 01</h2>
+                <p id="workDetailArtist">KANASTA · ARTIST COLLECTIVE</p>
+            </div>
+            <div class="work-detail-related" id="workDetailRelated"></div>
+        </div>
+    </div>
+
     <!-- FOOTER -->
 
     <footer>
@@ -3105,7 +3150,7 @@ const worksData = [
 const worksRows=Array.from(document.querySelectorAll('.works-row'));
 const workKey=w=>w.file;
 function shuffledWorks(excluded=[]){const blocked=new Set(excluded),pool=worksData.filter(w=>!blocked.has(workKey(w)));for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}return pool.length?pool:[...worksData];}
-function createWorkCard(work){const card=document.createElement('figure');card.className='works-card';card.style.setProperty('--work-ratio',work.ratio);card.tabIndex=0;card.dataset.work=workKey(work);const img=document.createElement('img');img.src=work.file;img.alt=work.title;img.loading='lazy';img.draggable=false;const cap=document.createElement('figcaption');cap.textContent=work.title;card.append(img,cap);return card;}
+function createWorkCard(work){const card=document.createElement('figure');card.className='works-card';card.style.setProperty('--work-ratio',work.ratio);card.tabIndex=0;card.dataset.work=workKey(work);const img=document.createElement('img');img.src=work.file;img.alt=work.title;img.loading='lazy';img.draggable=false;const cap=document.createElement('figcaption');cap.textContent=work.title;card.append(img,cap);card.addEventListener('click',()=>{if(!document.body.classList.contains('works-mouse-dragging'))openWorkDetail(work,card);});return card;}
 function fillWorksRow(row,rowIndex){const reverse=rowIndex%2;let previous=[];for(let copy=0;copy<3;copy++){const batch=shuffledWorks(previous);previous=batch.map(workKey).slice(-5);(reverse?batch.slice().reverse():batch).forEach(w=>row.appendChild(createWorkCard(w)));}const max=Math.max(0,row.scrollWidth-row.clientWidth);const offsets=[.18,.57,.34];requestAnimationFrame(()=>{row.scrollLeft=max*offsets[rowIndex%offsets.length];});}
 function extendWorksRow(row,side){const existing=Array.from(row.querySelectorAll('.works-card')).slice(-worksData.length).map(c=>c.dataset.work);const batch=shuffledWorks(existing).slice(0,6);const ordered=Number(row.dataset.row)%2?batch.slice().reverse():batch;const before=row.scrollWidth;const cards=ordered.map(createWorkCard);if(side==='start')cards.reverse().forEach(c=>row.prepend(c));else cards.forEach(c=>row.append(c));if(side==='start')row.scrollLeft+=row.scrollWidth-before;}
 worksRows.forEach(fillWorksRow);
@@ -3255,6 +3300,24 @@ document.addEventListener('touchend', releaseGallery, { passive: true });
 document.addEventListener('touchcancel', releaseGallery, { passive: true });
 window.addEventListener('resize', () => activeRow && syncKnob(activeRow));
 setTimeout(() => { activeRow = worksRows[0]; syncKnob(activeRow); }, 500);
+
+
+/* Work detail cards: click opens a Google Arts & Culture-inspired view. */
+function openWorkDetail(work, card) {
+    const modal=document.getElementById('workDetail');
+    const img=document.getElementById('workDetailImage');
+    const title=document.getElementById('workDetailTitle');
+    const number=document.getElementById('workDetailNumber');
+    const related=document.getElementById('workDetailRelated');
+    if(!modal||!img) return;
+    img.src=work.file; img.alt=work.title; title.textContent=work.title;
+    const idx=Math.max(0,worksData.indexOf(work)); number.textContent=`${String(idx+1).padStart(2,'0')} / ${worksData.length}`;
+    related.innerHTML='';
+    worksData.filter((_,i)=>i!==idx).slice(0,6).forEach((item)=>{ const r=document.createElement('img'); r.src=item.file; r.alt=item.title; r.className='work-related-card'; r.onclick=()=>openWorkDetail(item); related.appendChild(r); });
+    modal.classList.add('active'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+}
+function closeWorkDetail(){ const modal=document.getElementById('workDetail'); if(!modal)return; modal.classList.remove('active'); modal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+window.addEventListener('keydown',e=>{if(e.key==='Escape')closeWorkDetail();});
 
 /* Inline previews: hover on desktop, focus/tap friendly on touch screens. */
 const artistRows = Array.from(document.querySelectorAll('.artist-row'));
