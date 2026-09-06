@@ -2382,6 +2382,21 @@ body.artist-profile-open .menu { visibility:hidden !important; opacity:0 !import
     .work-detail.zoom-active .work-detail-image-wrap { width:100vw !important; height:100svh !important; }
 }
 
+
+
+/* WORK DETAIL v38 — click-to-enter viewer, page lock, no snap */
+.work-detail:not(.zoom-active) .work-detail-image-wrap { cursor: zoom-in; }
+.work-detail.zoom-active { overflow: hidden !important; }
+.work-detail.zoom-active .work-detail-image-wrap {
+    animation: workViewerEnter .48s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes workViewerEnter {
+    from { opacity:.86; transform:scale(.94); }
+    to { opacity:1; transform:scale(1); }
+}
+.work-detail.zoom-active .work-detail-image { transition: transform .34s cubic-bezier(.22,1,.36,1) !important; }
+.work-detail.zoom-active .work-zoom-hint { opacity:0; pointer-events:none; }
+
     </style>
 </head>
 
@@ -4031,6 +4046,8 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape')closeWorkDetail();});
 const workZoomWrap = document.getElementById('workDetailImageWrap');
 if (workZoomWrap) {
     workZoomWrap.addEventListener('wheel', event => {
+        const detail = document.getElementById('workDetail');
+        if (!detail.classList.contains('zoom-active')) return;
         event.preventDefault();
         const box = workZoomWrap.getBoundingClientRect();
         const oldScale = workZoom.scale;
@@ -4051,8 +4068,20 @@ if (workZoomWrap) {
     }, { passive: false });
 
     workZoomWrap.addEventListener('click', event => {
-        // Clicking does not snap or reset the view; zoom is controlled by the wheel.
-        if (workZoom.moved) workZoom.moved = false;
+        if (workZoom.moved) {
+            workZoom.moved = false;
+            return;
+        }
+        const detail = document.getElementById('workDetail');
+        if (!detail.classList.contains('zoom-active')) {
+            // Enter the dedicated viewer only after an explicit click.
+            workZoom.scale = 1;
+            workZoom.x = 0;
+            workZoom.y = 0;
+            detail.classList.add('zoom-active');
+            document.body.style.overflow = 'hidden';
+            renderWorkZoom();
+        }
     });
 
     workZoomWrap.addEventListener('pointerdown', event => {
