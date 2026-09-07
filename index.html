@@ -136,12 +136,12 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow.dragging{cursor:grabbing!important}
 @media(max-width:700px){#worksRow{gap:8px!important}#worksRow .works-line{flex-basis:clamp(110px,30vw,180px);gap:8px}}
 
-/* v32: four visible horizontal rows, one shared infinite rail */
-#worksRow{display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;gap:10px!important;height:calc(clamp(150px,20vw,260px)*4 + 30px)!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-behavior:auto!important;cursor:grab!important}
-#worksRow .works-line{display:flex!important;flex:0 0 clamp(150px,20vw,260px)!important;width:max-content!important;min-width:100%!important;height:clamp(150px,20vw,260px)!important;gap:12px!important;overflow:visible!important;align-items:stretch!important}
+/* v33: synchronized four-row rail with one compact gap */
+#worksRow{--works-gap:10px;display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;gap:var(--works-gap)!important;height:calc(clamp(150px,20vw,260px)*4 + var(--works-gap)*3)!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-behavior:auto!important;cursor:grab!important}
+#worksRow .works-line{display:flex!important;flex:0 0 clamp(150px,20vw,260px)!important;width:max-content!important;min-width:100%!important;height:clamp(150px,20vw,260px)!important;gap:var(--works-gap)!important;overflow:visible!important;align-items:stretch!important}
 #worksRow .work-card{height:100%!important;flex:0 0 auto!important}
 #worksRow.dragging{cursor:grabbing!important}
-@media(max-width:700px){#worksRow{height:calc(clamp(110px,30vw,180px)*4 + 24px)!important;gap:8px!important}#worksRow .works-line{flex-basis:clamp(110px,30vw,180px)!important;height:clamp(110px,30vw,180px)!important;gap:8px!important}}
+@media(max-width:700px){#worksRow{--works-gap:8px;height:calc(clamp(110px,30vw,180px)*4 + var(--works-gap)*3)!important}#worksRow .works-line{flex-basis:clamp(110px,30vw,180px)!important;height:clamp(110px,30vw,180px)!important}}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -198,7 +198,7 @@ $('#viewerImage').addEventListener('touchmove',e=>{if(e.touches.length===2&&pinc
 $('#viewerImage').addEventListener('touchend',e=>{if(e.touches.length<2)pinch.active=false});
 let drag=null;
 function randomWork(exclude=new Set()){const pool=works.filter(w=>!exclude.has(w.thumb));return pool[Math.floor(Math.random()*Math.max(1,pool.length))]||works[Math.floor(Math.random()*works.length)]}
-function appendRandom(side){const lines=[...document.querySelectorAll('#worksRow .works-line')];if(!lines.length||!works.length)return;const existing=new Set([...document.querySelectorAll('#worksRow .work-card')].map(c=>c.dataset.file));let pool=works.filter(w=>!existing.has(w.thumb));if(!pool.length)pool=works.slice();const w=pool[Math.floor(Math.random()*pool.length)];lines.forEach(line=>{const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(works.indexOf(w))};side==='left'?line.prepend(card):line.append(card)})}
+function appendRandom(side){const lines=[...document.querySelectorAll('#worksRow .works-line')];if(!lines.length||!works.length)return;const visible=new Set([...document.querySelectorAll('#worksRow .work-card')].map(c=>c.dataset.file));let pool=shuffleWorks(works.filter(w=>!visible.has(w.thumb)).slice());if(pool.length<lines.length){const refill=shuffleWorks(works.slice());pool=pool.concat(refill)}lines.forEach((line,index)=>{const w=pool[index%pool.length];const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(works.indexOf(w))};side==='left'?line.prepend(card):line.append(card)})}
 $('#worksRow').onmousedown=e=>{if(e.button!==0)return;drag={x:e.clientX,s:$('#worksRow').scrollLeft,moved:false};e.preventDefault()};document.onmousemove=e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>5)drag.moved=true;$('#worksRow').scrollLeft=drag.s-dx;if($('#worksRow').scrollLeft<180)appendRandom('left');if($('#worksRow').scrollWidth-$('#worksRow').clientWidth-$('#worksRow').scrollLeft<180)appendRandom('right')};document.addEventListener('mouseup',()=>{if(drag){const wasMoved=drag.moved;setTimeout(()=>{drag=null;if(wasMoved)document.body.classList.add('suppress-work-click');setTimeout(()=>document.body.classList.remove('suppress-work-click'),80)},0)}});
 let touchRail=null;
 $('#worksRow').addEventListener('touchstart',e=>{if(!e.touches.length)return;const t=e.touches[0];touchRail={x:t.clientX,s:$('#worksRow').scrollLeft,moved:false};$('#worksRow').classList.add('dragging')},{passive:true});
