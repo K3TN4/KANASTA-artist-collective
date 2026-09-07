@@ -142,6 +142,9 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .work-card{height:100%!important;flex:0 0 auto!important}
 #worksRow.dragging{cursor:grabbing!important}
 @media(max-width:700px){#worksRow{--works-gap:8px;height:calc(clamp(110px,30vw,180px)*4 + var(--works-gap)*3)!important}#worksRow .works-line{flex-basis:clamp(110px,30vw,180px)!important;height:clamp(110px,30vw,180px)!important}}
+
+/* v34 loader fix */
+#worksRow .works-line{display:flex!important;visibility:visible!important;opacity:1!important}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -239,9 +242,9 @@ const artistFolderNames=['Patrycja Boruch','Zuzanna Frankowska','Amelia Korczak'
 const artistApi='https://api.github.com/repos/K3TN4/KANASTA-artist-collective/contents/';
 function artistAsset(folder,name){return folder+'/'+name.split('/').map(encodeURIComponent).join('/')}
 function shuffleWorks(list){for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
-function addArtistCard(w,i){const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.onload=()=>{if(im.naturalWidth)card.style.aspectRatio=`${im.naturalWidth}/${im.naturalHeight}`};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};$('#worksRow').append(card);workCards.push(card)}
+function addArtistCard(w,i){const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.onload=()=>{if(im.naturalWidth)card.style.aspectRatio=`${im.naturalWidth}/${im.naturalHeight}`};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||lines[0]||$('#worksRow')).append(card);workCards.push(card)}
 async function loadArtistWorks(){try{
- const batches=await Promise.all(artistFolderNames.map(async artist=>{const base=artistAsset(artistRoot,artist);const response=await fetch(artistApi+encodeURIComponent(artistRoot+'/'+artist)+'/thumbs',{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)return[];const files=await response.json();return files.filter(x=>x.type==='file'&&/\.(png|jpe?g|webp)$/i.test(x.name)).map(file=>{const n=file.name;return{thumb:artistAsset(base+'/thumbs',n),view:artistAsset(base+'/view',n),full:artistAsset(base+'/full',n),title:n.replace(/\.[^.]+$/,''),artist}})}));
+ const batches=await Promise.all(artistFolderNames.map(async artist=>{const base=artistAsset(artistRoot,artist);const response=await fetch(artistApi+artistAsset(artistRoot+'/'+artist,'thumbs'),{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)return[];const files=await response.json();return files.filter(x=>x.type==='file'&&/\.(png|jpe?g|webp)$/i.test(x.name)).map(file=>{const n=file.name;return{thumb:artistAsset(base+'/thumbs',n),view:artistAsset(base+'/view',n),full:artistAsset(base+'/full',n),title:n.replace(/\.[^.]+$/,''),artist}})}));
  shuffleWorks(batches.flat()).forEach((w,i)=>{works.push(w);addArtistCard(w,i)});
  document.querySelector('.works .section-head span:last-child').textContent=works.length+' · ALL ARTISTS';
  requestAnimationFrame(()=>{$('#worksRow').scrollLeft=Math.max(0,($('#worksRow').scrollWidth-$('#worksRow').clientWidth)/2)});
