@@ -93,6 +93,34 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 .related img:hover{transform:scale(1.018)!important;z-index:2}
 @media (min-width:701px) and (max-width:1100px){.related{column-count:4!important}}
 @media(max-width:700px){.related{column-count:2!important;column-gap:6px!important;margin-top:6px!important;padding:6px!important}.related img{margin-bottom:6px!important}}
+
+/* v27 mobile repair */
+@media (max-width:700px){
+ html,body{width:100%;max-width:100%;overflow-x:hidden}
+ .top{left:0;right:0;width:100%;padding:18px 20px!important;box-sizing:border-box}
+ main.hero{width:100%;min-width:0;padding:112px 14px 0!important;overflow:hidden}
+ .hero h1{width:100%!important;max-width:100%!important;font-size:clamp(48px,15.5vw,84px)!important;letter-spacing:.01em!important;line-height:.88!important;text-align:center;white-space:nowrap;transform:none!important}
+ .hero .subtitle{width:100%;text-align:center;font-size:10px;letter-spacing:.11em;white-space:normal;line-height:1.35;margin-top:18px}
+ .orbit{width:100%!important;max-width:100%!important;padding:0!important;margin-top:30px!important;overflow:visible!important}
+ .orbit-row{width:100%!important;max-width:100%;display:flex!important;justify-content:center!important;align-items:center!important;flex-wrap:wrap!important;gap:12px!important}
+ .circle{width:clamp(58px,18vw,78px)!important;height:clamp(58px,18vw,78px)!important;flex:0 0 auto}
+ .section{width:100%;min-width:0;padding:76px 18px 96px!important;overflow:hidden}
+ .section-head{width:100%;margin-bottom:38px;gap:8px}
+ .section-head h2{font-size:clamp(42px,13vw,72px)!important;white-space:nowrap}
+ .artist-list{width:100%;min-width:0}
+ .artist-row{grid-template-columns:28px minmax(0,1fr);width:100%;padding:16px 0!important}
+ .artist-name{font-size:clamp(21px,6.6vw,32px)!important;white-space:normal;overflow-wrap:anywhere}
+ .artist-photo{right:0;width:58px;height:58px}
+ .works-row{width:100%;height:clamp(150px,48vw,240px);overflow:hidden}
+ .viewer-inner{width:calc(100% - 36px)!important;margin:72px 18px 100px!important}
+ .viewer-image{height:58svh!important}
+ .viewer-caption h2{font-size:clamp(38px,12vw,64px)!important}
+ .related{width:100%!important;box-sizing:border-box;column-count:2!important;column-gap:6px!important;padding:6px!important;margin-top:20px!important}
+ .related img{width:100%!important;margin:0 0 6px!important}
+}
+@media (min-width:701px) and (max-width:1024px) and (pointer:coarse){
+ html,body{overflow-x:hidden}.top{padding-left:24px!important;padding-right:24px!important}.section{padding-left:28px!important;padding-right:28px!important}
+}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
