@@ -187,12 +187,9 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .work-card{width:var(--card-width)!important;min-width:var(--card-width)!important;max-width:var(--card-width)!important}
 #worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important}
 
-/* v47 stable synchronous rail: no API wait, no async reflow */
-#worksRow{display:flex!important;flex-direction:column!important;gap:6px!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-behavior:auto!important}
-#worksRow .works-line{display:flex!important;flex:0 0 clamp(150px,20vw,260px)!important;height:clamp(150px,20vw,260px)!important;min-height:clamp(150px,20vw,260px)!important;width:max-content!important;min-width:100%!important;gap:6px!important;visibility:visible!important;opacity:1!important}
-#worksRow .work-card{display:block!important;width:clamp(190px,18vw,300px)!important;min-width:clamp(190px,18vw,300px)!important;max-width:clamp(190px,18vw,300px)!important;height:100%!important;flex:0 0 clamp(190px,18vw,300px)!important;margin:0!important;padding:0!important}
-#worksRow .work-card img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important}
-@media(max-width:700px){#worksRow .works-line{flex-basis:clamp(110px,30vw,180px)!important;height:clamp(110px,30vw,180px)!important}#worksRow .work-card{width:clamp(105px,29vw,170px)!important;min-width:clamp(105px,29vw,170px)!important;max-width:clamp(105px,29vw,170px)!important;flex-basis:clamp(105px,29vw,170px)!important}}
+/* v49 bounded rail buffer: max 30 cards per row, symmetric left/right movement */
+#worksRow .works-line{gap:6px!important}
+#worksRow .work-card{margin:0!important}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -290,11 +287,39 @@ const artistApi='https://api.github.com/repos/K3TN4/KANASTA-artist-collective/co
 function artistAsset(folder,name){return folder+'/'+name.split('/').map(encodeURIComponent).join('/')}
 function shuffleWorks(list){for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
 function addArtistCard(w,i){const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.onload=()=>{im.classList.add('loaded')};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||lines[0]||$('#worksRow')).append(card);workCards.push(card)}
-
-const sourceWorks=[];let railReady=false;
 const fallbackWorks=Array.from({length:16},(_,i)=>{const n=String(i+1).padStart(2,'0');return{thumb:`images/works/thumbs/work${n}.webp`,view:`images/works/view/work${n}.webp`,full:`images/works/full/work${n}.webp`,title:`Work ${n}`,artist:'Unknown'}});
-function makeStableCard(w){const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.loading='eager';im.draggable=false;card.append(im);card.onclick=()=>{if(!drag||!drag.moved){const i=works.indexOf(w);if(i>=0)openWork(i)}};return card}
-function renderStableRail(list){const lines=[...document.querySelectorAll('#worksRow .works-line')];if(!lines.length)return;sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);lines.forEach(line=>line.replaceChildren());const perRow=list.length<4?list.length:Math.ceil(list.length/4);for(let row=0;row<4;row++){const rowWorks=[];for(let i=row;i<list.length;i+=4)rowWorks.push(list[i]);const sequence=rowWorks.length?rowWorks:list;for(let copy=0;copy<5;copy++)sequence.forEach(w=>lines[row].append(makeStableCard(w)))}document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';railReady=true;requestAnimationFrame(()=>{$('#worksRow').scrollLeft=Math.max(0,($('#worksRow').scrollWidth-$('#worksRow').clientWidth)/2)})}
-function appendRailBatch(direction){if(!railReady)return;const lines=[...document.querySelectorAll('#worksRow .works-line')];lines.forEach((line,row)=>{const rowWorks=sourceWorks.filter((_,i)=>i%4===row);const sequence=rowWorks.length?rowWorks:sourceWorks;sequence.forEach(w=>direction==='left'?line.prepend(makeStableCard(w)):line.append(makeStableCard(w)))});if(direction==='left'){const before=0;requestAnimationFrame(()=>{$('#worksRow').scrollLeft+=Math.max(1,$('#worksRow').scrollWidth/5)})}}
-renderStableRail(fallbackWorks.slice());
+const sourceWorks=[];let railBusy=false, railReady=false, worksInteracted=false;
+function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
+function makeWorkCard(meta){const {w,ratio}=meta;const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const rowHeight=parseFloat(getComputedStyle(document.querySelector('#worksRow .works-line')).height)||220;card.style.setProperty('--card-width',`${Math.max(80,ratio*rowHeight)}px`);const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.decoding='async';card.append(im);card.onclick=()=>{if(!drag||!drag.moved){const i=works.indexOf(w);if(i>=0)openWork(i)}};return card}
+function distinctRowLists(list){const pool=shuffleWorks(list.slice());const rows=[[],[],[],[]];for(let i=0;i<pool.length;i++)rows[i%4].push(pool[i]);return rows}
+function renderRail(list){const lines=[...document.querySelectorAll('#worksRow .works-line')];if(!list.length)return;sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);Promise.all(list.map(loadMeta)).then(metas=>{if(worksInteracted)return;lines.forEach(line=>line.replaceChildren());const rows=distinctRowLists(metas);const copies=Math.max(4,Math.ceil(64/list.length));for(let row=0;row<4;row++){const order=rows[row];for(let copy=0;copy<copies;copy++)order.forEach(meta=>lines[row].append(makeWorkCard(meta)))}railReady=true;document.querySelector('.works .section-head span:last-child').textContent=sourceWorks.length+' · ALL ARTISTS';requestAnimationFrame(()=>{$('#worksRow').scrollLeft=Math.max(0,($('#worksRow').scrollWidth-$('#worksRow').clientWidth)/2)})})}
+function randomBatch(exclude=new Set(),count=4){let pool=shuffleWorks(sourceWorks.filter(w=>!exclude.has(w.thumb)).slice());if(pool.length<count)pool=pool.concat(shuffleWorks(sourceWorks.slice()));return pool.slice(0,count)}
+const RAIL_KEEP_PER_ROW=30;
+function trimRail(direction){
+ const row=$('#worksRow'); const lines=[...document.querySelectorAll('#worksRow .works-line')];
+ if(!lines.length||lines[0].children.length<=RAIL_KEEP_PER_ROW)return;
+ if(direction==='right'&&row.scrollLeft>row.clientWidth*1.5){
+  const before=row.scrollWidth;lines.forEach(line=>line.firstElementChild?.remove());const delta=before-row.scrollWidth;
+  row.scrollLeft=Math.max(0,row.scrollLeft-delta);if(drag)drag.s-=delta;if(touchRail)touchRail.s-=delta;
+ }else if(direction==='left'&&row.scrollWidth-row.clientWidth-row.scrollLeft>row.clientWidth*1.5){
+  lines.forEach(line=>line.lastElementChild?.remove());
+ }
+}
+async function appendRailBatch(direction){
+ if(railBusy||!railReady||!sourceWorks.length)return;railBusy=true;
+ const row=$('#worksRow'),lines=[...document.querySelectorAll('#worksRow .works-line')];
+ const current=new Set([...document.querySelectorAll('#worksRow .work-card')].map(card=>card.dataset.file));
+ const batch=randomBatch(current,4);const metas=await Promise.all(batch.map(loadMeta));
+ if(direction==='left'){
+  const before=row.scrollWidth;
+  for(let i=0;i<4;i++)lines[i].prepend(makeWorkCard(metas[i]));
+  requestAnimationFrame(()=>{const delta=row.scrollWidth-before;row.scrollLeft+=delta;if(drag)drag.s+=delta;if(touchRail)touchRail.s+=delta;trimRail('left');railBusy=false});
+ }else{
+  for(let i=0;i<4;i++)lines[i].append(makeWorkCard(metas[i]));
+  requestAnimationFrame(()=>{trimRail('right');railBusy=false});
+ }
+} 
+async function listArtistThumbs(artist){const path=artistRoot+'/'+artist+'/thumbs';try{const response=await fetch(encodeURI(artistApi+path),{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)throw new Error('HTTP '+response.status);const files=await response.json();return files.filter(x=>x.type==='file'&&/\.(png|jpe?g|webp)$/i.test(x.name)).map(file=>{const n=file.name,base=artistRoot+'/'+artist;return{thumb:artistAsset(base+'/thumbs',n),view:artistAsset(base+'/view',n),full:artistAsset(base+'/full',n),title:n.replace(/\.[^.]+$/,''),artist}})}catch(error){return[]}}
+async function loadArtistWorks(){renderRail(shuffleWorks(fallbackWorks.slice()));const batches=[];for(const artist of artistFolderNames)batches.push(await listArtistThumbs(artist));const loaded=shuffleWorks(batches.flat());if(loaded.length&&!worksInteracted)renderRail(loaded)}
+loadArtistWorks();
 </script></body></html>
