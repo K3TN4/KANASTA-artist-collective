@@ -145,6 +145,10 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* v34 loader fix */
 #worksRow .works-line{display:flex!important;visibility:visible!important;opacity:1!important}
+
+/* v35: robust GitHub loader and visible four-line fallback */
+#worksRow .works-line{display:flex!important;visibility:visible!important;opacity:1!important;min-height:1px!important}
+#worksRow .placeholder{display:block!important;width:100%;padding:20px;color:#000}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -186,7 +190,7 @@ orbitCircles.forEach(circle=>{
 });
 
 let workCards=[];works.forEach((w,i)=>{const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.onload=()=>{if(im.naturalWidth&&im.naturalHeight)card.style.aspectRatio=`${im.naturalWidth}/${im.naturalHeight}`};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||$('#worksRow')).append(card);workCards.push(card)});
-requestAnimationFrame(()=>{$('#worksRow').scrollLeft=Math.max(0,($('#worksRow').scrollWidth-$('#worksRow').clientWidth)/2)});
+requestAnimationFrame(()=>{$('#worksRow').scrollLeft=0});
 function openArtist(i){$('#profileBody').innerHTML=`<div class="profile-no">${String(i+1).padStart(2,'0')} / 15</div><h2>${artists[i][0]}</h2><img src="images/${artists[i][1]}" alt=""><p>Artist based in Poland. Member of the KANASTA artist collective.</p>`;$('#profile').classList.add('open');document.body.style.overflow='hidden'}
 function closeAll(){['#menu','#profile','#viewer'].forEach(x=>$(x).classList.remove('open'));document.body.style.overflow='';history.replaceState({},'',location.pathname)}
 function openWork(i){activeWork=i;const w=works[i];$('#viewerImg').src=w.view;$('#viewerImg').dataset.full=w.full;$('#viewerImg').alt=w.title;$('#viewerTitle').textContent=w.title;$('#viewerNo').textContent=`${String(i+1).padStart(2,'0')} / 16`;$('#related').innerHTML='';works.forEach((x,j)=>{if(j===i||x.artist!==w.artist)return;const im=new Image();im.src=x.thumb;im.dataset.file=x.thumb;im.alt=x.title;im.onclick=()=>openWork(j);$('#related').append(im)});$('#viewer').classList.add('open');document.body.style.overflow='hidden';history.pushState({},'',`/KANASTA-artist-collective/works`);resetZoom()}
@@ -243,11 +247,19 @@ const artistApi='https://api.github.com/repos/K3TN4/KANASTA-artist-collective/co
 function artistAsset(folder,name){return folder+'/'+name.split('/').map(encodeURIComponent).join('/')}
 function shuffleWorks(list){for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
 function addArtistCard(w,i){const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.onload=()=>{if(im.naturalWidth)card.style.aspectRatio=`${im.naturalWidth}/${im.naturalHeight}`};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||lines[0]||$('#worksRow')).append(card);workCards.push(card)}
-async function loadArtistWorks(){try{
- const batches=await Promise.all(artistFolderNames.map(async artist=>{const base=artistAsset(artistRoot,artist);const response=await fetch(artistApi+artistAsset(artistRoot+'/'+artist,'thumbs'),{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)return[];const files=await response.json();return files.filter(x=>x.type==='file'&&/\.(png|jpe?g|webp)$/i.test(x.name)).map(file=>{const n=file.name;return{thumb:artistAsset(base+'/thumbs',n),view:artistAsset(base+'/view',n),full:artistAsset(base+'/full',n),title:n.replace(/\.[^.]+$/,''),artist}})}));
- shuffleWorks(batches.flat()).forEach((w,i)=>{works.push(w);addArtistCard(w,i)});
- document.querySelector('.works .section-head span:last-child').textContent=works.length+' · ALL ARTISTS';
- requestAnimationFrame(()=>{$('#worksRow').scrollLeft=Math.max(0,($('#worksRow').scrollWidth-$('#worksRow').clientWidth)/2)});
- }catch(error){console.error(error);const note=document.createElement('p');note.className='placeholder';note.textContent='WORKS — foldery artystów nie są jeszcze dostępne na GitHub Pages.';$('#worksRow').replaceWith(note)}}
+async function listArtistThumbs(artist){
+ const path=artistRoot+'/'+artist+'/thumbs';
+ const url=encodeURI(artistApi+path);
+ try{const response=await fetch(url,{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)throw new Error('HTTP '+response.status);const files=await response.json();return files.filter(x=>x.type==='file'&&/\.(png|jpe?g|webp)$/i.test(x.name)).map(file=>{const n=file.name;const base=artistRoot+'/'+artist;return{thumb:artistAsset(base+'/thumbs',n),view:artistAsset(base+'/view',n),full:artistAsset(base+'/full',n),title:n.replace(/\.[^.]+$/,''),artist}})}catch(error){console.warn('WORKS folder unavailable',artist,error);return[]}}
+async function loadArtistWorks(){
+ document.querySelectorAll('#worksRow .works-line').forEach(line=>line.style.minHeight='1px');
+ const batches=[];
+ for(const artist of artistFolderNames){const files=await listArtistThumbs(artist);batches.push(files)}
+ const loaded=shuffleWorks(batches.flat());
+ loaded.forEach((w,i)=>{works.push(w);addArtistCard(w,i)});
+ if(!loaded.length){const note=document.createElement('p');note.className='placeholder';note.textContent='WORKS — odśwież stronę po wypchnięciu folderu thumbs.';$('#worksRow').prepend(note)}
+ document.querySelector('.works .section-head span:last-child').textContent=(works.length||0)+' · ALL ARTISTS';
+ requestAnimationFrame(()=>{$('#worksRow').scrollLeft=0});
+}
 loadArtistWorks();
 </script></body></html>
