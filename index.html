@@ -155,6 +155,13 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .works-line{gap:var(--works-gap)!important}
 #worksRow .work-card{width:auto!important;aspect-ratio:auto!important}
 #worksRow .work-card img{display:block;width:auto!important;height:100%!important;object-fit:contain!important}
+
+/* v37: deterministic tiles — no load-time width reflow or visual gaps */
+#worksRow{--works-gap:6px!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-behavior:auto!important}
+#worksRow .works-line{gap:var(--works-gap)!important}
+#worksRow .work-card{box-sizing:border-box!important;width:clamp(190px,18vw,300px)!important;min-width:clamp(190px,18vw,300px)!important;max-width:clamp(190px,18vw,300px)!important;height:100%!important;aspect-ratio:auto!important;margin:0!important;padding:0!important}
+#worksRow .work-card img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;margin:0!important;padding:0!important}
+@media(max-width:700px){#worksRow{--works-gap:5px!important}#worksRow .work-card{width:clamp(105px,29vw,170px)!important;min-width:clamp(105px,29vw,170px)!important;max-width:clamp(105px,29vw,170px)!important}}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -195,7 +202,7 @@ orbitCircles.forEach(circle=>{
  circle.addEventListener('mouseleave',()=>{const row=circle.parentElement;row.querySelectorAll('.circle').forEach(x=>{x.style.setProperty('--hover-x','0px');x.style.setProperty('--hover-scale','1')})});
 });
 
-let workCards=[];works.forEach((w,i)=>{const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.onload=()=>{if(im.naturalWidth&&im.naturalHeight){card.style.width=(im.naturalWidth/im.naturalHeight*card.parentElement.clientHeight)+'px'}};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||$('#worksRow')).append(card);workCards.push(card)});
+let workCards=[];works.forEach((w,i)=>{const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.onload=()=>{im.classList.add('loaded')};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||$('#worksRow')).append(card);workCards.push(card)});
 requestAnimationFrame(()=>{$('#worksRow').scrollLeft=0});
 function openArtist(i){$('#profileBody').innerHTML=`<div class="profile-no">${String(i+1).padStart(2,'0')} / 15</div><h2>${artists[i][0]}</h2><img src="images/${artists[i][1]}" alt=""><p>Artist based in Poland. Member of the KANASTA artist collective.</p>`;$('#profile').classList.add('open');document.body.style.overflow='hidden'}
 function closeAll(){['#menu','#profile','#viewer'].forEach(x=>$(x).classList.remove('open'));document.body.style.overflow='';history.replaceState({},'',location.pathname)}
@@ -252,19 +259,17 @@ const artistFolderNames=['Patrycja Boruch','Zuzanna Frankowska','Amelia Korczak'
 const artistApi='https://api.github.com/repos/K3TN4/KANASTA-artist-collective/contents/';
 function artistAsset(folder,name){return folder+'/'+name.split('/').map(encodeURIComponent).join('/')}
 function shuffleWorks(list){for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
-function addArtistCard(w,i){const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.onload=()=>{if(im.naturalWidth&&im.naturalHeight){card.style.width=(im.naturalWidth/im.naturalHeight*card.parentElement.clientHeight)+'px'}};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||lines[0]||$('#worksRow')).append(card);workCards.push(card)}
+function addArtistCard(w,i){const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.onload=()=>{im.classList.add('loaded')};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||lines[0]||$('#worksRow')).append(card);workCards.push(card)}
+const fallbackWorks=Array.from({length:16},(_,i)=>{const n=String(i+1).padStart(2,'0');return{thumb:`images/works/thumbs/work${n}.webp`,view:`images/works/view/work${n}.webp`,full:`images/works/full/work${n}.webp`,title:`Work ${n}`,artist:'Unknown'}});
 async function listArtistThumbs(artist){
  const path=artistRoot+'/'+artist+'/thumbs';
- const url=encodeURI(artistApi+path);
- try{const response=await fetch(url,{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)throw new Error('HTTP '+response.status);const files=await response.json();return files.filter(x=>x.type==='file'&&/\.(png|jpe?g|webp)$/i.test(x.name)).map(file=>{const n=file.name;const base=artistRoot+'/'+artist;return{thumb:artistAsset(base+'/thumbs',n),view:artistAsset(base+'/view',n),full:artistAsset(base+'/full',n),title:n.replace(/\.[^.]+$/,''),artist}})}catch(error){console.warn('WORKS folder unavailable',artist,error);return[]}}
+ try{const response=await fetch(encodeURI(artistApi+path),{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)throw new Error('HTTP '+response.status);const files=await response.json();return files.filter(x=>x.type==='file'&&/\.(png|jpe?g|webp)$/i.test(x.name)).map(file=>{const n=file.name,base=artistRoot+'/'+artist;return{thumb:artistAsset(base+'/thumbs',n),view:artistAsset(base+'/view',n),full:artistAsset(base+'/full',n),title:n.replace(/\.[^.]+$/,''),artist}})}catch(error){console.warn('WORKS folder unavailable',artist,error);return[]}}
 async function loadArtistWorks(){
- document.querySelectorAll('#worksRow .works-line').forEach(line=>line.style.minHeight='1px');
- const batches=[];
- for(const artist of artistFolderNames){const files=await listArtistThumbs(artist);batches.push(files)}
- const loaded=shuffleWorks(batches.flat());
+ const batches=[];for(const artist of artistFolderNames)batches.push(await listArtistThumbs(artist));
+ let loaded=shuffleWorks(batches.flat());
+ if(!loaded.length)loaded=shuffleWorks(fallbackWorks.slice());
  loaded.forEach((w,i)=>{works.push(w);addArtistCard(w,i)});
- if(!loaded.length){const note=document.createElement('p');note.className='placeholder';note.textContent='WORKS — odśwież stronę po wypchnięciu folderu thumbs.';$('#worksRow').prepend(note)}
- document.querySelector('.works .section-head span:last-child').textContent=(works.length||0)+' · ALL ARTISTS';
+ document.querySelector('.works .section-head span:last-child').textContent=works.length+' · ALL ARTISTS';
  requestAnimationFrame(()=>{$('#worksRow').scrollLeft=0});
 }
 loadArtistWorks();
