@@ -187,9 +187,11 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .work-card{width:var(--card-width)!important;min-width:var(--card-width)!important;max-width:var(--card-width)!important}
 #worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important}
 
-/* v49 bounded rail buffer: max 30 cards per row, symmetric left/right movement */
-#worksRow .works-line{gap:6px!important}
-#worksRow .work-card{margin:0!important}
+/* v51 bounded transform rail: symmetric movement without scrollLeft snap */
+#worksRow{overflow:hidden!important;scroll-behavior:auto!important;cursor:grab!important;--works-gap:6px!important}
+#worksRow .works-line{display:flex!important;gap:var(--works-gap)!important;will-change:transform!important;contain:layout paint!important}
+#worksRow .work-card{width:var(--card-width)!important;min-width:var(--card-width)!important;max-width:var(--card-width)!important;flex:0 0 var(--card-width)!important;height:100%!important;margin:0!important;padding:0!important}
+#worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -244,14 +246,16 @@ let pinch={active:false,startDist:0,startScale:1,midX:0,midY:0};function touchDi
 $('#viewerImage').addEventListener('touchstart',e=>{if(e.touches.length===2){const m=touchMid(e.touches[0],e.touches[1]);pinch={active:true,startDist:touchDistance(e.touches[0],e.touches[1]),startScale:Math.max(1,zoom.s),midX:m.x,midY:m.y};e.preventDefault()}},{passive:false});
 $('#viewerImage').addEventListener('touchmove',e=>{if(e.touches.length===2&&pinch.active){const m=touchMid(e.touches[0],e.touches[1]),next=Math.max(1,Math.min(24,pinch.startScale*touchDistance(e.touches[0],e.touches[1])/pinch.startDist));zoomAt(next,m.x,m.y);e.preventDefault()}},{passive:false});
 $('#viewerImage').addEventListener('touchend',e=>{if(e.touches.length<2)pinch.active=false});
-let drag=null;
-function randomWork(exclude=new Set()){const pool=works.filter(w=>!exclude.has(w.thumb));return pool[Math.floor(Math.random()*Math.max(1,pool.length))]||works[Math.floor(Math.random()*works.length)]}
-$('#worksRow').onmousedown=e=>{if(e.button!==0)return;worksInteracted=true;drag={x:e.clientX,s:$('#worksRow').scrollLeft,moved:false};e.preventDefault()};document.onmousemove=e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>5)drag.moved=true;$('#worksRow').scrollLeft=drag.s-dx;if($('#worksRow').scrollLeft<120)appendRailBatch('left');if($('#worksRow').scrollWidth-$('#worksRow').clientWidth-$('#worksRow').scrollLeft<120)appendRailBatch('right');};document.addEventListener('mouseup',()=>{if(drag){const wasMoved=drag.moved;setTimeout(()=>{drag=null;if(wasMoved)document.body.classList.add('suppress-work-click');setTimeout(()=>document.body.classList.remove('suppress-work-click'),80)},0)}});
-let touchRail=null;
-$('#worksRow').addEventListener('touchstart',e=>{if(!e.touches.length)return;worksInteracted=true;const t=e.touches[0];touchRail={x:t.clientX,s:$('#worksRow').scrollLeft,moved:false};$('#worksRow').classList.add('dragging')},{passive:true});
-$('#worksRow').addEventListener('touchmove',e=>{if(!touchRail||!e.touches.length)return;const t=e.touches[0],dx=t.clientX-touchRail.x;if(Math.abs(dx)>6)touchRail.moved=true;if(touchRail.moved){e.preventDefault();$('#worksRow').scrollLeft=touchRail.s-dx;if($('#worksRow').scrollLeft<120)appendRailBatch('left');if($('#worksRow').scrollWidth-$('#worksRow').clientWidth-$('#worksRow').scrollLeft<120)appendRailBatch('right');}},{passive:false});
-$('#worksRow').addEventListener('touchend',()=>{if(!touchRail)return;const moved=touchRail.moved;touchRail=null;$('#worksRow').classList.remove('dragging');if(moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,100)}});
-$('#worksRow').addEventListener('click',e=>{if($('#worksRow').dataset.suppress){e.preventDefault();e.stopPropagation()}},true);
+let drag=null,touchRail=null;
+const rail={offset:[0,0,0,0],busy:false,ready:false,gap:6,keep:30};
+function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
+function paintRail(){railLines().forEach((line,i)=>line.style.transform=`translate3d(${rail.offset[i]||0}px,0,0)`)}
+function moveRail(dx){if(!rail.ready)return;rail.offset=rail.offset.map(value=>value+dx);paintRail();if(needsRail('left'))growRail('left');if(needsRail('right'))growRail('right')}
+function needsRail(edge){const width=$('#worksRow').clientWidth;return railLines().some((line,i)=>edge==='left'?rail.offset[i]>-180:rail.offset[i]+line.scrollWidth<width+180)}
+function trimRail(direction){const width=$('#worksRow').clientWidth;railLines().forEach((line,i)=>{while(line.children.length>rail.keep){if(direction==='right'&&rail.offset[i]<-line.firstElementChild.offsetWidth*2){const card=line.firstElementChild;rail.offset[i]+=card.offsetWidth+rail.gap;card.remove()}else if(direction==='left'&&rail.offset[i]+line.scrollWidth>width+line.lastElementChild.offsetWidth*2){line.lastElementChild.remove()}else break}});paintRail()}
+async function growRail(direction){if(rail.busy||!rail.ready||!sourceWorks.length)return;rail.busy=true;const used=new Set([...document.querySelectorAll('#worksRow .work-card')].map(card=>card.dataset.file));const pick=distinctPicks(used,4);const metas=await Promise.all(pick.map(loadMeta));const lines=railLines();for(let i=0;i<4;i++){const card=makeRailCard(metas[i]);if(direction==='left'){lines[i].prepend(card);rail.offset[i]-=card.offsetWidth+rail.gap}else lines[i].append(card)}paintRail();trimRail(direction);rail.busy=false}
+$('#worksRow').onmousedown=e=>{if(e.button!==0)return;drag={x:e.clientX,moved:false};e.preventDefault()};document.addEventListener('mousemove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>2)drag.moved=true;moveRail(dx);drag.x=e.clientX});document.addEventListener('mouseup',()=>{if(!drag)return;const moved=drag.moved;drag=null;if(moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,80)}});
+$('#worksRow').addEventListener('touchstart',e=>{if(e.touches.length)touchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(!touchRail||!e.touches.length)return;const dx=e.touches[0].clientX-touchRail.x;if(Math.abs(dx)>3)touchRail.moved=true;if(touchRail.moved){e.preventDefault();moveRail(dx);touchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(touchRail?.moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,100)}touchRail=null});$('#worksRow').addEventListener('click',e=>{if($('#worksRow').dataset.suppress){e.preventDefault();e.stopPropagation()}},true);
 
 
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
@@ -288,38 +292,12 @@ function artistAsset(folder,name){return folder+'/'+name.split('/').map(encodeUR
 function shuffleWorks(list){for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
 function addArtistCard(w,i){const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.onload=()=>{im.classList.add('loaded')};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||lines[0]||$('#worksRow')).append(card);workCards.push(card)}
 const fallbackWorks=Array.from({length:16},(_,i)=>{const n=String(i+1).padStart(2,'0');return{thumb:`images/works/thumbs/work${n}.webp`,view:`images/works/view/work${n}.webp`,full:`images/works/full/work${n}.webp`,title:`Work ${n}`,artist:'Unknown'}});
-const sourceWorks=[];let railBusy=false, railReady=false, worksInteracted=false;
-function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
-function makeWorkCard(meta){const {w,ratio}=meta;const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const rowHeight=parseFloat(getComputedStyle(document.querySelector('#worksRow .works-line')).height)||220;card.style.setProperty('--card-width',`${Math.max(80,ratio*rowHeight)}px`);const im=new Image();im.src=w.thumb;im.alt=w.title;im.draggable=false;im.decoding='async';card.append(im);card.onclick=()=>{if(!drag||!drag.moved){const i=works.indexOf(w);if(i>=0)openWork(i)}};return card}
-function distinctRowLists(list){const pool=shuffleWorks(list.slice());const rows=[[],[],[],[]];for(let i=0;i<pool.length;i++)rows[i%4].push(pool[i]);return rows}
-function renderRail(list){const lines=[...document.querySelectorAll('#worksRow .works-line')];if(!list.length)return;sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);Promise.all(list.map(loadMeta)).then(metas=>{if(worksInteracted)return;lines.forEach(line=>line.replaceChildren());const rows=distinctRowLists(metas);const copies=Math.max(4,Math.ceil(64/list.length));for(let row=0;row<4;row++){const order=rows[row];for(let copy=0;copy<copies;copy++)order.forEach(meta=>lines[row].append(makeWorkCard(meta)))}railReady=true;document.querySelector('.works .section-head span:last-child').textContent=sourceWorks.length+' · ALL ARTISTS';requestAnimationFrame(()=>{$('#worksRow').scrollLeft=Math.max(0,($('#worksRow').scrollWidth-$('#worksRow').clientWidth)/2)})})}
-function randomBatch(exclude=new Set(),count=4){let pool=shuffleWorks(sourceWorks.filter(w=>!exclude.has(w.thumb)).slice());if(pool.length<count)pool=pool.concat(shuffleWorks(sourceWorks.slice()));return pool.slice(0,count)}
-const RAIL_KEEP_PER_ROW=30;
-function trimRail(direction){
- const row=$('#worksRow'); const lines=[...document.querySelectorAll('#worksRow .works-line')];
- if(!lines.length||lines[0].children.length<=RAIL_KEEP_PER_ROW)return;
- if(direction==='right'&&row.scrollLeft>row.clientWidth*1.5){
-  const before=row.scrollWidth;lines.forEach(line=>line.firstElementChild?.remove());const delta=before-row.scrollWidth;
-  row.scrollLeft=Math.max(0,row.scrollLeft-delta);if(drag)drag.s-=delta;if(touchRail)touchRail.s-=delta;
- }else if(direction==='left'&&row.scrollWidth-row.clientWidth-row.scrollLeft>row.clientWidth*1.5){
-  lines.forEach(line=>line.lastElementChild?.remove());
- }
-}
-async function appendRailBatch(direction){
- if(railBusy||!railReady||!sourceWorks.length)return;railBusy=true;
- const row=$('#worksRow'),lines=[...document.querySelectorAll('#worksRow .works-line')];
- const current=new Set([...document.querySelectorAll('#worksRow .work-card')].map(card=>card.dataset.file));
- const batch=randomBatch(current,4);const metas=await Promise.all(batch.map(loadMeta));
- if(direction==='left'){
-  const before=row.scrollWidth;
-  for(let i=0;i<4;i++)lines[i].prepend(makeWorkCard(metas[i]));
-  requestAnimationFrame(()=>{const delta=row.scrollWidth-before;row.scrollLeft+=delta;if(drag)drag.s+=delta;if(touchRail)touchRail.s+=delta;trimRail('left');railBusy=false});
- }else{
-  for(let i=0;i<4;i++)lines[i].append(makeWorkCard(metas[i]));
-  requestAnimationFrame(()=>{trimRail('right');railBusy=false});
- }
-} 
-async function listArtistThumbs(artist){const path=artistRoot+'/'+artist+'/thumbs';try{const response=await fetch(encodeURI(artistApi+path),{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)throw new Error('HTTP '+response.status);const files=await response.json();return files.filter(x=>x.type==='file'&&/\.(png|jpe?g|webp)$/i.test(x.name)).map(file=>{const n=file.name,base=artistRoot+'/'+artist;return{thumb:artistAsset(base+'/thumbs',n),view:artistAsset(base+'/view',n),full:artistAsset(base+'/full',n),title:n.replace(/\.[^.]+$/,''),artist}})}catch(error){return[]}}
-async function loadArtistWorks(){renderRail(shuffleWorks(fallbackWorks.slice()));const batches=[];for(const artist of artistFolderNames)batches.push(await listArtistThumbs(artist));const loaded=shuffleWorks(batches.flat());if(loaded.length&&!worksInteracted)renderRail(loaded)}
-loadArtistWorks();
+const sourceWorks=[];
+function loadMeta(w){return new Promise(resolve=>{const img=new Image();img.onload=()=>resolve({w,ratio:img.naturalWidth/Math.max(1,img.naturalHeight)});img.onerror=()=>resolve({w,ratio:1.2});img.src=w.thumb})}
+function makeRailCard(meta){const {w,ratio}=meta;const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const h=parseFloat(getComputedStyle(document.querySelector('#worksRow .works-line')).height)||220;card.style.setProperty('--card-width',`${Math.max(72,ratio*h)}px`);const img=new Image();img.src=w.thumb;img.alt=w.title;img.draggable=false;img.decoding='async';card.append(img);card.onclick=()=>{if(!drag||!drag.moved){const i=works.indexOf(w);if(i>=0)openWork(i)}};return card}
+function shuffled(list){const copy=list.slice();for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy}
+function distinctPicks(exclude,count){let pool=shuffled(sourceWorks.filter(w=>!exclude.has(w.thumb)));if(pool.length<count)pool=pool.concat(shuffled(sourceWorks));return pool.slice(0,count)}
+async function buildRail(list){const lines=railLines();sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);const metas=await Promise.all(list.map(loadMeta));lines.forEach(line=>line.replaceChildren());const pool=shuffled(metas);for(let row=0;row<4;row++){const own=[];for(let n=row;n<pool.length;n+=4)own.push(pool[n]);const sequence=own.length?own:pool;for(let copy=0;copy<8;copy++)sequence.forEach(meta=>lines[row].append(makeRailCard(meta)))}document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';requestAnimationFrame(()=>{rail.offset=lines.map(line=>-Math.max(0,(line.scrollWidth-$('#worksRow').clientWidth)/2));rail.ready=true;paintRail()})}
+buildRail(fallbackWorks);
+
 </script></body></html>
