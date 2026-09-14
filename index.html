@@ -232,12 +232,11 @@ orbitCircles.forEach(circle=>{
  circle.addEventListener('mouseleave',()=>{const row=circle.parentElement;row.querySelectorAll('.circle').forEach(x=>{x.style.setProperty('--hover-x','0px');x.style.setProperty('--hover-scale','1')})});
 });
 
-let workCards=[];works.forEach((w,i)=>{const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.onload=()=>{im.classList.add('loaded')};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||$('#worksRow')).append(card);workCards.push(card)});
-requestAnimationFrame(()=>{$('#worksRow').scrollLeft=0});
+let workCards=[];
 function openArtist(i){$('#profileBody').innerHTML=`<div class="profile-no">${String(i+1).padStart(2,'0')} / 15</div><h2>${artists[i][0]}</h2><img src="images/${artists[i][1]}" alt=""><p>Artist based in Poland. Member of the KANASTA artist collective.</p>`;$('#profile').classList.add('open');document.body.style.overflow='hidden'}
 function closeAll(){['#menu','#profile','#viewer'].forEach(x=>$(x).classList.remove('open'));document.body.style.overflow='';history.replaceState({},'',location.pathname)}
 function openWork(i){activeWork=i;const w=works[i];$('#viewerImg').src=w.view;$('#viewerImg').dataset.full=w.full;$('#viewerImg').alt=`${w.title} — ${w.artist}`;$('#viewerTitle').textContent=w.title;$('#viewerArtist').textContent=w.artist;$('#viewerMeta').textContent=[w.technique,w.year,w.dimensions].filter(Boolean).join(' · ');$('#viewerNo').textContent=`${String(i+1).padStart(2,'0')} / ${works.length}`;$('#related').innerHTML='';works.forEach((x,j)=>{if(j===i||x.artist!==w.artist)return;const im=new Image();im.src=x.thumb;im.dataset.file=x.thumb;im.alt=x.title;im.onclick=()=>openWork(j);$('#related').append(im)});$('#viewer').classList.add('open');document.body.style.overflow='hidden';history.pushState({},'',`/KANASTA-artist-collective/works`);resetZoom()}
-const goHome=()=>{closeAll();history.replaceState({},'',location.pathname.split('/works')[0]||'/');window.scrollTo({top:0,left:0,behavior:'smooth'})};$('#menuBtn').onclick=()=>$('#menu').classList.add('open');$('#menuClose').onclick=closeAll;$('#profileClose').onclick=closeAll;$('#viewerClose').onclick=closeAll;$('#logo').onclick=goHome;document.querySelector('.viewerLogo').onclick=goHome;document.querySelectorAll('.menu-list a').forEach(a=>a.onclick=()=>{closeAll();setTimeout(()=>{const target=$(a.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth'})},50)});window.onpopstate=closeAll;
+const goHome=()=>{closeAll();history.replaceState({},'',location.pathname.split('/works')[0]||'/');window.scrollTo({top:0,left:0,behavior:'smooth'})};$('#menuBtn').onclick=()=>$('#menu').classList.add('open');$('#menuClose').onclick=closeAll;$('#profileClose').onclick=closeAll;$('#viewerClose').onclick=closeAll;$('#logo').onclick=goHome;document.querySelector('.viewerLogo').onclick=goHome;document.querySelectorAll('.menu-list a').forEach(a=>a.onclick=()=>{closeAll();setTimeout(()=>$(a.getAttribute('href')).scrollIntoView({behavior:'smooth'}),50)});window.onpopstate=closeAll;
 let zoom={s:1,x:0,y:0,drag:false,sx:0,sy:0,ox:0,oy:0};function renderZoom(){$('#viewerImg').style.setProperty('--s',zoom.s);$('#viewerImg').style.setProperty('--x',zoom.x+'px');$('#viewerImg').style.setProperty('--y',zoom.y+'px');$('#viewerImage').classList.toggle('zoomed',zoom.s>1.01);$('#viewerImage').style.touchAction=zoom.s>1.01?'none':'pan-y'}function resetZoom(){zoom={s:1,x:0,y:0,drag:false,sx:0,sy:0,ox:0,oy:0};renderZoom()}
 function zoomAt(next,cx,cy){const r=$('#viewerImage').getBoundingClientRect(),old=zoom.s,k=next/old,x=cx-r.left,y=cy-r.top;if(next>1.01&&$('#viewerImg').dataset.full&&$('#viewerImg').src.indexOf('/full/')<0)$('#viewerImg').src=$('#viewerImg').dataset.full;zoom.x=x-(x-zoom.x)*k;zoom.y=y-(y-zoom.y)*k;zoom.s=next;if(zoom.s<=1.001){zoom.s=1;zoom.x=0;zoom.y=0}renderZoom()}
 $('#viewerImage').onwheel=e=>{e.preventDefault();zoomAt(Math.max(1,Math.min(24,zoom.s*Math.exp(-e.deltaY*.0018))),e.clientX,e.clientY)};
@@ -284,45 +283,58 @@ function renderCursor(){
 }
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});renderCursor();
 
-/* Antoni Augustyniak works: load filenames from the artist folder, so no manual renaming is needed. */
+/* KANASTA WORKS v53: all artists, weighted homepage, ordered artist gallery. */
 const artistRoot='images/works/KANASTA-artists-folders';
 const artistFolderNames=['Patrycja Boruch','Zuzanna Frankowska','Amelia Korczak','Adam Pażucha','Antoni Augustyniak','Ada Rosa','Anastazja Gierlak','Anna Esnekier','Gabriela Bossowska','Marta Mioduszewska','Nina Borowicz','Aleksandra Sikora','Marta Mendelejeva','Franek Ciastoń','Urszula Smagowicz'];
 const artistApi='https://api.github.com/repos/K3TN4/KANASTA-artist-collective/contents/';
 const rawRoot='https://raw.githubusercontent.com/K3TN4/KANASTA-artist-collective/main/';
 const imageExt=/\.(avif|gif|jpe?g|png|webp)$/i;
-function rawAsset(...parts){return rawRoot+parts.map(x=>String(x).split('/').map(encodeURIComponent).join('/')).join('/')}
-function shuffleWorks(list){for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
-const fallbackWorks=Array.from({length:16},(_,i)=>{const n=String(i+1).padStart(2,'0');return{thumb:`images/works/thumbs/work${n}.webp`,view:`images/works/view/work${n}.webp`,full:`images/works/full/work${n}.webp`,title:`Work ${n}`,artist:'Unknown',technique:'',year:'',dimensions:''}});
+const tiers=[{folder:'60%',weight:60},{folder:'30%',weight:30},{folder:'10%',weight:10}];
 const sourceWorks=[];
-function loadMeta(w){return new Promise(resolve=>{const img=new Image();img.onload=()=>resolve({w,ratio:img.naturalWidth/Math.max(1,img.naturalHeight)});img.onerror=()=>resolve({w,ratio:1.2});img.src=w.thumb})}
-function makeRailCard(meta){const {w,ratio}=meta;const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const h=parseFloat(getComputedStyle(document.querySelector('#worksRow .works-line')).height)||220;card.style.setProperty('--card-width',`${Math.max(72,ratio*h)}px`);const img=new Image();img.src=w.thumb;img.alt=`${w.title} — ${w.artist}`;img.draggable=false;img.decoding='async';card.append(img);card.onclick=()=>{if(!drag||!drag.moved){const i=works.indexOf(w);if(i>=0)openWork(i)}};return card}
-function shuffled(list){const copy=list.slice();for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy}
-function distinctPicks(exclude,count){let pool=shuffled(sourceWorks.filter(w=>!exclude.has(w.thumb)));if(pool.length<count)pool=pool.concat(shuffled(sourceWorks));return pool.slice(0,count)}
-async function growRail(direction){if(rail.busy||!rail.ready||!sourceWorks.length)return;rail.busy=true;const used=new Set([...document.querySelectorAll('#worksRow .work-card')].map(card=>card.dataset.file));const pick=distinctPicks(used,4);const metas=await Promise.all(pick.map(loadMeta));const lines=railLines();for(let i=0;i<4;i++){const card=makeRailCard(metas[i]);if(direction==='left'){lines[i].prepend(card);rail.offset[i]-=card.offsetWidth+rail.gap}else lines[i].append(card)}paintRail();trimRail(direction);rail.busy=false}
-async function loadAllRail(list){const lines=railLines();const metas=await Promise.all(list.map(loadMeta));lines.forEach(line=>line.replaceChildren());const pool=shuffled(metas);for(let row=0;row<4;row++){const own=[];for(let n=row;n<pool.length;n+=4)own.push(pool[n]);const sequence=own.length?own:pool;for(let copy=0;copy<8;copy++)sequence.forEach(meta=>lines[row].append(makeRailCard(meta)))}document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';requestAnimationFrame(()=>{rail.offset=lines.map(line=>-Math.max(0,(line.scrollWidth-$('#worksRow').clientWidth)/2));rail.ready=true;paintRail()})}
-function buildRail(list){sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);loadAllRail(list)}
-function clean(value){return String(value||'').trim().replace(/\s+/g,' ')}
+const $raw=s=>rawRoot+s.split('/').map(encodeURIComponent).join('/');
+const clean=v=>String(v||'').trim().replace(/\s+/g,' ');
+function shuffled(list){const a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function parseWorkName(filename,artist){
- const base=filename.replace(imageExt,'');let rest=base,year='',dimensions='',technique='',title='';
- const y=rest.match(/(?:^|[_ ])(19|20)\d{2}$/);if(y){year=y[0].replace(/^[_ ]/,'');rest=rest.slice(0,-y[0].length)}
+ const base=filename.replace(imageExt,'');let rest=base,year='',dimensions='',title='',technique='';
+ const y=rest.match(/(?:^|[_ ])((?:19|20)\d{2})$/);if(y){year=y[1];rest=rest.slice(0,-y[0].length)}
  const d=rest.match(/(?:^|_)(\d+(?:[.,]\d+)?\s*[x×]\s*\d+(?:[.,]\d+)?(?:\s*x\s*\d+(?:[.,]\d+)?)?\s*(?:cm|mm|m)?)(?:$|_)/i);if(d){dimensions=clean(d[1]);rest=rest.replace(d[0],'_').replace(/^_|_$/g,'')}
- const parts=rest.split('_').map(clean).filter(Boolean);
- if(parts.length>=3){if(parts[0].toLowerCase().replace(/[,.]/g,'')===artist.toLowerCase().replace(/[,.]/g,''))parts.shift();title=parts.shift()||base;technique=parts.join(' · ')}
- else if(parts.length===2){if(parts[0].toLowerCase()===artist.toLowerCase())parts.shift();title=parts[0]||base;technique=parts[1]||''}
- else {const comma=rest.split(',').map(clean).filter(Boolean);if(comma.length>=3){if(comma[0].toLowerCase()===artist.toLowerCase())comma.shift();technique=comma.pop();title=comma.join(', ')}else title=clean(rest)}
- return {title:title||base,artist,technique,year,dimensions}
+ const parts=rest.split('_').map(clean).filter(Boolean);const a=artist.toLowerCase();
+ if(parts.length&&parts[0].toLowerCase()===a)parts.shift();
+ title=parts.shift()||base;technique=parts.join(' · ');return{title,technique,year,dimensions,artist};
 }
-async function githubContents(path){const r=await fetch(artistApi+path.split('/').map(encodeURIComponent).join('/'));if(!r.ok)throw new Error(`GitHub ${r.status}: ${path}`);return r.json()}
+async function githubContents(path){const r=await fetch(artistApi+path.split('/').map(encodeURIComponent).join('/'));if(!r.ok)throw Error(`GitHub ${r.status}: ${path}`);return r.json()}
+function rawAsset(...parts){return $raw(parts.join('/'))}
 async function loadArtistWorks(){
  const result=[];
  for(const artist of artistFolderNames){
-  try{const root=await githubContents(`${artistRoot}/${artist}`);const dirs=Object.fromEntries(root.filter(x=>x.type==='dir').map(x=>[x.name.toLowerCase(),x.path]));const names={};
-   for(const kind of ['thumbs','view','full']){if(!dirs[kind])continue;const files=await githubContents(dirs[kind]);for(const f of files.filter(x=>x.type==='file'&&imageExt.test(x.name)))names[kind]??=[] ,names[kind].push(f.name)}
-   for(const name of (names.thumbs||[])){const view=(names.view||[]).find(x=>x===name),full=(names.full||[]).find(x=>x===name);const meta=parseWorkName(name,artist);result.push({...meta,id:`${artist}-${name}`,thumb:rawAsset(artistRoot,artist,'thumbs',name),view:rawAsset(artistRoot,artist,'view',view||name),full:rawAsset(artistRoot,artist,'full',full||view||name)});}
-  }catch(e){console.warn('Nie udało się załadować prac:',artist,e)}
+  try{
+   const root=await githubContents(`${artistRoot}/${artist}`);
+   for(const tier of tiers){
+    const tierEntry=root.find(x=>x.type==='dir'&&x.name===tier.folder);if(!tierEntry)continue;
+    const tierItems=await githubContents(tierEntry.path);const dirs=Object.fromEntries(tierItems.filter(x=>x.type==='dir').map(x=>[x.name.toLowerCase(),x.path]));
+    const byKind={};
+    for(const kind of ['thumbs','view','full']){if(!dirs[kind])continue;const items=await githubContents(dirs[kind]);byKind[kind]=items.filter(x=>x.type==='file'&&imageExt.test(x.name)).map(x=>x.name)}
+    for(const name of byKind.thumbs||[]){
+     const view=(byKind.view||[]).find(n=>n===name)||name,full=(byKind.full||[]).find(n=>n===name)||view;
+     const meta=parseWorkName(name,artist);result.push({...meta,id:`${artist}-${tier.folder}-${name}`,tier:tier.folder,weight:tier.weight,thumb:rawAsset(artistRoot,artist,tier.folder,'thumbs',name),view:rawAsset(artistRoot,artist,tier.folder,'view',view),full:rawAsset(artistRoot,artist,tier.folder,'full',full)});
+    }
+   }
+  }catch(e){console.warn('Nie udało się załadować:',artist,e)}
  }
  return result;
 }
-(async()=>{const realWorks=await loadArtistWorks();buildRail(realWorks.length?realWorks:fallbackWorks);})();
-
+function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
+function weightedPick(list){const total=list.reduce((n,w)=>n+w.weight,0);let r=Math.random()*total;for(const w of list){r-=w.weight;if(r<=0)return w}return list[list.length-1]}
+function weightedRailItems(list,count=160){return Array.from({length:count},()=>weightedPick(list))}
+function makeRailCard(meta){const {w,ratio}=meta;const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const h=parseFloat(getComputedStyle(document.querySelector('#worksRow .works-line')).height)||220;card.style.setProperty('--card-width',`${Math.max(72,ratio*h)}px`);const im=new Image();im.src=w.thumb;im.alt=`${w.title} — ${w.artist}`;im.draggable=false;im.decoding='async';card.append(im);card.onclick=()=>{if(!drag||!drag.moved){const i=works.indexOf(w);if(i>=0)openWork(i)}};return card}
+function distinctPicks(exclude,count){const pool=[];for(let n=0;n<count;n++){let w=weightedPick(sourceWorks);let guard=0;while(exclude.has(w.thumb)&&guard++<20)w=weightedPick(sourceWorks);pool.push(w)}return pool}
+async function growRail(direction){if(rail.busy||!rail.ready||!sourceWorks.length)return;rail.busy=true;const used=new Set([...document.querySelectorAll('#worksRow .work-card')].map(c=>c.dataset.file));const pick=distinctPicks(used,4),metas=await Promise.all(pick.map(loadMeta)),lines=railLines();for(let i=0;i<4;i++){const card=makeRailCard(metas[i]);if(direction==='left'){lines[i].prepend(card);rail.offset[i]-=card.offsetWidth+rail.gap}else lines[i].append(card)}paintRail();trimRail(direction);rail.busy=false}
+async function buildRail(list){
+ sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);
+ const metas=new Map((await Promise.all(list.map(loadMeta))).map(x=>[x.w.id,x]));const items=weightedRailItems(list);const lines=railLines();lines.forEach(x=>x.replaceChildren());
+ for(let i=0;i<items.length;i++)lines[i%4].append(makeRailCard(metas.get(items[i].id)));
+ document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';
+ requestAnimationFrame(()=>{rail.offset=lines.map(line=>-Math.max(0,(line.scrollWidth-$('#worksRow').clientWidth)/2));rail.ready=true;paintRail()});
+}
+(async()=>{const realWorks=await loadArtistWorks();if(realWorks.length)await buildRail(realWorks);else console.warn('Brak prac w folderach 60%, 30%, 10%.');})();
 </script></body></html>
