@@ -248,12 +248,24 @@ $('#viewerImage').addEventListener('touchend',e=>{if(e.touches.length<2)pinch.ac
 let drag=null,touchRail=null;
 const rail={offset:[0,0,0,0],busy:false,ready:false,gap:6,keep:30};
 const railRecentIds=[];
+const activeRailIds=new Set();
 function rememberRail(ids){for(const id of ids){railRecentIds.push(id);if(railRecentIds.length>40)railRecentIds.shift()}}
 function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
 function paintRail(){railLines().forEach((line,i)=>line.style.transform=`translate3d(${rail.offset[i]||0}px,0,0)`)}
 function moveRail(dx){if(!rail.ready)return;rail.offset=rail.offset.map(value=>value+dx);paintRail();if(needsRail('left'))growRail('left');if(needsRail('right'))growRail('right')}
 function needsRail(edge){const width=$('#worksRow').clientWidth;return railLines().some((line,i)=>edge==='left'?rail.offset[i]>-180:rail.offset[i]+line.scrollWidth<width+180)}
-function trimRail(direction){const width=$('#worksRow').clientWidth;railLines().forEach((line,i)=>{while(line.children.length>rail.keep){if(direction==='right'&&rail.offset[i]<-line.firstElementChild.offsetWidth*2){const card=line.firstElementChild;rail.offset[i]+=card.offsetWidth+rail.gap;card.remove()}else if(direction==='left'&&rail.offset[i]+line.scrollWidth>width+line.lastElementChild.offsetWidth*2){line.lastElementChild.remove()}else break}});paintRail()}
+function trimRail(direction){
+ const width=$('#worksRow').clientWidth;
+ railLines().forEach((line,i)=>{
+  while(line.children.length>rail.keep){
+   if(direction==='right'&&rail.offset[i]<-line.firstElementChild.offsetWidth*2){
+    const card=line.firstElementChild;// Nie usuwamy ID z activeRailIds: praca raz użyta nie wróci podczas tej sesji.rail.offset[i]+=card.offsetWidth+rail.gap;card.remove();
+   }else if(direction==='left'&&rail.offset[i]+line.scrollWidth>width+line.lastElementChild.offsetWidth*2){
+    const card=line.lastElementChild;// Nie usuwamy ID z activeRailIds: praca raz użyta nie wróci podczas tej sesji.card.remove();
+   }else break;
+  }
+ });paintRail();
+}
 async function growRail(direction){if(rail.busy||!rail.ready||!sourceWorks.length)return;rail.busy=true;const used=new Set([...document.querySelectorAll('#worksRow .work-card')].map(card=>card.dataset.file));const pick=distinctPicks(used,4);const metas=await Promise.all(pick.map(loadMeta));const lines=railLines();for(let i=0;i<metas.length;i++){const card=makeRailCard(metas[i]);if(direction==='left'){lines[i].prepend(card);rail.offset[i]-=card.offsetWidth+rail.gap}else lines[i].append(card)}paintRail();trimRail(direction);rail.busy=false}
 $('#worksRow').onmousedown=e=>{if(e.button!==0)return;drag={x:e.clientX,moved:false};e.preventDefault()};document.addEventListener('mousemove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>2)drag.moved=true;moveRail(dx);drag.x=e.clientX});document.addEventListener('mouseup',()=>{if(!drag)return;const moved=drag.moved;drag=null;if(moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,80)}});
 $('#worksRow').addEventListener('touchstart',e=>{if(e.touches.length)touchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(!touchRail||!e.touches.length)return;const dx=e.touches[0].clientX-touchRail.x;if(Math.abs(dx)>3)touchRail.moved=true;if(touchRail.moved){e.preventDefault();moveRail(dx);touchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(touchRail?.moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,100)}touchRail=null});$('#worksRow').addEventListener('click',e=>{if($('#worksRow').dataset.suppress){e.preventDefault();e.stopPropagation()}},true);
@@ -324,6 +336,7 @@ function makeRailCard(meta){
  const card=document.createElement('figure');
  card.className='work-card';
  card.dataset.file=w.thumb;
+ card.dataset.workId=w.id;
  const line=document.querySelector('#worksRow .works-line');
  const h=parseFloat(getComputedStyle(line).height)||220;
  card.style.setProperty('--card-width',`${Math.max(72,ratio*h)}px`);
@@ -371,22 +384,30 @@ function distinctPicks(exclude,count){
 }
 async function growRail(direction){
  if(rail.busy||!rail.ready||!sourceWorks.length)return;rail.busy=true;
- const used=new Set([...document.querySelectorAll('#worksRow .work-card')].map(c=>c.dataset.file));
- const batch=[];let pool=sourceWorks.filter(w=>!railRecentIds.includes(w.id)&&!used.has(w.thumb));
- for(let n=0;n<4;n++){
-  let available=pool.filter(w=>!batch.some(x=>x.id===w.id));
-  if(!available.length)available=sourceWorks.filter(w=>!batch.some(x=>x.id===w.id));
-  if(!available.length)break;
-  const picked=weightedPick(available);batch.push(picked);pool=pool.filter(w=>w.id!==picked.id);
+ // activeRailIds = prace pokazane w bieżącym cyklu. Dopóki są co najmniej
+ // cztery nieużyte prace, dokładamy wyłącznie nowe. Gdy cykl się kończy,
+ // czyścimy pamięć i zaczynamy następny — wtedy powtórki są dozwolone.
+ let available=sourceWorks.filter(w=>!activeRailIds.has(w.id));
+ if(available.length<4){
+  activeRailIds.clear();
+  available=sourceWorks.slice();
+ }
+ const batch=[];
+ for(let n=0;n<4&&available.length;n++){
+  const picked=weightedPick(available);batch.push(picked);
+  available=available.filter(w=>w.id!==picked.id);
  }
  const metas=await Promise.all(batch.map(loadMeta)),lines=railLines();
- for(let i=0;i<metas.length;i++){const card=makeRailCard(metas[i]);if(direction==='left'){lines[i].prepend(card);rail.offset[i]-=card.offsetWidth+rail.gap}else lines[i].append(card)}
+ for(let i=0;i<metas.length;i++){
+  const card=makeRailCard(metas[i]);activeRailIds.add(metas[i].w.id);
+  if(direction==='left'){lines[i].prepend(card);rail.offset[i]-=card.offsetWidth+rail.gap}else lines[i].append(card);
+ }
  rememberRail(batch.map(w=>w.id));paintRail();trimRail(direction);rail.busy=false;
 }
 async function buildRail(list){
  sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);
- const metas=new Map((await Promise.all(list.map(loadMeta))).map(x=>[x.w.id,x]));const items=weightedRailItems(list,160,40);const lines=railLines();lines.forEach(x=>x.replaceChildren());
- for(let i=0;i<items.length;i++)lines[i%4].append(makeRailCard(metas.get(items[i].id)));
+ const metas=new Map((await Promise.all(list.map(loadMeta))).map(x=>[x.w.id,x]));const initialCount=list.length-(list.length%4);const items=weightedRailItems(list,initialCount,40);const lines=railLines();activeRailIds.clear();lines.forEach(x=>x.replaceChildren());
+ for(let i=0;i<items.length;i++){const meta=metas.get(items[i].id);activeRailIds.add(meta.w.id);lines[i%4].append(makeRailCard(meta));}
  rememberRail(items.slice(-40).map(w=>w.id));
  document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';
  requestAnimationFrame(()=>{rail.offset=lines.map(line=>-Math.max(0,(line.scrollWidth-$('#worksRow').clientWidth)/2));rail.ready=true;paintRail()});
