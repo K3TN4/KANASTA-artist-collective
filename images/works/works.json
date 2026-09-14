@@ -1,5 +1,57 @@
 [
   {
+    "id": "Ada Rosa-60%-Ada Rosa_Frędzle1_tkanina_1-1_2026.png",
+    "artist": "Ada Rosa",
+    "title": "Frędzle1",
+    "technique": "tkanina · 1-1",
+    "year": "2026",
+    "dimensions": "",
+    "tier": "60%",
+    "weight": 60,
+    "thumb": "images/works/KANASTA-artists-folders/Ada Rosa/thumbs/60%/Ada Rosa_Frędzle1_tkanina_1-1_2026.png",
+    "view": "images/works/KANASTA-artists-folders/Ada Rosa/view/60%/Ada Rosa_Frędzle1_tkanina_1-1_2026.png",
+    "full": "images/works/KANASTA-artists-folders/Ada Rosa/full/60%/Ada Rosa_Frędzle1_tkanina_1-1_2026.png"
+  },
+  {
+    "id": "Ada Rosa-60%-Ada Rosa_Frędzle2_tkanina_1-1_2026.png",
+    "artist": "Ada Rosa",
+    "title": "Frędzle2",
+    "technique": "tkanina · 1-1",
+    "year": "2026",
+    "dimensions": "",
+    "tier": "60%",
+    "weight": 60,
+    "thumb": "images/works/KANASTA-artists-folders/Ada Rosa/thumbs/60%/Ada Rosa_Frędzle2_tkanina_1-1_2026.png",
+    "view": "images/works/KANASTA-artists-folders/Ada Rosa/view/60%/Ada Rosa_Frędzle2_tkanina_1-1_2026.png",
+    "full": "images/works/KANASTA-artists-folders/Ada Rosa/full/60%/Ada Rosa_Frędzle2_tkanina_1-1_2026.png"
+  },
+  {
+    "id": "Ada Rosa-30%-Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png",
+    "artist": "Ada Rosa",
+    "title": "Jungle",
+    "technique": "tusz i węgiel na papierze",
+    "year": "2026",
+    "dimensions": "110x140",
+    "tier": "30%",
+    "weight": 30,
+    "thumb": "images/works/KANASTA-artists-folders/Ada Rosa/thumbs/30%/Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png",
+    "view": "images/works/KANASTA-artists-folders/Ada Rosa/view/30%/Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png",
+    "full": "images/works/KANASTA-artists-folders/Ada Rosa/full/30%/Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png"
+  },
+  {
+    "id": "Ada Rosa-10%-Ada Rosa_Qń_węgiel na papierze_110x140_2026.png",
+    "artist": "Ada Rosa",
+    "title": "Qń",
+    "technique": "węgiel na papierze",
+    "year": "2026",
+    "dimensions": "110x140",
+    "tier": "10%",
+    "weight": 10,
+    "thumb": "images/works/KANASTA-artists-folders/Ada Rosa/thumbs/10%/Ada Rosa_Qń_węgiel na papierze_110x140_2026.png",
+    "view": "images/works/KANASTA-artists-folders/Ada Rosa/view/10%/Ada Rosa_Qń_węgiel na papierze_110x140_2026.png",
+    "full": "images/works/KANASTA-artists-folders/Ada Rosa/full/10%/Ada Rosa_Qń_węgiel na papierze_110x140_2026.png"
+  },
+  {
     "id": "Adam Pażucha-60%-Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg",
     "artist": "Adam Pażucha",
     "title": "Autoportret",
@@ -29,9 +81,9 @@
     "id": "Adam Pażucha-60%-Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg",
     "artist": "Adam Pażucha",
     "title": "Ponticello",
-    "technique": "drewno lipowe i żyłka · 21x10x11 cm (bez strun)",
+    "technique": "drewno lipowe i żyłka",
     "year": "2026",
-    "dimensions": "",
+    "dimensions": "21x10x11 cm (bez strun)",
     "tier": "60%",
     "weight": 60,
     "thumb": "images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/60%/Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg",
@@ -302,9 +354,9 @@
     "id": "Anna Esnekier-10%-Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg",
     "artist": "Anna Esnekier",
     "title": "bez tytułu",
-    "technique": "olej i akryl na płótnie · 2026 · (2)",
+    "technique": "olej i akryl na płótnie",
     "year": "",
-    "dimensions": "90x120 cm",
+    "dimensions": "90x120 cm 2026 (2)",
     "tier": "10%",
     "weight": 10,
     "thumb": "images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/10%/Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg",
@@ -328,8 +380,8 @@
     "id": "Antoni Augustyniak-60%-Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png",
     "artist": "Antoni Augustyniak",
     "title": "Pies",
-    "technique": "Węgiel i pigment na papierze · 2025-2026",
-    "year": "",
+    "technique": "Węgiel i pigment na papierze",
+    "year": "2025-2026",
     "dimensions": "210x210 cm",
     "tier": "60%",
     "weight": 60,
@@ -432,8 +484,8 @@
     "id": "Antoni Augustyniak-10%-Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg",
     "artist": "Antoni Augustyniak",
     "title": "Usterka",
-    "technique": "offset · 2025-2026",
-    "year": "",
+    "technique": "offset",
+    "year": "2025-2026",
     "dimensions": "100x60 cm",
     "tier": "10%",
     "weight": 10,
@@ -590,7 +642,7 @@
     "title": "Niedokończone studium martwej natury",
     "technique": "Olej na płycie mdf",
     "year": "2026",
-    "dimensions": "120x60 cm",
+    "dimensions": "120x60  cm",
     "tier": "30%",
     "weight": 30,
     "thumb": "images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_Niedokończone studium martwej natury_Olej na płycie mdf_120x60  cm_2026.jpg",
@@ -854,20 +906,20 @@
     "tier": "30%",
     "weight": 30,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg"
   },
   {
     "id": "Patrycja Boruch-30%-Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png",
     "artist": "Patrycja Boruch",
     "title": "Nidzica",
-    "technique": "pastel na papierze",
+    "technique": "",
     "year": "2022",
-    "dimensions": "21x15 cm",
+    "dimensions": "pastel na papierze 21x15 cm",
     "tier": "30%",
     "weight": 30,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png"
   },
   {
@@ -880,7 +932,7 @@
     "tier": "30%",
     "weight": 30,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg"
   },
   {
@@ -893,7 +945,7 @@
     "tier": "30%",
     "weight": 30,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg"
   },
   {
@@ -906,7 +958,7 @@
     "tier": "30%",
     "weight": 30,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png"
   },
   {
@@ -919,7 +971,7 @@
     "tier": "10%",
     "weight": 10,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png"
   },
   {
@@ -932,7 +984,7 @@
     "tier": "10%",
     "weight": 10,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg"
   },
   {
@@ -945,7 +997,7 @@
     "tier": "10%",
     "weight": 10,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png"
   },
   {
@@ -958,46 +1010,46 @@
     "tier": "10%",
     "weight": 10,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png"
   },
   {
     "id": "Patrycja Boruch-10%-Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png",
     "artist": "Patrycja Boruch",
     "title": "Szkicownik",
-    "technique": "mix media · 2024 · (1)",
+    "technique": "mix media",
     "year": "",
-    "dimensions": "100x21",
+    "dimensions": "100x21 2024 (1)",
     "tier": "10%",
     "weight": 10,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png"
   },
   {
     "id": "Patrycja Boruch-10%-Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png",
     "artist": "Patrycja Boruch",
     "title": "Szkicownik",
-    "technique": "mix media · 2024 · (2)",
+    "technique": "mix media",
     "year": "",
-    "dimensions": "100x21",
+    "dimensions": "100x21 2024 (2)",
     "tier": "10%",
     "weight": 10,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png"
   },
   {
     "id": "Patrycja Boruch-10%-Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png",
     "artist": "Patrycja Boruch",
     "title": "Szkicownik",
-    "technique": "mix media · 2024 · (3)",
+    "technique": "mix media",
     "year": "",
-    "dimensions": "100x21",
+    "dimensions": "100x21 2024 (3)",
     "tier": "10%",
     "weight": 10,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png"
   },
   {
@@ -1010,7 +1062,7 @@
     "tier": "10%",
     "weight": 10,
     "thumb": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg",
-    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg",
+    "view": "images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg",
     "full": "images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg"
   }
 ]
