@@ -305,42 +305,34 @@ function parseWorkName(filename,artist){
 async function githubContents(path){const r=await fetch(artistApi+path.split('/').map(encodeURIComponent).join('/'));if(!r.ok)throw Error(`GitHub ${r.status}: ${path}`);return r.json()}
 function rawAsset(...parts){return $raw(parts.join('/'))}
 async function loadArtistWorks(){
+ // Jeden request do GitHub Git Tree zamiast dziesiątek requestów Contents API.
+ // Dzięki temu WORKS nie zatrzymuje się na limicie publicznego API GitHuba.
+ const treeUrl='https://api.github.com/repos/K3TN4/KANASTA-artist-collective/git/trees/main?recursive=1';
+ const response=await fetch(treeUrl,{headers:{Accept:'application/vnd.github+json'}});
+ if(!response.ok)throw new Error(`GitHub Tree API ${response.status}`);
+ const data=await response.json();
+ const files=(data.tree||[]).filter(x=>x.type==='blob'&&imageExt.test(x.path));
  const result=[];
  for(const artist of artistFolderNames){
-  try{
-   const root=await githubContents(`${artistRoot}/${artist}`);
-   // Obsługujemy obie wersje organizacji:
-   // A) artysta/60%/thumbs/...  oraz B) artysta/thumbs/60%/...
-   const rootNames=new Set(root.filter(x=>x.type==='dir').map(x=>x.name));
-   const layoutB=['thumbs','view','full'].every(x=>rootNames.has(x));
-   for(const tier of tiers){
-    const tierFiles={thumbs:[],view:[],full:[]};
-    if(layoutB){
-     for(const kind of Object.keys(tierFiles)){
-      const kindEntry=root.find(x=>x.type==='dir'&&x.name===kind); if(!kindEntry)continue;
-      const tierEntry=(await githubContents(kindEntry.path)).find(x=>x.type==='dir'&&x.name===tier.folder); if(!tierEntry)continue;
-      const files=await githubContents(tierEntry.path); tierFiles[kind]=files.filter(x=>x.type==='file'&&imageExt.test(x.name)).map(x=>x.name);
-     }
-    }else{
-     const tierEntry=root.find(x=>x.type==='dir'&&x.name===tier.folder); if(!tierEntry)continue;
-     const container=await githubContents(tierEntry.path);
-     for(const kind of Object.keys(tierFiles)){
-      const kindEntry=container.find(x=>x.type==='dir'&&x.name===kind); if(!kindEntry)continue;
-      const files=await githubContents(kindEntry.path); tierFiles[kind]=files.filter(x=>x.type==='file'&&imageExt.test(x.name)).map(x=>x.name);
-     }
-    }
-    for(const name of tierFiles.thumbs){
-     const view=tierFiles.view.includes(name)?name:(tierFiles.view[0]||name);
-     const full=tierFiles.full.includes(name)?name:(tierFiles.full[0]||view);
-     const meta=parseWorkName(name,artist);
-     const prefix=layoutB?`${artistRoot}/${artist}/`: `${artistRoot}/${artist}/${tier.folder}/`;
-     result.push({...meta,id:`${artist}-${tier.folder}-${name}`,tier:tier.folder,weight:tier.weight,
-      thumb:rawAsset(prefix+(layoutB?`thumbs/${tier.folder}/${name}`:`thumbs/${name}`)),
-      view:rawAsset(prefix+(layoutB?`view/${tier.folder}/${view}`:`view/${view}`)),
-      full:rawAsset(prefix+(layoutB?`full/${tier.folder}/${full}`:`full/${full}`))});
-    }
+  const base=`${artistRoot}/${artist}/`;
+  const artistFiles=files.filter(x=>x.path.startsWith(base));
+  const layoutB=artistFiles.some(x=>x.path.includes('/thumbs/60%/'));
+  for(const tier of tiers){
+   const prefix=layoutB?`${base}`:`${base}${tier.folder}/`;
+   const thumbPrefix=layoutB?`${prefix}thumbs/${tier.folder}/`:`${prefix}thumbs/`;
+   const viewPrefix=layoutB?`${prefix}view/${tier.folder}/`:`${prefix}view/`;
+   const fullPrefix=layoutB?`${prefix}full/${tier.folder}/`:`${prefix}full/`;
+   const thumbs=artistFiles.filter(x=>x.path.startsWith(thumbPrefix));
+   for(const file of thumbs){
+    const name=file.path.slice(thumbPrefix.length);
+    const same=(p,n)=>artistFiles.find(x=>x.path===p+n);
+    const view=same(viewPrefix,name)||same(viewPrefix,name.replace(/\.[^.]+$/,''));
+    const full=same(fullPrefix,name)||same(fullPrefix,name.replace(/\.[^.]+$/,''));
+    const meta=parseWorkName(name,artist);
+    result.push({...meta,id:`${artist}-${tier.folder}-${name}`,tier:tier.folder,weight:tier.weight,
+      thumb:rawAsset(file.path),view:rawAsset(view?.path||file.path),full:rawAsset(full?.path||view?.path||file.path)});
    }
-  }catch(e){console.warn('Nie udało się załadować:',artist,e)}
+  }
  }
  return result;
 }
@@ -357,5 +349,5 @@ async function buildRail(list){
  document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';
  requestAnimationFrame(()=>{rail.offset=lines.map(line=>-Math.max(0,(line.scrollWidth-$('#worksRow').clientWidth)/2));rail.ready=true;paintRail()});
 }
-(async()=>{const realWorks=await loadArtistWorks();if(realWorks.length)await buildRail(realWorks);else {console.warn('Brak prac w folderach artystów.');document.querySelector('#worksRow').innerHTML='<div class=placeholder>NO WORKS FOUND</div>'}})();
+(async()=>{const realWorks=await loadArtistWorks();if(realWorks.length)await buildRail(realWorks);else {console.warn('Brak prac w folderach artystów.');document.querySelector('#worksRow').innerHTML='<div class=placeholder>WORKS TEMPORARILY UNAVAILABLE — REFRESH IN A MOMENT</div>'}})();
 </script></body></html>
