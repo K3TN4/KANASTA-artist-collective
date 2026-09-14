@@ -209,6 +209,14 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 const artists=[['Patrycja Boruch','patrycja-boruch.jpg'],['Zuzanna Frankowska','zuzanna-frankowska.jpg'],['Amelia Korczak','amelia-korczak.jpg'],['Adam Pażucha','adam-pazucha.jpg'],['Antoni Augustyniak','antoni-augustyniak.jpg'],['Ada Rosa','ada-rosa.jpg'],['Anastazja Gierlak','anastazja-gierlak.jpg'],['Anna Esnekier','anna-esnekier.jpg'],['Gabriela Bossowska','gabriela-bossowska.jpg'],['Marta Mioduszewska','marta-mioduszewska.jpg'],['Nina Borowicz','nina-borowicz.jpg'],['Aleksandra Sikora','aleksandra-sikora.jpg'],['Marta Mendelejeva','marta-mendelejeva.jpg'],['Franek Ciastoń','franek-ciaston.jpg'],['Urszula Smagowicz','urszula-smagowicz.jpg']];
 const works=[];
 const $=s=>document.querySelector(s); const cursor=$('#cursor'); let activeWork=null;
+// Custom cursor: position it from the real viewport coordinates, throttled to one paint.
+if(cursor && matchMedia('(pointer:fine)').matches){
+ let cx=0,cy=0,cursorFrame=0;
+ const paintCursor=()=>{cursorFrame=0;cursor.style.left=cx+'px';cursor.style.top=cy+'px';};
+ addEventListener('pointermove',e=>{cx=e.clientX;cy=e.clientY;if(!cursorFrame)cursorFrame=requestAnimationFrame(paintCursor)},{passive:true});
+ addEventListener('pointerleave',()=>{cursor.style.opacity='0'},{passive:true});
+ addEventListener('pointerenter',()=>{cursor.style.opacity='1'},{passive:true});
+}
 artists.forEach((a,i)=>{const c=document.createElement('div');c.className='circle';const im=new Image();im.src='images/'+a[1];im.alt=a[0];c.append(im);c.onclick=()=>openArtist(i);(i<7?$('#orbitA'):$('#orbitB')).append(c);const row=document.createElement('div');row.className='artist-row';row.innerHTML=`<span class="artist-no">${String(i+1).padStart(2,'0')}</span><span class="artist-name" role="button" tabindex="0">${a[0]}</span><img class="artist-photo" src="images/${a[1]}" alt=""><div class="bio">Biography coming soon.<button type="button" class="artist-read-more">READ MORE</button></div>`;row.onmouseenter=()=>row.classList.add('preview');row.onmouseleave=()=>row.classList.remove('preview');const name=row.querySelector('.artist-name');name.onclick=()=>openArtist(i);name.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')openArtist(i)};const more=row.querySelector('.artist-read-more');more.onclick=e=>{e.stopPropagation();row.classList.toggle('bio-open');more.textContent=row.classList.contains('bio-open')?'SHOW LESS':'READ MORE'};$('#artistList').append(row)});
 
 const orbitCircles=[...document.querySelectorAll('.circle')];
@@ -294,7 +302,7 @@ function normalizeWorkPaths(data){
 }
 async function loadArtistWorks(){
  try{
-  const response=await fetch('images/works/works.json?rev=63',{cache:'no-store'});
+  const response=await fetch('./images/works/works.json?rev=69',{cache:'no-store'});
   if(response.ok){const data=await response.json();if(Array.isArray(data)&&data.length)return normalizeWorkPaths(data);}
  }catch(error){console.warn('works.json niedostępny — używam manifestu wbudowanego',error)}
  return normalizeWorkPaths(embeddedWorks);
@@ -366,11 +374,21 @@ async function growRail(direction){
 }
 async function buildRail(list){
  sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);
- const metas=new Map((await Promise.all(list.map(loadMeta))).map(x=>[x.w.id,x]));const items=weightedRailItems(list,160,40);const lines=railLines();lines.forEach(x=>x.replaceChildren());
- for(let i=0;i<items.length;i++)lines[i%4].append(makeRailCard(metas.get(items[i].id)));
- rememberRail(items.slice(-40).map(w=>w.id));
+ const metas=new Map((await Promise.all(list.map(loadMeta))).map(x=>[x.w.id,x]));
+ const batches=buildBatchSequence(list);
+ const lines=railLines(); lines.forEach(line=>line.replaceChildren());
+ const rowHeight=parseFloat(getComputedStyle(lines[0]).height)||220;
+ const widths=batches.map(batch=>Math.max(72,...batch.map(w=>Math.max(1,metas.get(w.id).ratio))*rowHeight));
+ // Two identical cycles make the rail continuous; no DOM work is done while dragging.
+ for(let row=0;row<4;row++){
+  for(const cycle of [batches,batches]) for(let c=0;c<cycle.length;c++){
+   const w=cycle[c][row]; if(w) lines[row].append(makeStaticCard(w,widths[c]));
+  }
+ }
  document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';
- requestAnimationFrame(()=>{rail.offset=lines.map(line=>-Math.max(0,(line.scrollWidth-$('#worksRow').clientWidth)/2));rail.ready=true;paintRail()});
+ await new Promise(requestAnimationFrame);
+ rail.cycleWidth=lines[0].scrollWidth/2;
+ rail.offset=-rail.cycleWidth; rail.ready=true; paintRail();
 }
 (async()=>{try{const realWorks=await loadArtistWorks();if(realWorks.length)await buildRail(realWorks);else throw Error('works.json jest puste')}catch(error){console.error('WORKS:',error);document.querySelector('#worksRow').innerHTML='<div class=placeholder>WORKS COULD NOT BE LOADED</div>'}})();
 </script></body></html>
