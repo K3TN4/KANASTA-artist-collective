@@ -305,36 +305,12 @@ function parseWorkName(filename,artist){
 async function githubContents(path){const r=await fetch(artistApi+path.split('/').map(encodeURIComponent).join('/'));if(!r.ok)throw Error(`GitHub ${r.status}: ${path}`);return r.json()}
 function rawAsset(...parts){return $raw(parts.join('/'))}
 async function loadArtistWorks(){
- // Jeden request do GitHub Git Tree zamiast dziesiątek requestów Contents API.
- // Dzięki temu WORKS nie zatrzymuje się na limicie publicznego API GitHuba.
- const treeUrl='https://api.github.com/repos/K3TN4/KANASTA-artist-collective/git/trees/main?recursive=1';
- const response=await fetch(treeUrl,{headers:{Accept:'application/vnd.github+json'}});
- if(!response.ok)throw new Error(`GitHub Tree API ${response.status}`);
+ // works.json jest wersjonowany razem ze zdjęciami i nie korzysta z limitu GitHub API.
+ const response=await fetch('images/works/works.json', {cache:'no-store'});
+ if(!response.ok)throw new Error(`works.json ${response.status}`);
  const data=await response.json();
- const files=(data.tree||[]).filter(x=>x.type==='blob'&&imageExt.test(x.path));
- const result=[];
- for(const artist of artistFolderNames){
-  const base=`${artistRoot}/${artist}/`;
-  const artistFiles=files.filter(x=>x.path.startsWith(base));
-  const layoutB=artistFiles.some(x=>x.path.includes('/thumbs/60%/'));
-  for(const tier of tiers){
-   const prefix=layoutB?`${base}`:`${base}${tier.folder}/`;
-   const thumbPrefix=layoutB?`${prefix}thumbs/${tier.folder}/`:`${prefix}thumbs/`;
-   const viewPrefix=layoutB?`${prefix}view/${tier.folder}/`:`${prefix}view/`;
-   const fullPrefix=layoutB?`${prefix}full/${tier.folder}/`:`${prefix}full/`;
-   const thumbs=artistFiles.filter(x=>x.path.startsWith(thumbPrefix));
-   for(const file of thumbs){
-    const name=file.path.slice(thumbPrefix.length);
-    const same=(p,n)=>artistFiles.find(x=>x.path===p+n);
-    const view=same(viewPrefix,name)||same(viewPrefix,name.replace(/\.[^.]+$/,''));
-    const full=same(fullPrefix,name)||same(fullPrefix,name.replace(/\.[^.]+$/,''));
-    const meta=parseWorkName(name,artist);
-    result.push({...meta,id:`${artist}-${tier.folder}-${name}`,tier:tier.folder,weight:tier.weight,
-      thumb:rawAsset(file.path),view:rawAsset(view?.path||file.path),full:rawAsset(full?.path||view?.path||file.path)});
-   }
-  }
- }
- return result;
+ const assetUrl=path=>String(path).split('/').map(encodeURIComponent).join('/');
+ return data.map(w=>({...w,thumb:assetUrl(w.thumb),view:assetUrl(w.view),full:assetUrl(w.full)}));
 }
 function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
 function weightedPick(list){const total=list.reduce((n,w)=>n+w.weight,0);let r=Math.random()*total;for(const w of list){r-=w.weight;if(r<=0)return w}return list[list.length-1]}
@@ -349,5 +325,5 @@ async function buildRail(list){
  document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';
  requestAnimationFrame(()=>{rail.offset=lines.map(line=>-Math.max(0,(line.scrollWidth-$('#worksRow').clientWidth)/2));rail.ready=true;paintRail()});
 }
-(async()=>{const realWorks=await loadArtistWorks();if(realWorks.length)await buildRail(realWorks);else {console.warn('Brak prac w folderach artystów.');document.querySelector('#worksRow').innerHTML='<div class=placeholder>WORKS TEMPORARILY UNAVAILABLE — REFRESH IN A MOMENT</div>'}})();
+(async()=>{try{const realWorks=await loadArtistWorks();if(realWorks.length)await buildRail(realWorks);else throw Error('works.json jest puste')}catch(error){console.error('WORKS:',error);document.querySelector('#worksRow').innerHTML='<div class=placeholder>WORKS COULD NOT BE LOADED</div>'}})();
 </script></body></html>
