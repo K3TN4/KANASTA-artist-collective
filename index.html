@@ -248,7 +248,8 @@ $('#viewerImage').addEventListener('touchend',e=>{if(e.touches.length<2)pinch.ac
 let drag=null,touchRail=null;
 const sourceWorks=[];
 const WORKS_POOL_SIZE=50;
-const rail={offset:[0,0,0,0],cycleWidth:[0,0,0,0],ready:false,frame:0,pending:0};
+const rail={offset:[0,0,0,0],cycleWidth:[0,0,0,0],ready:false,frame:0,pending:0,wrapped:false,rebuildQueued:false};
+let currentPool=[];
 function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
 function paintRail(){railLines().forEach((line,i)=>line.style.transform=`translate3d(${rail.offset[i]||0}px,0,0)`)}
 function weightedPick(list){const total=list.reduce((n,w)=>n+(Number(w.weight)||0),0);let r=Math.random()*total;for(const w of list){r-=Number(w.weight)||0;if(r<=0)return w}return list[list.length-1]}
@@ -258,22 +259,166 @@ function cardFor(meta,rowHeight){
  const img=document.createElement('img');img.src=meta.w.thumb;img.alt=`${meta.w.title} — ${meta.w.artist}`;img.draggable=false;img.decoding='async';card.append(img);
  card.onclick=()=>{if(!drag||!drag.moved){const i=works.indexOf(meta.w);if(i>=0)openWork(i)}};return card;
 }
-function moveRail(dx){if(!rail.ready)return;for(let i=0;i<4;i++){const width=rail.cycleWidth[i];if(!width)continue;let next=rail.offset[i]+dx;while(next<=-width)next+=width;while(next>0)next-=width;rail.offset[i]=next}paintRail()}
+function moveRail(dx){
+ if(!rail.ready)return;
+ let didWrap=false;
+ for(let i=0;i<4;i++){
+  const width=rail.cycleWidth[i];if(!width)continue;
+  let next=rail.offset[i]+dx;
+  while(next<=-width){next+=width;didWrap=true}
+  while(next>0){next-=width;didWrap=true}
+  rail.offset[i]=next;
+ }
+ if(didWrap)rail.wrapped=true;
+ paintRail();
+}
 function scheduleRailMove(dx){if(!rail.ready)return;rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
-async function loadArtistWorks(){const response=await fetch('images/works/works.json',{cache:'no-store'});if(!response.ok)throw new Error(`works.json ${response.status}`);const data=await response.json();if(!Array.isArray(data)||!data.length)throw new Error('works.json jest puste');const assetUrl=path=>String(path).split('/').map(encodeURIComponent).join('/');return data.map(w=>({...w,thumb:assetUrl(w.thumb),view:assetUrl(w.view),full:assetUrl(w.full)}))}
+async function loadArtistWorks(){
+ const response=await fetch('images/works/works.json',{cache:'no-store'});if(!response.ok)throw new Error(`works.json ${response.status}`);
+ const data=await response.json();if(!Array.isArray(data)||!data.length)throw new Error('works.json jest puste');
+ const assetUrl=path=>String(path).split('/').map(encodeURIComponent).join('/');
+ return data.map(w=>({...w,thumb:assetUrl(w.thumb),view:assetUrl(w.view),full:assetUrl(w.full)}));
+}
 function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
+async function renderPool(pool){
+ const metas=new Map((await Promise.all(pool.map(loadMeta))).map(x=>[x.w.id,x]));
+ const lines=railLines();lines.forEach(line=>line.replaceChildren());
+ const rowHeight=parseFloat(getComputedStyle(lines[0]).height)||220;
+ for(let copy=0;copy<2;copy++)for(let i=0;i<pool.length;i++)lines[i%4].append(cardFor(metas.get(pool[i].id),rowHeight));
+ await new Promise(requestAnimationFrame);
+ rail.cycleWidth=lines.map(line=>line.scrollWidth/2);
+ rail.offset=rail.cycleWidth.map(()=>0);rail.wrapped=false;rail.ready=true;paintRail();
+}
 async function buildRail(list){
  sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);
- const pool=makePool(list,Math.min(WORKS_POOL_SIZE,list.length));
- const metas=new Map((await Promise.all(pool.map(loadMeta))).map(x=>[x.w.id,x]));
- const lines=railLines();lines.forEach(line=>line.replaceChildren());const rowHeight=parseFloat(getComputedStyle(lines[0]).height)||220;
- for(let copy=0;copy<2;copy++)for(let i=0;i<pool.length;i++){const meta=metas.get(pool[i].id);lines[i%4].append(cardFor(meta,rowHeight))}
+ currentPool=makePool(list,Math.min(WORKS_POOL_SIZE,list.length));
  document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';
- await new Promise(requestAnimationFrame);rail.cycleWidth=lines.map(line=>line.scrollWidth/2);rail.offset=rail.cycleWidth.map(()=>0);rail.ready=true;paintRail();
+ await renderPool(currentPool);
+}
+async function rebuildAfterCycle(){
+ if(rail.rebuildQueued||!rail.wrapped||!sourceWorks.length)return;
+ rail.rebuildQueued=true;
+ // This runs after pointer release, never inside drag movement.
+ const nextPool=makePool(sourceWorks,Math.min(WORKS_POOL_SIZE,sourceWorks.length));
+ await renderPool(nextPool);currentPool=nextPool;rail.rebuildQueued=false;
 }
 $('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;drag={x:e.clientX,moved:false};e.preventDefault()};
 document.addEventListener('mousemove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>2)drag.moved=true;scheduleRailMove(dx);drag.x=e.clientX},{passive:true});
-document.addEventListener('mouseup',()=>{if(!drag)return;const moved=drag.moved;drag=null;if(moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,80)}});
-$('#worksRow').addEventListener('touchstart',e=>{if(e.touches.length)touchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(!touchRail||!e.touches.length)return;const dx=e.touches[0].clientX-touchRail.x;if(Math.abs(dx)>3)touchRail.moved=true;if(touchRail.moved){e.preventDefault();scheduleRailMove(dx);touchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(touchRail?.moved){ $('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,100)}touchRail=null});$('#worksRow').addEventListener('click',e=>{if($('#worksRow').dataset.suppress){e.preventDefault();e.stopPropagation()}},true);
+document.addEventListener('mouseup',()=>{if(!drag)return;const moved=drag.moved;drag=null;if(moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,80)}if(rail.wrapped)rebuildAfterCycle()});
+$('#worksRow').addEventListener('touchstart',e=>{if(e.touches.length)touchRail={x:e.touches[0].clientX,moved:false}},{passive:true});
+$('#worksRow').addEventListener('touchmove',e=>{if(!touchRail||!e.touches.length)return;const dx=e.touches[0].clientX-touchRail.x;if(Math.abs(dx)>3)touchRail.moved=true;if(touchRail.moved){e.preventDefault();scheduleRailMove(dx);touchRail.x=e.touches[0].clientX}},{passive:false});
+$('#worksRow').addEventListener('touchend',()=>{if(touchRail?.moved){ $('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,100)}touchRail=null;if(rail.wrapped)rebuildAfterCycle()});
+$('#worksRow').addEventListener('click',e=>{if($('#worksRow').dataset.suppress){e.preventDefault();e.stopPropagation()}},true);
 (async()=>{try{const realWorks=await loadArtistWorks();await buildRail(realWorks)}catch(error){console.error('WORKS:',error);document.querySelector('#worksRow').innerHTML='<div class=placeholder>WORKS COULD NOT BE LOADED</div>'}})();
+let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
+let cursorFrame=0,cursorClone=null,cursorCloneTarget=null;
+function cursorTarget(){const el=document.elementFromPoint(mouse.x,mouse.y);return el&&el.closest('button,a,h1,h2,h3,.subtitle,.artist-name,.section-head,.section-head span,.viewer-caption h2,.viewer-caption p,.viewer-caption small,.top button,.viewerLogo,.section-head span,.section-head h2,.artist-name,.subtitle,.placeholder,.about p,.contact,.contact *,.bio button,.menu-list a,.circle,.artist-photo');}
+function syncCursorClone(target){
+ if(cursorCloneTarget!==target){
+  if(cursorClone)cursorClone.remove();cursorClone=null;cursorCloneTarget=target;
+  if(target){cursorClone=document.createElement('span');cursorClone.className='clone';cursorClone.textContent=target.textContent;cursorClone.setAttribute('aria-hidden','true');document.getElementById('cursorText').append(cursorClone)}
+ }
+ if(!target||!cursorClone)return;
+ const r=target.getBoundingClientRect(),cs=getComputedStyle(target);
+ const baseW=Math.max(1,target.offsetWidth),baseH=Math.max(1,target.offsetHeight);
+ const scaleX=r.width/baseW,scaleY=r.height/baseH;
+ cursorClone.style.left=(r.left+r.width/2)+'px';cursorClone.style.top=(r.top+r.height/2)+'px';
+ cursorClone.style.width=baseW+'px';cursorClone.style.height=baseH+'px';
+ cursorClone.style.fontFamily=cs.fontFamily;cursorClone.style.fontSize=cs.fontSize;cursorClone.style.fontWeight=cs.fontWeight;cursorClone.style.fontStyle=cs.fontStyle;cursorClone.style.fontVariant=cs.fontVariant;cursorClone.style.fontStretch=cs.fontStretch;cursorClone.style.lineHeight=cs.lineHeight;cursorClone.style.letterSpacing=cs.letterSpacing;cursorClone.style.textTransform=cs.textTransform;cursorClone.style.textAlign=cs.textAlign;cursorClone.style.whiteSpace='nowrap';
+ cursorClone.style.transform=`translate(-50%,-50%) scale(${scaleX},${scaleY})`;cursorClone.style.transformOrigin='50% 50%';cursorClone.style.display='block';
+}
+function renderCursor(){
+ if(!cursor||matchMedia('(max-width:700px)').matches){if(cursor)cursor.style.display='none';cancelAnimationFrame(cursorFrame);return}
+ cursor.style.display='block';mouse.px+=(mouse.x-mouse.px)*.32;mouse.py+=(mouse.y-mouse.py)*.32;mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
+ const speed=Math.hypot(mouse.vx,mouse.vy),pulse=1+Math.min(.10,speed*.012),tilt=Math.max(-3,Math.min(3,mouse.vx*.025));
+ cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(-50%,-50%) scale(${pulse}) rotate(${tilt}deg)`;
+ syncCursorClone(cursorTarget());document.getElementById('cursorText').style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
+}
+window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});renderCursor();
+
+/* KANASTA WORKS v53: all artists, weighted homepage, ordered artist gallery. */
+const artistRoot='images/works/KANASTA-artists-folders';
+const artistFolderNames=['Patrycja Boruch','Zuzanna Frankowska','Amelia Korczak','Adam Pażucha','Antoni Augustyniak','Ada Rosa','Anastazja Gierlak','Anna Esnekier','Gabriela Bossowska','Marta Mioduszewska','Nina Borowicz','Aleksandra Sikora','Marta Mendelejeva','Franek Ciastoń','Urszula Smagowicz'];
+const artistApi='https://api.github.com/repos/K3TN4/KANASTA-artist-collective/contents/';
+const rawRoot='https://raw.githubusercontent.com/K3TN4/KANASTA-artist-collective/main/';
+const imageExt=/\.(avif|gif|jpe?g|png|webp)$/i;
+const tiers=[{folder:'60%',weight:60},{folder:'30%',weight:30},{folder:'10%',weight:10}];
+
+const $raw=s=>rawRoot+s.split('/').map(encodeURIComponent).join('/');
+const clean=v=>String(v||'').trim().replace(/\s+/g,' ');
+function shuffled(list){const a=list.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function parseWorkName(filename,artist){
+ const base=filename.replace(imageExt,'');let rest=base,year='',dimensions='',title='',technique='';
+ const y=rest.match(/(?:^|[_ ])((?:19|20)\d{2})$/);if(y){year=y[1];rest=rest.slice(0,-y[0].length)}
+ const d=rest.match(/(?:^|_)(\d+(?:[.,]\d+)?\s*[x×]\s*\d+(?:[.,]\d+)?(?:\s*x\s*\d+(?:[.,]\d+)?)?\s*(?:cm|mm|m)?)(?:$|_)/i);if(d){dimensions=clean(d[1]);rest=rest.replace(d[0],'_').replace(/^_|_$/g,'')}
+ const parts=rest.split('_').map(clean).filter(Boolean);const a=artist.toLowerCase();
+ if(parts.length&&parts[0].toLowerCase()===a)parts.shift();
+ title=parts.shift()||base;technique=parts.join(' · ');return{title,technique,year,dimensions,artist};
+}
+async function githubContents(path){const r=await fetch(artistApi+path.split('/').map(encodeURIComponent).join('/'));if(!r.ok)throw Error(`GitHub ${r.status}: ${path}`);return r.json()}
+function rawAsset(...parts){return $raw(parts.join('/'))}
+async function loadArtistWorks(){
+ // works.json jest wersjonowany razem ze zdjęciami i nie korzysta z limitu GitHub API.
+ const response=await fetch('images/works/works.json', {cache:'no-store'});
+ if(!response.ok)throw new Error(`works.json ${response.status}`);
+ const data=await response.json();
+ const assetUrl=path=>String(path).split('/').map(encodeURIComponent).join('/');
+ return data.map(w=>({...w,thumb:assetUrl(w.thumb),view:assetUrl(w.view),full:assetUrl(w.full)}));
+}
+function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
+function weightedPick(list){const total=list.reduce((n,w)=>n+w.weight,0);let r=Math.random()*total;for(const w of list){r-=w.weight;if(r<=0)return w}return list[list.length-1]}
+function weightedRailItems(list,count=160,repeatAfter=40){
+ // WORKS ma cztery zsynchronizowane rzędy. Jedna paczka = jedna pozycja
+ // widoku: cztery różne prace, po jednej do każdego rzędu.
+ const sequence=[]; const recent=[]; const rows=4;
+ for(let n=0;n<count;n+=rows){
+  const batch=[];
+  for(let row=0;row<rows && n+row<count;row++){
+   let eligible=list.filter(work=>
+    !recent.includes(work.id) && !batch.some(other=>other.id===work.id)
+   );
+   // Jeśli ostatnie 40 blokuje całą pulę, nadal wymuszamy różne prace
+   // w aktualnej paczce; reset historii jest bezpieczniejszy niż duplikat.
+   if(!eligible.length)eligible=list.filter(work=>!batch.some(other=>other.id===work.id));
+   if(!eligible.length)eligible=list;
+   const picked=weightedPick(eligible);
+   batch.push(picked); sequence.push(picked);
+  }
+  for(const picked of batch){recent.push(picked.id);if(recent.length>repeatAfter)recent.shift()}
+ }
+ return sequence;
+}
+function distinctPicks(exclude,count){
+ const blocked=new Set(exclude); const pool=[];
+ for(let n=0;n<count;n++){
+  let available=sourceWorks.filter(w=>!blocked.has(w.thumb));
+  if(!available.length)available=sourceWorks.filter(w=>!pool.some(x=>x.id===w.id));
+  if(!available.length)break;
+  const picked=weightedPick(available);pool.push(picked);blocked.add(picked.thumb);
+ }
+ return pool;
+}
+async function growRail(direction){
+ if(rail.busy||!rail.ready||!sourceWorks.length)return;rail.busy=true;
+ const used=new Set([...document.querySelectorAll('#worksRow .work-card')].map(c=>c.dataset.file));
+ const batch=[];let pool=sourceWorks.filter(w=>!railRecentIds.includes(w.id)&&!used.has(w.thumb));
+ for(let n=0;n<4;n++){
+  let available=pool.filter(w=>!batch.some(x=>x.id===w.id));
+  if(!available.length)available=sourceWorks.filter(w=>!batch.some(x=>x.id===w.id));
+  if(!available.length)break;
+  const picked=weightedPick(available);batch.push(picked);pool=pool.filter(w=>w.id!==picked.id);
+ }
+ const metas=await Promise.all(batch.map(loadMeta)),lines=railLines();
+ for(let i=0;i<metas.length;i++){const card=makeRailCard(metas[i]);if(direction==='left'){lines[i].prepend(card);rail.offset[i]-=card.offsetWidth+rail.gap}else lines[i].append(card)}
+ rememberRail(batch.map(w=>w.id));paintRail();trimRail(direction);rail.busy=false;
+}
+async function buildRail(list){
+ sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);
+ const metas=new Map((await Promise.all(list.map(loadMeta))).map(x=>[x.w.id,x]));const items=weightedRailItems(list,160,40);const lines=railLines();lines.forEach(x=>x.replaceChildren());
+ for(let i=0;i<items.length;i++)lines[i%4].append(makeRailCard(metas.get(items[i].id)));
+ rememberRail(items.slice(-40).map(w=>w.id));
+ document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';
+ requestAnimationFrame(()=>{rail.offset=lines.map(line=>-Math.max(0,(line.scrollWidth-$('#worksRow').clientWidth)/2));rail.ready=true;paintRail()});
+}
+(async()=>{try{const realWorks=await loadArtistWorks();if(realWorks.length)await buildRail(realWorks);else throw Error('works.json jest puste')}catch(error){console.error('WORKS:',error);document.querySelector('#worksRow').innerHTML='<div class=placeholder>WORKS COULD NOT BE LOADED</div>'}})();
 </script></body></html>
