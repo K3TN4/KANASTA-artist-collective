@@ -297,7 +297,7 @@ async function buildRail(list){
  await new Promise(requestAnimationFrame);
  rail.cycleWidth=lines.map(line=>line.scrollWidth/2);
  // Start at the beginning of a complete cycle, not at its centre.
- rail.offset=rail.cycleWidth.map(w=>-w);rail.ready=true;paintRail();
+ rail.offset=rail.cycleWidth.map(()=>0);rail.ready=true;paintRail();
 }
 $('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;drag={x:e.clientX,moved:false};e.preventDefault()};
 document.addEventListener('mousemove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>2)drag.moved=true;scheduleRailMove(dx);drag.x=e.clientX},{passive:true});
