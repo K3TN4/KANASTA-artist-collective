@@ -168,6 +168,9 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .works-line{gap:6px!important;contain:layout paint!important}
 #worksRow .work-card{width:clamp(190px,18vw,300px)!important;min-width:clamp(190px,18vw,300px)!important;max-width:clamp(190px,18vw,300px)!important;flex:0 0 clamp(190px,18vw,300px)!important;margin:0!important;padding:0!important}
 #worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
+#worksRow .work-card{transition:transform .38s cubic-bezier(.22,1,.36,1),z-index 0s!important;transform-origin:center center!important;z-index:1!important}
+#worksRow .work-card:hover{transform:translateY(var(--work-y,0px)) scale(1.045)!important;z-index:20!important}
+@media(prefers-reduced-motion:reduce){#worksRow .work-card{transition:none!important}}
 @media(max-width:700px){#worksRow .work-card{width:clamp(105px,29vw,170px)!important;min-width:clamp(105px,29vw,170px)!important;max-width:clamp(105px,29vw,170px)!important;flex-basis:clamp(105px,29vw,170px)!important}}
 
 /* v40: one prebuilt stable loop; dragging never creates or resizes cards */
@@ -192,16 +195,22 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .works-line{display:flex!important;gap:var(--works-gap)!important;will-change:transform!important;contain:layout paint!important}
 #worksRow .work-card{width:var(--card-width)!important;min-width:var(--card-width)!important;max-width:var(--card-width)!important;flex:0 0 var(--card-width)!important;height:100%!important;margin:0!important;padding:0!important}
 #worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
+#worksRow .work-card{transition:transform .38s cubic-bezier(.22,1,.36,1),z-index 0s!important;transform-origin:center center!important;z-index:1!important}
+#worksRow .work-card:hover{transform:translateY(var(--work-y,0px)) scale(1.045)!important;z-index:20!important}
+@media(prefers-reduced-motion:reduce){#worksRow .work-card{transition:none!important}}
 
 /* WORKS organic rail: fixed geometry, varied bounded card heights */
 #worksRow{position:relative!important;height:clamp(560px,68vh,760px)!important;overflow:hidden!important;display:block!important;cursor:grab!important}
-#worksRow .works-line{position:absolute!important;left:0!important;right:0!important;width:max-content!important;min-width:0!important;height:25%!important;display:flex!important;align-items:flex-start!important;gap:clamp(10px,1.2vw,20px)!important;contain:layout paint!important;will-change:transform!important}
+#worksRow .works-line{position:absolute!important;left:0!important;right:0!important;width:max-content!important;min-width:0!important;height:34%!important;display:flex!important;align-items:flex-start!important;gap:clamp(10px,1.2vw,20px)!important;contain:layout paint!important;will-change:transform!important}
 #worksRow .works-line:nth-child(1){top:0!important}
-#worksRow .works-line:nth-child(2){top:25%!important}
-#worksRow .works-line:nth-child(3){top:50%!important}
-#worksRow .works-line:nth-child(4){top:75%!important}
+#worksRow .works-line:nth-child(2){top:20%!important}
+#worksRow .works-line:nth-child(3){top:43%!important}
+#worksRow .works-line:nth-child(4){top:66%!important}
 #worksRow .work-card{height:var(--work-h)!important;width:var(--work-w)!important;min-width:var(--work-w)!important;max-width:var(--work-w)!important;flex:0 0 var(--work-w)!important;transform:translateY(var(--work-y,0px))!important;margin:0!important;padding:0!important}
 #worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
+#worksRow .work-card{transition:transform .38s cubic-bezier(.22,1,.36,1),z-index 0s!important;transform-origin:center center!important;z-index:1!important}
+#worksRow .work-card:hover{transform:translateY(var(--work-y,0px)) scale(1.045)!important;z-index:20!important}
+@media(prefers-reduced-motion:reduce){#worksRow .work-card{transition:none!important}}
 @media(max-width:700px){#worksRow{height:clamp(480px,145vw,680px)!important}#worksRow .works-line{gap:8px!important}}
 </style></head>
 <body>
@@ -265,7 +274,7 @@ function railLines(){return [...document.querySelectorAll('#worksRow .works-line
 function paintRail(){railLines().forEach((line,i)=>line.style.transform=`translate3d(${rail.offset[i]||0}px,0,0)`)}
 function weightedPick(list){const total=list.reduce((n,w)=>n+(Number(w.weight)||0),0);let r=Math.random()*total;for(const w of list){r-=Number(w.weight)||0;if(r<=0)return w}return list[list.length-1]}
 function makeSet(list,count,avoid=[]){const blocked=new Set(avoid.map(w=>w.id)),pool=list.filter(w=>!blocked.has(w.id)),out=[];while(out.length<count){const available=pool.length?pool:list.filter(w=>!out.some(x=>x.id===w.id));if(!available.length)break;const w=weightedPick(available);out.push(w);const n=pool.indexOf(w);if(n>=0)pool.splice(n,1)}return out}
-function cardFor(meta,setNo,index,rowHeight){const w=meta.w;const seed=(index*37+setNo*101+(w.id||'').length*13)%100;const h=Math.max(145,Math.min(rowHeight-12,Math.round(155+(seed/99)*(rowHeight-165))));const width=Math.max(90,Math.round(meta.ratio*h));const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;card.dataset.workId=w.id;card.style.setProperty('--work-h',h+'px');card.style.setProperty('--work-w',width+'px');card.style.setProperty('--work-y',(seed%5)*4+'px');const img=document.createElement('img');img.src=w.thumb;img.alt=`${w.title} — ${w.artist}`;img.draggable=false;img.decoding='async';card.append(img);card.onclick=()=>{if(!drag||!drag.moved){const i=works.indexOf(w);if(i>=0)openWork(i)}};return card}
+function cardFor(meta,setNo,index,rowHeight){const w=meta.w;const seed=(index*37+setNo*101+(w.id||'').length*13)%100;const h=Math.max(118,Math.min(Math.round(rowHeight*1.32),Math.round(118+(seed/99)*(rowHeight*1.32-118))));const width=Math.max(88,Math.round(meta.ratio*h));const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;card.dataset.workId=w.id;card.style.setProperty('--work-h',h+'px');card.style.setProperty('--work-w',width+'px');card.style.setProperty('--work-y',(-18+(seed%17)*5)+'px');const img=document.createElement('img');img.src=w.thumb;img.alt=`${w.title} — ${w.artist}`;img.draggable=false;img.decoding='async';card.append(img);card.onclick=()=>{if(!drag||!drag.moved){const i=works.indexOf(w);if(i>=0)openWork(i)}};return card}
 function moveRail(dx){if(!rail.ready)return;let next=rail.offset.map(v=>v+dx);if(next[0]<=-rail.setWidth){next=next.map(v=>v+rail.setWidth);rail.setIndex=Math.min(rail.setIndex+1,rail.sets.length-2)}if(next[0]>0){next=next.map(v=>v-rail.setWidth);rail.setIndex=Math.max(rail.setIndex-1,0)}rail.offset=next;paintRail()}
 function scheduleRailMove(dx){if(!rail.ready)return;rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
 async function loadArtistWorks(){const r=await fetch('images/works/works.json',{cache:'no-store'});if(!r.ok)throw Error(`works.json ${r.status}`);const data=await r.json();if(!Array.isArray(data)||!data.length)throw Error('works.json jest puste');const enc=p=>String(p).split('/').map(encodeURIComponent).join('/');return data.map(w=>({...w,thumb:enc(w.thumb),view:enc(w.view),full:enc(w.full)}))}
