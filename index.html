@@ -269,7 +269,7 @@ async function loadArtistWorks(){
  const data=await response.json();
  if(!Array.isArray(data)||!data.length)throw new Error('works.json jest puste');
  // Manifest stores normal paths. Encode each segment exactly once: 60% must become 60%25.
- const assetUrl=path=>String(path).split('/').map(seg=>encodeURIComponent(decodeURIComponent(seg))).join('/');
+ const assetUrl=path=>String(path).split('/').map(seg=>encodeURIComponent(seg)).join('/');
  return data.map(w=>({...w,thumb:assetUrl(w.thumb),view:assetUrl(w.view),full:assetUrl(w.full)}));
 }
 function moveRail(dx){if(!rail.ready)return;rail.offset=rail.offset.map(v=>v+dx);const width=rail.cycleWidth;if(width){rail.offset=rail.offset.map(v=>{while(v<=-width)v+=width;while(v>0)v-=width;return v})}paintRail()}
