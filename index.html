@@ -249,7 +249,7 @@ let drag=null,touchRail=null;
 // WORKS ONLY: fixed four-row carousel. No fetch/Image/DOM changes while dragging.
 const sourceWorks=[];
 function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
-const rail={offset:[0,0,0,0],ready:false,frame:0,pending:0,cycleWidth:0};
+const rail={offset:[0,0,0,0],ready:false,frame:0,pending:0,cycleWidth:[0,0,0,0]};
 function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
 function paintRail(){railLines().forEach((line,i)=>line.style.transform=`translate3d(${rail.offset[i]||0}px,0,0)`)}
 function weightedPickOnce(list){const total=list.reduce((n,w)=>n+(Number(w.weight)||0),0);let r=Math.random()*total;for(const w of list){r-=Number(w.weight)||0;if(r<=0)return w}return list[list.length-1]}
@@ -274,7 +274,11 @@ async function loadArtistWorks(){
  const assetUrl=path=>String(path).split('/').map(seg=>encodeURIComponent(seg)).join('/');
  return data.map(w=>({...w,thumb:assetUrl(w.thumb),view:assetUrl(w.view),full:assetUrl(w.full)}));
 }
-function moveRail(dx){if(!rail.ready)return;rail.offset=rail.offset.map(v=>v+dx);const width=rail.cycleWidth;if(width){rail.offset=rail.offset.map(v=>{while(v<=-width)v+=width;while(v>0)v-=width;return v})}paintRail()}
+function moveRail(dx){
+ if(!rail.ready)return;
+ rail.offset=rail.offset.map((v,i)=>{const width=rail.cycleWidth[i]||0;let next=v+dx;if(width){while(next<=-width)next+=width;while(next>0)next-=width}return next});
+ paintRail();
+}
 function scheduleRailMove(dx){if(!rail.ready)return;rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
 async function buildRail(list){
  sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);
@@ -282,10 +286,18 @@ async function buildRail(list){
  const cycle=makeCycle(list,Math.min(32,list.length));
  const lines=railLines();lines.forEach(line=>line.replaceChildren());
  const rowHeight=parseFloat(getComputedStyle(lines[0]).height)||220;
- // One fixed card per selected work; each column is distributed across all four rows.
- for(let row=0;row<4;row++)for(let col=row;col<cycle.length;col+=4){const meta=metas.get(cycle[col].id);lines[row].append(cardFor(meta.w,meta.ratio,rowHeight))}
+ // Build two fixed cycles. The second is only the seamless continuation after
+ // the first cycle; no card is created, measured or removed during dragging.
+ for(let row=0;row<4;row++){
+  for(const copy of [0,1]) for(let col=row;col<cycle.length;col+=4){
+   const meta=metas.get(cycle[col].id);lines[row].append(cardFor(meta.w,meta.ratio,rowHeight));
+  }
+ }
  document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';
- await new Promise(requestAnimationFrame);rail.cycleWidth=lines[0].scrollWidth;rail.offset=rail.offset.map(()=>-rail.cycleWidth/2);rail.ready=true;paintRail();
+ await new Promise(requestAnimationFrame);
+ rail.cycleWidth=lines.map(line=>line.scrollWidth/2);
+ // Start at the beginning of a complete cycle, not at its centre.
+ rail.offset=rail.cycleWidth.map(w=>-w);rail.ready=true;paintRail();
 }
 $('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;drag={x:e.clientX,moved:false};e.preventDefault()};
 document.addEventListener('mousemove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>2)drag.moved=true;scheduleRailMove(dx);drag.x=e.clientX},{passive:true});
