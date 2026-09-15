@@ -247,6 +247,8 @@ $('#viewerImage').addEventListener('touchmove',e=>{if(e.touches.length===2&&pinc
 $('#viewerImage').addEventListener('touchend',e=>{if(e.touches.length<2)pinch.active=false});
 let drag=null,touchRail=null;
 // WORKS ONLY: fixed four-row carousel. No fetch/Image/DOM changes while dragging.
+const sourceWorks=[];
+function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
 const rail={offset:[0,0,0,0],ready:false,frame:0,pending:0,cycleWidth:0};
 function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
 function paintRail(){railLines().forEach((line,i)=>line.style.transform=`translate3d(${rail.offset[i]||0}px,0,0)`)}
