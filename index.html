@@ -225,6 +225,9 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .work-card.edge-visible:hover{transform:scale(1.035)!important;z-index:5!important}
 #worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important}
 @media(max-width:700px){#worksRow{height:clamp(680px,175vw,980px)!important}}
+
+/* WORKS ORGANIC FINAL OVERRIDE: neutralize legacy fixed-width rail rules */
+#worksRow .work-card{width:auto!important;min-width:0!important;max-width:none!important;height:auto!important;flex:none!important}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
