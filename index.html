@@ -204,6 +204,16 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .work-card:hover img{transform:scale(1.035)!important;opacity:1!important}
 @media(max-width:700px){#worksRow{height:clamp(500px,145vw,720px)!important}.section.works{padding-left:10px!important;padding-right:10px!important}}
 @media(prefers-reduced-motion:reduce){#worksRow .work-card,#worksRow .work-card img{transition:none!important}}
+
+/* WORKS FINAL WIDE: viewport full-bleed, per-card edge animation */
+.section.works{overflow:visible!important}
+#works .works-track{position:relative!important;width:100vw!important;max-width:none!important;left:50%!important;transform:translateX(-50%)!important;overflow:visible!important}
+#worksRow{width:100vw!important;max-width:none!important;height:clamp(680px,82vh,980px)!important;margin:0!important;overflow:hidden!important;mask-image:none!important;-webkit-mask-image:none!important}
+#worksRow .work-card{opacity:0!important;transform:scale(.88)!important;transform-origin:center!important;transition:opacity .42s cubic-bezier(.22,1,.36,1),transform .42s cubic-bezier(.22,1,.36,1)!important}
+#worksRow .work-card.edge-visible{opacity:1!important;transform:scale(1)!important}
+#worksRow .work-card:hover{z-index:5!important}
+#worksRow .work-card.edge-visible:hover{transform:scale(1.035)!important}
+@media(max-width:700px){#worksRow{height:clamp(560px,160vw,820px)!important}}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -272,7 +282,16 @@ function moveRail(dx){if(!rail.ready)return;const viewport=$('#worksRow').client
 function scheduleRailMove(dx){if(!rail.ready)return;rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
 async function loadArtistWorks(){const r=await fetch('images/works/works.json',{cache:'no-store'});if(!r.ok)throw Error(`works.json ${r.status}`);const data=await r.json();if(!Array.isArray(data)||!data.length)throw Error('works.json jest puste');const enc=p=>String(p).split('/').map(encodeURIComponent).join('/');return data.map(w=>({...w,thumb:enc(w.thumb),view:enc(w.view),full:enc(w.full)}))}
 function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
-async function buildRail(list){sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);const items=makeSequence(list,Math.min(WORKS_RENDER_COUNT,Math.max(WORKS_QUEUE+1,list.length+18)));const metas=new Map((await Promise.all(items.map(loadMeta))).map(x=>[x.w.id,x]));const line=railLines()[0];railLines().slice(1).forEach(x=>x.replaceChildren());line.replaceChildren();const h=Math.max(300,$('#worksRow').clientHeight||700);const mid=Math.ceil(items.length/2);const first=items.slice(0,mid),second=items.slice(mid);let right=placeCards(first,metas,h,2200,0);right=placeCards(second,metas,h,2200,right+90);rail.trackWidth=right+40;line.style.setProperty('--works-track-width',rail.trackWidth+'px');rail.x=0;rail.ready=true;paintRail();document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ORGANIC WORKS'}
+function setupWorkEdgeObserver(){
+ const viewport=$('#worksRow');
+ if(!viewport||!window.IntersectionObserver)return;
+ if(window.__worksObserver)window.__worksObserver.disconnect();
+ window.__worksObserver=new IntersectionObserver(entries=>{
+  for(const entry of entries)entry.target.classList.toggle('edge-visible',entry.isIntersecting);
+ },{root:viewport,threshold:[0,.02,.15,.5,.85,1]});
+ viewport.querySelectorAll('.work-card').forEach(card=>window.__worksObserver.observe(card));
+}
+async function buildRail(list){sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);const items=makeSequence(list,Math.min(WORKS_RENDER_COUNT,Math.max(WORKS_QUEUE+1,list.length+18)));const metas=new Map((await Promise.all(items.map(loadMeta))).map(x=>[x.w.id,x]));const line=railLines()[0];railLines().slice(1).forEach(x=>x.replaceChildren());line.replaceChildren();const h=Math.max(300,$('#worksRow').clientHeight||700);const mid=Math.ceil(items.length/2);const first=items.slice(0,mid),second=items.slice(mid);let right=placeCards(first,metas,h,2200,0);right=placeCards(second,metas,h,2200,right+90);rail.trackWidth=right+40;line.style.setProperty('--works-track-width',rail.trackWidth+'px');rail.x=0;rail.ready=true;paintRail();setupWorkEdgeObserver();document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ORGANIC WORKS'}
 $('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;drag={x:e.clientX,moved:false};$('#worksRow').classList.add('dragging');e.preventDefault()};document.addEventListener('mousemove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>2)drag.moved=true;scheduleRailMove(dx);drag.x=e.clientX},{passive:true});document.addEventListener('mouseup',()=>{if(!drag)return;const moved=drag.moved;drag=null;$('#worksRow').classList.remove('dragging');if(moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,80)}});$('#worksRow').addEventListener('touchstart',e=>{if(e.touches.length)touchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(!touchRail||!e.touches.length)return;const dx=e.touches[0].clientX-touchRail.x;if(Math.abs(dx)>3)touchRail.moved=true;if(touchRail.moved){e.preventDefault();scheduleRailMove(dx);touchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(touchRail?.moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,100)}touchRail=null});$('#worksRow').addEventListener('click',e=>{if($('#worksRow').dataset.suppress){e.preventDefault();e.stopPropagation()}},true);(async()=>{try{await buildRail(await loadArtistWorks())}catch(error){console.error('WORKS:',error);$('#worksRow').innerHTML='<div class=placeholder>WORKS COULD NOT BE LOADED</div>'}})();
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
 let cursorFrame=0,cursorClone=null,cursorCloneTarget=null;
