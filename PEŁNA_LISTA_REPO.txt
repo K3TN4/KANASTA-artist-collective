@@ -1,0 +1,3171 @@
+REPOZYTORIUM
+C:\Users\anton\Documents\GitHub\KANASTA-artist-collective
+WYGNEROWANO: 2026-09-17 01:39:45
+Zawartość plików nie została odczytana.
+
+STATYSTYKA
+Foldery: 134
+Pliki: 328
+
+PEŁNA LISTA
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\.git
+RELATIVE: /.git
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\generate-works.ps1
+NAME: generate-works.ps1
+EXTENSION: .ps1
+RELATIVE: /generate-works.ps1
+SIZE_KB: 7.17
+LAST_WRITE: 2026-09-15 17:58:26
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images
+RELATIVE: /images
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\.gitkeep
+NAME: .gitkeep
+EXTENSION: .gitkeep
+RELATIVE: /images/.gitkeep
+SIZE_KB: 0
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\adam-pazucha.jpg
+NAME: adam-pazucha.jpg
+EXTENSION: .jpg
+RELATIVE: /images/adam-pazucha.jpg
+SIZE_KB: 261.64
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\ada-rosa.jpg
+NAME: ada-rosa.jpg
+EXTENSION: .jpg
+RELATIVE: /images/ada-rosa.jpg
+SIZE_KB: 159.68
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\aleksandra-sikora.jpg
+NAME: aleksandra-sikora.jpg
+EXTENSION: .jpg
+RELATIVE: /images/aleksandra-sikora.jpg
+SIZE_KB: 49.17
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\amelia-korczak.jpg
+NAME: amelia-korczak.jpg
+EXTENSION: .jpg
+RELATIVE: /images/amelia-korczak.jpg
+SIZE_KB: 165.22
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\anastazja-gierlak.jpg
+NAME: anastazja-gierlak.jpg
+EXTENSION: .jpg
+RELATIVE: /images/anastazja-gierlak.jpg
+SIZE_KB: 214.68
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\anna-esnekier.jpg
+NAME: anna-esnekier.jpg
+EXTENSION: .jpg
+RELATIVE: /images/anna-esnekier.jpg
+SIZE_KB: 627.8
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\antoni-augustyniak.jpg
+NAME: antoni-augustyniak.jpg
+EXTENSION: .jpg
+RELATIVE: /images/antoni-augustyniak.jpg
+SIZE_KB: 124.92
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\franek-ciaston.jpg
+NAME: franek-ciaston.jpg
+EXTENSION: .jpg
+RELATIVE: /images/franek-ciaston.jpg
+SIZE_KB: 63.02
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\franek-ciastoń.jpg
+NAME: franek-ciastoń.jpg
+EXTENSION: .jpg
+RELATIVE: /images/franek-ciastoń.jpg
+SIZE_KB: 63.02
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\gabriela-bossowska.jpg
+NAME: gabriela-bossowska.jpg
+EXTENSION: .jpg
+RELATIVE: /images/gabriela-bossowska.jpg
+SIZE_KB: 14.04
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\hero-square.jpg
+NAME: hero-square.jpg
+EXTENSION: .jpg
+RELATIVE: /images/hero-square.jpg
+SIZE_KB: 6342.44
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\marta-mendelejeva.jpg
+NAME: marta-mendelejeva.jpg
+EXTENSION: .jpg
+RELATIVE: /images/marta-mendelejeva.jpg
+SIZE_KB: 85.94
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\marta-mioduszewska.jpg
+NAME: marta-mioduszewska.jpg
+EXTENSION: .jpg
+RELATIVE: /images/marta-mioduszewska.jpg
+SIZE_KB: 54.58
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\nina.borowicz.jpg
+NAME: nina.borowicz.jpg
+EXTENSION: .jpg
+RELATIVE: /images/nina.borowicz.jpg
+SIZE_KB: 112.4
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\nina-borowicz.jpg
+NAME: nina-borowicz.jpg
+EXTENSION: .jpg
+RELATIVE: /images/nina-borowicz.jpg
+SIZE_KB: 112.4
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\patrycja-boruch.jpg
+NAME: patrycja-boruch.jpg
+EXTENSION: .jpg
+RELATIVE: /images/patrycja-boruch.jpg
+SIZE_KB: 147.73
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\typography.jpg
+NAME: typography.jpg
+EXTENSION: .jpg
+RELATIVE: /images/typography.jpg
+SIZE_KB: 418.48
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\urszula-smagowicz.jpg
+NAME: urszula-smagowicz.jpg
+EXTENSION: .jpg
+RELATIVE: /images/urszula-smagowicz.jpg
+SIZE_KB: 42.25
+LAST_WRITE: 2026-09-05 23:33:43
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works
+RELATIVE: /images/works
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders
+RELATIVE: /images/works/KANASTA-artists-folders
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\full
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/full
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\full\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/full/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\full\10%\Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png
+NAME: Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/full/10%/Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png
+SIZE_KB: 7302.31
+LAST_WRITE: 2026-09-14 01:04:11
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\full\10%\Ada Rosa_Qń_węgiel na papierze_110x140_2026.png
+NAME: Ada Rosa_Qń_węgiel na papierze_110x140_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/full/10%/Ada Rosa_Qń_węgiel na papierze_110x140_2026.png
+SIZE_KB: 7165.33
+LAST_WRITE: 2026-09-14 01:04:11
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\full\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/full/30%
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\full\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/full/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\full\60%\Ada Rosa_Frędzle1_tkanina_1-1_2026.png
+NAME: Ada Rosa_Frędzle1_tkanina_1-1_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/full/60%/Ada Rosa_Frędzle1_tkanina_1-1_2026.png
+SIZE_KB: 1638.61
+LAST_WRITE: 2026-09-14 01:04:11
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\full\60%\Ada Rosa_Frędzle2_tkanina_1-1_2026.png
+NAME: Ada Rosa_Frędzle2_tkanina_1-1_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/full/60%/Ada Rosa_Frędzle2_tkanina_1-1_2026.png
+SIZE_KB: 1271.04
+LAST_WRITE: 2026-09-14 01:04:11
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\thumbs
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/thumbs
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\thumbs\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/thumbs/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\thumbs\10%\Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png
+NAME: Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/thumbs/10%/Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png
+SIZE_KB: 774.32
+LAST_WRITE: 2026-09-14 01:52:40
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\thumbs\10%\Ada Rosa_Qń_węgiel na papierze_110x140_2026.png
+NAME: Ada Rosa_Qń_węgiel na papierze_110x140_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/thumbs/10%/Ada Rosa_Qń_węgiel na papierze_110x140_2026.png
+SIZE_KB: 689.6
+LAST_WRITE: 2026-09-14 01:52:42
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\thumbs\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/thumbs/30%
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\thumbs\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/thumbs/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\thumbs\60%\Ada Rosa_Frędzle1_tkanina_1-1_2026.png
+NAME: Ada Rosa_Frędzle1_tkanina_1-1_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/thumbs/60%/Ada Rosa_Frędzle1_tkanina_1-1_2026.png
+SIZE_KB: 486.46
+LAST_WRITE: 2026-09-14 01:52:38
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\thumbs\60%\Ada Rosa_Frędzle2_tkanina_1-1_2026.png
+NAME: Ada Rosa_Frędzle2_tkanina_1-1_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/thumbs/60%/Ada Rosa_Frędzle2_tkanina_1-1_2026.png
+SIZE_KB: 407.04
+LAST_WRITE: 2026-09-14 01:52:39
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\view
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/view
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\view\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/view/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\view\10%\Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png
+NAME: Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/view/10%/Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png
+SIZE_KB: 6198.4
+LAST_WRITE: 2026-09-14 01:52:42
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\view\10%\Ada Rosa_Qń_węgiel na papierze_110x140_2026.png
+NAME: Ada Rosa_Qń_węgiel na papierze_110x140_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/view/10%/Ada Rosa_Qń_węgiel na papierze_110x140_2026.png
+SIZE_KB: 5919.25
+LAST_WRITE: 2026-09-14 01:52:44
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\view\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/view/30%
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\view\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/view/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\view\60%\Ada Rosa_Frędzle1_tkanina_1-1_2026.png
+NAME: Ada Rosa_Frędzle1_tkanina_1-1_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/view/60%/Ada Rosa_Frędzle1_tkanina_1-1_2026.png
+SIZE_KB: 1492.21
+LAST_WRITE: 2026-09-14 01:52:38
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Ada Rosa\view\60%\Ada Rosa_Frędzle2_tkanina_1-1_2026.png
+NAME: Ada Rosa_Frędzle2_tkanina_1-1_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Ada Rosa/view/60%/Ada Rosa_Frędzle2_tkanina_1-1_2026.png
+SIZE_KB: 1130.95
+LAST_WRITE: 2026-09-14 01:52:40
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\10%\Adam Pażucha_Dz 10, 11-16_gips_100x70x5 cm_2025.jpg
+NAME: Adam Pażucha_Dz 10, 11-16_gips_100x70x5 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/10%/Adam Pażucha_Dz 10, 11-16_gips_100x70x5 cm_2025.jpg
+SIZE_KB: 1706.02
+LAST_WRITE: 2026-09-14 01:04:18
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\10%\Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg
+NAME: Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/10%/Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg
+SIZE_KB: 1196.68
+LAST_WRITE: 2026-09-14 01:04:18
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\30%\Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg
+NAME: Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg
+EXTENSION: .jpeg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/30%/Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg
+SIZE_KB: 2959.85
+LAST_WRITE: 2026-09-14 01:04:18
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\30%\Adam Pażucha_Pisklę nr 1_gips_20x20x10 cm_2026.jpg
+NAME: Adam Pażucha_Pisklę nr 1_gips_20x20x10 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/30%/Adam Pażucha_Pisklę nr 1_gips_20x20x10 cm_2026.jpg
+SIZE_KB: 2338.65
+LAST_WRITE: 2026-09-14 01:04:18
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\30%\Adam Pażucha_Pisklę nr 2_gips_20x10x8 cm_2026.jpg
+NAME: Adam Pażucha_Pisklę nr 2_gips_20x10x8 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/30%/Adam Pażucha_Pisklę nr 2_gips_20x10x8 cm_2026.jpg
+SIZE_KB: 2609.49
+LAST_WRITE: 2026-09-14 01:04:18
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\30%\Adam Pażucha_Pisklę nr 3_gips_28x10x4 cm_2026.jpg
+NAME: Adam Pażucha_Pisklę nr 3_gips_28x10x4 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/30%/Adam Pażucha_Pisklę nr 3_gips_28x10x4 cm_2026.jpg
+SIZE_KB: 2286.05
+LAST_WRITE: 2026-09-14 01:04:18
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\30%\Adam Pażucha_Trójka_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+NAME: Adam Pażucha_Trójka_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/30%/Adam Pażucha_Trójka_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+SIZE_KB: 584.45
+LAST_WRITE: 2026-09-14 01:04:18
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\full\60%\Adam Pażucha_Bezgłowy_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+NAME: Adam Pażucha_Bezgłowy_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/full/60%/Adam Pażucha_Bezgłowy_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+SIZE_KB: 4134.41
+LAST_WRITE: 2026-09-14 01:04:18
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\10%\Adam Pażucha_Dz 10, 11-16_gips_100x70x5 cm_2025.jpg
+NAME: Adam Pażucha_Dz 10, 11-16_gips_100x70x5 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/10%/Adam Pażucha_Dz 10, 11-16_gips_100x70x5 cm_2025.jpg
+SIZE_KB: 86.7
+LAST_WRITE: 2026-09-14 01:50:54
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\10%\Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg
+NAME: Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/10%/Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg
+SIZE_KB: 48.45
+LAST_WRITE: 2026-09-14 01:50:55
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\30%\Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg
+NAME: Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg
+EXTENSION: .jpeg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%/Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg
+SIZE_KB: 171.85
+LAST_WRITE: 2026-09-14 01:50:54
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\30%\Adam Pażucha_Pisklę nr 1_gips_20x20x10 cm_2026.jpg
+NAME: Adam Pażucha_Pisklę nr 1_gips_20x20x10 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%/Adam Pażucha_Pisklę nr 1_gips_20x20x10 cm_2026.jpg
+SIZE_KB: 27.82
+LAST_WRITE: 2026-09-14 01:50:55
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\30%\Adam Pażucha_Pisklę nr 2_gips_20x10x8 cm_2026.jpg
+NAME: Adam Pażucha_Pisklę nr 2_gips_20x10x8 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%/Adam Pażucha_Pisklę nr 2_gips_20x10x8 cm_2026.jpg
+SIZE_KB: 31.68
+LAST_WRITE: 2026-09-14 01:50:55
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\30%\Adam Pażucha_Pisklę nr 3_gips_28x10x4 cm_2026.jpg
+NAME: Adam Pażucha_Pisklę nr 3_gips_28x10x4 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%/Adam Pażucha_Pisklę nr 3_gips_28x10x4 cm_2026.jpg
+SIZE_KB: 25.35
+LAST_WRITE: 2026-09-14 01:50:55
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\30%\Adam Pażucha_Trójka_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+NAME: Adam Pażucha_Trójka_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%/Adam Pażucha_Trójka_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+SIZE_KB: 115.36
+LAST_WRITE: 2026-09-14 01:50:55
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\thumbs\60%\Adam Pażucha_Bezgłowy_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+NAME: Adam Pażucha_Bezgłowy_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/60%/Adam Pażucha_Bezgłowy_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+SIZE_KB: 113.06
+LAST_WRITE: 2026-09-14 01:50:54
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\10%\Adam Pażucha_Dz 10, 11-16_gips_100x70x5 cm_2025.jpg
+NAME: Adam Pażucha_Dz 10, 11-16_gips_100x70x5 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/10%/Adam Pażucha_Dz 10, 11-16_gips_100x70x5 cm_2025.jpg
+SIZE_KB: 541.34
+LAST_WRITE: 2026-09-14 01:50:55
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\10%\Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg
+NAME: Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/10%/Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg
+SIZE_KB: 243.22
+LAST_WRITE: 2026-09-14 01:50:55
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\30%\Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg
+NAME: Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg
+EXTENSION: .jpeg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/30%/Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg
+SIZE_KB: 1348.39
+LAST_WRITE: 2026-09-14 01:50:54
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\30%\Adam Pażucha_Pisklę nr 1_gips_20x20x10 cm_2026.jpg
+NAME: Adam Pażucha_Pisklę nr 1_gips_20x20x10 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/30%/Adam Pażucha_Pisklę nr 1_gips_20x20x10 cm_2026.jpg
+SIZE_KB: 227.46
+LAST_WRITE: 2026-09-14 01:50:55
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\30%\Adam Pażucha_Pisklę nr 2_gips_20x10x8 cm_2026.jpg
+NAME: Adam Pażucha_Pisklę nr 2_gips_20x10x8 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/30%/Adam Pażucha_Pisklę nr 2_gips_20x10x8 cm_2026.jpg
+SIZE_KB: 292.37
+LAST_WRITE: 2026-09-14 01:50:55
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\30%\Adam Pażucha_Pisklę nr 3_gips_28x10x4 cm_2026.jpg
+NAME: Adam Pażucha_Pisklę nr 3_gips_28x10x4 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/30%/Adam Pażucha_Pisklę nr 3_gips_28x10x4 cm_2026.jpg
+SIZE_KB: 219.11
+LAST_WRITE: 2026-09-14 01:50:55
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\30%\Adam Pażucha_Trójka_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+NAME: Adam Pażucha_Trójka_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/30%/Adam Pażucha_Trójka_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+SIZE_KB: 568.39
+LAST_WRITE: 2026-09-14 01:50:56
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Adam Pażucha\view\60%\Adam Pażucha_Bezgłowy_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+NAME: Adam Pażucha_Bezgłowy_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Adam Pażucha/view/60%/Adam Pażucha_Bezgłowy_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg
+SIZE_KB: 983.95
+LAST_WRITE: 2026-09-14 01:50:54
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\10%\Aleksandra Sikora_Kc_akryl i brokat na płótnie_40x30 cm_2026.jpg
+NAME: Aleksandra Sikora_Kc_akryl i brokat na płótnie_40x30 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/10%/Aleksandra Sikora_Kc_akryl i brokat na płótnie_40x30 cm_2026.jpg
+SIZE_KB: 2386.03
+LAST_WRITE: 2026-09-15 16:17:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\10%\Aleksandra Sikora_Kiosk_akryl na płótnie_80x60cm_2025.jpg
+NAME: Aleksandra Sikora_Kiosk_akryl na płótnie_80x60cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/10%/Aleksandra Sikora_Kiosk_akryl na płótnie_80x60cm_2025.jpg
+SIZE_KB: 646.29
+LAST_WRITE: 2026-09-15 16:17:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\10%\Aleksandra Sikora_koza_szkic_2025.jpg
+NAME: Aleksandra Sikora_koza_szkic_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/10%/Aleksandra Sikora_koza_szkic_2025.jpg
+SIZE_KB: 189.27
+LAST_WRITE: 2026-09-14 01:04:25
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\10%\Aleksandra Sikora_smacznej kawusi_akryl i brokat na płótnie_40x40_2023.jpg
+NAME: Aleksandra Sikora_smacznej kawusi_akryl i brokat na płótnie_40x40_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/10%/Aleksandra Sikora_smacznej kawusi_akryl i brokat na płótnie_40x40_2023.jpg
+SIZE_KB: 1867.63
+LAST_WRITE: 2026-09-15 16:17:10
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\10%\Aleksandra Sikora_Stragan w błękitach_akryl na płótnie_60x80 cm_2024.jpg
+NAME: Aleksandra Sikora_Stragan w błękitach_akryl na płótnie_60x80 cm_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/10%/Aleksandra Sikora_Stragan w błękitach_akryl na płótnie_60x80 cm_2024.jpg
+SIZE_KB: 4534.49
+LAST_WRITE: 2026-09-15 16:17:12
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\10%\Aleksandra Sikora_Stragan_akryl na płótnie_140x100 cm_2025.jpg
+NAME: Aleksandra Sikora_Stragan_akryl na płótnie_140x100 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/10%/Aleksandra Sikora_Stragan_akryl na płótnie_140x100 cm_2025.jpg
+SIZE_KB: 1286.58
+LAST_WRITE: 2026-09-15 16:17:10
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\30%\Aleksandra Sikora_dwa bułki_serigrafia_30x42_2026.jpg
+NAME: Aleksandra Sikora_dwa bułki_serigrafia_30x42_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/30%/Aleksandra Sikora_dwa bułki_serigrafia_30x42_2026.jpg
+SIZE_KB: 5481.56
+LAST_WRITE: 2026-09-15 16:17:08
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\30%\Aleksandra Sikora_mus_szkic_cienkopis_2024.jpg
+NAME: Aleksandra Sikora_mus_szkic_cienkopis_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/30%/Aleksandra Sikora_mus_szkic_cienkopis_2024.jpg
+SIZE_KB: 300.12
+LAST_WRITE: 2026-09-14 01:04:26
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\60%\Aleksandra Sikora_Dobre_pomarańczowe_serigrafia_30x42_2026.jpg
+NAME: Aleksandra Sikora_Dobre_pomarańczowe_serigrafia_30x42_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/60%/Aleksandra Sikora_Dobre_pomarańczowe_serigrafia_30x42_2026.jpg
+SIZE_KB: 5582.06
+LAST_WRITE: 2026-09-15 16:17:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\60%\Aleksandra Sikora_kury_szkic_2025.jpg
+NAME: Aleksandra Sikora_kury_szkic_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/60%/Aleksandra Sikora_kury_szkic_2025.jpg
+SIZE_KB: 212.03
+LAST_WRITE: 2026-09-14 01:04:25
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\60%\Aleksandra Sikora_Ogród_wklęsłodruk_30x21_2026.jpg
+NAME: Aleksandra Sikora_Ogród_wklęsłodruk_30x21_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/60%/Aleksandra Sikora_Ogród_wklęsłodruk_30x21_2026.jpg
+SIZE_KB: 2340.4
+LAST_WRITE: 2026-09-14 01:04:26
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\full\60%\pixeloza_akryl na płótnie_60x60_2025.jpg
+NAME: pixeloza_akryl na płótnie_60x60_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/full/60%/pixeloza_akryl na płótnie_60x60_2025.jpg
+SIZE_KB: 1302.9
+LAST_WRITE: 2026-09-15 15:57:16
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\10%\Aleksandra Sikora_Kc_akryl i brokat na płótnie_40x30 cm_2026.jpg
+NAME: Aleksandra Sikora_Kc_akryl i brokat na płótnie_40x30 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_Kc_akryl i brokat na płótnie_40x30 cm_2026.jpg
+SIZE_KB: 159.61
+LAST_WRITE: 2026-09-15 16:17:08
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\10%\Aleksandra Sikora_Kiosk_akryl na płótnie_80x60cm_2025.jpg
+NAME: Aleksandra Sikora_Kiosk_akryl na płótnie_80x60cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_Kiosk_akryl na płótnie_80x60cm_2025.jpg
+SIZE_KB: 110.14
+LAST_WRITE: 2026-09-15 16:17:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\10%\Aleksandra Sikora_koza_szkic_2025.jpg
+NAME: Aleksandra Sikora_koza_szkic_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_koza_szkic_2025.jpg
+SIZE_KB: 69.17
+LAST_WRITE: 2026-09-14 01:53:10
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\10%\Aleksandra Sikora_smacznej kawusi_akryl i brokat na płótnie_40x40_2023.jpg
+NAME: Aleksandra Sikora_smacznej kawusi_akryl i brokat na płótnie_40x40_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_smacznej kawusi_akryl i brokat na płótnie_40x40_2023.jpg
+SIZE_KB: 227.55
+LAST_WRITE: 2026-09-15 16:17:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\10%\Aleksandra Sikora_Stragan w błękitach_akryl na płótnie_60x80 cm_2024.jpg
+NAME: Aleksandra Sikora_Stragan w błękitach_akryl na płótnie_60x80 cm_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_Stragan w błękitach_akryl na płótnie_60x80 cm_2024.jpg
+SIZE_KB: 120.7
+LAST_WRITE: 2026-09-15 16:17:11
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\10%\Aleksandra Sikora_Stragan_akryl na płótnie_140x100 cm_2025.jpg
+NAME: Aleksandra Sikora_Stragan_akryl na płótnie_140x100 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_Stragan_akryl na płótnie_140x100 cm_2025.jpg
+SIZE_KB: 108.15
+LAST_WRITE: 2026-09-15 16:17:10
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\30%\Aleksandra Sikora_dwa bułki_serigrafia_30x42_2026.jpg
+NAME: Aleksandra Sikora_dwa bułki_serigrafia_30x42_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/30%/Aleksandra Sikora_dwa bułki_serigrafia_30x42_2026.jpg
+SIZE_KB: 160.87
+LAST_WRITE: 2026-09-15 16:17:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\30%\Aleksandra Sikora_mus_szkic_cienkopis_2024.jpg
+NAME: Aleksandra Sikora_mus_szkic_cienkopis_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/30%/Aleksandra Sikora_mus_szkic_cienkopis_2024.jpg
+SIZE_KB: 61.69
+LAST_WRITE: 2026-09-14 01:53:10
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\60%\Aleksandra Sikora_Dobre pomarańczowe_serigrafia_30x42_2026.jpg
+NAME: Aleksandra Sikora_Dobre pomarańczowe_serigrafia_30x42_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/60%/Aleksandra Sikora_Dobre pomarańczowe_serigrafia_30x42_2026.jpg
+SIZE_KB: 136.37
+LAST_WRITE: 2026-09-15 16:17:06
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\60%\Aleksandra Sikora_kury_szkic_2025.jpg
+NAME: Aleksandra Sikora_kury_szkic_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/60%/Aleksandra Sikora_kury_szkic_2025.jpg
+SIZE_KB: 100.58
+LAST_WRITE: 2026-09-14 01:53:10
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\60%\Aleksandra Sikora_Ogród_wklęsłodruk_30x21_2026.jpg
+NAME: Aleksandra Sikora_Ogród_wklęsłodruk_30x21_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/60%/Aleksandra Sikora_Ogród_wklęsłodruk_30x21_2026.jpg
+SIZE_KB: 217.65
+LAST_WRITE: 2026-09-14 01:53:10
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\thumbs\60%\Aleksandra Sikora_pixeloza_akryl na płótnie_60x60_2025.jpg
+NAME: Aleksandra Sikora_pixeloza_akryl na płótnie_60x60_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/60%/Aleksandra Sikora_pixeloza_akryl na płótnie_60x60_2025.jpg
+SIZE_KB: 228.34
+LAST_WRITE: 2026-09-15 16:17:09
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\10%\Aleksandra Sikora_Kc_akryl i brokat na płótnie_40x30 cm_2026.jpg
+NAME: Aleksandra Sikora_Kc_akryl i brokat na płótnie_40x30 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/10%/Aleksandra Sikora_Kc_akryl i brokat na płótnie_40x30 cm_2026.jpg
+SIZE_KB: 1395.98
+LAST_WRITE: 2026-09-15 16:17:08
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\10%\Aleksandra Sikora_Kiosk_akryl na płótnie_80x60cm_2025.jpg
+NAME: Aleksandra Sikora_Kiosk_akryl na płótnie_80x60cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/10%/Aleksandra Sikora_Kiosk_akryl na płótnie_80x60cm_2025.jpg
+SIZE_KB: 444.26
+LAST_WRITE: 2026-09-15 16:17:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\10%\Aleksandra Sikora_koza_szkic_2025.jpg
+NAME: Aleksandra Sikora_koza_szkic_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/10%/Aleksandra Sikora_koza_szkic_2025.jpg
+SIZE_KB: 129.64
+LAST_WRITE: 2026-09-14 01:53:10
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\10%\Aleksandra Sikora_smacznej kawusi_akryl i brokat na płótnie_40x40_2023.jpg
+NAME: Aleksandra Sikora_smacznej kawusi_akryl i brokat na płótnie_40x40_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/10%/Aleksandra Sikora_smacznej kawusi_akryl i brokat na płótnie_40x40_2023.jpg
+SIZE_KB: 1420.35
+LAST_WRITE: 2026-09-15 16:17:10
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\10%\Aleksandra Sikora_Stragan w błękitach_akryl na płótnie_60x80 cm_2024.jpg
+NAME: Aleksandra Sikora_Stragan w błękitach_akryl na płótnie_60x80 cm_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/10%/Aleksandra Sikora_Stragan w błękitach_akryl na płótnie_60x80 cm_2024.jpg
+SIZE_KB: 1108.65
+LAST_WRITE: 2026-09-15 16:17:11
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\10%\Aleksandra Sikora_Stragan_akryl na płótnie_140x100 cm_2025.jpg
+NAME: Aleksandra Sikora_Stragan_akryl na płótnie_140x100 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/10%/Aleksandra Sikora_Stragan_akryl na płótnie_140x100 cm_2025.jpg
+SIZE_KB: 879.24
+LAST_WRITE: 2026-09-15 16:17:10
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\30%\Aleksandra Sikora_dwa bułki_serigrafia_30x42_2026.jpg
+NAME: Aleksandra Sikora_dwa bułki_serigrafia_30x42_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/30%/Aleksandra Sikora_dwa bułki_serigrafia_30x42_2026.jpg
+SIZE_KB: 1384.31
+LAST_WRITE: 2026-09-15 16:17:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\30%\Aleksandra Sikora_mus_szkic_cienkopis_2024.jpg
+NAME: Aleksandra Sikora_mus_szkic_cienkopis_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/30%/Aleksandra Sikora_mus_szkic_cienkopis_2024.jpg
+SIZE_KB: 206.31
+LAST_WRITE: 2026-09-14 01:53:10
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\60%\Aleksandra Sikora_Dobre pomarańczowe_serigrafia_30x42_2026.jpg
+NAME: Aleksandra Sikora_Dobre pomarańczowe_serigrafia_30x42_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/60%/Aleksandra Sikora_Dobre pomarańczowe_serigrafia_30x42_2026.jpg
+SIZE_KB: 1382.17
+LAST_WRITE: 2026-09-15 16:17:06
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\60%\Aleksandra Sikora_kury_szkic_2025.jpg
+NAME: Aleksandra Sikora_kury_szkic_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/60%/Aleksandra Sikora_kury_szkic_2025.jpg
+SIZE_KB: 149.75
+LAST_WRITE: 2026-09-14 01:53:10
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\60%\Aleksandra Sikora_Ogród_wklęsłodruk_30x21_2026.jpg
+NAME: Aleksandra Sikora_Ogród_wklęsłodruk_30x21_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/60%/Aleksandra Sikora_Ogród_wklęsłodruk_30x21_2026.jpg
+SIZE_KB: 1209.58
+LAST_WRITE: 2026-09-14 01:53:10
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Aleksandra Sikora\view\60%\Aleksandra Sikora_pixeloza_akryl na płótnie_60x60_2025.jpg
+NAME: Aleksandra Sikora_pixeloza_akryl na płótnie_60x60_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Aleksandra Sikora/view/60%/Aleksandra Sikora_pixeloza_akryl na płótnie_60x60_2025.jpg
+SIZE_KB: 936.86
+LAST_WRITE: 2026-09-15 16:17:09
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\full
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/full
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\full\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/full/10%
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\full\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/full/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\full\30%\Amelia Korczak_ODRABIANIE LEKCJI_akryl na płótnie_60x70 cm_2025.jpg
+NAME: Amelia Korczak_ODRABIANIE LEKCJI_akryl na płótnie_60x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/full/30%/Amelia Korczak_ODRABIANIE LEKCJI_akryl na płótnie_60x70 cm_2025.jpg
+SIZE_KB: 2967.95
+LAST_WRITE: 2026-09-14 01:04:33
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\full\30%\Amelia Korczak_TWORZENIE_akryl na płótnie_100x70 cm_2025.jpg
+NAME: Amelia Korczak_TWORZENIE_akryl na płótnie_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/full/30%/Amelia Korczak_TWORZENIE_akryl na płótnie_100x70 cm_2025.jpg
+SIZE_KB: 3249.07
+LAST_WRITE: 2026-09-14 01:04:33
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\full\30%\Amelia Korczak_UBIERANIE SIĘ_akryl na płótnie_50x70 cm_2025.jpg
+NAME: Amelia Korczak_UBIERANIE SIĘ_akryl na płótnie_50x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/full/30%/Amelia Korczak_UBIERANIE SIĘ_akryl na płótnie_50x70 cm_2025.jpg
+SIZE_KB: 7304.25
+LAST_WRITE: 2026-09-14 01:04:33
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\full\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/full/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\full\60%\Amelia Korczak_HORYZONT_linoryt_43x32 cm_2025.jpg
+NAME: Amelia Korczak_HORYZONT_linoryt_43x32 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/full/60%/Amelia Korczak_HORYZONT_linoryt_43x32 cm_2025.jpg
+SIZE_KB: 11111.11
+LAST_WRITE: 2026-09-14 01:04:33
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\thumbs
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/thumbs
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\thumbs\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/10%
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\thumbs\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\thumbs\30%\Amelia Korczak_ODRABIANIE LEKCJI_akryl na płótnie_60x70 cm_2025.jpg
+NAME: Amelia Korczak_ODRABIANIE LEKCJI_akryl na płótnie_60x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/30%/Amelia Korczak_ODRABIANIE LEKCJI_akryl na płótnie_60x70 cm_2025.jpg
+SIZE_KB: 138.9
+LAST_WRITE: 2026-09-14 01:53:53
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\thumbs\30%\Amelia Korczak_TWORZENIE_akryl na płótnie_100x70 cm_2025.jpg
+NAME: Amelia Korczak_TWORZENIE_akryl na płótnie_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/30%/Amelia Korczak_TWORZENIE_akryl na płótnie_100x70 cm_2025.jpg
+SIZE_KB: 129.17
+LAST_WRITE: 2026-09-14 01:53:54
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\thumbs\30%\Amelia Korczak_UBIERANIE SIĘ_akryl na płótnie_50x70 cm_2025.jpg
+NAME: Amelia Korczak_UBIERANIE SIĘ_akryl na płótnie_50x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/30%/Amelia Korczak_UBIERANIE SIĘ_akryl na płótnie_50x70 cm_2025.jpg
+SIZE_KB: 163.59
+LAST_WRITE: 2026-09-14 01:53:54
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\thumbs\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\thumbs\60%\Amelia Korczak_HORYZONT_linoryt_43x32 cm_2025.jpg
+NAME: Amelia Korczak_HORYZONT_linoryt_43x32 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/60%/Amelia Korczak_HORYZONT_linoryt_43x32 cm_2025.jpg
+SIZE_KB: 196.12
+LAST_WRITE: 2026-09-14 01:53:53
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\view
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/view
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\view\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/view/10%
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\view\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/view/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\view\30%\Amelia Korczak_ODRABIANIE LEKCJI_akryl na płótnie_60x70 cm_2025.jpg
+NAME: Amelia Korczak_ODRABIANIE LEKCJI_akryl na płótnie_60x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/view/30%/Amelia Korczak_ODRABIANIE LEKCJI_akryl na płótnie_60x70 cm_2025.jpg
+SIZE_KB: 1189.8
+LAST_WRITE: 2026-09-14 01:53:53
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\view\30%\Amelia Korczak_TWORZENIE_akryl na płótnie_100x70 cm_2025.jpg
+NAME: Amelia Korczak_TWORZENIE_akryl na płótnie_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/view/30%/Amelia Korczak_TWORZENIE_akryl na płótnie_100x70 cm_2025.jpg
+SIZE_KB: 1148.48
+LAST_WRITE: 2026-09-14 01:53:54
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\view\30%\Amelia Korczak_UBIERANIE SIĘ_akryl na płótnie_50x70 cm_2025.jpg
+NAME: Amelia Korczak_UBIERANIE SIĘ_akryl na płótnie_50x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/view/30%/Amelia Korczak_UBIERANIE SIĘ_akryl na płótnie_50x70 cm_2025.jpg
+SIZE_KB: 1514.54
+LAST_WRITE: 2026-09-14 01:53:54
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\view\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/view/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Amelia Korczak\view\60%\Amelia Korczak_HORYZONT_linoryt_43x32 cm_2025.jpg
+NAME: Amelia Korczak_HORYZONT_linoryt_43x32 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Amelia Korczak/view/60%/Amelia Korczak_HORYZONT_linoryt_43x32 cm_2025.jpg
+SIZE_KB: 1655.58
+LAST_WRITE: 2026-09-14 01:53:53
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\10%\Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026.jpg
+NAME: Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/10%/Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026.jpg
+SIZE_KB: 217.94
+LAST_WRITE: 2026-09-14 01:04:40
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\10%\Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg
+NAME: Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/10%/Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg
+SIZE_KB: 6061.42
+LAST_WRITE: 2026-09-14 01:04:40
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\10%\Anna Esnekier_ Zmierzch_olej i akryl na płótnie_100x100 cm_2026.png
+NAME: Anna Esnekier_ Zmierzch_olej i akryl na płótnie_100x100 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/10%/Anna Esnekier_ Zmierzch_olej i akryl na płótnie_100x100 cm_2026.png
+SIZE_KB: 12441.55
+LAST_WRITE: 2026-09-14 01:04:40
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\30%\Anna Esnekier_Pozostałości_ olej na płótnie_50x65 cm_2026.png
+NAME: Anna Esnekier_Pozostałości_ olej na płótnie_50x65 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/30%/Anna Esnekier_Pozostałości_ olej na płótnie_50x65 cm_2026.png
+SIZE_KB: 29490.88
+LAST_WRITE: 2026-09-14 01:04:40
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\30%\Anna Esnekier_U źródła_ olej na płótnie_60x80 cm.jpg
+NAME: Anna Esnekier_U źródła_ olej na płótnie_60x80 cm.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/30%/Anna Esnekier_U źródła_ olej na płótnie_60x80 cm.jpg
+SIZE_KB: 242.63
+LAST_WRITE: 2026-09-14 01:04:40
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\60%\Anna Esnekier_Siódma komnata_ olej i akryl na płótnie_90x80 cm_2026.jpg
+NAME: Anna Esnekier_Siódma komnata_ olej i akryl na płótnie_90x80 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/60%/Anna Esnekier_Siódma komnata_ olej i akryl na płótnie_90x80 cm_2026.jpg
+SIZE_KB: 4032.72
+LAST_WRITE: 2026-09-14 01:04:40
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\60%\Anna Esnekier_Trójka w błękicie_ olej i akryl na płótnie_100x80 cm_2026.PNG
+NAME: Anna Esnekier_Trójka w błękicie_ olej i akryl na płótnie_100x80 cm_2026.PNG
+EXTENSION: .PNG
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/60%/Anna Esnekier_Trójka w błękicie_ olej i akryl na płótnie_100x80 cm_2026.PNG
+SIZE_KB: 1380.5
+LAST_WRITE: 2026-09-14 01:04:40
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\full\60%\Anna Esnekier_W Progu_olej i akryl na płótnie_60x90 cm_2026.jpg
+NAME: Anna Esnekier_W Progu_olej i akryl na płótnie_60x90 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/full/60%/Anna Esnekier_W Progu_olej i akryl na płótnie_60x90 cm_2026.jpg
+SIZE_KB: 3838.75
+LAST_WRITE: 2026-09-14 01:04:40
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\10%\Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026.jpg
+NAME: Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/10%/Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026.jpg
+SIZE_KB: 48.92
+LAST_WRITE: 2026-09-14 01:54:19
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\10%\Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg
+NAME: Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/10%/Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg
+SIZE_KB: 57.26
+LAST_WRITE: 2026-09-14 01:54:20
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\10%\Anna Esnekier_ Zmierzch_olej i akryl na płótnie_100x100 cm_2026.png
+NAME: Anna Esnekier_ Zmierzch_olej i akryl na płótnie_100x100 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/10%/Anna Esnekier_ Zmierzch_olej i akryl na płótnie_100x100 cm_2026.png
+SIZE_KB: 676.65
+LAST_WRITE: 2026-09-14 01:54:21
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\30%\Anna Esnekier_Pozostałości_ olej na płótnie_50x65 cm_2026.png
+NAME: Anna Esnekier_Pozostałości_ olej na płótnie_50x65 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/30%/Anna Esnekier_Pozostałości_ olej na płótnie_50x65 cm_2026.png
+SIZE_KB: 588.16
+LAST_WRITE: 2026-09-14 01:54:27
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\30%\Anna Esnekier_U źródła_ olej na płótnie_60x80 cm.jpg
+NAME: Anna Esnekier_U źródła_ olej na płótnie_60x80 cm.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/30%/Anna Esnekier_U źródła_ olej na płótnie_60x80 cm.jpg
+SIZE_KB: 75.22
+LAST_WRITE: 2026-09-14 01:54:32
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\60%\Anna Esnekier_Siódma komnata_ olej i akryl na płótnie_90x80 cm_2026.jpg
+NAME: Anna Esnekier_Siódma komnata_ olej i akryl na płótnie_90x80 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/60%/Anna Esnekier_Siódma komnata_ olej i akryl na płótnie_90x80 cm_2026.jpg
+SIZE_KB: 116.48
+LAST_WRITE: 2026-09-14 01:54:30
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\60%\Anna Esnekier_Trójka w błękicie_ olej i akryl na płótnie_100x80 cm_2026.PNG
+NAME: Anna Esnekier_Trójka w błękicie_ olej i akryl na płótnie_100x80 cm_2026.PNG
+EXTENSION: .PNG
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/60%/Anna Esnekier_Trójka w błękicie_ olej i akryl na płótnie_100x80 cm_2026.PNG
+SIZE_KB: 440.01
+LAST_WRITE: 2026-09-14 01:54:31
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\thumbs\60%\Anna Esnekier_W Progu_olej i akryl na płótnie_60x90 cm_2026.jpg
+NAME: Anna Esnekier_W Progu_olej i akryl na płótnie_60x90 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/60%/Anna Esnekier_W Progu_olej i akryl na płótnie_60x90 cm_2026.jpg
+SIZE_KB: 38.54
+LAST_WRITE: 2026-09-14 01:54:32
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\10%\Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026.jpg
+NAME: Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/10%/Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026.jpg
+SIZE_KB: 159.67
+LAST_WRITE: 2026-09-14 01:54:19
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\10%\Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg
+NAME: Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/10%/Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg
+SIZE_KB: 574.37
+LAST_WRITE: 2026-09-14 01:54:20
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\10%\Anna Esnekier_ Zmierzch_olej i akryl na płótnie_100x100 cm_2026.png
+NAME: Anna Esnekier_ Zmierzch_olej i akryl na płótnie_100x100 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/10%/Anna Esnekier_ Zmierzch_olej i akryl na płótnie_100x100 cm_2026.png
+SIZE_KB: 5012.16
+LAST_WRITE: 2026-09-14 01:54:26
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\30%\Anna Esnekier_Pozostałości_ olej na płótnie_50x65 cm_2026.png
+NAME: Anna Esnekier_Pozostałości_ olej na płótnie_50x65 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/30%/Anna Esnekier_Pozostałości_ olej na płótnie_50x65 cm_2026.png
+SIZE_KB: 5196.12
+LAST_WRITE: 2026-09-14 01:54:30
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\30%\Anna Esnekier_U źródła_ olej na płótnie_60x80 cm.jpg
+NAME: Anna Esnekier_U źródła_ olej na płótnie_60x80 cm.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/30%/Anna Esnekier_U źródła_ olej na płótnie_60x80 cm.jpg
+SIZE_KB: 185.54
+LAST_WRITE: 2026-09-14 01:54:32
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\60%\Anna Esnekier_Siódma komnata_ olej i akryl na płótnie_90x80 cm_2026.jpg
+NAME: Anna Esnekier_Siódma komnata_ olej i akryl na płótnie_90x80 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/60%/Anna Esnekier_Siódma komnata_ olej i akryl na płótnie_90x80 cm_2026.jpg
+SIZE_KB: 895.95
+LAST_WRITE: 2026-09-14 01:54:30
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\60%\Anna Esnekier_Trójka w błękicie_ olej i akryl na płótnie_100x80 cm_2026.PNG
+NAME: Anna Esnekier_Trójka w błękicie_ olej i akryl na płótnie_100x80 cm_2026.PNG
+EXTENSION: .PNG
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/60%/Anna Esnekier_Trójka w błękicie_ olej i akryl na płótnie_100x80 cm_2026.PNG
+SIZE_KB: 936.7
+LAST_WRITE: 2026-09-14 01:54:32
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Anna Esnekier\view\60%\Anna Esnekier_W Progu_olej i akryl na płótnie_60x90 cm_2026.jpg
+NAME: Anna Esnekier_W Progu_olej i akryl na płótnie_60x90 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Anna Esnekier/view/60%/Anna Esnekier_W Progu_olej i akryl na płótnie_60x90 cm_2026.jpg
+SIZE_KB: 365.03
+LAST_WRITE: 2026-09-14 01:54:32
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\10%\Antoni Augustyniak_Postać_Węgiel na papierze_210x140 cm_2026.png
+NAME: Antoni Augustyniak_Postać_Węgiel na papierze_210x140 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/10%/Antoni Augustyniak_Postać_Węgiel na papierze_210x140 cm_2026.png
+SIZE_KB: 7584.76
+LAST_WRITE: 2026-09-14 01:04:58
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\10%\Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg
+NAME: Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/10%/Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg
+SIZE_KB: 2919.18
+LAST_WRITE: 2026-09-14 01:04:58
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\30%\Antoni Augustyniak_Astygmatyzm_glina_100x60 cm_2026.png
+NAME: Antoni Augustyniak_Astygmatyzm_glina_100x60 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/30%/Antoni Augustyniak_Astygmatyzm_glina_100x60 cm_2026.png
+SIZE_KB: 8437.99
+LAST_WRITE: 2026-09-14 01:04:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\30%\Antoni Augustyniak_Autoportret_Węgiel na papierze_100x210 cm_2026.png
+NAME: Antoni Augustyniak_Autoportret_Węgiel na papierze_100x210 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/30%/Antoni Augustyniak_Autoportret_Węgiel na papierze_100x210 cm_2026.png
+SIZE_KB: 9471.68
+LAST_WRITE: 2026-09-14 01:04:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\30%\Antoni Augustyniak_portret Adasia Pażuchy_Olej na płótnie_13x18 cm_2025.png
+NAME: Antoni Augustyniak_portret Adasia Pażuchy_Olej na płótnie_13x18 cm_2025.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/30%/Antoni Augustyniak_portret Adasia Pażuchy_Olej na płótnie_13x18 cm_2025.png
+SIZE_KB: 2928.53
+LAST_WRITE: 2026-09-14 01:04:58
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\30%\Antoni Augustyniak_Portret_gips_50x45 cm_2026.png
+NAME: Antoni Augustyniak_Portret_gips_50x45 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/30%/Antoni Augustyniak_Portret_gips_50x45 cm_2026.png
+SIZE_KB: 8424.68
+LAST_WRITE: 2026-09-14 01:04:59
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\60%\Antoni Augustyniak_Lampa_asamblaż_60x40 cm_2026.png
+NAME: Antoni Augustyniak_Lampa_asamblaż_60x40 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/60%/Antoni Augustyniak_Lampa_asamblaż_60x40 cm_2026.png
+SIZE_KB: 7203.95
+LAST_WRITE: 2026-09-14 01:04:58
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\60%\Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png
+NAME: Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/60%/Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png
+SIZE_KB: 6342.44
+LAST_WRITE: 2026-09-14 01:04:58
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\60%\Antoni Augustyniak_Postać w formacie_Węgiel na papierze_100x210 cm_2026.png
+NAME: Antoni Augustyniak_Postać w formacie_Węgiel na papierze_100x210 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/60%/Antoni Augustyniak_Postać w formacie_Węgiel na papierze_100x210 cm_2026.png
+SIZE_KB: 9400.04
+LAST_WRITE: 2026-09-14 01:04:58
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\full\60%\Antoni Augustyniak_Wąż_asamblaż_200x2.5 cm_2026.png
+NAME: Antoni Augustyniak_Wąż_asamblaż_200x2.5 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/full/60%/Antoni Augustyniak_Wąż_asamblaż_200x2.5 cm_2026.png
+SIZE_KB: 7940.56
+LAST_WRITE: 2026-09-14 01:04:59
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\10%\Antoni Augustyniak_Postać_Węgiel na papierze_210x140 cm_2026.png
+NAME: Antoni Augustyniak_Postać_Węgiel na papierze_210x140 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/10%/Antoni Augustyniak_Postać_Węgiel na papierze_210x140 cm_2026.png
+SIZE_KB: 519.42
+LAST_WRITE: 2026-09-14 01:55:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\10%\Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg
+NAME: Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/10%/Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg
+SIZE_KB: 49.76
+LAST_WRITE: 2026-09-14 01:55:12
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\30%\Antoni Augustyniak_Astygmatyzm_glina_100x60 cm_2026.png
+NAME: Antoni Augustyniak_Astygmatyzm_glina_100x60 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/30%/Antoni Augustyniak_Astygmatyzm_glina_100x60 cm_2026.png
+SIZE_KB: 632.05
+LAST_WRITE: 2026-09-14 01:54:57
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\30%\Antoni Augustyniak_Autoportret_Węgiel na papierze_100x210 cm_2026.png
+NAME: Antoni Augustyniak_Autoportret_Węgiel na papierze_100x210 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/30%/Antoni Augustyniak_Autoportret_Węgiel na papierze_100x210 cm_2026.png
+SIZE_KB: 496.8
+LAST_WRITE: 2026-09-14 01:54:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\30%\Antoni Augustyniak_portret Adasia Pażuchy_Olej na płótnie_13x18 cm_2025.png
+NAME: Antoni Augustyniak_portret Adasia Pażuchy_Olej na płótnie_13x18 cm_2025.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/30%/Antoni Augustyniak_portret Adasia Pażuchy_Olej na płótnie_13x18 cm_2025.png
+SIZE_KB: 746.53
+LAST_WRITE: 2026-09-14 01:55:04
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\30%\Antoni Augustyniak_Portret_gips_50x45 cm_2026.png
+NAME: Antoni Augustyniak_Portret_gips_50x45 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/30%/Antoni Augustyniak_Portret_gips_50x45 cm_2026.png
+SIZE_KB: 575.51
+LAST_WRITE: 2026-09-14 01:55:06
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\60%\Antoni Augustyniak_Lampa_asamblaż_60x40 cm_2026.png
+NAME: Antoni Augustyniak_Lampa_asamblaż_60x40 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/60%/Antoni Augustyniak_Lampa_asamblaż_60x40 cm_2026.png
+SIZE_KB: 457.15
+LAST_WRITE: 2026-09-14 01:55:01
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\60%\Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png
+NAME: Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/60%/Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png
+SIZE_KB: 1019.28
+LAST_WRITE: 2026-09-14 01:55:03
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\60%\Antoni Augustyniak_Postać w formacie_Węgiel na papierze_100x210 cm_2026.png
+NAME: Antoni Augustyniak_Postać w formacie_Węgiel na papierze_100x210 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/60%/Antoni Augustyniak_Postać w formacie_Węgiel na papierze_100x210 cm_2026.png
+SIZE_KB: 532.03
+LAST_WRITE: 2026-09-14 01:55:08
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\thumbs\60%\Antoni Augustyniak_Wąż_asamblaż_200x2.5 cm_2026.png
+NAME: Antoni Augustyniak_Wąż_asamblaż_200x2.5 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/60%/Antoni Augustyniak_Wąż_asamblaż_200x2.5 cm_2026.png
+SIZE_KB: 472.58
+LAST_WRITE: 2026-09-14 01:55:12
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\10%\Antoni Augustyniak_Postać_Węgiel na papierze_210x140 cm_2026.png
+NAME: Antoni Augustyniak_Postać_Węgiel na papierze_210x140 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/10%/Antoni Augustyniak_Postać_Węgiel na papierze_210x140 cm_2026.png
+SIZE_KB: 4728.97
+LAST_WRITE: 2026-09-14 01:55:11
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\10%\Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg
+NAME: Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/10%/Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg
+SIZE_KB: 362.08
+LAST_WRITE: 2026-09-14 01:55:12
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\30%\Antoni Augustyniak_Astygmatyzm_glina_100x60 cm_2026.png
+NAME: Antoni Augustyniak_Astygmatyzm_glina_100x60 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/30%/Antoni Augustyniak_Astygmatyzm_glina_100x60 cm_2026.png
+SIZE_KB: 5563.48
+LAST_WRITE: 2026-09-14 01:54:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\30%\Antoni Augustyniak_Autoportret_Węgiel na papierze_100x210 cm_2026.png
+NAME: Antoni Augustyniak_Autoportret_Węgiel na papierze_100x210 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/30%/Antoni Augustyniak_Autoportret_Węgiel na papierze_100x210 cm_2026.png
+SIZE_KB: 3680.77
+LAST_WRITE: 2026-09-14 01:55:00
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\30%\Antoni Augustyniak_portret Adasia Pażuchy_Olej na płótnie_13x18 cm_2025.png
+NAME: Antoni Augustyniak_portret Adasia Pażuchy_Olej na płótnie_13x18 cm_2025.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/30%/Antoni Augustyniak_portret Adasia Pażuchy_Olej na płótnie_13x18 cm_2025.png
+SIZE_KB: 2724.57
+LAST_WRITE: 2026-09-14 01:55:06
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\30%\Antoni Augustyniak_Portret_gips_50x45 cm_2026.png
+NAME: Antoni Augustyniak_Portret_gips_50x45 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/30%/Antoni Augustyniak_Portret_gips_50x45 cm_2026.png
+SIZE_KB: 5319.15
+LAST_WRITE: 2026-09-14 01:55:08
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\60%\Antoni Augustyniak_Lampa_asamblaż_60x40 cm_2026.png
+NAME: Antoni Augustyniak_Lampa_asamblaż_60x40 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/60%/Antoni Augustyniak_Lampa_asamblaż_60x40 cm_2026.png
+SIZE_KB: 4519.72
+LAST_WRITE: 2026-09-14 01:55:03
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\60%\Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png
+NAME: Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/60%/Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png
+SIZE_KB: 5898.29
+LAST_WRITE: 2026-09-14 01:55:04
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\60%\Antoni Augustyniak_Postać w formacie_Węgiel na papierze_100x210 cm_2026.png
+NAME: Antoni Augustyniak_Postać w formacie_Węgiel na papierze_100x210 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/60%/Antoni Augustyniak_Postać w formacie_Węgiel na papierze_100x210 cm_2026.png
+SIZE_KB: 3779.73
+LAST_WRITE: 2026-09-14 01:55:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Antoni Augustyniak\view\60%\Antoni Augustyniak_Wąż_asamblaż_200x2.5 cm_2026.png
+NAME: Antoni Augustyniak_Wąż_asamblaż_200x2.5 cm_2026.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Antoni Augustyniak/view/60%/Antoni Augustyniak_Wąż_asamblaż_200x2.5 cm_2026.png
+SIZE_KB: 4847.31
+LAST_WRITE: 2026-09-14 01:55:14
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\10%\Franek Ciastoń_Bez tytułu_olej napłótnie_50x60 cm_2025.jpg
+NAME: Franek Ciastoń_Bez tytułu_olej napłótnie_50x60 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/10%/Franek Ciastoń_Bez tytułu_olej napłótnie_50x60 cm_2025.jpg
+SIZE_KB: 1508.57
+LAST_WRITE: 2026-09-14 01:05:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\10%\Franek Ciastoń_Beztytułu_wklęłodruk_60x50 cm_2025.jpg
+NAME: Franek Ciastoń_Beztytułu_wklęłodruk_60x50 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/10%/Franek Ciastoń_Beztytułu_wklęłodruk_60x50 cm_2025.jpg
+SIZE_KB: 1704.62
+LAST_WRITE: 2026-09-14 01:05:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\10%\Franek Ciastoń_Pejzaż_Olej na desce_24x32 cm_2023.jpg
+NAME: Franek Ciastoń_Pejzaż_Olej na desce_24x32 cm_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/10%/Franek Ciastoń_Pejzaż_Olej na desce_24x32 cm_2023.jpg
+SIZE_KB: 4137.41
+LAST_WRITE: 2026-09-15 16:17:36
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\30%\Franek Ciastoń_Pejzaż_Olej_100x70 cm_2023.jpg.jpg
+NAME: Franek Ciastoń_Pejzaż_Olej_100x70 cm_2023.jpg.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/30%/Franek Ciastoń_Pejzaż_Olej_100x70 cm_2023.jpg.jpg
+SIZE_KB: 4738.57
+LAST_WRITE: 2026-09-15 16:17:36
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\30%\Franek Ciastoń_Portret_Olej na płótnie_24x18 cm_2026.jpg
+NAME: Franek Ciastoń_Portret_Olej na płótnie_24x18 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/30%/Franek Ciastoń_Portret_Olej na płótnie_24x18 cm_2026.jpg
+SIZE_KB: 9197.04
+LAST_WRITE: 2026-09-14 01:05:07
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\60%\Franek Ciastoń_Bez tytułu_olej na płótnie_60x80 cm_2025.jpg
+NAME: Franek Ciastoń_Bez tytułu_olej na płótnie_60x80 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/60%/Franek Ciastoń_Bez tytułu_olej na płótnie_60x80 cm_2025.jpg
+SIZE_KB: 1892.78
+LAST_WRITE: 2026-09-14 01:05:06
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\60%\Franek Ciastoń_Kucyk_Olej na płótnie_50x60 cm_2026.jpg
+NAME: Franek Ciastoń_Kucyk_Olej na płótnie_50x60 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/60%/Franek Ciastoń_Kucyk_Olej na płótnie_50x60 cm_2026.jpg
+SIZE_KB: 806.39
+LAST_WRITE: 2026-09-14 01:05:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\60%\Franek Ciastoń_Pejzaż_Olej_20x32 cm_2023.jpg
+NAME: Franek Ciastoń_Pejzaż_Olej_20x32 cm_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/60%/Franek Ciastoń_Pejzaż_Olej_20x32 cm_2023.jpg
+SIZE_KB: 450.62
+LAST_WRITE: 2026-09-15 16:17:37
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\full\60%\Franek Ciastoń_Piesek_Alintaglio_100x70 cm_2026.jpg
+NAME: Franek Ciastoń_Piesek_Alintaglio_100x70 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/full/60%/Franek Ciastoń_Piesek_Alintaglio_100x70 cm_2026.jpg
+SIZE_KB: 1431.56
+LAST_WRITE: 2026-09-14 01:05:07
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\10%\Franek Ciastoń_Bez tytułu_olej napłótnie_50x60 cm_2025.jpg
+NAME: Franek Ciastoń_Bez tytułu_olej napłótnie_50x60 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/10%/Franek Ciastoń_Bez tytułu_olej napłótnie_50x60 cm_2025.jpg
+SIZE_KB: 76.48
+LAST_WRITE: 2026-09-14 01:55:30
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\10%\Franek Ciastoń_Beztytułu_wklęłodruk_60x50 cm_2025.jpg
+NAME: Franek Ciastoń_Beztytułu_wklęłodruk_60x50 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/10%/Franek Ciastoń_Beztytułu_wklęłodruk_60x50 cm_2025.jpg
+SIZE_KB: 126.83
+LAST_WRITE: 2026-09-14 01:55:31
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\10%\Franek Ciastoń_Pejzaż_Olej na desce_24x32 cm_2023.jpg
+NAME: Franek Ciastoń_Pejzaż_Olej na desce_24x32 cm_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/10%/Franek Ciastoń_Pejzaż_Olej na desce_24x32 cm_2023.jpg
+SIZE_KB: 86.01
+LAST_WRITE: 2026-09-15 16:17:35
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\30%\Franek Ciastoń_Pejzaż_Olej_100x70 cm_2023.jpg
+NAME: Franek Ciastoń_Pejzaż_Olej_100x70 cm_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/30%/Franek Ciastoń_Pejzaż_Olej_100x70 cm_2023.jpg
+SIZE_KB: 91.32
+LAST_WRITE: 2026-09-15 16:17:36
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\30%\Franek Ciastoń_Portret_Olej na płótnie_24x18 cm_2026.jpg
+NAME: Franek Ciastoń_Portret_Olej na płótnie_24x18 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/30%/Franek Ciastoń_Portret_Olej na płótnie_24x18 cm_2026.jpg
+SIZE_KB: 77.5
+LAST_WRITE: 2026-09-14 01:55:32
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\60%\Franek Ciastoń_Bez tytułu_olej na płótnie_60x80 cm_2025.jpg
+NAME: Franek Ciastoń_Bez tytułu_olej na płótnie_60x80 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/60%/Franek Ciastoń_Bez tytułu_olej na płótnie_60x80 cm_2025.jpg
+SIZE_KB: 44.46
+LAST_WRITE: 2026-09-14 01:55:30
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\60%\Franek Ciastoń_Kucyk_Olej na płótnie_50x60 cm_2026.jpg
+NAME: Franek Ciastoń_Kucyk_Olej na płótnie_50x60 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/60%/Franek Ciastoń_Kucyk_Olej na płótnie_50x60 cm_2026.jpg
+SIZE_KB: 81.02
+LAST_WRITE: 2026-09-14 01:55:31
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\60%\Franek Ciastoń_Pejzaż_Olej_20x32 cm_2023.jpg
+NAME: Franek Ciastoń_Pejzaż_Olej_20x32 cm_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/60%/Franek Ciastoń_Pejzaż_Olej_20x32 cm_2023.jpg
+SIZE_KB: 83.81
+LAST_WRITE: 2026-09-15 16:17:37
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\thumbs\60%\Franek Ciastoń_Piesek_Alintaglio_100x70 cm_2026.jpg
+NAME: Franek Ciastoń_Piesek_Alintaglio_100x70 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/60%/Franek Ciastoń_Piesek_Alintaglio_100x70 cm_2026.jpg
+SIZE_KB: 63.81
+LAST_WRITE: 2026-09-14 01:55:31
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\10%\Franek Ciastoń_Bez tytułu_olej napłótnie_50x60 cm_2025.jpg
+NAME: Franek Ciastoń_Bez tytułu_olej napłótnie_50x60 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/10%/Franek Ciastoń_Bez tytułu_olej napłótnie_50x60 cm_2025.jpg
+SIZE_KB: 776.84
+LAST_WRITE: 2026-09-14 01:55:31
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\10%\Franek Ciastoń_Beztytułu_wklęłodruk_60x50 cm_2025.jpg
+NAME: Franek Ciastoń_Beztytułu_wklęłodruk_60x50 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/10%/Franek Ciastoń_Beztytułu_wklęłodruk_60x50 cm_2025.jpg
+SIZE_KB: 986.54
+LAST_WRITE: 2026-09-14 01:55:31
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\10%\Franek Ciastoń_Pejzaż_Olej na desce_24x32 cm_2023.jpg
+NAME: Franek Ciastoń_Pejzaż_Olej na desce_24x32 cm_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/10%/Franek Ciastoń_Pejzaż_Olej na desce_24x32 cm_2023.jpg
+SIZE_KB: 1325.18
+LAST_WRITE: 2026-09-15 16:17:35
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\30%\Franek Ciastoń_Pejzaż_Olej_100x70 cm_2023.jpg.jpg
+NAME: Franek Ciastoń_Pejzaż_Olej_100x70 cm_2023.jpg.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/30%/Franek Ciastoń_Pejzaż_Olej_100x70 cm_2023.jpg.jpg
+SIZE_KB: 1459.82
+LAST_WRITE: 2026-09-15 16:17:36
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\30%\Franek Ciastoń_Portret_Olej na płótnie_24x18 cm_2026.jpg
+NAME: Franek Ciastoń_Portret_Olej na płótnie_24x18 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/30%/Franek Ciastoń_Portret_Olej na płótnie_24x18 cm_2026.jpg
+SIZE_KB: 713.25
+LAST_WRITE: 2026-09-14 01:55:32
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\60%\Franek Ciastoń_Bez tytułu_olej na płótnie_60x80 cm_2025.jpg
+NAME: Franek Ciastoń_Bez tytułu_olej na płótnie_60x80 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/60%/Franek Ciastoń_Bez tytułu_olej na płótnie_60x80 cm_2025.jpg
+SIZE_KB: 534.09
+LAST_WRITE: 2026-09-14 01:55:30
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\60%\Franek Ciastoń_Kucyk_Olej na płótnie_50x60 cm_2026.jpg
+NAME: Franek Ciastoń_Kucyk_Olej na płótnie_50x60 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/60%/Franek Ciastoń_Kucyk_Olej na płótnie_50x60 cm_2026.jpg
+SIZE_KB: 778.37
+LAST_WRITE: 2026-09-14 01:55:31
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\60%\Franek Ciastoń_Pejzaż_Olej_20x32 cm_2023.jpg
+NAME: Franek Ciastoń_Pejzaż_Olej_20x32 cm_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/60%/Franek Ciastoń_Pejzaż_Olej_20x32 cm_2023.jpg
+SIZE_KB: 302.3
+LAST_WRITE: 2026-09-15 16:17:37
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Franek Ciastoń\view\60%\Franek Ciastoń_Piesek_Alintaglio_100x70 cm_2026.jpg
+NAME: Franek Ciastoń_Piesek_Alintaglio_100x70 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Franek Ciastoń/view/60%/Franek Ciastoń_Piesek_Alintaglio_100x70 cm_2026.jpg
+SIZE_KB: 642.41
+LAST_WRITE: 2026-09-14 01:55:31
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\10%\Gabriela Bossowska_Autoportret lewy_Długopis na papierze_21x13 cm_2025.jpg
+NAME: Gabriela Bossowska_Autoportret lewy_Długopis na papierze_21x13 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/10%/Gabriela Bossowska_Autoportret lewy_Długopis na papierze_21x13 cm_2025.jpg
+SIZE_KB: 130.2
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\10%\Gabriela Bossowska_Autoportret prawy_Długopis na papierze_21x13 cm_2025.jpg
+NAME: Gabriela Bossowska_Autoportret prawy_Długopis na papierze_21x13 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/10%/Gabriela Bossowska_Autoportret prawy_Długopis na papierze_21x13 cm_2025.jpg
+SIZE_KB: 216.51
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\10%\Gabriela Bossowska_naklejki_tusz na papierze_5x5 cm_2026.jpg
+NAME: Gabriela Bossowska_naklejki_tusz na papierze_5x5 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/10%/Gabriela Bossowska_naklejki_tusz na papierze_5x5 cm_2026.jpg
+SIZE_KB: 135.01
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\10%\Gabriela Bossowska_szkice_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/10%/Gabriela Bossowska_szkice_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 116.28
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\10%\Gabriela Bossowska_Tańczące drzewa_pastele suche na papierze pastelowym_21x29,7 cm_2024.jpg
+NAME: Gabriela Bossowska_Tańczące drzewa_pastele suche na papierze pastelowym_21x29,7 cm_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/10%/Gabriela Bossowska_Tańczące drzewa_pastele suche na papierze pastelowym_21x29,7 cm_2024.jpg
+SIZE_KB: 455.97
+LAST_WRITE: 2026-09-14 01:05:14
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\30%\Gabriela Bossowska_Julia_Akryl na płótnie_50x30 cm_2025.jpg
+NAME: Gabriela Bossowska_Julia_Akryl na płótnie_50x30 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/30%/Gabriela Bossowska_Julia_Akryl na płótnie_50x30 cm_2025.jpg
+SIZE_KB: 3483.94
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\30%\Gabriela Bossowska_Piotr i kozy Kluszkowce_Akryl na płótnie_100x70 cm_2025.jpg
+NAME: Gabriela Bossowska_Piotr i kozy Kluszkowce_Akryl na płótnie_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/30%/Gabriela Bossowska_Piotr i kozy Kluszkowce_Akryl na płótnie_100x70 cm_2025.jpg
+SIZE_KB: 1324.47
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\30%\Gabriela Bossowska_Studium postaci_ołówek na papierze_42x29,7 cm_2025.jpg
+NAME: Gabriela Bossowska_Studium postaci_ołówek na papierze_42x29,7 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/30%/Gabriela Bossowska_Studium postaci_ołówek na papierze_42x29,7 cm_2025.jpg
+SIZE_KB: 1932.74
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\30%\Gabriela Bossowska_szkice II_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice II_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/30%/Gabriela Bossowska_szkice II_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 132.62
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\30%\Gabriela Bossowska_szkice III_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice III_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/30%/Gabriela Bossowska_szkice III_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 110.56
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\30%\Gabriela Bossowska_szkice IV_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice IV_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/30%/Gabriela Bossowska_szkice IV_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 111.05
+LAST_WRITE: 2026-09-14 01:05:14
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\60%\Gabriela Bossowska_Cisza_Akryl na tekturze_100x70 cm_2024.png
+NAME: Gabriela Bossowska_Cisza_Akryl na tekturze_100x70 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/60%/Gabriela Bossowska_Cisza_Akryl na tekturze_100x70 cm_2024.png
+SIZE_KB: 3157.66
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\60%\Gabriela Bossowska_Studium kociej czaszki_węgiel na papierze_32x29,7 cm_2023.jpg
+NAME: Gabriela Bossowska_Studium kociej czaszki_węgiel na papierze_32x29,7 cm_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/60%/Gabriela Bossowska_Studium kociej czaszki_węgiel na papierze_32x29,7 cm_2023.jpg
+SIZE_KB: 247.45
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\60%\Gabriela Bossowska_Studium postaci_olej na płycie hdf_80x80 cm_2026.jpg
+NAME: Gabriela Bossowska_Studium postaci_olej na płycie hdf_80x80 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/60%/Gabriela Bossowska_Studium postaci_olej na płycie hdf_80x80 cm_2026.jpg
+SIZE_KB: 890.07
+LAST_WRITE: 2026-09-14 01:05:14
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\full\60%\Gabriela Bossowska_Xawer_Akryl na płótnie_90x50 cm_2025.jpg
+NAME: Gabriela Bossowska_Xawer_Akryl na płótnie_90x50 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/full/60%/Gabriela Bossowska_Xawer_Akryl na płótnie_90x50 cm_2025.jpg
+SIZE_KB: 2184.2
+LAST_WRITE: 2026-09-14 01:05:14
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\10%\Gabriela Bossowska_Autoportret lewy_Długopis na papierze_21x13 cm_2025.jpg
+NAME: Gabriela Bossowska_Autoportret lewy_Długopis na papierze_21x13 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%/Gabriela Bossowska_Autoportret lewy_Długopis na papierze_21x13 cm_2025.jpg
+SIZE_KB: 79.12
+LAST_WRITE: 2026-09-14 01:56:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\10%\Gabriela Bossowska_Autoportret prawy_Długopis na papierze_21x13 cm_2025.jpg
+NAME: Gabriela Bossowska_Autoportret prawy_Długopis na papierze_21x13 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%/Gabriela Bossowska_Autoportret prawy_Długopis na papierze_21x13 cm_2025.jpg
+SIZE_KB: 114.36
+LAST_WRITE: 2026-09-14 01:56:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\10%\Gabriela Bossowska_naklejki_tusz na papierze_5x5 cm_2026.jpg
+NAME: Gabriela Bossowska_naklejki_tusz na papierze_5x5 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%/Gabriela Bossowska_naklejki_tusz na papierze_5x5 cm_2026.jpg
+SIZE_KB: 103.49
+LAST_WRITE: 2026-09-14 01:56:08
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\10%\Gabriela Bossowska_szkice_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%/Gabriela Bossowska_szkice_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 101.61
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\10%\Gabriela Bossowska_Tańczące drzewa_pastele suche na papierze pastelowym_21x29,7 cm_2024.jpg
+NAME: Gabriela Bossowska_Tańczące drzewa_pastele suche na papierze pastelowym_21x29,7 cm_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%/Gabriela Bossowska_Tańczące drzewa_pastele suche na papierze pastelowym_21x29,7 cm_2024.jpg
+SIZE_KB: 168.07
+LAST_WRITE: 2026-09-14 01:56:10
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\30%\Gabriela Bossowska_Julia_Akryl na płótnie_50x30 cm_2025.jpg
+NAME: Gabriela Bossowska_Julia_Akryl na płótnie_50x30 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_Julia_Akryl na płótnie_50x30 cm_2025.jpg
+SIZE_KB: 128.82
+LAST_WRITE: 2026-09-14 01:56:08
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\30%\Gabriela Bossowska_Piotr i kozy Kluszkowce_Akryl na płótnie_100x70 cm_2025.jpg
+NAME: Gabriela Bossowska_Piotr i kozy Kluszkowce_Akryl na płótnie_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_Piotr i kozy Kluszkowce_Akryl na płótnie_100x70 cm_2025.jpg
+SIZE_KB: 116.76
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\30%\Gabriela Bossowska_Studium postaci_ołówek na papierze_42x29,7 cm_2025.jpg
+NAME: Gabriela Bossowska_Studium postaci_ołówek na papierze_42x29,7 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_Studium postaci_ołówek na papierze_42x29,7 cm_2025.jpg
+SIZE_KB: 130.53
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\30%\Gabriela Bossowska_szkice II_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice II_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_szkice II_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 113.15
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\30%\Gabriela Bossowska_szkice III_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice III_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_szkice III_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 96.42
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\30%\Gabriela Bossowska_szkice IV_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice IV_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_szkice IV_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 94.54
+LAST_WRITE: 2026-09-14 01:56:09
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\60%\Gabriela Bossowska_Cisza_Akryl na tekturze_100x70 cm_2024.png
+NAME: Gabriela Bossowska_Cisza_Akryl na tekturze_100x70 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/60%/Gabriela Bossowska_Cisza_Akryl na tekturze_100x70 cm_2024.png
+SIZE_KB: 673.79
+LAST_WRITE: 2026-09-14 01:56:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\60%\Gabriela Bossowska_Studium kociej czaszki_węgiel na papierze_32x29,7 cm_2023.jpg
+NAME: Gabriela Bossowska_Studium kociej czaszki_węgiel na papierze_32x29,7 cm_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/60%/Gabriela Bossowska_Studium kociej czaszki_węgiel na papierze_32x29,7 cm_2023.jpg
+SIZE_KB: 136.43
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\60%\Gabriela Bossowska_Studium postaci_olej na płycie hdf_80x80 cm_2026.jpg
+NAME: Gabriela Bossowska_Studium postaci_olej na płycie hdf_80x80 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/60%/Gabriela Bossowska_Studium postaci_olej na płycie hdf_80x80 cm_2026.jpg
+SIZE_KB: 129.1
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\thumbs\60%\Gabriela Bossowska_Xawer_Akryl na płótnie_90x50 cm_2025.jpg
+NAME: Gabriela Bossowska_Xawer_Akryl na płótnie_90x50 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/60%/Gabriela Bossowska_Xawer_Akryl na płótnie_90x50 cm_2025.jpg
+SIZE_KB: 88.23
+LAST_WRITE: 2026-09-14 01:56:10
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\10%\Gabriela Bossowska_Autoportret lewy_Długopis na papierze_21x13 cm_2025.jpg
+NAME: Gabriela Bossowska_Autoportret lewy_Długopis na papierze_21x13 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/10%/Gabriela Bossowska_Autoportret lewy_Długopis na papierze_21x13 cm_2025.jpg
+SIZE_KB: 121.11
+LAST_WRITE: 2026-09-14 01:56:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\10%\Gabriela Bossowska_Autoportret prawy_Długopis na papierze_21x13 cm_2025.jpg
+NAME: Gabriela Bossowska_Autoportret prawy_Długopis na papierze_21x13 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/10%/Gabriela Bossowska_Autoportret prawy_Długopis na papierze_21x13 cm_2025.jpg
+SIZE_KB: 192.91
+LAST_WRITE: 2026-09-14 01:56:07
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\10%\Gabriela Bossowska_naklejki_tusz na papierze_5x5 cm_2026.jpg
+NAME: Gabriela Bossowska_naklejki_tusz na papierze_5x5 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/10%/Gabriela Bossowska_naklejki_tusz na papierze_5x5 cm_2026.jpg
+SIZE_KB: 160.57
+LAST_WRITE: 2026-09-14 01:56:08
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\10%\Gabriela Bossowska_szkice_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/10%/Gabriela Bossowska_szkice_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 136.68
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\10%\Gabriela Bossowska_Tańczące drzewa_pastele suche na papierze pastelowym_21x29,7 cm_2024.jpg
+NAME: Gabriela Bossowska_Tańczące drzewa_pastele suche na papierze pastelowym_21x29,7 cm_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/10%/Gabriela Bossowska_Tańczące drzewa_pastele suche na papierze pastelowym_21x29,7 cm_2024.jpg
+SIZE_KB: 344.55
+LAST_WRITE: 2026-09-14 01:56:10
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\30%\Gabriela Bossowska_Julia_Akryl na płótnie_50x30 cm_2025.jpg
+NAME: Gabriela Bossowska_Julia_Akryl na płótnie_50x30 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/30%/Gabriela Bossowska_Julia_Akryl na płótnie_50x30 cm_2025.jpg
+SIZE_KB: 913.66
+LAST_WRITE: 2026-09-14 01:56:08
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\30%\Gabriela Bossowska_Piotr i kozy Kluszkowce_Akryl na płótnie_100x70 cm_2025.jpg
+NAME: Gabriela Bossowska_Piotr i kozy Kluszkowce_Akryl na płótnie_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/30%/Gabriela Bossowska_Piotr i kozy Kluszkowce_Akryl na płótnie_100x70 cm_2025.jpg
+SIZE_KB: 1038.56
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\30%\Gabriela Bossowska_Studium postaci_ołówek na papierze_42x29,7 cm_2025.jpg
+NAME: Gabriela Bossowska_Studium postaci_ołówek na papierze_42x29,7 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/30%/Gabriela Bossowska_Studium postaci_ołówek na papierze_42x29,7 cm_2025.jpg
+SIZE_KB: 954.3
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\30%\Gabriela Bossowska_szkice II_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice II_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/30%/Gabriela Bossowska_szkice II_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 155.03
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\30%\Gabriela Bossowska_szkice III_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice III_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/30%/Gabriela Bossowska_szkice III_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 130.61
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\30%\Gabriela Bossowska_szkice IV_tusz na papierze_20x15 cm_2026.jpg
+NAME: Gabriela Bossowska_szkice IV_tusz na papierze_20x15 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/30%/Gabriela Bossowska_szkice IV_tusz na papierze_20x15 cm_2026.jpg
+SIZE_KB: 130.99
+LAST_WRITE: 2026-09-14 01:56:09
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\60%\Gabriela Bossowska_Cisza_Akryl na tekturze_100x70 cm_2024.png
+NAME: Gabriela Bossowska_Cisza_Akryl na tekturze_100x70 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/60%/Gabriela Bossowska_Cisza_Akryl na tekturze_100x70 cm_2024.png
+SIZE_KB: 2744.92
+LAST_WRITE: 2026-09-14 01:56:08
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\60%\Gabriela Bossowska_Studium kociej czaszki_węgiel na papierze_32x29,7 cm_2023.jpg
+NAME: Gabriela Bossowska_Studium kociej czaszki_węgiel na papierze_32x29,7 cm_2023.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/60%/Gabriela Bossowska_Studium kociej czaszki_węgiel na papierze_32x29,7 cm_2023.jpg
+SIZE_KB: 255.51
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\60%\Gabriela Bossowska_Studium postaci_olej na płycie hdf_80x80 cm_2026.jpg
+NAME: Gabriela Bossowska_Studium postaci_olej na płycie hdf_80x80 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/60%/Gabriela Bossowska_Studium postaci_olej na płycie hdf_80x80 cm_2026.jpg
+SIZE_KB: 788.44
+LAST_WRITE: 2026-09-14 01:56:09
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Gabriela Bossowska\view\60%\Gabriela Bossowska_Xawer_Akryl na płótnie_90x50 cm_2025.jpg
+NAME: Gabriela Bossowska_Xawer_Akryl na płótnie_90x50 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Gabriela Bossowska/view/60%/Gabriela Bossowska_Xawer_Akryl na płótnie_90x50 cm_2025.jpg
+SIZE_KB: 685.22
+LAST_WRITE: 2026-09-14 01:56:10
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\10%\Marta Mendelejeva_MARTWA NATURA 3_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+NAME: Marta Mendelejeva_MARTWA NATURA 3_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/10%/Marta Mendelejeva_MARTWA NATURA 3_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+SIZE_KB: 6768.42
+LAST_WRITE: 2026-09-15 16:17:54
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\30%\Marta Mendelejeva_DŁUŻEW 2_OLEJ NA PŁOTNIE_60x60 cm_2026.jpg
+NAME: Marta Mendelejeva_DŁUŻEW 2_OLEJ NA PŁOTNIE_60x60 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/30%/Marta Mendelejeva_DŁUŻEW 2_OLEJ NA PŁOTNIE_60x60 cm_2026.jpg
+SIZE_KB: 8918.78
+LAST_WRITE: 2026-09-15 16:17:48
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\30%\Marta Mendelejeva_IGŁA_LINORYT_25x17 cm_2026.jpg
+NAME: Marta Mendelejeva_IGŁA_LINORYT_25x17 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/30%/Marta Mendelejeva_IGŁA_LINORYT_25x17 cm_2026.jpg
+SIZE_KB: 4342.94
+LAST_WRITE: 2026-09-15 16:17:49
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\30%\Marta Mendelejeva_LAS_OLEJ NA PŁOTNIE_120x120 cm_2025.jpg
+NAME: Marta Mendelejeva_LAS_OLEJ NA PŁOTNIE_120x120 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/30%/Marta Mendelejeva_LAS_OLEJ NA PŁOTNIE_120x120 cm_2025.jpg
+SIZE_KB: 6959.08
+LAST_WRITE: 2026-09-15 16:17:50
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\30%\Marta Mendelejeva_MARTWA NATURA 1_AKWARELE NA PAPIERZE_100x70 cm_2024.jpg
+NAME: Marta Mendelejeva_MARTWA NATURA 1_AKWARELE NA PAPIERZE_100x70 cm_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/30%/Marta Mendelejeva_MARTWA NATURA 1_AKWARELE NA PAPIERZE_100x70 cm_2024.jpg
+SIZE_KB: 6986.06
+LAST_WRITE: 2026-09-15 16:17:52
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\60%\Marta Mendelejeva_BEZ TYTUŁU_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+NAME: Marta Mendelejeva_BEZ TYTUŁU_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/60%/Marta Mendelejeva_BEZ TYTUŁU_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+SIZE_KB: 6300.18
+LAST_WRITE: 2026-09-15 16:17:46
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\60%\Marta Mendelejeva_DŁUŻEW 1_olej na płótnie_120x40 cm_2026.jpg
+NAME: Marta Mendelejeva_DŁUŻEW 1_olej na płótnie_120x40 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/60%/Marta Mendelejeva_DŁUŻEW 1_olej na płótnie_120x40 cm_2026.jpg
+SIZE_KB: 4096.69
+LAST_WRITE: 2026-09-15 16:17:47
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\60%\Marta Mendelejeva_LATO_AKWARELE_40x40 cm_2025.jpg
+NAME: Marta Mendelejeva_LATO_AKWARELE_40x40 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/60%/Marta Mendelejeva_LATO_AKWARELE_40x40 cm_2025.jpg
+SIZE_KB: 6123.42
+LAST_WRITE: 2026-09-15 16:17:51
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\60%\Marta Mendelejeva_MARTWA NATURA 4_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+NAME: Marta Mendelejeva_MARTWA NATURA 4_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/60%/Marta Mendelejeva_MARTWA NATURA 4_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+SIZE_KB: 8577.09
+LAST_WRITE: 2026-09-15 16:17:55
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\60%\Marta Mendelejeva_Passeggiata del XXI secolo_AKWAFORTA AKWATINTA_30x25 cm_2026.jpg
+NAME: Marta Mendelejeva_Passeggiata del XXI secolo_AKWAFORTA AKWATINTA_30x25 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/60%/Marta Mendelejeva_Passeggiata del XXI secolo_AKWAFORTA AKWATINTA_30x25 cm_2026.jpg
+SIZE_KB: 3154.88
+LAST_WRITE: 2026-09-15 16:17:56
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\full\60%\Marta Mendelejeva_SLOPE POINT_SUCHA IGŁA_16x20 cm_2026.jpg
+NAME: Marta Mendelejeva_SLOPE POINT_SUCHA IGŁA_16x20 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/full/60%/Marta Mendelejeva_SLOPE POINT_SUCHA IGŁA_16x20 cm_2026.jpg
+SIZE_KB: 2599.19
+LAST_WRITE: 2026-09-15 16:17:56
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\10%\Marta Mendelejeva_MARTWA NATURA 3_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+NAME: Marta Mendelejeva_MARTWA NATURA 3_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/10%/Marta Mendelejeva_MARTWA NATURA 3_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+SIZE_KB: 157.17
+LAST_WRITE: 2026-09-15 16:17:53
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\30%\Marta Mendelejeva_DŁUŻEW 2_OLEJ NA PŁOTNIE_60x60 cm_2026.jpg
+NAME: Marta Mendelejeva_DŁUŻEW 2_OLEJ NA PŁOTNIE_60x60 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/30%/Marta Mendelejeva_DŁUŻEW 2_OLEJ NA PŁOTNIE_60x60 cm_2026.jpg
+SIZE_KB: 343.86
+LAST_WRITE: 2026-09-15 16:17:47
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\30%\Marta Mendelejeva_IGŁA_LINORYT_25x17 cm_2026.jpg
+NAME: Marta Mendelejeva_IGŁA_LINORYT_25x17 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/30%/Marta Mendelejeva_IGŁA_LINORYT_25x17 cm_2026.jpg
+SIZE_KB: 145.63
+LAST_WRITE: 2026-09-15 16:17:48
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\30%\Marta Mendelejeva_LAS_OLEJ NA PŁOTNIE_120x120 cm_2025.jpg
+NAME: Marta Mendelejeva_LAS_OLEJ NA PŁOTNIE_120x120 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/30%/Marta Mendelejeva_LAS_OLEJ NA PŁOTNIE_120x120 cm_2025.jpg
+SIZE_KB: 268.48
+LAST_WRITE: 2026-09-15 16:17:49
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\30%\Marta Mendelejeva_MARTWA NATURA 1_AKWARELE NA PAPIERZE_100x70 cm_2024.jpg
+NAME: Marta Mendelejeva_MARTWA NATURA 1_AKWARELE NA PAPIERZE_100x70 cm_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/30%/Marta Mendelejeva_MARTWA NATURA 1_AKWARELE NA PAPIERZE_100x70 cm_2024.jpg
+SIZE_KB: 130.12
+LAST_WRITE: 2026-09-15 16:17:51
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\60%\Marta Mendelejeva_BEZ TYTUŁU_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+NAME: Marta Mendelejeva_BEZ TYTUŁU_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_BEZ TYTUŁU_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+SIZE_KB: 218.43
+LAST_WRITE: 2026-09-15 16:17:45
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\60%\Marta Mendelejeva_DŁUŻEW 1_olej na płótnie_120x40 cm_2026.jpg
+NAME: Marta Mendelejeva_DŁUŻEW 1_olej na płótnie_120x40 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_DŁUŻEW 1_olej na płótnie_120x40 cm_2026.jpg
+SIZE_KB: 80.08
+LAST_WRITE: 2026-09-15 16:17:46
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\60%\Marta Mendelejeva_LATO_AKWARELE_40x40 cm_2025.jpg
+NAME: Marta Mendelejeva_LATO_AKWARELE_40x40 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_LATO_AKWARELE_40x40 cm_2025.jpg
+SIZE_KB: 359.91
+LAST_WRITE: 2026-09-15 16:17:50
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\60%\Marta Mendelejeva_MARTWA NATURA 4_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+NAME: Marta Mendelejeva_MARTWA NATURA 4_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_MARTWA NATURA 4_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+SIZE_KB: 173.62
+LAST_WRITE: 2026-09-15 16:17:54
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\60%\Marta Mendelejeva_Passeggiata del XXI secolo_AKWAFORTA AKWATINTA_30x25 cm_2026.jpg
+NAME: Marta Mendelejeva_Passeggiata del XXI secolo_AKWAFORTA AKWATINTA_30x25 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_Passeggiata del XXI secolo_AKWAFORTA AKWATINTA_30x25 cm_2026.jpg
+SIZE_KB: 110.1
+LAST_WRITE: 2026-09-15 16:17:55
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\thumbs\60%\Marta Mendelejeva_SLOPE POINT_SUCHA IGŁA_16x20 cm_2026.jpg
+NAME: Marta Mendelejeva_SLOPE POINT_SUCHA IGŁA_16x20 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_SLOPE POINT_SUCHA IGŁA_16x20 cm_2026.jpg
+SIZE_KB: 111.53
+LAST_WRITE: 2026-09-15 16:17:56
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\10%\Marta Mendelejeva_MARTWA NATURA 3_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+NAME: Marta Mendelejeva_MARTWA NATURA 3_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/10%/Marta Mendelejeva_MARTWA NATURA 3_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+SIZE_KB: 1448.99
+LAST_WRITE: 2026-09-15 16:17:53
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\30%\Marta Mendelejeva_DŁUŻEW 2_OLEJ NA PŁOTNIE_60x60 cm_2026.jpg
+NAME: Marta Mendelejeva_DŁUŻEW 2_OLEJ NA PŁOTNIE_60x60 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/30%/Marta Mendelejeva_DŁUŻEW 2_OLEJ NA PŁOTNIE_60x60 cm_2026.jpg
+SIZE_KB: 2951.61
+LAST_WRITE: 2026-09-15 16:17:47
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\30%\Marta Mendelejeva_IGŁA_LINORYT_25x17 cm_2026.jpg
+NAME: Marta Mendelejeva_IGŁA_LINORYT_25x17 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/30%/Marta Mendelejeva_IGŁA_LINORYT_25x17 cm_2026.jpg
+SIZE_KB: 1277.26
+LAST_WRITE: 2026-09-15 16:17:49
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\30%\Marta Mendelejeva_LAS_OLEJ NA PŁOTNIE_120x120 cm_2025.jpg
+NAME: Marta Mendelejeva_LAS_OLEJ NA PŁOTNIE_120x120 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/30%/Marta Mendelejeva_LAS_OLEJ NA PŁOTNIE_120x120 cm_2025.jpg
+SIZE_KB: 1997.14
+LAST_WRITE: 2026-09-15 16:17:50
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\30%\Marta Mendelejeva_MARTWA NATURA 1_AKWARELE NA PAPIERZE_100x70 cm_2024.jpg
+NAME: Marta Mendelejeva_MARTWA NATURA 1_AKWARELE NA PAPIERZE_100x70 cm_2024.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/30%/Marta Mendelejeva_MARTWA NATURA 1_AKWARELE NA PAPIERZE_100x70 cm_2024.jpg
+SIZE_KB: 1206.17
+LAST_WRITE: 2026-09-15 16:17:52
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\60%\Marta Mendelejeva_BEZ TYTUŁU_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+NAME: Marta Mendelejeva_BEZ TYTUŁU_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/60%/Marta Mendelejeva_BEZ TYTUŁU_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+SIZE_KB: 1678.34
+LAST_WRITE: 2026-09-15 16:17:45
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\60%\Marta Mendelejeva_DŁUŻEW 1_olej na płótnie_120x40 cm_2026.jpg
+NAME: Marta Mendelejeva_DŁUŻEW 1_olej na płótnie_120x40 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/60%/Marta Mendelejeva_DŁUŻEW 1_olej na płótnie_120x40 cm_2026.jpg
+SIZE_KB: 705.2
+LAST_WRITE: 2026-09-15 16:17:46
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\60%\Marta Mendelejeva_LATO_AKWARELE_40x40 cm_2025.jpg
+NAME: Marta Mendelejeva_LATO_AKWARELE_40x40 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/60%/Marta Mendelejeva_LATO_AKWARELE_40x40 cm_2025.jpg
+SIZE_KB: 3086.75
+LAST_WRITE: 2026-09-15 16:17:51
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\60%\Marta Mendelejeva_MARTWA NATURA 4_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+NAME: Marta Mendelejeva_MARTWA NATURA 4_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/60%/Marta Mendelejeva_MARTWA NATURA 4_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg
+SIZE_KB: 1806.58
+LAST_WRITE: 2026-09-15 16:17:54
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\60%\Marta Mendelejeva_Passeggiata del XXI secolo_AKWAFORTA AKWATINTA_30x25 cm_2026.jpg
+NAME: Marta Mendelejeva_Passeggiata del XXI secolo_AKWAFORTA AKWATINTA_30x25 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/60%/Marta Mendelejeva_Passeggiata del XXI secolo_AKWAFORTA AKWATINTA_30x25 cm_2026.jpg
+SIZE_KB: 1012.78
+LAST_WRITE: 2026-09-15 16:17:55
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Marta Mendelejeva\view\60%\Marta Mendelejeva_SLOPE POINT_SUCHA IGŁA_16x20 cm_2026.jpg
+NAME: Marta Mendelejeva_SLOPE POINT_SUCHA IGŁA_16x20 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Marta Mendelejeva/view/60%/Marta Mendelejeva_SLOPE POINT_SUCHA IGŁA_16x20 cm_2026.jpg
+SIZE_KB: 1117.03
+LAST_WRITE: 2026-09-15 16:17:56
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\10%\Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png
+NAME: Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png
+SIZE_KB: 1481.89
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\10%\Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg
+NAME: Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg
+SIZE_KB: 499.36
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\10%\Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png
+NAME: Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png
+SIZE_KB: 692.75
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\10%\Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png
+NAME: Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png
+SIZE_KB: 2558.27
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\10%\Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png
+NAME: Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png
+SIZE_KB: 1831.48
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\10%\Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png
+NAME: Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png
+SIZE_KB: 2281.03
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\10%\Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png
+NAME: Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png
+SIZE_KB: 1026.3
+LAST_WRITE: 2026-09-14 01:05:28
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\30%\Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg
+NAME: Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg
+SIZE_KB: 170.51
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\30%\Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg
+NAME: Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg
+SIZE_KB: 841.08
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\30%\Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg
+NAME: Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg
+SIZE_KB: 385.08
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\30%\Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png
+NAME: Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png
+SIZE_KB: 2749.21
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\30%\Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png
+NAME: Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png
+SIZE_KB: 1049.26
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\30%\Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg
+NAME: Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/30%/Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg
+SIZE_KB: 371.5
+LAST_WRITE: 2026-09-14 01:05:28
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\60%\Patrycja Boruch_akt w martwej naturze_sangwina pastele suche gwasz na papierze_150x100 cm_2025.jpg
+NAME: Patrycja Boruch_akt w martwej naturze_sangwina pastele suche gwasz na papierze_150x100 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/60%/Patrycja Boruch_akt w martwej naturze_sangwina pastele suche gwasz na papierze_150x100 cm_2025.jpg
+SIZE_KB: 877.42
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\60%\Patrycja Boruch_autoportret z czarnymi tulipanami_olej na płótnie_80x80 cm_2026.jpg
+NAME: Patrycja Boruch_autoportret z czarnymi tulipanami_olej na płótnie_80x80 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/60%/Patrycja Boruch_autoportret z czarnymi tulipanami_olej na płótnie_80x80 cm_2026.jpg
+SIZE_KB: 371.07
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\60%\Patrycja Boruch_Martwa natura z granatem_olej na płótnie_50x40 cm_2024.png
+NAME: Patrycja Boruch_Martwa natura z granatem_olej na płótnie_50x40 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/60%/Patrycja Boruch_Martwa natura z granatem_olej na płótnie_50x40 cm_2024.png
+SIZE_KB: 3194.96
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\60%\Patrycja Boruch_Pejzaż górski_pastela na papierze_21x15 cm_2023.png
+NAME: Patrycja Boruch_Pejzaż górski_pastela na papierze_21x15 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/60%/Patrycja Boruch_Pejzaż górski_pastela na papierze_21x15 cm_2023.png
+SIZE_KB: 1532.72
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\60%\Patrycja Boruch_Pejzaż_pastel na papierze_21x15 cm_2023.png
+NAME: Patrycja Boruch_Pejzaż_pastel na papierze_21x15 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/60%/Patrycja Boruch_Pejzaż_pastel na papierze_21x15 cm_2023.png
+SIZE_KB: 1316.92
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\60%\Patrycja Boruch_zegary_olej na płótnie _50x50 cm_2023.png
+NAME: Patrycja Boruch_zegary_olej na płótnie _50x50 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/60%/Patrycja Boruch_zegary_olej na płótnie _50x50 cm_2023.png
+SIZE_KB: 2825.1
+LAST_WRITE: 2026-09-14 01:05:28
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\full\60%\Patrycja Boruch_zielono czerwona martwa natura_olej na płótnie_80x80 cm_2025.jpg
+NAME: Patrycja Boruch_zielono czerwona martwa natura_olej na płótnie_80x80 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/full/60%/Patrycja Boruch_zielono czerwona martwa natura_olej na płótnie_80x80 cm_2025.jpg
+SIZE_KB: 215.18
+LAST_WRITE: 2026-09-14 01:05:28
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\10%\Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png
+NAME: Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png
+SIZE_KB: 637.82
+LAST_WRITE: 2026-09-14 01:56:58
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\10%\Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg
+NAME: Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg
+SIZE_KB: 144.03
+LAST_WRITE: 2026-09-14 01:57:00
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\10%\Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png
+NAME: Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png
+SIZE_KB: 351.78
+LAST_WRITE: 2026-09-14 01:57:01
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\10%\Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png
+NAME: Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png
+SIZE_KB: 587.88
+LAST_WRITE: 2026-09-14 01:57:02
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\10%\Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png
+NAME: Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png
+SIZE_KB: 288.98
+LAST_WRITE: 2026-09-14 01:57:02
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\10%\Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png
+NAME: Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png
+SIZE_KB: 321.11
+LAST_WRITE: 2026-09-14 01:57:03
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\10%\Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png
+NAME: Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png
+SIZE_KB: 503.12
+LAST_WRITE: 2026-09-14 01:57:04
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\30%\Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg
+NAME: Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg
+SIZE_KB: 76.52
+LAST_WRITE: 2026-09-14 01:56:58
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\30%\Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg
+NAME: Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg
+SIZE_KB: 83.04
+LAST_WRITE: 2026-09-14 01:56:58
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\30%\Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg
+NAME: Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg
+SIZE_KB: 96.51
+LAST_WRITE: 2026-09-14 01:56:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\30%\Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png
+NAME: Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png
+SIZE_KB: 1165.43
+LAST_WRITE: 2026-09-14 01:56:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\30%\Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png
+NAME: Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png
+SIZE_KB: 632.11
+LAST_WRITE: 2026-09-14 01:57:00
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\30%\Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg
+NAME: Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg
+SIZE_KB: 169.04
+LAST_WRITE: 2026-09-14 01:57:01
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\60%\Patrycja Boruch_akt w martwej naturze_sangwina pastele suche gwasz na papierze_150x100 cm_2025.jpg
+NAME: Patrycja Boruch_akt w martwej naturze_sangwina pastele suche gwasz na papierze_150x100 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_akt w martwej naturze_sangwina pastele suche gwasz na papierze_150x100 cm_2025.jpg
+SIZE_KB: 141.32
+LAST_WRITE: 2026-09-14 01:56:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\60%\Patrycja Boruch_autoportret z czarnymi tulipanami_olej na płótnie_80x80 cm_2026.jpg
+NAME: Patrycja Boruch_autoportret z czarnymi tulipanami_olej na płótnie_80x80 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_autoportret z czarnymi tulipanami_olej na płótnie_80x80 cm_2026.jpg
+SIZE_KB: 157.6
+LAST_WRITE: 2026-09-14 01:56:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\60%\Patrycja Boruch_Martwa natura z granatem_olej na płótnie_50x40 cm_2024.png
+NAME: Patrycja Boruch_Martwa natura z granatem_olej na płótnie_50x40 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_Martwa natura z granatem_olej na płótnie_50x40 cm_2024.png
+SIZE_KB: 918.76
+LAST_WRITE: 2026-09-14 01:57:00
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\60%\Patrycja Boruch_Pejzaż górski_pastela na papierze_21x15 cm_2023.png
+NAME: Patrycja Boruch_Pejzaż górski_pastela na papierze_21x15 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_Pejzaż górski_pastela na papierze_21x15 cm_2023.png
+SIZE_KB: 870.24
+LAST_WRITE: 2026-09-14 01:57:00
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\60%\Patrycja Boruch_Pejzaż_pastel na papierze_21x15 cm_2023.png
+NAME: Patrycja Boruch_Pejzaż_pastel na papierze_21x15 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_Pejzaż_pastel na papierze_21x15 cm_2023.png
+SIZE_KB: 769.27
+LAST_WRITE: 2026-09-14 01:57:01
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\60%\Patrycja Boruch_zegary_olej na płótnie _50x50 cm_2023.png
+NAME: Patrycja Boruch_zegary_olej na płótnie _50x50 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_zegary_olej na płótnie _50x50 cm_2023.png
+SIZE_KB: 1093.06
+LAST_WRITE: 2026-09-14 01:56:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\thumbs\60%\Patrycja Boruch_zielono czerwona martwa natura_olej na płótnie_80x80 cm_2025.jpg
+NAME: Patrycja Boruch_zielono czerwona martwa natura_olej na płótnie_80x80 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_zielono czerwona martwa natura_olej na płótnie_80x80 cm_2025.jpg
+SIZE_KB: 99.61
+LAST_WRITE: 2026-09-14 01:57:05
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\10%
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\10%\Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png
+NAME: Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png
+SIZE_KB: 1127.8
+LAST_WRITE: 2026-09-14 01:56:58
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\10%\Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg
+NAME: Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg
+SIZE_KB: 376.87
+LAST_WRITE: 2026-09-14 01:57:00
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\10%\Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png
+NAME: Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png
+SIZE_KB: 545.89
+LAST_WRITE: 2026-09-14 01:57:01
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\10%\Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png
+NAME: Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png
+SIZE_KB: 1879.03
+LAST_WRITE: 2026-09-14 01:57:02
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\10%\Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png
+NAME: Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png
+SIZE_KB: 1353.96
+LAST_WRITE: 2026-09-14 01:57:03
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\10%\Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png
+NAME: Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png
+SIZE_KB: 1655.18
+LAST_WRITE: 2026-09-14 01:57:04
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\10%\Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png
+NAME: Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png
+SIZE_KB: 729.85
+LAST_WRITE: 2026-09-14 01:57:05
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\30%
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\30%\Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg
+NAME: Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg
+SIZE_KB: 131.47
+LAST_WRITE: 2026-09-14 01:56:58
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\30%\Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg
+NAME: Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg
+SIZE_KB: 610.07
+LAST_WRITE: 2026-09-14 01:56:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\30%\Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg
+NAME: Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg
+SIZE_KB: 298.86
+LAST_WRITE: 2026-09-14 01:56:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\30%\Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png
+NAME: Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png
+SIZE_KB: 2174.2
+LAST_WRITE: 2026-09-14 01:56:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\30%\Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png
+NAME: Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png
+SIZE_KB: 632.11
+LAST_WRITE: 2026-09-14 01:57:00
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\30%\Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg
+NAME: Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/30%/Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg
+SIZE_KB: 284.37
+LAST_WRITE: 2026-09-14 01:57:01
+
+[FOLDER]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\60%
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/60%
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\60%\Patrycja Boruch_akt w martwej naturze_sangwina pastele suche gwasz na papierze_150x100 cm_2025.jpg
+NAME: Patrycja Boruch_akt w martwej naturze_sangwina pastele suche gwasz na papierze_150x100 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/60%/Patrycja Boruch_akt w martwej naturze_sangwina pastele suche gwasz na papierze_150x100 cm_2025.jpg
+SIZE_KB: 666.41
+LAST_WRITE: 2026-09-14 01:56:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\60%\Patrycja Boruch_autoportret z czarnymi tulipanami_olej na płótnie_80x80 cm_2026.jpg
+NAME: Patrycja Boruch_autoportret z czarnymi tulipanami_olej na płótnie_80x80 cm_2026.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/60%/Patrycja Boruch_autoportret z czarnymi tulipanami_olej na płótnie_80x80 cm_2026.jpg
+SIZE_KB: 286.47
+LAST_WRITE: 2026-09-14 01:56:59
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\60%\Patrycja Boruch_Martwa natura z granatem_olej na płótnie_50x40 cm_2024.png
+NAME: Patrycja Boruch_Martwa natura z granatem_olej na płótnie_50x40 cm_2024.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/60%/Patrycja Boruch_Martwa natura z granatem_olej na płótnie_50x40 cm_2024.png
+SIZE_KB: 2387.56
+LAST_WRITE: 2026-09-14 01:57:00
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\60%\Patrycja Boruch_Pejzaż górski_pastela na papierze_21x15 cm_2023.png
+NAME: Patrycja Boruch_Pejzaż górski_pastela na papierze_21x15 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/60%/Patrycja Boruch_Pejzaż górski_pastela na papierze_21x15 cm_2023.png
+SIZE_KB: 1108.4
+LAST_WRITE: 2026-09-14 01:57:01
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\60%\Patrycja Boruch_Pejzaż_pastel na papierze_21x15 cm_2023.png
+NAME: Patrycja Boruch_Pejzaż_pastel na papierze_21x15 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/60%/Patrycja Boruch_Pejzaż_pastel na papierze_21x15 cm_2023.png
+SIZE_KB: 917.37
+LAST_WRITE: 2026-09-14 01:57:01
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\60%\Patrycja Boruch_zegary_olej na płótnie _50x50 cm_2023.png
+NAME: Patrycja Boruch_zegary_olej na płótnie _50x50 cm_2023.png
+EXTENSION: .png
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/60%/Patrycja Boruch_zegary_olej na płótnie _50x50 cm_2023.png
+SIZE_KB: 2042.13
+LAST_WRITE: 2026-09-14 01:57:00
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\KANASTA-artists-folders\Patrycja Boruch\view\60%\Patrycja Boruch_zielono czerwona martwa natura_olej na płótnie_80x80 cm_2025.jpg
+NAME: Patrycja Boruch_zielono czerwona martwa natura_olej na płótnie_80x80 cm_2025.jpg
+EXTENSION: .jpg
+RELATIVE: /images/works/KANASTA-artists-folders/Patrycja Boruch/view/60%/Patrycja Boruch_zielono czerwona martwa natura_olej na płótnie_80x80 cm_2025.jpg
+SIZE_KB: 164.67
+LAST_WRITE: 2026-09-14 01:57:05
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\works.json
+NAME: works.json
+EXTENSION: .json
+RELATIVE: /images/works/works.json
+SIZE_KB: 79.22
+LAST_WRITE: 2026-09-15 18:12:57
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\works\works-backup.json
+NAME: works-backup.json
+EXTENSION: .json
+RELATIVE: /images/works/works-backup.json
+SIZE_KB: 79.22
+LAST_WRITE: 2026-09-15 18:12:57
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\images\zuzanna-frankowska.jpg
+NAME: zuzanna-frankowska.jpg
+EXTENSION: .jpg
+RELATIVE: /images/zuzanna-frankowska.jpg
+SIZE_KB: 138.82
+LAST_WRITE: 2026-09-05 23:33:43
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\index.html
+NAME: index.html
+EXTENSION: .html
+RELATIVE: /index.html
+SIZE_KB: 50.11
+LAST_WRITE: 2026-09-17 01:27:36
+
+[PLIK]
+PATH: C:\Users\anton\Documents\GitHub\KANASTA-artist-collective\README.md
+NAME: README.md
+EXTENSION: .md
+RELATIVE: /README.md
+SIZE_KB: 0.03
+LAST_WRITE: 2026-09-05 23:33:43
+

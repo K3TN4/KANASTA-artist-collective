@@ -313,13 +313,37 @@ function updateWorkEdgeEffects(){
   card.style.setProperty('transform',`scale(${.82+.18*t})`,'important');
  });
 }
-function weightedPick(list){const total=list.reduce((n,w)=>n+(Number(w.weight)||0),0);let r=Math.random()*total;for(const w of list){r-=Number(w.weight)||0;if(r<=0)return w}return list[list.length-1]}
+function weightedPick(list){
+ if(!list.length)return null;
+ const total=list.reduce((n,w)=>n+(Number(w.weight)||0),0);
+ if(total<=0)return list[Math.floor(Math.random()*list.length)];
+ let r=Math.random()*total;
+ for(const w of list){r-=Number(w.weight)||0;if(r<=0)return w}
+ return list[list.length-1];
+}
 function makeSequence(list,count){const pool=list.slice(),recent=[],out=[];for(let n=0;n<count;n++){let available=pool.filter(w=>!recent.includes(w.id));if(!available.length){available=list.filter(w=>!recent.includes(w.id));if(!available.length){recent.splice(0,recent.length-1);available=list.filter(w=>!recent.includes(w.id))}}const w=weightedPick(available);out.push(w);recent.push(w.id);if(recent.length>WORKS_QUEUE)recent.shift()}return out}
 function overlaps(a,b,gap){return !(a.x+a.w+gap<=b.x||b.x+b.w+gap<=a.x||a.y+a.h+gap<=b.y||b.y+b.h+gap<=a.y)}
 function placeCards(items,meta,height,segmentWidth,offsetX){const placed=[],gap=10;let cursor=offsetX+30;for(let i=0;i<items.length;i++){const m=meta.get(items[i].id),seed=(i*7919+(items[i].id||'').length*97)%1000;const h=Math.max(225,Math.min(420,Math.round(225+(seed/999)*195)));const w=Math.min(560,Math.max(170,Math.round(m.ratio*h)));let found=null;for(let tries=0;tries<3000;tries++){const step=Math.max(5,Math.round(gap/2));const x=cursor+((tries%16)*step);const y=12+((seed+tries*37)%(Math.max(14,height-h-24)));const candidate={x,y,w,h};if(placed.every(p=>!overlaps(candidate,p,gap))){found=candidate;break}}if(!found){found={x:cursor,y:18,w,h};while(placed.some(p=>overlaps(found,p,gap)))found.x+=Math.max(gap,found.w+gap)}placed.push(found);cursor=Math.max(cursor,found.x+found.w+gap);const card=document.createElement('figure');card.className='work-card';card.dataset.file=m.w.thumb;card.dataset.workId=items[i].id;card.style.setProperty('--card-x',found.x+'px');card.style.setProperty('--card-y',found.y+'px');card.style.setProperty('--card-w',found.w+'px');card.style.setProperty('--card-h',found.h+'px');const img=document.createElement('img');img.src=m.w.thumb;img.alt=`${m.w.title} — ${m.w.artist}`;img.draggable=false;img.decoding='async';card.append(img);card.onclick=()=>{if(!drag||!drag.moved){const k=works.indexOf(items[i]);if(k>=0)openWork(k)}};document.querySelector('#worksRow .works-line').append(card)}return Math.max(cursor,offsetX+segmentWidth)}
 function moveRail(dx){if(!rail.ready)return;const viewport=$('#worksRow').clientWidth;rail.x=Math.max(viewport-rail.trackWidth,Math.min(0,rail.x+dx));paintRail()}
 function scheduleRailMove(dx){if(!rail.ready)return;rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
-async function loadArtistWorks(){const r=await fetch('images/works/works.json',{cache:'no-store'});if(!r.ok)throw Error(`works.json ${r.status}`);const data=await r.json();if(!Array.isArray(data)||!data.length)throw Error('works.json jest puste');const enc=p=>String(p).split('/').map(encodeURIComponent).join('/');return data.map(w=>({...w,thumb:enc(w.thumb),view:enc(w.view),full:enc(w.full)}))}
+async function loadArtistWorks(){
+ const r=await fetch('images/works/works.json?rev=20260917',{cache:'no-store'});
+ if(!r.ok)throw Error(`works.json ${r.status}`);
+ const raw=await r.json();
+ const data=Array.isArray(raw)?raw:(Array.isArray(raw.works)?raw.works:[]);
+ if(!data.length)throw Error('works.json jest puste');
+ const enc=p=>String(p||'').replaceAll('\\\\','/').replace(/^.*?images\/works\//,'images/works/').replace(/^\/+/,'').split('/').filter(Boolean).map(encodeURIComponent).join('/');
+ return data.map((w,i)=>{
+  const thumb=w.thumb||w.thumbnail||w.thumbs;
+  const view=w.view||w.preview||w.medium||thumb;
+  const full=w.full||w.original||view||thumb;
+  const artist=w.artist||w.author||'';
+  const path=String(thumb||'');
+  const tierMatch=path.match(/(?:^|[\\/])(60|30|10)%?(?:[\\/]|$)/);
+  const weight=Number(w.weight||w.tierWeight||0)||({60:60,30:30,10:10}[tierMatch?.[1]]||0);
+  return {...w,id:w.id||`${artist}-${i}-${thumb}`,artist,thumb:enc(thumb),view:enc(view),full:enc(full),weight};
+ }).filter(w=>w.thumb&&w.view&&w.full);
+}
 function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
 function setupWorkEdgeObserver(){
  const viewport=$('#worksRow');
