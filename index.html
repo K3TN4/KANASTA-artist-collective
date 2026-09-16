@@ -166,7 +166,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 /* v39 stable rail: render complete repeated tracks before interaction */
 #worksRow{scroll-behavior:auto!important;overscroll-behavior-x:contain!important}
 #worksRow .works-line{gap:6px!important;contain:layout paint!important}
-#worksRow .work-card{width:clamp(190px,18vw,300px)!important;min-width:clamp(190px,18vw,300px)!important;max-width:clamp(190px,18vw,300px)!important;flex:0 0 clamp(190px,18vw,300px)!important;margin:0!important;padding:0!important}
+#worksRow .work-card{width:clamp(215px,20vw,330px)!important;min-width:clamp(215px,20vw,330px)!important;max-width:clamp(215px,20vw,330px)!important;flex:0 0 clamp(215px,20vw,330px)!important;margin:0!important;padding:0!important;transform:scale(1);transform-origin:center center;opacity:1;transition:transform .22s ease-out,opacity .22s ease-out}
 #worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
 @media(max-width:700px){#worksRow .work-card{width:clamp(105px,29vw,170px)!important;min-width:clamp(105px,29vw,170px)!important;max-width:clamp(105px,29vw,170px)!important;flex-basis:clamp(105px,29vw,170px)!important}}
 
@@ -189,47 +189,10 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* v51 bounded transform rail: symmetric movement without scrollLeft snap */
 #worksRow{overflow:hidden!important;scroll-behavior:auto!important;cursor:grab!important;--works-gap:6px!important}
-#worksRow .works-line{display:flex!important;gap:var(--works-gap)!important;will-change:transform!important;contain:layout paint!important}
-#worksRow .work-card{width:var(--card-width)!important;min-width:var(--card-width)!important;max-width:var(--card-width)!important;flex:0 0 var(--card-width)!important;height:100%!important;margin:0!important;padding:0!important}
+#worksRow .works-line{display:flex!important;gap:var(--works-gap)!important;will-change:transform!important;contain:layout paint!important;flex-basis:clamp(165px,22vw,290px)!important;height:clamp(165px,22vw,290px)!important;min-height:clamp(165px,22vw,290px)!important}
+#worksRow .work-card{width:var(--card-width)!important;min-width:var(--card-width)!important;max-width:var(--card-width)!important;flex:0 0 var(--card-width)!important;height:100%!important;margin:0!important;padding:0!important;opacity:1!important;transform:scale(1);transform-origin:center center;transition:transform .18s ease-out,opacity .18s ease-out}
 #worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
-
-/* WORKS ZERO: organic horizontal gallery, not rows */
-#worksRow{position:relative!important;height:clamp(620px,76vh,900px)!important;display:block!important;overflow:hidden!important;cursor:grab!important;isolation:isolate!important;mask-image:linear-gradient(90deg,transparent 0,#000 5%,#000 95%,transparent 100%)!important;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 5%,#000 95%,transparent 100%)!important}
-#worksRow.dragging{cursor:grabbing!important}
-#worksRow .works-line{position:absolute!important;inset:0 auto auto 0!important;width:var(--works-track-width,1000px)!important;height:100%!important;display:block!important;min-width:0!important;overflow:visible!important;will-change:transform!important;contain:layout paint!important}
-#worksRow .works-line:nth-child(n+2){display:none!important}
-#worksRow .work-card{position:absolute!important;display:block!important;margin:0!important;padding:10px!important;box-sizing:border-box!important;background:#fff!important;overflow:hidden!important;transform:none!important;transition:opacity .5s cubic-bezier(.22,1,.36,1)!important;z-index:1!important}
-#worksRow .work-card img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;transition:transform .55s cubic-bezier(.22,1,.36,1),opacity .55s cubic-bezier(.22,1,.36,1)!important;transform:scale(.96)!important;opacity:.82!important}
-#worksRow .work-card:hover{z-index:5!important}
-#worksRow .work-card:hover img{transform:scale(1.035)!important;opacity:1!important}
-@media(max-width:700px){#worksRow{height:clamp(500px,145vw,720px)!important}.section.works{padding-left:10px!important;padding-right:10px!important}}
-@media(prefers-reduced-motion:reduce){#worksRow .work-card,#worksRow .work-card img{transition:none!important}}
-
-/* WORKS FINAL WIDE: viewport full-bleed, per-card edge animation */
-.section.works{overflow:visible!important}
-#works .works-track{position:relative!important;width:100vw!important;max-width:none!important;left:50%!important;transform:translateX(-50%)!important;overflow:visible!important}
-#worksRow{width:100vw!important;max-width:none!important;height:clamp(680px,82vh,980px)!important;margin:0!important;overflow:hidden!important;mask-image:none!important;-webkit-mask-image:none!important}
-#worksRow .work-card{opacity:0!important;transform:scale(.88)!important;transform-origin:center!important;transition:opacity .42s cubic-bezier(.22,1,.36,1),transform .42s cubic-bezier(.22,1,.36,1)!important}
-#worksRow .work-card.edge-visible{opacity:1!important;transform:scale(1)!important}
-#worksRow .work-card:hover{z-index:5!important}
-#worksRow .work-card.edge-visible:hover{transform:scale(1.035)!important}
-@media(max-width:700px){#worksRow{height:clamp(560px,160vw,820px)!important}}
-
-/* WORKS FINAL GEOMETRY OVERRIDE */
-.section.works{overflow:visible!important}
-#works .works-track{position:relative!important;width:100vw!important;max-width:none!important;margin-left:calc(50% - 50vw)!important;left:0!important;transform:none!important;overflow:visible!important}
-#worksRow{position:relative!important;width:100vw!important;max-width:none!important;height:clamp(820px,100vh,1180px)!important;margin:0!important;overflow:hidden!important;mask-image:none!important;-webkit-mask-image:none!important}
-#worksRow .works-line{position:absolute!important;left:0!important;top:0!important;width:var(--works-track-width,100vw)!important;height:100%!important;display:block!important;overflow:visible!important;contain:layout paint!important;will-change:transform!important}
-#worksRow .work-card{box-sizing:border-box!important;padding:3px!important;background:#fff!important;overflow:hidden!important;opacity:0!important;transform:scale(.88)!important;transition:opacity .38s ease,transform .38s cubic-bezier(.22,1,.36,1)!important}
-#worksRow .work-card.edge-visible{opacity:1!important;transform:scale(1)!important}
-#worksRow .work-card.edge-visible:hover{transform:scale(1.035)!important;z-index:5!important}
-#worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important}
-@media(max-width:700px){#worksRow{height:clamp(680px,175vw,980px)!important}}
-
-/* WORKS ORGANIC FINAL OVERRIDE v2: force JS-computed geometry via CSS vars,
-   so it beats every legacy !important rail rule AND never loses to inline
-   height:auto side-effects. left/top/width/height all come from --card-* */
-#worksRow .work-card{position:absolute!important;left:var(--card-x,0)!important;top:var(--card-y,0)!important;width:var(--card-w,120px)!important;min-width:0!important;max-width:none!important;height:var(--card-h,120px)!important;flex:none!important}
+@media(max-width:700px){#worksRow .works-line{flex-basis:clamp(120px,33vw,200px)!important;height:clamp(120px,33vw,200px)!important;min-height:clamp(120px,33vw,200px)!important}#worksRow .work-card{width:clamp(115px,31vw,185px)!important;min-width:clamp(115px,31vw,185px)!important;max-width:clamp(115px,31vw,185px)!important;flex-basis:clamp(115px,31vw,185px)!important}}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -270,11 +233,12 @@ orbitCircles.forEach(circle=>{
  circle.addEventListener('mouseleave',()=>{const row=circle.parentElement;row.querySelectorAll('.circle').forEach(x=>{x.style.setProperty('--hover-x','0px');x.style.setProperty('--hover-scale','1')})});
 });
 
-let workCards=[];
+let workCards=[];works.forEach((w,i)=>{const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const im=new Image();im.src=w.thumb;im.alt=w.title;im.onload=()=>{im.classList.add('loaded')};card.append(im);card.onclick=()=>{if(!drag||!drag.moved)openWork(i)};const lines=[...document.querySelectorAll('#worksRow .works-line')];(lines[i%4]||$('#worksRow')).append(card);workCards.push(card)});
+requestAnimationFrame(()=>{$('#worksRow').scrollLeft=0});
 function openArtist(i){$('#profileBody').innerHTML=`<div class="profile-no">${String(i+1).padStart(2,'0')} / 15</div><h2>${artists[i][0]}</h2><img src="images/${artists[i][1]}" alt=""><p>Artist based in Poland. Member of the KANASTA artist collective.</p>`;$('#profile').classList.add('open');document.body.style.overflow='hidden'}
 function closeAll(){['#menu','#profile','#viewer'].forEach(x=>$(x).classList.remove('open'));document.body.style.overflow='';history.replaceState({},'',location.pathname)}
 function openWork(i){activeWork=i;const w=works[i];$('#viewerImg').src=w.view;$('#viewerImg').dataset.full=w.full;$('#viewerImg').alt=`${w.title} — ${w.artist}`;$('#viewerTitle').textContent=w.title;$('#viewerArtist').textContent=w.artist;$('#viewerMeta').textContent=[w.technique,w.year,w.dimensions].filter(Boolean).join(' · ');$('#viewerNo').textContent=`${String(i+1).padStart(2,'0')} / ${works.length}`;$('#related').innerHTML='';works.forEach((x,j)=>{if(j===i||x.artist!==w.artist)return;const im=new Image();im.src=x.thumb;im.dataset.file=x.thumb;im.alt=x.title;im.onclick=()=>openWork(j);$('#related').append(im)});$('#viewer').classList.add('open');document.body.style.overflow='hidden';history.pushState({},'',`/KANASTA-artist-collective/works`);resetZoom()}
-const goHome=()=>{closeAll();history.replaceState({},'',location.pathname.split('/works')[0]||'/');window.scrollTo({top:0,left:0,behavior:'smooth'})};$('#menuBtn').onclick=()=>$('#menu').classList.add('open');$('#menuClose').onclick=closeAll;$('#profileClose').onclick=closeAll;$('#viewerClose').onclick=closeAll;$('#logo').onclick=goHome;document.querySelector('.viewerLogo').onclick=goHome;document.querySelectorAll('.menu-list a').forEach(a=>a.onclick=()=>{closeAll();setTimeout(()=>$(a.getAttribute('href')).scrollIntoView({behavior:'smooth'}),50)});window.onpopstate=closeAll;
+const goHome=()=>{closeAll();history.replaceState({},'',location.pathname.split('/works')[0]||'/');window.scrollTo({top:0,left:0,behavior:'smooth'})};$('#menuBtn').onclick=()=>$('#menu').classList.add('open');$('#menuClose').onclick=closeAll;$('#profileClose').onclick=closeAll;$('#viewerClose').onclick=closeAll;$('#logo').onclick=goHome;document.querySelector('.viewerLogo').onclick=goHome;document.querySelectorAll('.menu-list a').forEach(a=>a.onclick=()=>{closeAll();setTimeout(()=>{const target=$(a.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth'})},50)});window.onpopstate=closeAll;
 let zoom={s:1,x:0,y:0,drag:false,sx:0,sy:0,ox:0,oy:0};function renderZoom(){$('#viewerImg').style.setProperty('--s',zoom.s);$('#viewerImg').style.setProperty('--x',zoom.x+'px');$('#viewerImg').style.setProperty('--y',zoom.y+'px');$('#viewerImage').classList.toggle('zoomed',zoom.s>1.01);$('#viewerImage').style.touchAction=zoom.s>1.01?'none':'pan-y'}function resetZoom(){zoom={s:1,x:0,y:0,drag:false,sx:0,sy:0,ox:0,oy:0};renderZoom()}
 function zoomAt(next,cx,cy){const r=$('#viewerImage').getBoundingClientRect(),old=zoom.s,k=next/old,x=cx-r.left,y=cy-r.top;if(next>1.01&&$('#viewerImg').dataset.full&&$('#viewerImg').src.indexOf('/full/')<0)$('#viewerImg').src=$('#viewerImg').dataset.full;zoom.x=x-(x-zoom.x)*k;zoom.y=y-(y-zoom.y)*k;zoom.s=next;if(zoom.s<=1.001){zoom.s=1;zoom.x=0;zoom.y=0}renderZoom()}
 $('#viewerImage').onwheel=e=>{e.preventDefault();zoomAt(Math.max(1,Math.min(24,zoom.s*Math.exp(-e.deltaY*.0018))),e.clientX,e.clientY)};
@@ -284,40 +248,35 @@ $('#viewerImage').addEventListener('touchstart',e=>{if(e.touches.length===2){con
 $('#viewerImage').addEventListener('touchmove',e=>{if(e.touches.length===2&&pinch.active){const m=touchMid(e.touches[0],e.touches[1]),next=Math.max(1,Math.min(24,pinch.startScale*touchDistance(e.touches[0],e.touches[1])/pinch.startDist));zoomAt(next,m.x,m.y);e.preventDefault()}},{passive:false});
 $('#viewerImage').addEventListener('touchend',e=>{if(e.touches.length<2)pinch.active=false});
 let drag=null,touchRail=null;
-const sourceWorks=[];
-const WORKS_QUEUE=60;
-const WORKS_RENDER_COUNT=200;
-const rail={x:0,trackWidth:0,ready:false,frame:0,pending:0};
+const rail={offset:[0,0,0,0],busy:false,ready:false,gap:6,keep:30};
 function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
-function paintRail(){const line=railLines()[0];if(line)line.style.transform=`translate3d(${rail.x}px,0,0)`}
-function weightedPick(list){const total=list.reduce((n,w)=>n+(Number(w.weight)||0),0);let r=Math.random()*total;for(const w of list){r-=Number(w.weight)||0;if(r<=0)return w}return list[list.length-1]}
-function makeSequence(list,count){const pool=list.slice(),recent=[],out=[];for(let n=0;n<count;n++){let available=pool.filter(w=>!recent.includes(w.id));if(!available.length){available=list.filter(w=>!recent.includes(w.id));if(!available.length){recent.splice(0,recent.length-1);available=list.filter(w=>!recent.includes(w.id))}}const w=weightedPick(available);out.push(w);recent.push(w.id);if(recent.length>WORKS_QUEUE)recent.shift()}return out}
-function overlaps(a,b,gap){return !(a.x+a.w+gap<=b.x||b.x+b.w+gap<=a.x||a.y+a.h+gap<=b.y||b.y+b.h+gap<=a.y)}
-function placeCards(items,meta,height,segmentWidth,offsetX){const placed=[],gap=10;let cursor=offsetX+30;for(let i=0;i<items.length;i++){const m=meta.get(items[i].id),seed=(i*7919+(items[i].id||'').length*97)%1000;const h=Math.max(190,Math.min(360,Math.round(190+(seed/999)*170)));const w=Math.min(480,Math.max(140,Math.round(m.ratio*h)));let found=null;for(let tries=0;tries<3000;tries++){const step=Math.max(5,Math.round(gap/2));const x=cursor+((tries%16)*step);const y=12+((seed+tries*37)%(Math.max(14,height-h-24)));const candidate={x,y,w,h};if(placed.every(p=>!overlaps(candidate,p,gap))){found=candidate;break}}if(!found){found={x:cursor,y:18,w,h};while(placed.some(p=>overlaps(found,p,gap)))found.x+=Math.max(gap,found.w+gap)}placed.push(found);cursor=Math.max(cursor,found.x+found.w+gap);const card=document.createElement('figure');card.className='work-card';card.dataset.file=m.w.thumb;card.dataset.workId=items[i].id;card.style.setProperty('--card-x',found.x+'px');card.style.setProperty('--card-y',found.y+'px');card.style.setProperty('--card-w',found.w+'px');card.style.setProperty('--card-h',found.h+'px');const img=document.createElement('img');img.src=m.w.thumb;img.alt=`${m.w.title} — ${m.w.artist}`;img.draggable=false;img.decoding='async';card.append(img);card.onclick=()=>{if(!drag||!drag.moved){const k=works.indexOf(items[i]);if(k>=0)openWork(k)}};document.querySelector('#worksRow .works-line').append(card)}return Math.max(cursor,offsetX+segmentWidth)}
-function moveRail(dx){if(!rail.ready)return;const viewport=$('#worksRow').clientWidth;rail.x=Math.max(viewport-rail.trackWidth,Math.min(0,rail.x+dx));paintRail()}
-function scheduleRailMove(dx){if(!rail.ready)return;rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
-async function loadArtistWorks(){const r=await fetch('images/works/works.json',{cache:'no-store'});if(!r.ok)throw Error(`works.json ${r.status}`);const data=await r.json();if(!Array.isArray(data)||!data.length)throw Error('works.json jest puste');const enc=p=>String(p).split('/').map(encodeURIComponent).join('/');return data.map(w=>({...w,thumb:enc(w.thumb),view:enc(w.view),full:enc(w.full)}))}
-function loadMeta(w){return new Promise(resolve=>{const im=new Image();im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight)});im.onerror=()=>resolve({w,ratio:1.2});im.src=w.thumb})}
-function setupWorkEdgeObserver(){
- const viewport=$('#worksRow');
- if(!viewport)return;
- // Immediate synchronous pass: cards already inside the viewport get opacity:1
- // right away, with zero dependency on hover or on the observer's first async tick.
- const vRect=viewport.getBoundingClientRect();
- viewport.querySelectorAll('.work-card').forEach(card=>{
-  const r=card.getBoundingClientRect();
-  const visible=r.right>vRect.left&&r.left<vRect.right;
-  card.classList.toggle('edge-visible',visible);
- });
- if(!window.IntersectionObserver)return;
- if(window.__worksObserver)window.__worksObserver.disconnect();
- window.__worksObserver=new IntersectionObserver(entries=>{
-  for(const entry of entries)entry.target.classList.toggle('edge-visible',entry.isIntersecting);
- },{root:viewport,threshold:[0,.02,.15,.5,.85,1]});
- viewport.querySelectorAll('.work-card').forEach(card=>window.__worksObserver.observe(card));
+function paintRail(){
+ const viewport=$('#worksRow').getBoundingClientRect();
+ railLines().forEach((line,i)=>line.style.transform=`translate3d(${rail.offset[i]||0}px,0,0)`);
+ requestAnimationFrame(updateRailEdges);
 }
-async function buildRail(list){sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);const items=makeSequence(list,Math.min(WORKS_RENDER_COUNT,Math.max(WORKS_QUEUE+1,list.length+18)));const metas=new Map((await Promise.all(items.map(loadMeta))).map(x=>[x.w.id,x]));const line=railLines()[0];railLines().slice(1).forEach(x=>x.replaceChildren());line.replaceChildren();const h=Math.max(300,$('#worksRow').clientHeight||700);const mid=Math.ceil(items.length/2);const first=items.slice(0,mid),second=items.slice(mid);let right=placeCards(first,metas,h,16000,0);right=placeCards(second,metas,h,16000,right+220);rail.trackWidth=Math.max(right+40,window.innerWidth*8);line.style.setProperty('--works-track-width',rail.trackWidth+'px');rail.x=Math.min(0,-(rail.trackWidth-window.innerWidth)/2);rail.ready=true;paintRail();setupWorkEdgeObserver();document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ORGANIC WORKS'}
-$('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;drag={x:e.clientX,moved:false};$('#worksRow').classList.add('dragging');e.preventDefault()};document.addEventListener('mousemove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>2)drag.moved=true;scheduleRailMove(dx);drag.x=e.clientX},{passive:true});document.addEventListener('mouseup',()=>{if(!drag)return;const moved=drag.moved;drag=null;$('#worksRow').classList.remove('dragging');if(moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,80)}});$('#worksRow').addEventListener('touchstart',e=>{if(e.touches.length)touchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(!touchRail||!e.touches.length)return;const dx=e.touches[0].clientX-touchRail.x;if(Math.abs(dx)>3)touchRail.moved=true;if(touchRail.moved){e.preventDefault();scheduleRailMove(dx);touchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(touchRail?.moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,100)}touchRail=null});$('#worksRow').addEventListener('click',e=>{if($('#worksRow').dataset.suppress){e.preventDefault();e.stopPropagation()}},true);(async()=>{try{await buildRail(await loadArtistWorks())}catch(error){console.error('WORKS:',error);$('#worksRow').innerHTML='<div class=placeholder>WORKS COULD NOT BE LOADED</div>'}})();
+function updateRailEdges(){
+ const viewport=$('#worksRow').getBoundingClientRect();
+ const edge=Math.min(150,Math.max(72,viewport.width*.12));
+ document.querySelectorAll('#worksRow .work-card').forEach(card=>{
+  const r=card.getBoundingClientRect();
+  const distance=Math.min(r.right-viewport.left,viewport.right-r.left);
+  const t=Math.max(0,Math.min(1,(distance/edge)));
+  const eased=t*t*(3-2*t);
+  const edgeScale=.82+.18*eased;
+  const edgeOpacity=.35+.65*eased;
+  card.style.transform=`scale(${edgeScale})`;
+  card.style.opacity=String(edgeOpacity);
+ });
+}
+function moveRail(dx){if(!rail.ready)return;rail.offset=rail.offset.map(value=>value+dx);paintRail();if(needsRail('left'))growRail('left');if(needsRail('right'))growRail('right')}
+function needsRail(edge){const width=$('#worksRow').clientWidth;return railLines().some((line,i)=>edge==='left'?rail.offset[i]>-180:rail.offset[i]+line.scrollWidth<width+180)}
+function trimRail(direction){const width=$('#worksRow').clientWidth;railLines().forEach((line,i)=>{while(line.children.length>rail.keep){if(direction==='right'&&rail.offset[i]<-line.firstElementChild.offsetWidth*2){const card=line.firstElementChild;rail.offset[i]+=card.offsetWidth+rail.gap;card.remove()}else if(direction==='left'&&rail.offset[i]+line.scrollWidth>width+line.lastElementChild.offsetWidth*2){line.lastElementChild.remove()}else break}});paintRail()}
+async function growRail(direction){if(rail.busy||!rail.ready||!sourceWorks.length)return;rail.busy=true;const used=new Set([...document.querySelectorAll('#worksRow .work-card')].map(card=>card.dataset.file));const pick=distinctPicks(used,4);const metas=await Promise.all(pick.map(loadMeta));const lines=railLines();for(let i=0;i<4;i++){const card=makeRailCard(metas[i]);if(direction==='left'){lines[i].prepend(card);rail.offset[i]-=card.offsetWidth+rail.gap}else lines[i].append(card)}paintRail();trimRail(direction);rail.busy=false}
+$('#worksRow').onmousedown=e=>{if(e.button!==0)return;drag={x:e.clientX,moved:false};e.preventDefault()};document.addEventListener('mousemove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>2)drag.moved=true;moveRail(dx);drag.x=e.clientX});document.addEventListener('mouseup',()=>{if(!drag)return;const moved=drag.moved;drag=null;if(moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,80)}});
+$('#worksRow').addEventListener('touchstart',e=>{if(e.touches.length)touchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(!touchRail||!e.touches.length)return;const dx=e.touches[0].clientX-touchRail.x;if(Math.abs(dx)>3)touchRail.moved=true;if(touchRail.moved){e.preventDefault();moveRail(dx);touchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(touchRail?.moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,100)}touchRail=null});$('#worksRow').addEventListener('click',e=>{if($('#worksRow').dataset.suppress){e.preventDefault();e.stopPropagation()}},true);
+
+
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
 let cursorFrame=0,cursorClone=null,cursorCloneTarget=null;
 function cursorTarget(){const el=document.elementFromPoint(mouse.x,mouse.y);return el&&el.closest('button,a,h1,h2,h3,.subtitle,.artist-name,.section-head,.section-head span,.viewer-caption h2,.viewer-caption p,.viewer-caption small,.top button,.viewerLogo,.section-head span,.section-head h2,.artist-name,.subtitle,.placeholder,.about p,.contact,.contact *,.bio button,.menu-list a,.circle,.artist-photo');}
@@ -344,11 +303,45 @@ function renderCursor(){
 }
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});renderCursor();
 
-/* KANASTA WORKS v53: all artists, weighted homepage, ordered artist gallery. */
+/* Antoni Augustyniak works: load filenames from the artist folder, so no manual renaming is needed. */
 const artistRoot='images/works/KANASTA-artists-folders';
 const artistFolderNames=['Patrycja Boruch','Zuzanna Frankowska','Amelia Korczak','Adam Pażucha','Antoni Augustyniak','Ada Rosa','Anastazja Gierlak','Anna Esnekier','Gabriela Bossowska','Marta Mioduszewska','Nina Borowicz','Aleksandra Sikora','Marta Mendelejeva','Franek Ciastoń','Urszula Smagowicz'];
 const artistApi='https://api.github.com/repos/K3TN4/KANASTA-artist-collective/contents/';
 const rawRoot='https://raw.githubusercontent.com/K3TN4/KANASTA-artist-collective/main/';
 const imageExt=/\.(avif|gif|jpe?g|png|webp)$/i;
-const tiers=[{folder:'60%',weight:60},{folder:'30%',weight:30},{folder:'10%',weight:10}];
+function rawAsset(...parts){return rawRoot+parts.map(x=>String(x).split('/').map(encodeURIComponent).join('/')).join('/')}
+function shuffleWorks(list){for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]]}return list}
+const fallbackWorks=Array.from({length:16},(_,i)=>{const n=String(i+1).padStart(2,'0');return{thumb:`images/works/thumbs/work${n}.webp`,view:`images/works/view/work${n}.webp`,full:`images/works/full/work${n}.webp`,title:`Work ${n}`,artist:'Unknown',technique:'',year:'',dimensions:''}});
+const sourceWorks=[];
+function loadMeta(w){return new Promise(resolve=>{const img=new Image();img.onload=()=>resolve({w,ratio:img.naturalWidth/Math.max(1,img.naturalHeight)});img.onerror=()=>resolve({w,ratio:1.2});img.src=w.thumb})}
+function makeRailCard(meta){const {w,ratio}=meta;const card=document.createElement('figure');card.className='work-card';card.dataset.file=w.thumb;const h=parseFloat(getComputedStyle(document.querySelector('#worksRow .works-line')).height)||220;card.style.setProperty('--card-width',`${Math.max(72,ratio*h)}px`);const img=new Image();img.src=w.thumb;img.alt=`${w.title} — ${w.artist}`;img.draggable=false;img.decoding='async';card.append(img);card.onclick=()=>{if(!drag||!drag.moved){const i=works.indexOf(w);if(i>=0)openWork(i)}};return card}
+function shuffled(list){const copy=list.slice();for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]]}return copy}
+function distinctPicks(exclude,count){let pool=shuffled(sourceWorks.filter(w=>!exclude.has(w.thumb)));if(pool.length<count)pool=pool.concat(shuffled(sourceWorks));return pool.slice(0,count)}
+async function growRail(direction){if(rail.busy||!rail.ready||!sourceWorks.length)return;rail.busy=true;const used=new Set([...document.querySelectorAll('#worksRow .work-card')].map(card=>card.dataset.file));const pick=distinctPicks(used,4);const metas=await Promise.all(pick.map(loadMeta));const lines=railLines();for(let i=0;i<4;i++){const card=makeRailCard(metas[i]);if(direction==='left'){lines[i].prepend(card);rail.offset[i]-=card.offsetWidth+rail.gap}else lines[i].append(card)}paintRail();trimRail(direction);rail.busy=false}
+async function loadAllRail(list){const lines=railLines();const metas=await Promise.all(list.map(loadMeta));lines.forEach(line=>line.replaceChildren());const pool=shuffled(metas);for(let row=0;row<4;row++){const own=[];for(let n=row;n<pool.length;n+=4)own.push(pool[n]);const sequence=own.length?own:pool;for(let copy=0;copy<8;copy++)sequence.forEach(meta=>lines[row].append(makeRailCard(meta)))}document.querySelector('.works .section-head span:last-child').textContent=list.length+' · ALL ARTISTS';requestAnimationFrame(()=>{rail.offset=lines.map(line=>-Math.max(0,(line.scrollWidth-$('#worksRow').clientWidth)/2));rail.ready=true;paintRail()})}
+function buildRail(list){sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);loadAllRail(list)}
+function clean(value){return String(value||'').trim().replace(/\s+/g,' ')}
+function parseWorkName(filename,artist){
+ const base=filename.replace(imageExt,'');let rest=base,year='',dimensions='',technique='',title='';
+ const y=rest.match(/(?:^|[_ ])(19|20)\d{2}$/);if(y){year=y[0].replace(/^[_ ]/,'');rest=rest.slice(0,-y[0].length)}
+ const d=rest.match(/(?:^|_)(\d+(?:[.,]\d+)?\s*[x×]\s*\d+(?:[.,]\d+)?(?:\s*x\s*\d+(?:[.,]\d+)?)?\s*(?:cm|mm|m)?)(?:$|_)/i);if(d){dimensions=clean(d[1]);rest=rest.replace(d[0],'_').replace(/^_|_$/g,'')}
+ const parts=rest.split('_').map(clean).filter(Boolean);
+ if(parts.length>=3){if(parts[0].toLowerCase().replace(/[,.]/g,'')===artist.toLowerCase().replace(/[,.]/g,''))parts.shift();title=parts.shift()||base;technique=parts.join(' · ')}
+ else if(parts.length===2){if(parts[0].toLowerCase()===artist.toLowerCase())parts.shift();title=parts[0]||base;technique=parts[1]||''}
+ else {const comma=rest.split(',').map(clean).filter(Boolean);if(comma.length>=3){if(comma[0].toLowerCase()===artist.toLowerCase())comma.shift();technique=comma.pop();title=comma.join(', ')}else title=clean(rest)}
+ return {title:title||base,artist,technique,year,dimensions}
+}
+async function githubContents(path){const r=await fetch(artistApi+path.split('/').map(encodeURIComponent).join('/'));if(!r.ok)throw new Error(`GitHub ${r.status}: ${path}`);return r.json()}
+async function loadArtistWorks(){
+ const result=[];
+ for(const artist of artistFolderNames){
+  try{const root=await githubContents(`${artistRoot}/${artist}`);const dirs=Object.fromEntries(root.filter(x=>x.type==='dir').map(x=>[x.name.toLowerCase(),x.path]));const names={};
+   for(const kind of ['thumbs','view','full']){if(!dirs[kind])continue;const files=await githubContents(dirs[kind]);for(const f of files.filter(x=>x.type==='file'&&imageExt.test(x.name)))names[kind]??=[] ,names[kind].push(f.name)}
+   for(const name of (names.thumbs||[])){const view=(names.view||[]).find(x=>x===name),full=(names.full||[]).find(x=>x===name);const meta=parseWorkName(name,artist);result.push({...meta,id:`${artist}-${name}`,thumb:rawAsset(artistRoot,artist,'thumbs',name),view:rawAsset(artistRoot,artist,'view',view||name),full:rawAsset(artistRoot,artist,'full',full||view||name)});}
+  }catch(e){console.warn('Nie udało się załadować prac:',artist,e)}
+ }
+ return result;
+}
+(async()=>{const realWorks=await loadArtistWorks();buildRail(realWorks.length?realWorks:fallbackWorks);})();
+
 </script></body></html>
