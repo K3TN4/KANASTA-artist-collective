@@ -294,7 +294,9 @@ $('#viewerImage').addEventListener('touchend',e=>{if(e.touches.length<2)pinch.ac
 let drag=null,touchRail=null;
 const sourceWorks=[];
 const WORKS_QUEUE=60;
-const WORKS_RENDER_COUNT=320;
+// GitHub Pages: render a dense but bounded first batch; lazy images prevent
+// hundreds of simultaneous requests from triggering the Pages rate limiter.
+const WORKS_RENDER_COUNT=180;
 const rail={x:0,trackWidth:0,ready:false,frame:0,pending:0};
 function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
 function paintRail(){const line=railLines()[0];if(line)line.style.transform=`translate3d(${rail.x}px,0,0)`;updateWorkEdgeEffects()}
@@ -343,8 +345,9 @@ function placeCards(items,meta,height,segmentWidth,offsetX){
   placed.push(found);
   const card=document.createElement('figure');card.className='work-card';card.dataset.file=m.w.thumb;card.dataset.workId=items[i].id;
   card.style.setProperty('--card-x',found.x+'px');card.style.setProperty('--card-y',found.y+'px');card.style.setProperty('--card-w',found.w+'px');card.style.setProperty('--card-h',found.h+'px');
-  const img=document.createElement('img');img.src=m.w.thumb;img.alt=`${m.w.title} — ${m.w.artist}`;img.draggable=false;img.decoding='async';
-  img.onerror=()=>{if(img.src!==m.w.view)img.src=m.w.view};card.append(img);
+  const img=document.createElement('img');
+  img.src=m.w.thumb;img.alt=`${m.w.title} — ${m.w.artist}`;img.draggable=false;img.decoding='async';img.loading='lazy';img.fetchPriority='low';
+  img.onerror=()=>{if(img.src!==m.w.view){img.onerror=null;img.src=m.w.view}};card.append(img);
   card.onclick=()=>{if(!drag||!drag.moved){const k=works.indexOf(items[i]);if(k>=0)openWork(k)}};document.querySelector('#worksRow .works-line').append(card)
  }
  return Math.max(offsetX+segmentWidth, ...placed.map(p=>p.x+p.w+20));
