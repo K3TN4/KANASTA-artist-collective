@@ -248,7 +248,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 @media(max-width:700px){#worksRow{height:clamp(680px,175vw,980px)!important}.section.works{padding-left:10px!important;padding-right:10px!important}}
 
 /* WORKS LOCAL INVERSION: black header field and cursor inversion only here */
-#works .section-head{position:relative;width:100vw;margin-left:calc(50% - 50vw);padding:42px var(--g);background:#000;color:#fff}
+#works .section-head{position:relative;z-index:4;width:100vw;margin-left:calc(50% - 50vw);padding:90px var(--g);background:#000;color:#fff}
 #works .section-head h2,#works .section-head span{color:#fff}
 #cursor.works-bar-cursor{background:#fff!important}
 #cursor.works-title-cursor{background:#000!important}
@@ -256,7 +256,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* WORKS ART CURSOR: large black field behind artwork cards, pointer-events stay disabled */
 #worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
-#cursor.works-art-cursor{width:900px!important;height:900px!important;border-radius:50%!important;background:#000!important;z-index:1!important}
+#cursor.works-art-cursor{width:1000px!important;height:1000px!important;border-radius:50%!important;background:#000!important;z-index:1!important}
 #cursorText.works-art-cursor{display:none!important}
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
 </style></head>
@@ -366,6 +366,8 @@ function renderCursor(){
  cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
  const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksArt=hovered?.closest('#worksRow');
  cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!worksArt);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',!!worksArt);
+ const worksClipTop=worksArt?Math.max(0,worksBar?.getBoundingClientRect().top-(mouse.py-500)):0;
+ cursor.style.clipPath=worksArt?`inset(${worksClipTop}px 0 0 0)`:'';
  const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);cursorText.classList.toggle('works-art-cursor',!!worksArt);
  syncCursorClone(cursorTarget());cursorText.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
 }
