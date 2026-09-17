@@ -238,6 +238,14 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .work-card.edge-mid{opacity:1!important;transform:scale(1)!important}
 #worksRow .work-card img{opacity:1!important;transform:scale(1)!important;transition:none!important}
 #worksRow .work-card:hover img{opacity:1!important;transform:scale(1)!important}
+
+/* WORKS REBUILD geometry */
+#worksRow{position:relative!important;width:100vw!important;height:clamp(820px,100vh,1180px)!important;overflow:hidden!important;cursor:grab!important}
+#worksRow .works-line{position:absolute!important;left:0!important;top:0!important;width:var(--works-track-width,100vw)!important;height:100%!important;display:block!important;overflow:visible!important;will-change:transform!important}
+#worksRow .work-card{position:absolute!important;left:var(--card-x)!important;top:var(--card-y)!important;width:var(--card-w)!important;height:var(--card-h)!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;padding:3px!important;margin:0!important;background:#fff!important;opacity:1!important;transform:scale(1)!important;transition:opacity .28s ease,transform .28s ease!important}
+#worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;opacity:1!important}
+#worksRow.dragging{cursor:grabbing!important}
+@media(max-width:700px){#worksRow{height:clamp(680px,175vw,980px)!important}.section.works{padding-left:10px!important;padding-right:10px!important}}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -294,175 +302,33 @@ $('#viewerImage').addEventListener('touchstart',e=>{if(e.touches.length===2){con
 $('#viewerImage').addEventListener('touchmove',e=>{if(e.touches.length===2&&pinch.active){const m=touchMid(e.touches[0],e.touches[1]),next=Math.max(1,Math.min(24,pinch.startScale*touchDistance(e.touches[0],e.touches[1])/pinch.startDist));zoomAt(next,m.x,m.y);e.preventDefault()}},{passive:false});
 $('#viewerImage').addEventListener('touchend',e=>{if(e.touches.length<2)pinch.active=false});
 let drag=null,touchRail=null;
+/* WORKS REBUILD 2026-09-18 — exact repository inventory, organic scatter, bounded infinite rail */
 const sourceWorks=[];
 const WORKS_QUEUE=60;
-// GitHub Pages: render a dense but bounded first batch; lazy images prevent
-// hundreds of simultaneous requests from triggering the Pages rate limiter.
-const WORKS_RENDER_COUNT=180;
-const rail={x:0,trackWidth:0,ready:false,frame:0,pending:0,extending:false,segment:10000};
-function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
-function paintRail(){const line=railLines()[0];if(line)line.style.transform=`translate3d(${rail.x}px,0,0)`;updateWorkEdgeEffects()}
-function updateWorkEdgeEffects(){
- const viewport=$('#worksRow');
- if(!viewport)return;
- const vr=viewport.getBoundingClientRect();
- const fade=Math.min(180,Math.max(90,vr.width*.12));
- viewport.querySelectorAll('.work-card').forEach(card=>{
-  const r=card.getBoundingClientRect();
-  const inside=Math.min(r.right-vr.left,vr.right-r.left);
-  const visible=r.right>vr.left&&r.left<vr.right;
-  let t=visible?Math.max(0,Math.min(1,inside/fade)):0;
-  t=t*t*(3-2*t);
-  card.style.setProperty('opacity',String(.35+.65*t),'important');
-  card.style.setProperty('transform',`scale(${.82+.18*t})`,'important');
- });
-}
-function weightedPick(list){
- if(!list.length)return null;
- const total=list.reduce((n,w)=>n+(Number(w.weight)||0),0);
- if(total<=0)return list[Math.floor(Math.random()*list.length)];
- let r=Math.random()*total;
- for(const w of list){r-=Number(w.weight)||0;if(r<=0)return w}
- return list[list.length-1];
-}
-function makeSequence(list,count){const pool=list.slice(),recent=[],out=[];for(let n=0;n<count;n++){let available=pool.filter(w=>!recent.includes(w.id));if(!available.length){available=list.filter(w=>!recent.includes(w.id));if(!available.length){recent.splice(0,recent.length-1);available=list.filter(w=>!recent.includes(w.id))}}const w=weightedPick(available);out.push(w);recent.push(w.id);if(recent.length>WORKS_QUEUE)recent.shift()}return out}
-function overlaps(a,b,gap){return !(a.x+a.w+gap<=b.x||b.x+b.w+gap<=a.x||a.y+a.h+gap<=b.y||b.y+b.h+gap<=a.y)}
-function artworkDimensions(work){
- const source=[work.title,work.dimensions,work.thumb,work.view,work.full].filter(Boolean).map(String).join(' ');
- const text=source.replace(/%20/g,' ').replace(/%C3%A1/gi,'á');
- const matches=[...text.matchAll(/(\d+(?:[.,]\d+)?)\s*[x×]\s*(\d+(?:[.,]\d+)?)(?:\s*cm)?/gi)];
- if(!matches.length)return null;
- const m=matches[matches.length-1],a=Number(m[1].replace(',','.')),b=Number(m[2].replace(',','.'));
- return a>0&&b>0?{a,b,area:a*b,scale:Math.max(a,b)}:null;
-}
-function placeCards(items,meta,height,segmentWidth,offsetX){
-  const placed=[],gap=4;
- const dimensions=items.map(artworkDimensions),known=dimensions.filter(Boolean).map(d=>Math.log(Math.max(1,d.area)));
- const minArea=known.length?Math.min(...known):0,maxArea=known.length?Math.max(...known):1;
- for(let i=0;i<items.length;i++){
-  const m=meta.get(items[i].id),seed=(i*7919+(items[i].id||'').length*97)%1000;
-  const d=dimensions[i],dimensionT=d&&maxArea>minArea?Math.max(0,Math.min(1,(Math.log(d.area)-minArea)/(maxArea-minArea))):.5;
-  const jitter=(seed/999-.5)*.12, sizeT=Math.max(0,Math.min(1,dimensionT+jitter));
-  const h=Math.max(285,Math.min(500,Math.round(285+sizeT*215)));
-  const w=Math.min(700,Math.max(215,Math.round(m.ratio*h)));
-  const targetX=offsetX+24+(i/Math.max(1,items.length-1))*(segmentWidth-260);
-  let found=null;
-  for(let tries=0;tries<4000;tries++){
-   const jitter=((seed+tries*53)%401)-200;
-   const x=Math.max(offsetX+8,targetX+jitter);
-   const verticalRoom=Math.max(20,height-h-70);
-   const y=35+((seed*17+tries*53)%(verticalRoom));
-   const candidate={x,y,w,h};
-   if(placed.every(p=>!overlaps(candidate,p,gap))){found=candidate;break}
-  }
-  if(!found){found={x:targetX,y:18,w,h};while(placed.some(p=>overlaps(found,p,gap)))found.x+=Math.max(gap,found.w/3)}
-  placed.push(found);
-  const card=document.createElement('figure');card.className='work-card';card.dataset.file=m.w.thumb;card.dataset.workId=items[i].id;
-  card.style.setProperty('--card-x',found.x+'px');card.style.setProperty('--card-y',found.y+'px');card.style.setProperty('--card-w',found.w+'px');card.style.setProperty('--card-h',found.h+'px');
-  const img=document.createElement('img');
-  useImageCandidates(img,imageCandidates(m.w,'thumb'));img.alt=`${m.w.title} — ${m.w.artist}`;img.draggable=false;img.decoding='async';img.loading='lazy';img.fetchPriority='low';card.append(img);
-  card.onclick=()=>{if(!drag||!drag.moved){const k=works.indexOf(items[i]);const sourceK=k>=0?k:works.findIndex(x=>x.id===items[i]._sourceId);if(sourceK>=0)openWork(sourceK)}};document.querySelector('#worksRow .works-line').append(card)
- }
- return Math.max(offsetX+segmentWidth, ...placed.map(p=>p.x+p.w+20));
-}
-function shiftCards(dx){document.querySelectorAll('#worksRow .work-card').forEach(card=>{const x=parseFloat(card.style.getPropertyValue('--card-x'))||0;card.style.setProperty('--card-x',(x+dx)+'px')})}
-async function extendRail(side){
- if(!rail.ready||rail.extending||!sourceWorks.length)return;
- rail.extending=true;
- try{
-  const count=Math.min(58,Math.max(42,Math.ceil(sourceWorks.length*.48)));
-  const items=makeSequence(sourceWorks,count).map((w,i)=>({...w,id:`${w.id}|generated-${side}-${Date.now()}-${i}`,_sourceId:w.id}));
-  const checked=await Promise.all(items.map(loadMeta));
-  const usable=checked.filter(x=>x.valid);
-  if(!usable.length)return;
-  const metas=new Map(usable.map(x=>[x.w.id,x]));
-  const line=railLines()[0];
-  if(side==='left'){
-   shiftCards(rail.segment);
-   // Existing cards move one segment to the right while the rail moves left;
-   // new cards therefore use the fresh [0, segment] coordinate range.
-   placeCards(usable.map(x=>x.w),metas,Math.max(300,$('#worksRow').clientHeight||700),rail.segment,0);
-   rail.x-=rail.segment;
-  }else{
-   placeCards(usable.map(x=>x.w),metas,Math.max(300,$('#worksRow').clientHeight||700),rail.segment,rail.trackWidth);
-  }
-  rail.trackWidth+=rail.segment;
-  line.style.setProperty('--works-track-width',rail.trackWidth+'px');
-  paintRail();
- }finally{rail.extending=false}
-}
-function maybeExtendRail(){const viewport=$('#worksRow');if(!viewport||!rail.ready)return;const nearLeft=rail.x>-700;const nearRight=rail.x<viewport.clientWidth-rail.trackWidth+700;if(nearLeft)extendRail('left');else if(nearRight)extendRail('right')}
-function moveRail(dx){if(!rail.ready)return;const viewport=$('#worksRow').clientWidth;rail.x=Math.max(viewport-rail.trackWidth,Math.min(0,rail.x+dx));paintRail();maybeExtendRail()}
-function scheduleRailMove(dx){if(!rail.ready)return;rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
-async function loadArtistWorks(){
- const r=await fetch('images/works/works.json?rev=20260917',{cache:'no-store'});
- if(!r.ok)throw Error(`works.json ${r.status}`);
- const raw=await r.json();
- const data=Array.isArray(raw)?raw:(Array.isArray(raw.works)?raw.works:[]);
- if(!data.length)throw Error('works.json jest puste');
- const enc=p=>{
-  if(p&&typeof p==='object')p=p.path||p.url||p.src||p.file||p.filename||'';
-  let v=String(p||'').replaceAll('\\\\','/');
-  const marker=v.toLowerCase().indexOf('images/works/');
-  if(marker>=0)v=v.slice(marker);
-  return v.replace(/^\/+/,'').split('/').filter(Boolean).map(encodeURIComponent).join('/');
- };
- const pathCandidates=p=>{
-  if(!p)return [];
-  const s=String(p).replaceAll('\\\\','/');
-  const parts=s.split('/');
-  const tierIndex=parts.findIndex(x=>x==='60%'||x==='30%'||x==='10%');
-  const modeIndex=tierIndex>0&&['thumbs','view','full'].includes(parts[tierIndex-1])?tierIndex-1:-1;
-  if(modeIndex<0)return [s];
-  const prefix=parts.slice(0,modeIndex).join('/');
-  const mode=parts[modeIndex];
-  const file=parts.slice(tierIndex+1).join('/');
-  const out=[s];
-  for(const tier of ['60%','30%','10%']){
-   const q=`${prefix}/${mode}/${tier}/${file}`;
-   if(!out.includes(q))out.push(q);
-  }
-  return out;
- };
- const resolved=data.map((w,i)=>{
-  const thumbs=w.thumb||w.thumbnail||w.thumbs||w.images?.thumb||w.images?.thumbs;
-  const views=w.view||w.preview||w.medium||w.images?.view||w.images?.preview||thumbs;
-  const fulls=w.full||w.original||w.images?.full||views||thumbs;
-  const thumb=typeof thumbs==='object'?(thumbs['60%']||thumbs['30%']||thumbs['10%']||thumbs.default):thumbs;
-  const view=typeof views==='object'?(views['60%']||views['30%']||views['10%']||views.default):views;
-  const full=typeof fulls==='object'?(fulls['60%']||fulls['30%']||fulls['10%']||fulls.default):fulls;
-  const artist=w.artist||w.author||'';
-  const path=String(thumb||'');
-  const tierMatch=path.match(/(?:^|[\\/])(60|30|10)%?(?:[\\/]|$)/);
-  const weight=Number(w.weight||w.tierWeight||0)||({60:60,30:30,10:10}[tierMatch?.[1]]||0);
-  const thumbPath=enc(thumb),viewPath=enc(view)||thumbPath,fullPath=enc(full)||viewPath||thumbPath;
-  return {...w,id:w.id||`${artist}-${i}-${thumb}`,artist,thumb:thumbPath,view:viewPath,full:fullPath,weight,
-   _thumbCandidates:pathCandidates(thumb).map(enc),_viewCandidates:pathCandidates(view).map(enc),_fullCandidates:pathCandidates(full).map(enc)};
- });
- return resolved.filter(w=>w.thumb&&w.view&&w.full);
-}
-function loadMeta(w){return new Promise(resolve=>{const im=new Image(),list=imageCandidates(w,'thumb');let n=0;const next=()=>{if(n>=list.length){resolve({w,ratio:1.2,valid:false});return}im.src=list[n++];};im.onload=()=>resolve({w,ratio:im.naturalWidth/Math.max(1,im.naturalHeight),valid:true});im.onerror=next;next()})}
-function setupWorkEdgeObserver(){
- const viewport=$('#worksRow');
- if(!viewport)return;
- // Immediate synchronous pass: cards already inside the viewport get opacity:1
- // right away, with zero dependency on hover or on the observer's first async tick.
- const vRect=viewport.getBoundingClientRect();
- viewport.querySelectorAll('.work-card').forEach(card=>{
-  const r=card.getBoundingClientRect();
-  const visible=r.right>vRect.left&&r.left<vRect.right;
-  card.classList.toggle('edge-visible',visible);
- });
- if(!window.IntersectionObserver)return;
- if(window.__worksObserver)window.__worksObserver.disconnect();
- window.__worksObserver=new IntersectionObserver(entries=>{
-  for(const entry of entries)entry.target.classList.toggle('edge-visible',entry.isIntersecting);
- },{root:viewport,threshold:[0,.02,.15,.5,.85,1]});
- viewport.querySelectorAll('.work-card').forEach(card=>window.__worksObserver.observe(card));
- updateWorkEdgeEffects();
-}
-async function buildRail(list){sourceWorks.splice(0,sourceWorks.length,...list);const requested=makeSequence(list,Math.min(WORKS_RENDER_COUNT,Math.max(WORKS_QUEUE+1,list.length+18)));const checked=await Promise.all(requested.map(loadMeta));const usable=checked.filter(x=>x.valid).map(x=>x.w);sourceWorks.splice(0,sourceWorks.length,...usable);works.splice(0,works.length,...usable);const items=makeSequence(usable,Math.min(WORKS_RENDER_COUNT,Math.max(WORKS_QUEUE+1,usable.length+18)));const metas=new Map(checked.filter(x=>x.valid).map(x=>[x.w.id,x]));const line=railLines()[0];railLines().slice(1).forEach(x=>x.replaceChildren());line.replaceChildren();const h=Math.max(300,$('#worksRow').clientHeight||700);const mid=Math.ceil(items.length/2);const first=items.slice(0,mid),second=items.slice(mid);let right=placeCards(first,metas,h,rail.segment,0);right=placeCards(second,metas,h,rail.segment,right+80);rail.trackWidth=Math.max(right+40,window.innerWidth*8);line.style.setProperty('--works-track-width',rail.trackWidth+'px');rail.x=Math.min(0,-(rail.trackWidth-window.innerWidth)/2);rail.ready=true;paintRail();setupWorkEdgeObserver();document.querySelector('.works .section-head span:last-child').textContent=usable.length+' · ORGANIC WORKS'}
-$('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;drag={x:e.clientX,moved:false};$('#worksRow').classList.add('dragging');e.preventDefault()};document.addEventListener('mousemove',e=>{if(!drag)return;const dx=e.clientX-drag.x;if(Math.abs(dx)>2)drag.moved=true;scheduleRailMove(dx);drag.x=e.clientX},{passive:true});document.addEventListener('mouseup',()=>{if(!drag)return;const moved=drag.moved;drag=null;$('#worksRow').classList.remove('dragging');if(moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,80)}});$('#worksRow').addEventListener('touchstart',e=>{if(e.touches.length)touchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(!touchRail||!e.touches.length)return;const dx=e.touches[0].clientX-touchRail.x;if(Math.abs(dx)>3)touchRail.moved=true;if(touchRail.moved){e.preventDefault();scheduleRailMove(dx);touchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(touchRail?.moved){$('#worksRow').dataset.suppress='1';setTimeout(()=>delete $('#worksRow').dataset.suppress,100)}touchRail=null});$('#worksRow').addEventListener('click',e=>{if($('#worksRow').dataset.suppress){e.preventDefault();e.stopPropagation()}},true);(async()=>{try{await buildRail(await loadArtistWorks())}catch(error){console.error('WORKS:',error);$('#worksRow').innerHTML='<div class=placeholder>WORKS COULD NOT BE LOADED</div>'}})();
+const WORKS_RENDER_COUNT=60;
+const REPO_THUMB_FILES=["/images/works/KANASTA-artists-folders/Ada Rosa/thumbs/10%/Ada Rosa_Jungle_tusz i węgiel na papierze_110x140_2026.png","/images/works/KANASTA-artists-folders/Ada Rosa/thumbs/10%/Ada Rosa_Qń_węgiel na papierze_110x140_2026.png","/images/works/KANASTA-artists-folders/Ada Rosa/thumbs/60%/Ada Rosa_Frędzle1_tkanina_1-1_2026.png","/images/works/KANASTA-artists-folders/Ada Rosa/thumbs/60%/Ada Rosa_Frędzle2_tkanina_1-1_2026.png","/images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/10%/Adam Pażucha_Dz 10, 11-16_gips_100x70x5 cm_2025.jpg","/images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/10%/Adam Pażucha_Ponticello_drewno lipowe i żyłka_21x10x11 cm (bez strun)_2026.jpg","/images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%/Adam Pażucha_Autoportret_olej na płótnie_30x40 cm_2026.jpeg","/images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%/Adam Pażucha_Pisklę nr 1_gips_20x20x10 cm_2026.jpg","/images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%/Adam Pażucha_Pisklę nr 2_gips_20x10x8 cm_2026.jpg","/images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%/Adam Pażucha_Pisklę nr 3_gips_28x10x4 cm_2026.jpg","/images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/30%/Adam Pażucha_Trójka_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg","/images/works/KANASTA-artists-folders/Adam Pażucha/thumbs/60%/Adam Pażucha_Bezgłowy_węgiel, kreda, ołówek na papierze_100x140 cm_2025.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_Kc_akryl i brokat na płótnie_40x30 cm_2026.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_Kiosk_akryl na płótnie_80x60cm_2025.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_Stragan w błękitach_akryl na płótnie_60x80 cm_2024.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_Stragan_akryl na płótnie_140x100 cm_2025.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_koza_szkic_2025.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/10%/Aleksandra Sikora_smacznej kawusi_akryl i brokat na płótnie_40x40_2023.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/30%/Aleksandra Sikora_dwa bułki_serigrafia_30x42_2026.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/30%/Aleksandra Sikora_mus_szkic_cienkopis_2024.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/60%/Aleksandra Sikora_Dobre pomarańczowe_serigrafia_30x42_2026.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/60%/Aleksandra Sikora_Ogród_wklęsłodruk_30x21_2026.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/60%/Aleksandra Sikora_kury_szkic_2025.jpg","/images/works/KANASTA-artists-folders/Aleksandra Sikora/thumbs/60%/Aleksandra Sikora_pixeloza_akryl na płótnie_60x60_2025.jpg","/images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/30%/Amelia Korczak_ODRABIANIE LEKCJI_akryl na płótnie_60x70 cm_2025.jpg","/images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/30%/Amelia Korczak_TWORZENIE_akryl na płótnie_100x70 cm_2025.jpg","/images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/30%/Amelia Korczak_UBIERANIE SIĘ_akryl na płótnie_50x70 cm_2025.jpg","/images/works/KANASTA-artists-folders/Amelia Korczak/thumbs/60%/Amelia Korczak_HORYZONT_linoryt_43x32 cm_2025.jpg","/images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/10%/Anna Esnekier_ Zmierzch_olej i akryl na płótnie_100x100 cm_2026.png","/images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/10%/Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026.jpg","/images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/10%/Anna Esnekier_ bez tytułu_ olej i akryl na płótnie_90x120 cm_2026_(2).jpg","/images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/30%/Anna Esnekier_Pozostałości_ olej na płótnie_50x65 cm_2026.png","/images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/30%/Anna Esnekier_U źródła_ olej na płótnie_60x80 cm.jpg","/images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/60%/Anna Esnekier_Siódma komnata_ olej i akryl na płótnie_90x80 cm_2026.jpg","/images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/60%/Anna Esnekier_Trójka w błękicie_ olej i akryl na płótnie_100x80 cm_2026.PNG","/images/works/KANASTA-artists-folders/Anna Esnekier/thumbs/60%/Anna Esnekier_W Progu_olej i akryl na płótnie_60x90 cm_2026.jpg","/images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/10%/Antoni Augustyniak_Postać_Węgiel na papierze_210x140 cm_2026.png","/images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/10%/Antoni Augustyniak_Usterka_offset_100x60 cm_2025-2026.jpg","/images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/30%/Antoni Augustyniak_Astygmatyzm_glina_100x60 cm_2026.png","/images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/30%/Antoni Augustyniak_Autoportret_Węgiel na papierze_100x210 cm_2026.png","/images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/30%/Antoni Augustyniak_Portret_gips_50x45 cm_2026.png","/images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/30%/Antoni Augustyniak_portret Adasia Pażuchy_Olej na płótnie_13x18 cm_2025.png","/images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/60%/Antoni Augustyniak_Lampa_asamblaż_60x40 cm_2026.png","/images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/60%/Antoni Augustyniak_Pies_Węgiel i pigment na papierze_210x210 cm_2025-2026.png","/images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/60%/Antoni Augustyniak_Postać w formacie_Węgiel na papierze_100x210 cm_2026.png","/images/works/KANASTA-artists-folders/Antoni Augustyniak/thumbs/60%/Antoni Augustyniak_Wąż_asamblaż_200x2.5 cm_2026.png","/images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/10%/Franek Ciastoń_Bez tytułu_olej napłótnie_50x60 cm_2025.jpg","/images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/10%/Franek Ciastoń_Beztytułu_wklęłodruk_60x50 cm_2025.jpg","/images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/10%/Franek Ciastoń_Pejzaż_Olej na desce_24x32 cm_2023.jpg","/images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/30%/Franek Ciastoń_Pejzaż_Olej_100x70 cm_2023.jpg","/images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/30%/Franek Ciastoń_Portret_Olej na płótnie_24x18 cm_2026.jpg","/images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/60%/Franek Ciastoń_Bez tytułu_olej na płótnie_60x80 cm_2025.jpg","/images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/60%/Franek Ciastoń_Kucyk_Olej na płótnie_50x60 cm_2026.jpg","/images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/60%/Franek Ciastoń_Pejzaż_Olej_20x32 cm_2023.jpg","/images/works/KANASTA-artists-folders/Franek Ciastoń/thumbs/60%/Franek Ciastoń_Piesek_Alintaglio_100x70 cm_2026.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%/Gabriela Bossowska_Autoportret lewy_Długopis na papierze_21x13 cm_2025.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%/Gabriela Bossowska_Autoportret prawy_Długopis na papierze_21x13 cm_2025.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%/Gabriela Bossowska_Tańczące drzewa_pastele suche na papierze pastelowym_21x29,7 cm_2024.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%/Gabriela Bossowska_naklejki_tusz na papierze_5x5 cm_2026.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/10%/Gabriela Bossowska_szkice_tusz na papierze_20x15 cm_2026.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_Julia_Akryl na płótnie_50x30 cm_2025.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_Piotr i kozy Kluszkowce_Akryl na płótnie_100x70 cm_2025.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_Studium postaci_ołówek na papierze_42x29,7 cm_2025.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_szkice III_tusz na papierze_20x15 cm_2026.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_szkice II_tusz na papierze_20x15 cm_2026.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/30%/Gabriela Bossowska_szkice IV_tusz na papierze_20x15 cm_2026.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/60%/Gabriela Bossowska_Cisza_Akryl na tekturze_100x70 cm_2024.png","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/60%/Gabriela Bossowska_Studium kociej czaszki_węgiel na papierze_32x29,7 cm_2023.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/60%/Gabriela Bossowska_Studium postaci_olej na płycie hdf_80x80 cm_2026.jpg","/images/works/KANASTA-artists-folders/Gabriela Bossowska/thumbs/60%/Gabriela Bossowska_Xawer_Akryl na płótnie_90x50 cm_2025.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/10%/Marta Mendelejeva_MARTWA NATURA 3_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/30%/Marta Mendelejeva_DŁUŻEW 2_OLEJ NA PŁOTNIE_60x60 cm_2026.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/30%/Marta Mendelejeva_IGŁA_LINORYT_25x17 cm_2026.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/30%/Marta Mendelejeva_LAS_OLEJ NA PŁOTNIE_120x120 cm_2025.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/30%/Marta Mendelejeva_MARTWA NATURA 1_AKWARELE NA PAPIERZE_100x70 cm_2024.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_BEZ TYTUŁU_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_DŁUŻEW 1_olej na płótnie_120x40 cm_2026.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_LATO_AKWARELE_40x40 cm_2025.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_MARTWA NATURA 4_AKWARELE NA PAPIERZE_100x70 cm_2025.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_Passeggiata del XXI secolo_AKWAFORTA AKWATINTA_30x25 cm_2026.jpg","/images/works/KANASTA-artists-folders/Marta Mendelejeva/thumbs/60%/Marta Mendelejeva_SLOPE POINT_SUCHA IGŁA_16x20 cm_2026.jpg","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_,multliplikacja_mix media_100x70 cm_2024.png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Martwa natura z czaszkami_olej na płótnie_50x40 cm_2025.jpg","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkic_pisak akrylowy kredka_21x15 cm_2024.png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkic_tusz na papierze _15x10 cm_2023.png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(1).png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(2).png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/10%/Patrycja Boruch_Szkicownik_mix media_100x21_2024_(3).png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_,szkic_sangwina gwasz na papierze_7x15 cm_2025.jpg","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_Nidzica_pastel na papierze 21x15 cm_2022.png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_akt na rzeźbie_węgiel pastele suche akryl na papierze_150x75 cm_2025.jpg","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_akt ze szkieletem_suche pastele na papierze_150x100 cm_2025.jpg","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_autoportret z granatem_gwasz na płótnie_30x30 cm_2023.png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/30%/Patrycja Boruch_szkic_sangwina na papierze_10x10 cm_2025.jpg","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_Martwa natura z granatem_olej na płótnie_50x40 cm_2024.png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_Pejzaż górski_pastela na papierze_21x15 cm_2023.png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_Pejzaż_pastel na papierze_21x15 cm_2023.png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_akt w martwej naturze_sangwina pastele suche gwasz na papierze_150x100 cm_2025.jpg","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_autoportret z czarnymi tulipanami_olej na płótnie_80x80 cm_2026.jpg","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_zegary_olej na płótnie _50x50 cm_2023.png","/images/works/KANASTA-artists-folders/Patrycja Boruch/thumbs/60%/Patrycja Boruch_zielono czerwona martwa natura_olej na płótnie_80x80 cm_2025.jpg"];
+const rail={x:0,trackWidth:0,ready:false,frame:0,pending:0,extending:false,segment:3600};
+function railLine(){return document.querySelector('#worksRow .works-line')}
+function safePath(path){return String(path||'').replaceAll('\\','/').split('/').filter(Boolean).map(encodeURIComponent).join('/')}
+function nameParts(path){const file=decodeURIComponent(path.split('/').pop()||'');const artist=decodeURIComponent(path.split('/')[3]||'');const stem=file.replace(/\.[^.]+$/,'');const bits=stem.split('_');const artistName=artist||bits.shift()||'KANASTA';const title=(bits[0]||stem).trim()||'Bez tytułu';const dim=(stem.match(/(\d+(?:[.,]\d+)?)\s*[x×]\s*(\d+(?:[.,]\d+)?)(?:\s*[x×]\s*(\d+(?:[.,]\d+)?))?\s*cm?/i)||[]);return {artist:artistName,title,dimensions:dim[0]||'',filename:file}}
+function makeWork(path,i){const raw=String(path).replace(/^\//,'');const parts=raw.split('/');const tier=parts[5]||'30%';const mode=(tier==='60%'||tier==='30%'||tier==='10%')?tier:'30%';const base=parts.slice(0,4).join('/');const file=parts.slice(6).join('/');const info=nameParts(raw);const mk=m=>safePath(`${base}/${m}/${mode}/${file}`);return {id:`repo-${i}-${raw}`,artist:info.artist,title:info.title,dimensions:info.dimensions,technique:'',year:'',tier:mode,weight:{'60%':60,'30%':30,'10%':10}[mode]||30,thumb:safePath(raw),view:mk('view'),full:mk('full'),_thumbCandidates:[safePath(raw)],_viewCandidates:[mk('view'),safePath(raw)],_fullCandidates:[mk('full'),mk('view'),safePath(raw)]}}
+function weightedPick(list){let total=list.reduce((n,w)=>n+(w.weight||0),0),r=Math.random()*total;for(const w of list){r-=w.weight||0;if(r<=0)return w}return list[list.length-1]}
+function makeSequence(list,count,avoid=[]){if(!list.length)return [];const out=[],recent=avoid.slice(-WORKS_QUEUE);for(let n=0;n<count;n++){let candidates=list.filter(w=>!recent.includes(w.id));if(!candidates.length){recent.splice(0,Math.max(1,Math.floor(recent.length/2)));candidates=list.filter(w=>!recent.includes(w.id));}const w=weightedPick(candidates);out.push(w);recent.push(w.id);if(recent.length>WORKS_QUEUE)recent.shift()}return out}
+function artworkDimensions(w){const s=[w.filename,w.title,w.dimensions].join(' ');const ms=[...s.matchAll(/(\d+(?:[.,]\d+)?)\s*[x×]\s*(\d+(?:[.,]\d+)?)/gi)];if(!ms.length)return null;const a=+ms.at(-1)[1].replace(',','.'),b=+ms.at(-1)[2].replace(',','.');return a>0&&b>0?{a,b,area:a*b}:null}
+function overlaps(a,b,g=12){return !(a.x+a.w+g<=b.x||b.x+b.w+g<=a.x||a.y+a.h+g<=b.y||b.y+b.h+g<=a.y)}
+function cardSize(w,stats,i){const d=artworkDimensions(w),t=d&&stats.max>stats.min?Math.max(0,Math.min(1,(Math.log(d.area)-stats.min)/(stats.max-stats.min))):.5;const wobble=((i*37)%17-8)/100;const h=Math.round(Math.max(285,Math.min(500,285+(t+wobble)*215)));const ratio=d?Math.max(.52,Math.min(2.1,d.a/d.b)):1.15;return {w:Math.min(700,Math.max(215,Math.round(h*ratio))),h}}
+function placeBatch(items,offsetX,height){const line=railLine(),placed=[...line.querySelectorAll('.work-card')].map(c=>({x:+c.style.getPropertyValue('--card-x').replace('px','')||0,y:+c.style.getPropertyValue('--card-y').replace('px','')||0,w:+c.style.getPropertyValue('--card-w').replace('px','')||0,h:+c.style.getPropertyValue('--card-h').replace('px','')||0}));const ds=items.map(artworkDimensions).filter(Boolean).map(d=>Math.log(d.area));const stats={min:ds.length?Math.min(...ds):0,max:ds.length?Math.max(...ds):1};let maxX=offsetX;
+ items.forEach((w,i)=>{const sz=cardSize(w,stats,i),seed=(i*7919+(w.id.length*97))%10000;const col=offsetX+40+(i%12)*300+((seed%91)-45);const maxY=Math.max(90,height-sz.h-55);let found=null;for(let tries=0;tries<140;tries++){const row=(i%4===0||i%4===1)?(65+(seed+tries*29)%Math.max(100,Math.floor(maxY*.42))):(Math.floor(maxY*.52)+(seed+tries*47)%Math.max(80,Math.floor(maxY*.42)));const x=Math.max(offsetX+18,col+((tries*41)%181)-90),y=Math.max(48,Math.min(maxY,row));const c={x,y,w:sz.w,h:sz.h};if(placed.every(p=>!overlaps(c,p,10))){found=c;break}}
+ if(!found){found={x:col,y:48+(seed%Math.max(80,Math.floor(maxY))),w:sz.w,h:sz.h};while(placed.some(p=>overlaps(found,p,8)))found.x+=24}placed.push(found);maxX=Math.max(maxX,found.x+found.w+34);const card=document.createElement('figure');card.className='work-card';card.style.setProperty('--card-x',found.x+'px');card.style.setProperty('--card-y',found.y+'px');card.style.setProperty('--card-w',found.w+'px');card.style.setProperty('--card-h',found.h+'px');card.dataset.workId=w.id;const img=document.createElement('img');img.alt=`${w.title} — ${w.artist}`;img.loading='lazy';img.decoding='async';img.draggable=false;useImageCandidates(img,imageCandidates(w,'thumb'));card.append(img);card.addEventListener('click',()=>{if(!document.querySelector('#worksRow').dataset.suppress){const k=works.indexOf(w);if(k>=0)openWork(k)}});line.append(card)});return Math.max(maxX,offsetX+rail.segment)}
+function updateEdge(){const v=document.querySelector('#worksRow'),vr=v?.getBoundingClientRect();if(!vr)return;v.querySelectorAll('.work-card').forEach(c=>{const r=c.getBoundingClientRect(),near=Math.min(r.right-vr.left,vr.right-r.left),visible=r.right>vr.left&&r.left<vr.right;let t=visible?Math.max(0,Math.min(1,near/110)):0;t=t*t*(3-2*t);c.style.setProperty('opacity',String(visible?.35+.65*t:0),'important');c.style.setProperty('transform',`scale(${visible?.82+.18*t:.82})`,'important')})}
+function paint(){const l=railLine();if(l)l.style.transform=`translate3d(${rail.x}px,0,0)`;updateEdge()}
+async function extendRail(side){if(rail.extending||!rail.ready)return;rail.extending=true;try{const items=makeSequence(sourceWorks,Math.min(28,sourceWorks.length),[...railLine().querySelectorAll('.work-card')].slice(-WORKS_QUEUE).map(c=>c.dataset.workId));if(side==='left'){railLine().querySelectorAll('.work-card').forEach(c=>c.style.setProperty('--card-x',(parseFloat(c.style.getPropertyValue('--card-x'))+rail.segment)+'px'));placeBatch(items,0,$('#worksRow').clientHeight||850);rail.x-=rail.segment}else placeBatch(items,rail.trackWidth,$('#worksRow').clientHeight||850);rail.trackWidth+=rail.segment;railLine().style.setProperty('--works-track-width',rail.trackWidth+'px');paint()}finally{rail.extending=false}}
+function maybeExtend(){if(!rail.ready)return;const v=$('#worksRow').clientWidth;if(rail.x>-700)extendRail('left');if(rail.x< v-rail.trackWidth+700)extendRail('right')}
+function moveRail(dx){if(!rail.ready)return;const v=$('#worksRow').clientWidth;rail.x=Math.max(v-rail.trackWidth,Math.min(0,rail.x+dx));paint();maybeExtend()}
+function scheduleMove(dx){rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
+function loadRepoWorks(){return REPO_THUMB_FILES.map(makeWork)}
+async function buildRail(){const list=loadRepoWorks();sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);const line=railLine();document.querySelectorAll('#worksRow .works-line').forEach((x,i)=>{if(i)x.remove()});line.replaceChildren();const h=Math.max(700,$('#worksRow').clientHeight||850);const items=makeSequence(list,WORKS_RENDER_COUNT);rail.trackWidth=placeBatch(items,0,h)+rail.segment;line.style.setProperty('--works-track-width',rail.trackWidth+'px');rail.x=Math.min(-120,-(rail.trackWidth-innerWidth)/2);rail.ready=true;paint();$('#works .section-head span:last-child').textContent=list.length+' · ORGANIC WORKS'}
+let worksDrag=null,worksTouchRail=null;$('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;worksDrag={x:e.clientX,moved:false};$('#worksRow').classList.add('dragging');e.preventDefault()};document.addEventListener('mousemove',e=>{if(!worksDrag)return;const dx=e.clientX-worksDrag.x;if(Math.abs(dx)>2)worksDrag.moved=true;scheduleMove(dx);worksDrag.x=e.clientX},{passive:true});document.addEventListener('mouseup',()=>{if(!worksDrag)return;const moved=worksDrag.moved;worksDrag=null;$('#worksRow').classList.remove('dragging');if(moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,90)}});$('#worksRow').addEventListener('touchstart',e=>{if(e.touches.length)worksTouchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(!worksTouchRail||!e.touches.length)return;const dx=e.touches[0].clientX-worksTouchRail.x;if(Math.abs(dx)>3)worksTouchRail.moved=true;if(worksTouchRail.moved){e.preventDefault();scheduleMove(dx);worksTouchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(worksTouchRail?.moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,100)}worksTouchRail=null});window.addEventListener('resize',updateEdge);(async()=>{try{await buildRail()}catch(e){console.error('WORKS rebuild',e);$('#worksRow').innerHTML='<div class="placeholder">WORKS COULD NOT BE LOADED</div>'}})();
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
 let cursorFrame=0,cursorClone=null,cursorCloneTarget=null;
 function cursorTarget(){const el=document.elementFromPoint(mouse.x,mouse.y);return el&&el.closest('button,a,h1,h2,h3,.subtitle,.artist-name,.section-head,.section-head span,.viewer-caption h2,.viewer-caption p,.viewer-caption small,.top button,.viewerLogo,.section-head span,.section-head h2,.artist-name,.subtitle,.placeholder,.about p,.contact,.contact *,.bio button,.menu-list a,.circle,.artist-photo');}
