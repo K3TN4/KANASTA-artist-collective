@@ -324,17 +324,18 @@ function weightedPick(list){
 function makeSequence(list,count){const pool=list.slice(),recent=[],out=[];for(let n=0;n<count;n++){let available=pool.filter(w=>!recent.includes(w.id));if(!available.length){available=list.filter(w=>!recent.includes(w.id));if(!available.length){recent.splice(0,recent.length-1);available=list.filter(w=>!recent.includes(w.id))}}const w=weightedPick(available);out.push(w);recent.push(w.id);if(recent.length>WORKS_QUEUE)recent.shift()}return out}
 function overlaps(a,b,gap){return !(a.x+a.w+gap<=b.x||b.x+b.w+gap<=a.x||a.y+a.h+gap<=b.y||b.y+b.h+gap<=a.y)}
 function placeCards(items,meta,height,segmentWidth,offsetX){
- const placed=[],gap=6;
+  const placed=[],gap=4;
  for(let i=0;i<items.length;i++){
   const m=meta.get(items[i].id),seed=(i*7919+(items[i].id||'').length*97)%1000;
-  const h=Math.max(330,Math.min(660,Math.round(330+(seed/999)*330)));
-  const w=Math.min(920,Math.max(250,Math.round(m.ratio*h)));
+  const h=Math.max(250,Math.min(500,Math.round(250+(seed/999)*250)));
+  const w=Math.min(700,Math.max(190,Math.round(m.ratio*h)));
   const targetX=offsetX+24+(i/Math.max(1,items.length-1))*(segmentWidth-260);
   let found=null;
   for(let tries=0;tries<4000;tries++){
    const jitter=((seed+tries*53)%401)-200;
    const x=Math.max(offsetX+8,targetX+jitter);
-   const y=10+((seed+tries*37)%(Math.max(14,height-h-20)));
+   const verticalRoom=Math.max(20,height-h-70);
+   const y=35+((seed*17+tries*53)%(verticalRoom));
    const candidate={x,y,w,h};
    if(placed.every(p=>!overlaps(candidate,p,gap))){found=candidate;break}
   }
