@@ -246,6 +246,13 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;opacity:1!important}
 #worksRow.dragging{cursor:grabbing!important}
 @media(max-width:700px){#worksRow{height:clamp(680px,175vw,980px)!important}.section.works{padding-left:10px!important;padding-right:10px!important}}
+
+/* WORKS LOCAL INVERSION: black header field and cursor inversion only here */
+#works .section-head{position:relative;width:100vw;margin-left:calc(50% - 50vw);padding:24px var(--g);background:#000;color:#fff}
+#works .section-head h2,#works .section-head span{color:#fff}
+#cursor.works-bar-cursor{background:#fff!important}
+#cursor.works-title-cursor{background:#000!important}
+#cursorText.works-title-cursor .clone{color:#000!important;-webkit-text-fill-color:#000!important}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -351,7 +358,10 @@ function renderCursor(){
  cursor.style.display='block';mouse.px+=(mouse.x-mouse.px)*.32;mouse.py+=(mouse.y-mouse.py)*.32;mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
  const speed=Math.hypot(mouse.vx,mouse.vy),pulse=1+Math.min(.10,speed*.012),tilt=Math.max(-3,Math.min(3,mouse.vx*.025));
  cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(-50%,-50%) scale(${pulse}) rotate(${tilt}deg)`;
- syncCursorClone(cursorTarget());document.getElementById('cursorText').style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
+ const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2');
+ cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle);cursor.classList.toggle('works-title-cursor',!!worksTitle);
+ const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);
+ syncCursorClone(cursorTarget());cursorText.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
 }
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});renderCursor();
 
