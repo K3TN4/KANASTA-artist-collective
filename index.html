@@ -341,11 +341,10 @@ function placeCards(items,meta,height,segmentWidth,offsetX){
  const minArea=known.length?Math.min(...known):0,maxArea=known.length?Math.max(...known):1;
  for(let i=0;i<items.length;i++){
   const m=meta.get(items[i].id),seed=(i*7919+(items[i].id||'').length*97)%1000;
-  const small=!!items[i]._small;
   const d=dimensions[i],dimensionT=d&&maxArea>minArea?Math.max(0,Math.min(1,(Math.log(d.area)-minArea)/(maxArea-minArea))):.5;
   const jitter=(seed/999-.5)*.12, sizeT=Math.max(0,Math.min(1,dimensionT+jitter));
-  const h=small?Math.max(185,Math.min(300,Math.round(185+sizeT*115))):Math.max(285,Math.min(500,Math.round(285+sizeT*215)));
-  const w=small?Math.min(430,Math.max(145,Math.round(m.ratio*h))):Math.min(700,Math.max(215,Math.round(m.ratio*h)));
+  const h=Math.max(285,Math.min(500,Math.round(285+sizeT*215)));
+  const w=Math.min(700,Math.max(215,Math.round(m.ratio*h)));
   const targetX=offsetX+24+(i/Math.max(1,items.length-1))*(segmentWidth-260);
   let found=null;
   for(let tries=0;tries<4000;tries++){
@@ -372,7 +371,7 @@ async function extendRail(side){
  rail.extending=true;
  try{
   const count=Math.min(58,Math.max(42,Math.ceil(sourceWorks.length*.48)));
-  const items=makeSequence(sourceWorks,count).map((w,i)=>({...w,id:`${w.id}|generated-${side}-${Date.now()}-${i}`,_small:true,_sourceId:w.id}));
+  const items=makeSequence(sourceWorks,count).map((w,i)=>({...w,id:`${w.id}|generated-${side}-${Date.now()}-${i}`,_sourceId:w.id}));
   const checked=await Promise.all(items.map(loadMeta));
   const usable=checked.filter(x=>x.valid);
   if(!usable.length)return;
