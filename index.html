@@ -294,7 +294,7 @@ $('#viewerImage').addEventListener('touchend',e=>{if(e.touches.length<2)pinch.ac
 let drag=null,touchRail=null;
 const sourceWorks=[];
 const WORKS_QUEUE=60;
-const WORKS_RENDER_COUNT=200;
+const WORKS_RENDER_COUNT=320;
 const rail={x:0,trackWidth:0,ready:false,frame:0,pending:0};
 function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
 function paintRail(){const line=railLines()[0];if(line)line.style.transform=`translate3d(${rail.x}px,0,0)`;updateWorkEdgeEffects()}
@@ -323,7 +323,31 @@ function weightedPick(list){
 }
 function makeSequence(list,count){const pool=list.slice(),recent=[],out=[];for(let n=0;n<count;n++){let available=pool.filter(w=>!recent.includes(w.id));if(!available.length){available=list.filter(w=>!recent.includes(w.id));if(!available.length){recent.splice(0,recent.length-1);available=list.filter(w=>!recent.includes(w.id))}}const w=weightedPick(available);out.push(w);recent.push(w.id);if(recent.length>WORKS_QUEUE)recent.shift()}return out}
 function overlaps(a,b,gap){return !(a.x+a.w+gap<=b.x||b.x+b.w+gap<=a.x||a.y+a.h+gap<=b.y||b.y+b.h+gap<=a.y)}
-function placeCards(items,meta,height,segmentWidth,offsetX){const placed=[],gap=10;let cursor=offsetX+30;for(let i=0;i<items.length;i++){const m=meta.get(items[i].id),seed=(i*7919+(items[i].id||'').length*97)%1000;const h=Math.max(225,Math.min(420,Math.round(225+(seed/999)*195)));const w=Math.min(560,Math.max(170,Math.round(m.ratio*h)));let found=null;for(let tries=0;tries<3000;tries++){const step=Math.max(5,Math.round(gap/2));const x=cursor+((tries%16)*step);const y=12+((seed+tries*37)%(Math.max(14,height-h-24)));const candidate={x,y,w,h};if(placed.every(p=>!overlaps(candidate,p,gap))){found=candidate;break}}if(!found){found={x:cursor,y:18,w,h};while(placed.some(p=>overlaps(found,p,gap)))found.x+=Math.max(gap,found.w+gap)}placed.push(found);cursor=Math.max(cursor,found.x+found.w+gap);const card=document.createElement('figure');card.className='work-card';card.dataset.file=m.w.thumb;card.dataset.workId=items[i].id;card.style.setProperty('--card-x',found.x+'px');card.style.setProperty('--card-y',found.y+'px');card.style.setProperty('--card-w',found.w+'px');card.style.setProperty('--card-h',found.h+'px');const img=document.createElement('img');img.src=m.w.thumb;img.alt=`${m.w.title} — ${m.w.artist}`;img.draggable=false;img.decoding='async';card.append(img);card.onclick=()=>{if(!drag||!drag.moved){const k=works.indexOf(items[i]);if(k>=0)openWork(k)}};document.querySelector('#worksRow .works-line').append(card)}return Math.max(cursor,offsetX+segmentWidth)}
+function placeCards(items,meta,height,segmentWidth,offsetX){
+ const placed=[],gap=6;
+ for(let i=0;i<items.length;i++){
+  const m=meta.get(items[i].id),seed=(i*7919+(items[i].id||'').length*97)%1000;
+  const h=Math.max(165,Math.min(330,Math.round(165+(seed/999)*165)));
+  const w=Math.min(460,Math.max(125,Math.round(m.ratio*h)));
+  const targetX=offsetX+24+(i/Math.max(1,items.length-1))*(segmentWidth-260);
+  let found=null;
+  for(let tries=0;tries<4000;tries++){
+   const jitter=((seed+tries*53)%401)-200;
+   const x=Math.max(offsetX+8,targetX+jitter);
+   const y=10+((seed+tries*37)%(Math.max(14,height-h-20)));
+   const candidate={x,y,w,h};
+   if(placed.every(p=>!overlaps(candidate,p,gap))){found=candidate;break}
+  }
+  if(!found){found={x:targetX,y:18,w,h};while(placed.some(p=>overlaps(found,p,gap)))found.x+=Math.max(gap,found.w/3)}
+  placed.push(found);
+  const card=document.createElement('figure');card.className='work-card';card.dataset.file=m.w.thumb;card.dataset.workId=items[i].id;
+  card.style.setProperty('--card-x',found.x+'px');card.style.setProperty('--card-y',found.y+'px');card.style.setProperty('--card-w',found.w+'px');card.style.setProperty('--card-h',found.h+'px');
+  const img=document.createElement('img');img.src=m.w.thumb;img.alt=`${m.w.title} — ${m.w.artist}`;img.draggable=false;img.decoding='async';
+  img.onerror=()=>{if(img.src!==m.w.view)img.src=m.w.view};card.append(img);
+  card.onclick=()=>{if(!drag||!drag.moved){const k=works.indexOf(items[i]);if(k>=0)openWork(k)}};document.querySelector('#worksRow .works-line').append(card)
+ }
+ return Math.max(offsetX+segmentWidth, ...placed.map(p=>p.x+p.w+20));
+}
 function moveRail(dx){if(!rail.ready)return;const viewport=$('#worksRow').clientWidth;rail.x=Math.max(viewport-rail.trackWidth,Math.min(0,rail.x+dx));paintRail()}
 function scheduleRailMove(dx){if(!rail.ready)return;rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
 async function loadArtistWorks(){
@@ -332,11 +356,20 @@ async function loadArtistWorks(){
  const raw=await r.json();
  const data=Array.isArray(raw)?raw:(Array.isArray(raw.works)?raw.works:[]);
  if(!data.length)throw Error('works.json jest puste');
- const enc=p=>String(p||'').replaceAll('\\\\','/').replace(/^.*?images\/works\//,'images/works/').replace(/^\/+/,'').split('/').filter(Boolean).map(encodeURIComponent).join('/');
+ const enc=p=>{
+  if(p&&typeof p==='object')p=p.path||p.url||p.src||p.file||p.filename||'';
+  let v=String(p||'').replaceAll('\\\\','/');
+  const marker=v.toLowerCase().indexOf('images/works/');
+  if(marker>=0)v=v.slice(marker);
+  return v.replace(/^\/+/,'').split('/').filter(Boolean).map(encodeURIComponent).join('/');
+ };
  return data.map((w,i)=>{
-  const thumb=w.thumb||w.thumbnail||w.thumbs;
-  const view=w.view||w.preview||w.medium||thumb;
-  const full=w.full||w.original||view||thumb;
+  const thumbs=w.thumb||w.thumbnail||w.thumbs||w.images?.thumb||w.images?.thumbs;
+  const views=w.view||w.preview||w.medium||w.images?.view||w.images?.preview||thumbs;
+  const fulls=w.full||w.original||w.images?.full||views||thumbs;
+  const thumb=typeof thumbs==='object'?(thumbs['60%']||thumbs['30%']||thumbs['10%']||thumbs.default):thumbs;
+  const view=typeof views==='object'?(views['60%']||views['30%']||views['10%']||views.default):views;
+  const full=typeof fulls==='object'?(fulls['60%']||fulls['30%']||fulls['10%']||fulls.default):fulls;
   const artist=w.artist||w.author||'';
   const path=String(thumb||'');
   const tierMatch=path.match(/(?:^|[\\/])(60|30|10)%?(?:[\\/]|$)/);
