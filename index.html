@@ -299,7 +299,7 @@ const WORKS_QUEUE=60;
 // GitHub Pages: render a dense but bounded first batch; lazy images prevent
 // hundreds of simultaneous requests from triggering the Pages rate limiter.
 const WORKS_RENDER_COUNT=180;
-const rail={x:0,trackWidth:0,ready:false,frame:0,pending:0};
+const rail={x:0,trackWidth:0,ready:false,frame:0,pending:0,extending:false,segment:16000};
 function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
 function paintRail(){const line=railLines()[0];if(line)line.style.transform=`translate3d(${rail.x}px,0,0)`;updateWorkEdgeEffects()}
 function updateWorkEdgeEffects(){
@@ -353,7 +353,32 @@ function placeCards(items,meta,height,segmentWidth,offsetX){
  }
  return Math.max(offsetX+segmentWidth, ...placed.map(p=>p.x+p.w+20));
 }
-function moveRail(dx){if(!rail.ready)return;const viewport=$('#worksRow').clientWidth;rail.x=Math.max(viewport-rail.trackWidth,Math.min(0,rail.x+dx));paintRail()}
+function shiftCards(dx){document.querySelectorAll('#worksRow .work-card').forEach(card=>{const x=parseFloat(card.style.getPropertyValue('--card-x'))||0;card.style.setProperty('--card-x',(x+dx)+'px')})}
+async function extendRail(side){
+ if(!rail.ready||rail.extending||!sourceWorks.length)return;
+ rail.extending=true;
+ try{
+  const count=Math.min(24,Math.max(12,sourceWorks.length));
+  const items=makeSequence(sourceWorks,count);
+  const checked=await Promise.all(items.map(loadMeta));
+  const usable=checked.filter(x=>x.valid);
+  if(!usable.length)return;
+  const metas=new Map(usable.map(x=>[x.w.id,x]));
+  const line=railLines()[0];
+  if(side==='left'){
+   shiftCards(rail.segment);
+   placeCards(usable.map(x=>x.w),metas,Math.max(300,$('#worksRow').clientHeight||700),rail.segment,-rail.segment);
+   rail.x-=rail.segment;
+  }else{
+   placeCards(usable.map(x=>x.w),metas,Math.max(300,$('#worksRow').clientHeight||700),rail.segment,rail.trackWidth);
+  }
+  rail.trackWidth+=rail.segment;
+  line.style.setProperty('--works-track-width',rail.trackWidth+'px');
+  paintRail();
+ }finally{rail.extending=false}
+}
+function maybeExtendRail(){const viewport=$('#worksRow');if(!viewport||!rail.ready)return;const nearLeft=rail.x>-700;const nearRight=rail.x<viewport.clientWidth-rail.trackWidth+700;if(nearLeft)extendRail('left');else if(nearRight)extendRail('right')}
+function moveRail(dx){if(!rail.ready)return;const viewport=$('#worksRow').clientWidth;rail.x=Math.max(viewport-rail.trackWidth,Math.min(0,rail.x+dx));paintRail();maybeExtendRail()}
 function scheduleRailMove(dx){if(!rail.ready)return;rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
 async function loadArtistWorks(){
  const r=await fetch('images/works/works.json?rev=20260917',{cache:'no-store'});
