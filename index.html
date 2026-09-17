@@ -259,6 +259,18 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #cursor.works-art-cursor{width:1000px!important;height:1000px!important;border-radius:50%!important;background:#000!important;z-index:1!important}
 #cursorText.works-art-cursor{display:none!important}
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
+
+/* ARTISTS suspended letters: lightweight chain-and-spring interaction */
+#artists .section-head{position:relative;align-items:flex-end;min-height:clamp(190px,24vw,290px);margin-bottom:80px;overflow:visible}
+#artists .section-head h2{display:flex;align-items:flex-end;justify-content:center;gap:clamp(4px,1.1vw,18px);position:absolute;left:50%;bottom:0;transform:translateX(-50%);white-space:nowrap;overflow:visible}
+#artists .artist-letter{position:relative;display:inline-flex;align-items:flex-end;justify-content:center;padding-top:clamp(106px,13vw,170px);font:400 clamp(48px,8vw,110px)/.82 "Bakbak One",sans-serif;transform-origin:50% 0;will-change:transform;cursor:pointer;transition:color .25s ease}
+#artists .artist-letter:hover{color:var(--pink)}
+#artists .artist-chain{position:absolute;top:0;left:50%;height:clamp(102px,13vw,166px);width:8px;transform:translateX(-50%);display:flex;flex-direction:column;justify-content:space-between;align-items:center;pointer-events:none}
+#artists .artist-chain::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:#000;transform:translateX(-50%);opacity:.5}
+#artists .artist-dot{position:relative;z-index:1;width:clamp(3px,.34vw,5px);height:clamp(3px,.34vw,5px);border-radius:50%;background:#000;box-shadow:0 0 0 1px #fff}
+#artists .artist-letter[data-active="1"] .artist-dot{background:var(--pink)}
+@media(max-width:700px){#artists .section-head{min-height:clamp(160px,44vw,235px);margin-bottom:48px}#artists .section-head h2{gap:clamp(2px,1vw,7px)}#artists .artist-letter{padding-top:clamp(88px,25vw,130px);font-size:clamp(38px,12vw,72px)}#artists .artist-chain{height:clamp(84px,24vw,126px)}}
+@media(prefers-reduced-motion:reduce){#artists .artist-letter{transition:none!important}}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -276,6 +288,37 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 const artists=[['Patrycja Boruch','patrycja-boruch.jpg'],['Zuzanna Frankowska','zuzanna-frankowska.jpg'],['Amelia Korczak','amelia-korczak.jpg'],['Adam Pażucha','adam-pazucha.jpg'],['Antoni Augustyniak','antoni-augustyniak.jpg'],['Ada Rosa','ada-rosa.jpg'],['Anastazja Gierlak','anastazja-gierlak.jpg'],['Anna Esnekier','anna-esnekier.jpg'],['Gabriela Bossowska','gabriela-bossowska.jpg'],['Marta Mioduszewska','marta-mioduszewska.jpg'],['Nina Borowicz','nina-borowicz.jpg'],['Aleksandra Sikora','aleksandra-sikora.jpg'],['Marta Mendelejeva','marta-mendelejeva.jpg'],['Franek Ciastoń','franek-ciaston.jpg'],['Urszula Smagowicz','urszula-smagowicz.jpg']];
 const works=[];
 const $=s=>document.querySelector(s); const cursor=$('#cursor'); let activeWork=null;
+
+function buildArtistsSuspension(){
+ const heading=document.querySelector('#artists .section-head h2');
+ if(!heading||heading.dataset.suspended==='1')return;
+ heading.dataset.suspended='1';heading.setAttribute('aria-label','ARTISTS');
+ const letters=[...'ARTISTS'];heading.textContent='';
+ letters.forEach((letter,index)=>{
+  const el=document.createElement('span');el.className='artist-letter';el.dataset.index=index;el.textContent=letter;
+  const chain=document.createElement('span');chain.className='artist-chain';chain.setAttribute('aria-hidden','true');
+  for(let n=0;n<15;n++){const dot=document.createElement('span');dot.className='artist-dot';chain.append(dot)}
+  el.prepend(chain);heading.append(el);
+ });
+}
+buildArtistsSuspension();
+const artistLetterPhysics=[...document.querySelectorAll('#artists .artist-letter')].map(()=>({angle:0,velocity:0,tx:0,ty:0}));
+function updateArtistsPhysics(x,y){
+ const letters=document.querySelectorAll('#artists .artist-letter');
+ if(!letters.length||matchMedia('(max-width:700px)').matches)return;
+ letters.forEach((letter,i)=>{
+  const r=letter.getBoundingClientRect(),cx=r.left+r.width/2,anchorY=r.top+r.height*.08;
+  const dx=x-cx,dy=y-anchorY,dist=Math.hypot(dx,dy),reach=190,st=artistLetterPhysics[i];
+  const force=dist<reach?(1-dist/reach):0;
+  const targetAngle=Math.max(-14,Math.min(14,dx*.055*force));
+  const targetX=Math.max(-18,Math.min(18,dx*.12*force)),targetY=Math.max(-8,Math.min(12,dy*.035*force));
+  st.velocity+=(targetAngle-st.angle)*.075;st.velocity*=.82;st.angle+=st.velocity;
+  st.tx+=(targetX-st.tx)*.1;st.ty+=(targetY-st.ty)*.1;
+  letter.style.transform=`translate3d(${st.tx.toFixed(2)}px,${st.ty.toFixed(2)}px,0) rotate(${st.angle.toFixed(2)}deg)`;
+  letter.dataset.active=force>.08?'1':'0';
+ });
+}
+
 artists.forEach((a,i)=>{const c=document.createElement('div');c.className='circle';const im=new Image();im.src='images/'+a[1];im.alt=a[0];c.append(im);c.onclick=()=>openArtist(i);(i<7?$('#orbitA'):$('#orbitB')).append(c);const row=document.createElement('div');row.className='artist-row';row.innerHTML=`<span class="artist-no">${String(i+1).padStart(2,'0')}</span><span class="artist-name" role="button" tabindex="0">${a[0]}</span><img class="artist-photo" src="images/${a[1]}" alt=""><div class="bio">Biography coming soon.<button type="button" class="artist-read-more">READ MORE</button></div>`;row.onmouseenter=()=>row.classList.add('preview');row.onmouseleave=()=>row.classList.remove('preview');const name=row.querySelector('.artist-name');name.onclick=()=>openArtist(i);name.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')openArtist(i)};const more=row.querySelector('.artist-read-more');more.onclick=e=>{e.stopPropagation();row.classList.toggle('bio-open');more.textContent=row.classList.contains('bio-open')?'SHOW LESS':'READ MORE'};$('#artistList').append(row)});
 
 const orbitCircles=[...document.querySelectorAll('.circle')];
@@ -369,7 +412,7 @@ function renderCursor(){
  const worksClipTop=worksArt?Math.max(0,worksBar?.getBoundingClientRect().top-(mouse.py-500)):0;
  cursor.style.clipPath=worksArt?`inset(${worksClipTop}px 0 0 0)`:'';
  const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);cursorText.classList.toggle('works-art-cursor',!!worksArt);
- syncCursorClone(cursorTarget());cursorText.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
+ updateArtistsPhysics(mouse.x,mouse.y);syncCursorClone(cursorTarget());cursorText.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
 }
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});renderCursor();
 
