@@ -299,7 +299,7 @@ const WORKS_QUEUE=60;
 // GitHub Pages: render a dense but bounded first batch; lazy images prevent
 // hundreds of simultaneous requests from triggering the Pages rate limiter.
 const WORKS_RENDER_COUNT=180;
-const rail={x:0,trackWidth:0,ready:false,frame:0,pending:0,extending:false,segment:16000};
+const rail={x:0,trackWidth:0,ready:false,frame:0,pending:0,extending:false,segment:10000};
 function railLines(){return [...document.querySelectorAll('#worksRow .works-line')]}
 function paintRail(){const line=railLines()[0];if(line)line.style.transform=`translate3d(${rail.x}px,0,0)`;updateWorkEdgeEffects()}
 function updateWorkEdgeEffects(){
@@ -358,7 +358,7 @@ async function extendRail(side){
  if(!rail.ready||rail.extending||!sourceWorks.length)return;
  rail.extending=true;
  try{
-  const count=Math.min(24,Math.max(12,sourceWorks.length));
+  const count=Math.min(34,Math.max(20,Math.ceil(sourceWorks.length*.28)));
   const items=makeSequence(sourceWorks,count);
   const checked=await Promise.all(items.map(loadMeta));
   const usable=checked.filter(x=>x.valid);
@@ -367,7 +367,9 @@ async function extendRail(side){
   const line=railLines()[0];
   if(side==='left'){
    shiftCards(rail.segment);
-   placeCards(usable.map(x=>x.w),metas,Math.max(300,$('#worksRow').clientHeight||700),rail.segment,-rail.segment);
+   // Existing cards move one segment to the right while the rail moves left;
+   // new cards therefore use the fresh [0, segment] coordinate range.
+   placeCards(usable.map(x=>x.w),metas,Math.max(300,$('#worksRow').clientHeight||700),rail.segment,0);
    rail.x-=rail.segment;
   }else{
    placeCards(usable.map(x=>x.w),metas,Math.max(300,$('#worksRow').clientHeight||700),rail.segment,rail.trackWidth);
