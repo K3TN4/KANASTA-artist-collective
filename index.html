@@ -248,7 +248,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 @media(max-width:700px){#worksRow{height:clamp(680px,175vw,980px)!important}.section.works{padding-left:10px!important;padding-right:10px!important}}
 
 /* WORKS LOCAL INVERSION: black header field and cursor inversion only here */
-#works .section-head{position:relative;z-index:4;width:100vw;margin-left:calc(50% - 50vw);padding:90px var(--g);background:#000;color:#fff}
+#works .section-head{position:relative;z-index:4;width:100vw;height:500px;min-height:500px;margin-left:calc(50% - 50vw);padding:90px var(--g);box-sizing:border-box;background:#000;color:#fff}
 #works .section-head h2,#works .section-head span{color:#fff}
 #cursor.works-bar-cursor{background:#fff!important}
 #cursor.works-title-cursor{background:#000!important}
@@ -407,10 +407,11 @@ function renderCursor(){
  cursor.style.display='block';mouse.px+=(mouse.x-mouse.px)*.14;mouse.py+=(mouse.y-mouse.py)*.14;mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
  const now=performance.now()*.001,speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12),jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
  cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
- const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksArt=hovered?.closest('#worksRow');
- cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!worksArt);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',!!worksArt);
- const worksClipTop=worksArt?Math.max(0,worksBar?.getBoundingClientRect().top-(mouse.py-500)):0;
- cursor.style.clipPath=worksArt?`inset(${worksClipTop}px 0 0 0)`:'';
+ const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksArt=hovered?.closest('#worksRow'),worksZone=worksBar||worksArt;
+ cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!worksArt);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',!!worksZone);
+ const worksTop=worksBar?.getBoundingClientRect().top ?? document.querySelector('#works .section-head')?.getBoundingClientRect().top ?? 0;
+ const worksClipTop=worksZone?Math.max(0,worksTop-(mouse.py-500)):0;
+ cursor.style.clipPath=worksZone?`inset(${worksClipTop}px 0 0 0)`:'';
  const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);cursorText.classList.toggle('works-art-cursor',!!worksArt);
  updateArtistsPhysics(mouse.x,mouse.y);syncCursorClone(cursorTarget());cursorText.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
 }
