@@ -327,12 +327,24 @@ function weightedPick(list){
 }
 function makeSequence(list,count){const pool=list.slice(),recent=[],out=[];for(let n=0;n<count;n++){let available=pool.filter(w=>!recent.includes(w.id));if(!available.length){available=list.filter(w=>!recent.includes(w.id));if(!available.length){recent.splice(0,recent.length-1);available=list.filter(w=>!recent.includes(w.id))}}const w=weightedPick(available);out.push(w);recent.push(w.id);if(recent.length>WORKS_QUEUE)recent.shift()}return out}
 function overlaps(a,b,gap){return !(a.x+a.w+gap<=b.x||b.x+b.w+gap<=a.x||a.y+a.h+gap<=b.y||b.y+b.h+gap<=a.y)}
+function artworkDimensions(work){
+ const source=[work.title,work.dimensions,work.thumb,work.view,work.full].filter(Boolean).map(String).join(' ');
+ const text=source.replace(/%20/g,' ').replace(/%C3%A1/gi,'á');
+ const matches=[...text.matchAll(/(\d+(?:[.,]\d+)?)\s*[x×]\s*(\d+(?:[.,]\d+)?)(?:\s*cm)?/gi)];
+ if(!matches.length)return null;
+ const m=matches[matches.length-1],a=Number(m[1].replace(',','.')),b=Number(m[2].replace(',','.'));
+ return a>0&&b>0?{a,b,area:a*b,scale:Math.max(a,b)}:null;
+}
 function placeCards(items,meta,height,segmentWidth,offsetX){
   const placed=[],gap=4;
+ const dimensions=items.map(artworkDimensions),known=dimensions.filter(Boolean).map(d=>Math.log(Math.max(1,d.area)));
+ const minArea=known.length?Math.min(...known):0,maxArea=known.length?Math.max(...known):1;
  for(let i=0;i<items.length;i++){
   const m=meta.get(items[i].id),seed=(i*7919+(items[i].id||'').length*97)%1000;
   const small=!!items[i]._small;
-  const h=small?Math.max(185,Math.min(300,Math.round(185+(seed/999)*115))):Math.max(285,Math.min(500,Math.round(285+(seed/999)*215)));
+  const d=dimensions[i],dimensionT=d&&maxArea>minArea?Math.max(0,Math.min(1,(Math.log(d.area)-minArea)/(maxArea-minArea))):.5;
+  const jitter=(seed/999-.5)*.12, sizeT=Math.max(0,Math.min(1,dimensionT+jitter));
+  const h=small?Math.max(185,Math.min(300,Math.round(185+sizeT*115))):Math.max(285,Math.min(500,Math.round(285+sizeT*215)));
   const w=small?Math.min(430,Math.max(145,Math.round(m.ratio*h))):Math.min(700,Math.max(215,Math.round(m.ratio*h)));
   const targetX=offsetX+24+(i/Math.max(1,items.length-1))*(segmentWidth-260);
   let found=null;
