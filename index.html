@@ -242,23 +242,23 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 /* WORKS REBUILD geometry */
 #worksRow{position:relative!important;width:100vw!important;height:clamp(820px,100vh,1180px)!important;overflow:hidden!important;cursor:grab!important}
 #worksRow .works-line{position:absolute!important;left:0!important;top:0!important;width:var(--works-track-width,100vw)!important;height:100%!important;display:block!important;overflow:visible!important;will-change:transform!important}
-#worksRow .work-card{position:absolute!important;left:var(--card-x)!important;top:var(--card-y)!important;width:var(--card-w)!important;height:var(--card-h)!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;padding:3px!important;margin:0!important;background:#fff!important;opacity:1!important;transform:scale(1)!important;transition:opacity .28s ease,transform .28s ease!important}
+#worksRow .work-card{position:absolute!important;left:var(--card-x)!important;top:var(--card-y)!important;width:var(--card-w)!important;height:var(--card-h)!important;min-width:0!important;max-width:none!important;box-sizing:border-box!important;padding:0!important;margin:0!important;background:transparent!important;opacity:1!important;transform:scale(1)!important;transition:opacity .28s ease,transform .28s ease!important}
 #worksRow .work-card img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;opacity:1!important}
 #worksRow.dragging{cursor:grabbing!important}
 @media(max-width:700px){#worksRow{height:clamp(680px,175vw,980px)!important}.section.works{padding-left:10px!important;padding-right:10px!important}}
 
 /* WORKS LOCAL INVERSION: black header field and cursor inversion only here */
-#works .section-head{position:relative;width:100vw;margin-left:calc(50% - 50vw);padding:24px var(--g);background:#000;color:#fff}
+#works .section-head{position:relative;width:100vw;margin-left:calc(50% - 50vw);padding:42px var(--g);background:#000;color:#fff}
 #works .section-head h2,#works .section-head span{color:#fff}
 #cursor.works-bar-cursor{background:#fff!important}
 #cursor.works-title-cursor{background:#000!important}
 #cursorText.works-title-cursor .clone{color:#000!important;-webkit-text-fill-color:#000!important}
 
 /* WORKS ART CURSOR: large black field behind artwork cards, pointer-events stay disabled */
-#worksRow{isolation:isolate!important;position:relative!important;z-index:1!important}
-#cursor.works-art-cursor{width:500px!important;height:500px!important;border-radius:50%!important;background:#000!important;z-index:1!important}
+#worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
+#cursor.works-art-cursor{width:900px!important;height:900px!important;border-radius:50%!important;background:#000!important;z-index:1!important}
 #cursorText.works-art-cursor{display:none!important}
-#worksRow .work-card{z-index:2!important}
+#worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
 </style></head>
 <body>
 <div id="cursor"></div><div id="cursorText"></div>
@@ -361,9 +361,9 @@ function syncCursorClone(target){
 }
 function renderCursor(){
  if(!cursor||matchMedia('(max-width:700px)').matches){if(cursor)cursor.style.display='none';cancelAnimationFrame(cursorFrame);return}
- cursor.style.display='block';mouse.px+=(mouse.x-mouse.px)*.32;mouse.py+=(mouse.y-mouse.py)*.32;mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
- const speed=Math.hypot(mouse.vx,mouse.vy),pulse=1+Math.min(.10,speed*.012),tilt=Math.max(-3,Math.min(3,mouse.vx*.025));
- cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(-50%,-50%) scale(${pulse}) rotate(${tilt}deg)`;
+ cursor.style.display='block';mouse.px+=(mouse.x-mouse.px)*.14;mouse.py+=(mouse.y-mouse.py)*.14;mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
+ const now=performance.now()*.001,speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12),jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
+ cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
  const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksArt=hovered?.closest('#worksRow');
  cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!worksArt);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',!!worksArt);
  const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);cursorText.classList.toggle('works-art-cursor',!!worksArt);
