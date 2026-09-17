@@ -327,8 +327,8 @@ function placeCards(items,meta,height,segmentWidth,offsetX){
  const placed=[],gap=6;
  for(let i=0;i<items.length;i++){
   const m=meta.get(items[i].id),seed=(i*7919+(items[i].id||'').length*97)%1000;
-  const h=Math.max(165,Math.min(330,Math.round(165+(seed/999)*165)));
-  const w=Math.min(460,Math.max(125,Math.round(m.ratio*h)));
+  const h=Math.max(330,Math.min(660,Math.round(330+(seed/999)*330)));
+  const w=Math.min(920,Math.max(250,Math.round(m.ratio*h)));
   const targetX=offsetX+24+(i/Math.max(1,items.length-1))*(segmentWidth-260);
   let found=null;
   for(let tries=0;tries<4000;tries++){
