@@ -261,16 +261,16 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
 
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
-#artists .section-head{position:relative;align-items:flex-end;min-height:clamp(190px,24vw,290px);margin-bottom:80px;overflow:visible}
+#artists .section-head{position:relative;align-items:flex-end;min-height:clamp(130px,16vw,210px);margin-bottom:80px;overflow:visible}
 #artists .section-head h2{display:flex;align-items:flex-end;justify-content:center;gap:clamp(4px,1.1vw,18px);position:absolute;left:50%;bottom:0;transform:translateX(-50%);white-space:nowrap;overflow:visible}
-#artists .artist-letter{position:relative;display:inline-flex;align-items:flex-end;justify-content:center;padding-top:clamp(106px,13vw,170px);font:400 clamp(48px,8vw,110px)/.82 "Bakbak One",sans-serif;transform:none;cursor:pointer;transition:color .25s ease}
-#artists .artist-glyph{display:block;transform-origin:50% 0;will-change:transform}.gravity-active .artist-glyph{pointer-events:none}
+#artists .artist-letter{position:relative;display:inline-flex;align-items:flex-end;justify-content:center;padding:0;font:400 clamp(48px,8vw,110px)/.82 "Bakbak One",sans-serif;transform:none;cursor:pointer;transition:color .25s ease}
+
 #artists .artist-letter:hover{color:var(--pink)}
-#artists .artist-chain{position:absolute;top:0;left:50%;height:1px;width:clamp(44px,5vw,76px);transform:translateX(-50%);display:block;pointer-events:none;overflow:visible}
-#artists .artist-chain::before{content:none}
-#artists .artist-dot{position:absolute;z-index:1;left:50%;top:0;width:clamp(4px,.38vw,6px);height:clamp(4px,.38vw,6px);border-radius:50%;background:#000;box-shadow:0 0 0 1px #fff;will-change:transform;transition:none!important}
-#artists .artist-letter[data-active="1"] .artist-dot{background:var(--pink)}
-@media(max-width:700px){#artists .section-head{min-height:clamp(160px,44vw,235px);margin-bottom:48px}#artists .section-head h2{gap:clamp(2px,1vw,7px)}#artists .artist-letter{padding-top:clamp(88px,25vw,130px);font-size:clamp(38px,12vw,72px)}}
+
+
+
+
+@media(max-width:700px){#artists .section-head{min-height:clamp(120px,32vw,170px);margin-bottom:48px}#artists .section-head h2{gap:clamp(2px,1vw,7px)}#artists .artist-letter{padding:0;font-size:clamp(38px,12vw,72px)}}
 @media(prefers-reduced-motion:reduce){#artists .artist-letter{transition:none!important}}
 </style></head>
 <body>
@@ -294,36 +294,18 @@ function buildArtistsSuspension(){
  const heading=document.querySelector('#artists .section-head h2');
  if(!heading||heading.dataset.suspended==='1')return;
  heading.dataset.suspended='1';heading.setAttribute('aria-label','ARTISTS');
- const letters=[...'ARTISTS'];heading.textContent='';
- letters.forEach((letter,index)=>{
+ heading.textContent='';
+ [...'ARTISTS'].forEach((letter,index)=>{
   const el=document.createElement('span');el.className='artist-letter';el.dataset.index=index;
   const glyph=document.createElement('span');glyph.className='artist-glyph';glyph.textContent=letter;
-  const chain=document.createElement('span');chain.className='artist-chain';chain.setAttribute('aria-hidden','true');
-  for(let n=0;n<15;n++){const dot=document.createElement('span');dot.className='artist-dot';chain.append(dot)}
-  el.prepend(chain);el.append(glyph);heading.append(el);
+  el.append(glyph);heading.append(el);
  });
 }
 buildArtistsSuspension();
 const artistLetterPhysics=[...document.querySelectorAll('#artists .artist-letter')].map((letter,i)=>({
- angle:0,tx:0,ty:0,dots:[...letter.querySelectorAll('.artist-dot')],nodes:[...letter.querySelectorAll('.artist-dot')].map(()=>({x:0,y:0})),
- glyph:letter.querySelector('.artist-glyph'),fallY:0,vy:0,vx:(i%2?.12:-.1),spin:(i%2?.018:-.014),grounded:false
+ angle:0,tx:0,ty:0,glyph:letter.querySelector('.artist-glyph'),fallY:0,vy:0,vx:(i%2?.12:-.1),spin:(i%2?.018:-.014),grounded:false
 }));
 let artistsGravity=false,artistsGravityWasBelow=false;
-function layoutArtistChains(){
- const head=document.querySelector('#artists .section-head');
- if(!head)return;
- const sectionTop=head.getBoundingClientRect().top;
- document.querySelectorAll('#artists .artist-letter').forEach((letter,i)=>{
-  const chain=letter.querySelector('.artist-chain'); if(!chain)return;
-  const rect=letter.getBoundingClientRect(),padding=parseFloat(getComputedStyle(letter).paddingTop)||0;
-  const height=Math.max(40,rect.top+padding-sectionTop);
-  chain.style.top=`${sectionTop-rect.top}px`; chain.style.height=`${height}px`;
-  const st=artistLetterPhysics[i]; st.h=height;
-  st.nodes.forEach((node,n)=>{node.x=0;node.y=n*height/14});
-  st.dots.forEach((dot,n)=>dot.style.transform=`translate3d(0px,${(n*height/14).toFixed(2)}px,0) translateX(-50%)`);
- });
-}
-window.addEventListener('resize',()=>requestAnimationFrame(layoutArtistChains),{passive:true});
 function resetArtistsGravity(){
  artistsGravity=false; artistsGravityWasBelow=false;
  artistLetterPhysics.forEach(st=>{st.fallY=0;st.vy=0;st.angle=0;st.tx=0;st.ty=0;st.vx=st.vx<0?-.1:.1;st.grounded=false;st.glyph.style.transform=''});
@@ -339,15 +321,13 @@ function updateArtistsGravity(){
  const list=document.querySelector('#artistList'),letters=document.querySelectorAll('#artists .artist-letter');
  if(!list||!letters.length)return;
  const floor=list.getBoundingClientRect().top;
- const states=artistLetterPhysics;
- states.forEach(st=>{st.floor=floor});
- for(let i=0;i<states.length;i++){
-  const st=states[i],r=letters[i].getBoundingClientRect(),h=r.height*.78;
-  if(!st.grounded){st.vy=Math.min(st.vy+.42,18);st.fallY+=st.vy;st.angle+=st.spin;st.tx+=st.vx;}
+ for(let i=0;i<artistLetterPhysics.length;i++){
+  const st=artistLetterPhysics[i],r=letters[i].getBoundingClientRect(),h=r.height*.78;
+  if(!st.grounded){st.vy=Math.min(st.vy+.11,5.5);st.fallY+=st.vy;st.angle+=st.spin;st.tx+=st.vx;}
   const bottom=r.bottom+st.fallY;
-  if(bottom>=floor-h*.08){st.fallY=Math.max(0,st.fallY-(bottom-floor+h*.08));st.vy*=-.28;st.vx*=.82;st.spin*=.84;if(Math.abs(st.vy)<.45){st.vy=0;st.grounded=true}}
+  if(bottom>=floor-h*.08){st.fallY=Math.max(0,st.fallY-(bottom-floor+h*.08));st.vy*=-.28;st.vx*=.82;st.spin*=.84;if(Math.abs(st.vy)<.16){st.vy=0;st.grounded=true}}
   for(let j=0;j<i;j++){
-   const other=states[j],or=letters[j].getBoundingClientRect(),oy=or.bottom+other.fallY;
+   const other=artistLetterPhysics[j],or=letters[j].getBoundingClientRect(),oy=or.bottom+other.fallY;
    if(Math.abs(r.left-or.left)<Math.max(r.width,or.width)*.8 && bottom>oy-h*.7 && bottom<oy+h*.8){st.fallY=Math.min(st.fallY,other.fallY-h*.72);st.vy=Math.min(st.vy,other.vy*.35);st.vx+=(r.left-or.left)*.0008}}
   st.glyph.style.transform=`translate3d(${st.tx.toFixed(2)}px,${st.fallY.toFixed(2)}px,0) rotate(${st.angle.toFixed(3)}rad)`;
  }
@@ -355,7 +335,7 @@ function updateArtistsGravity(){
 function updateArtistsPhysics(x,y){
  const letters=document.querySelectorAll('#artists .artist-letter');
  if(!letters.length)return;
- const head=document.querySelector('#artists .section-head'),list=document.querySelector('#artistList');
+ const head=document.querySelector('#artists .section-head');
  const threshold=innerHeight*.30,headTop=head?.getBoundingClientRect().top||Infinity;
  const below=headTop<=threshold;
  if(below&&!artistsGravityWasBelow)startArtistsGravity();
@@ -368,10 +348,8 @@ function updateArtistsPhysics(x,y){
   st.angle+=(Math.max(-.035,Math.min(.035,dx*.0007*force))-st.angle)*.12;
   st.tx+=(dx*.018*force-st.tx)*.12;st.ty+=(dy*.008*force-st.ty)*.12;
   st.glyph.style.transform=`translate3d(${st.tx.toFixed(2)}px,${st.ty.toFixed(2)}px,0) rotate(${st.angle.toFixed(3)}rad)`;
-  letter.dataset.active=force>.08?'1':'0';
  });
 }
-layoutArtistChains();
 let artistsGravityFrame=0;
 function checkArtistsGravityOnScroll(){
  if(artistsGravityFrame)return;
