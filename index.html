@@ -256,7 +256,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* WORKS ART CURSOR: large black field behind artwork cards, pointer-events stay disabled */
 #worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
-#cursor.works-art-cursor{width:clamp(440px,42vw,560px)!important;height:var(--blob-height,250px)!important;border-radius:0 0 48% 52% / 0 0 62% 58%!important;background:#000!important;z-index:1!important;clip-path:none!important;filter:none!important;will-change:left,top,height,border-radius;transition:height .22s cubic-bezier(.22,1,.36,1),border-radius .22s ease-out!important}
+#cursor.works-art-cursor{width:var(--blob-width,150px)!important;height:var(--blob-height,72px)!important;border-radius:46% 54% 54% 46% / 78% 72% 28% 22%!important;background:#000!important;z-index:1!important;clip-path:none!important;filter:url(#worksBlobFilter)!important;will-change:left,top,width,height,border-radius;transition:width .28s cubic-bezier(.22,1,.36,1),height .28s cubic-bezier(.22,1,.36,1),border-radius .36s ease-out!important}
 #cursor.works-art-cursor::before,#cursor.works-art-cursor::after{display:none!important}
 #cursorText.works-art-cursor{display:none!important}
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
@@ -456,23 +456,28 @@ function renderCursor(){
  cursor.style.display='block';mouse.px+=(mouse.x-mouse.px)*.14;mouse.py+=(mouse.y-mouse.py)*.14;mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
  const now=performance.now()*.001,speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12),jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
  cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
- const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksArt=hovered?.closest('#worksRow'),worksZone=worksBar||worksArt;
- if(worksArt){
-  const worksRect=worksArt.getBoundingClientRect(),headRect=document.querySelector('#works .section-head')?.getBoundingClientRect();
-  const attachY=(headRect?headRect.bottom:worksRect.top);
-  const drop=Math.max(180,Math.min(300,mouse.py-attachY-120));
-  const wobble=Math.min(7,speed*.42),phase=now*2.4;
-  const left=48+Math.sin(phase)*wobble*.35, right=52+Math.cos(phase*1.13)*wobble*.35;
-  const bottomLeft=48+Math.sin(phase*.87+1)*wobble, bottomRight=52+Math.cos(phase*.91+2)*wobble;
-  cursor.style.left=mouse.px+'px';cursor.style.top=attachY+'px';
-  cursor.style.transform='translateX(-50%)';
-  cursor.style.setProperty('--blob-height',`${drop.toFixed(1)}px`);
-  cursor.style.borderRadius=`0 0 ${bottomLeft}% ${bottomRight}% / 0 0 ${60+Math.sin(phase)*3}% ${58+Math.cos(phase)*3}%`;
- }else{cursor.style.borderRadius='50%';cursor.style.removeProperty('--blob-height')}
- cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!worksArt);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',!!worksZone);
+ const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksArt=hovered?.closest('#worksRow'),headRect=document.querySelector('#works .section-head')?.getBoundingClientRect();
+ const topDistance=headRect?mouse.py-headRect.top:9999;
+ const nearTop=!!headRect && topDistance>-120 && topDistance<120;
+ const organicEdge=!!headRect && nearTop && !worksTitle;
+ const blobZone=organicEdge,blobTop=topDistance<=0;
+ if(blobZone){
+  const phase=now*2.15,energy=Math.min(1,speed/18),pulse=Math.sin(phase)+Math.sin(phase*1.73+1.4)*.35;
+  const w=Math.max(112,Math.min(240,148+energy*60+pulse*10));
+  const h=Math.max(48,Math.min(92,62+energy*18+pulse*6));
+  const a=46+Math.sin(phase*.91)*5+energy*3,b=54+Math.cos(phase*1.07)*5;
+  const c=51+Math.sin(phase*1.19+1)*7,d=49+Math.cos(phase*.83+2)*7;
+  cursor.style.left=mouse.px+'px';
+  cursor.style.top=headRect.top+'px';
+  cursor.style.transform=blobTop?'translate(-50%,-100%)':'translate(-50%,0)';
+  cursor.style.setProperty('--blob-width',`${w.toFixed(1)}px`);
+  cursor.style.setProperty('--blob-height',`${h.toFixed(1)}px`);
+  cursor.style.borderRadius=blobTop?`${a}% ${b}% ${c}% ${d}% / 72% 68% 32% 28%`:`${c}% ${d}% 58% 42% / 30% 34% 66% 70%`;
+ }else{cursor.style.borderRadius='50%';cursor.style.removeProperty('--blob-height');cursor.style.removeProperty('--blob-width')}
+ cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!blobZone);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',blobZone);
  const worksTop=worksBar?.getBoundingClientRect().top ?? document.querySelector('#works .section-head')?.getBoundingClientRect().top ?? 0;
- const worksClipTop=worksZone?Math.max(0,worksTop-(mouse.py-500)):0;
- cursor.style.clipPath=worksArt?'none':(worksZone?`inset(${worksClipTop}px 0 0 0)`:'');
+ const worksClipTop=blobZone?0:Math.max(0,worksTop-(mouse.py-500));
+ cursor.style.clipPath=blobZone?'none':(worksBar?`inset(${worksClipTop}px 0 0 0)`:'');
  const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);cursorText.classList.toggle('works-art-cursor',!!worksArt);
  updateArtistsPhysics(mouse.x,mouse.y);syncCursorClone(cursorTarget());cursorText.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
 }
