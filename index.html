@@ -256,10 +256,8 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* WORKS ART CURSOR: large black field behind artwork cards, pointer-events stay disabled */
 #worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
-#cursor.works-art-cursor{width:1000px!important;height:1000px!important;border-radius:48% 52% 54% 46% / 44% 47% 53% 56%!important;background:#000!important;z-index:1!important;clip-path:inset(0)!important;filter:url(#worksBlobFilter);will-change:transform,border-radius;transition:border-radius .18s ease-out!important}
-#cursor.works-art-cursor::before,#cursor.works-art-cursor::after{content:"";position:absolute;left:50%;transform:translateX(-50%);width:34%;background:#000;pointer-events:none}
-#cursor.works-art-cursor::before{top:calc(-18% - var(--blob-neck,0px));height:calc(30% + var(--blob-neck,0px));width:calc(34% + var(--blob-neck,0px));border-radius:48% 52% 0 0 / 70% 70% 0 0}
-#cursor.works-art-cursor::after{bottom:calc(-22% - var(--blob-neck,0px));height:calc(34% + var(--blob-neck,0px));width:calc(34% + var(--blob-neck,0px));border-radius:0 0 48% 52% / 0 0 70% 70%}
+#cursor.works-art-cursor{width:clamp(440px,42vw,560px)!important;height:var(--blob-height,250px)!important;border-radius:0 0 48% 52% / 0 0 62% 58%!important;background:#000!important;z-index:1!important;clip-path:none!important;filter:none!important;will-change:left,top,height,border-radius;transition:height .22s cubic-bezier(.22,1,.36,1),border-radius .22s ease-out!important}
+#cursor.works-art-cursor::before,#cursor.works-art-cursor::after{display:none!important}
 #cursorText.works-art-cursor{display:none!important}
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
 
@@ -460,11 +458,17 @@ function renderCursor(){
  cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
  const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksArt=hovered?.closest('#worksRow'),worksZone=worksBar||worksArt;
  if(worksArt){
-  const wobble=Math.min(28,speed*1.8),phase=now*2.4;
-  const radii=[48+Math.sin(phase)*wobble*.32,52+Math.cos(phase*1.13)*wobble*.28,54+Math.sin(phase*.87+1)*wobble*.35,46+Math.cos(phase*.91+2)*wobble*.3];
-  cursor.style.borderRadius=`${radii[0]}% ${radii[1]}% ${radii[2]}% ${radii[3]}% / ${44+Math.sin(phase*.8)*wobble*.2}% ${47+Math.cos(phase)*wobble*.18}% ${53+Math.sin(phase*1.1)*wobble*.22}% ${56+Math.cos(phase*.74)*wobble*.2}%`;
-  cursor.style.setProperty('--blob-neck',`${Math.min(70,18+speed*2.2).toFixed(1)}px`);
- }else{cursor.style.borderRadius='50%';cursor.style.removeProperty('--blob-neck')}
+  const worksRect=worksArt.getBoundingClientRect(),headRect=document.querySelector('#works .section-head')?.getBoundingClientRect();
+  const attachY=(headRect?headRect.bottom:worksRect.top);
+  const drop=Math.max(180,Math.min(300,mouse.py-attachY-120));
+  const wobble=Math.min(7,speed*.42),phase=now*2.4;
+  const left=48+Math.sin(phase)*wobble*.35, right=52+Math.cos(phase*1.13)*wobble*.35;
+  const bottomLeft=48+Math.sin(phase*.87+1)*wobble, bottomRight=52+Math.cos(phase*.91+2)*wobble;
+  cursor.style.left=mouse.px+'px';cursor.style.top=attachY+'px';
+  cursor.style.transform='translateX(-50%)';
+  cursor.style.setProperty('--blob-height',`${drop.toFixed(1)}px`);
+  cursor.style.borderRadius=`0 0 ${bottomLeft}% ${bottomRight}% / 0 0 ${60+Math.sin(phase)*3}% ${58+Math.cos(phase)*3}%`;
+ }else{cursor.style.borderRadius='50%';cursor.style.removeProperty('--blob-height')}
  cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!worksArt);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',!!worksZone);
  const worksTop=worksBar?.getBoundingClientRect().top ?? document.querySelector('#works .section-head')?.getBoundingClientRect().top ?? 0;
  const worksClipTop=worksZone?Math.max(0,worksTop-(mouse.py-500)):0;
