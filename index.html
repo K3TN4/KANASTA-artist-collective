@@ -303,33 +303,42 @@ function buildArtistsSuspension(){
 }
 buildArtistsSuspension();
 const artistLetterPhysics=[...document.querySelectorAll('#artists .artist-letter')].map((letter,i)=>({
- angle:0,tx:0,ty:0,glyph:letter.querySelector('.artist-glyph'),fallY:0,vy:0,vx:(i%2?.12:-.1),spin:(i%2?.018:-.014),grounded:false
+ angle:0,tx:0,ty:0,glyph:letter.querySelector('.artist-glyph'),fallY:0,vy:0,
+ spin:(i%2?0.026:-0.024),grounded:false,returning:false
 }));
-let artistsGravity=false,artistsGravityWasBelow=false;
-function resetArtistsGravity(){
- artistsGravity=false; artistsGravityWasBelow=false;
- artistLetterPhysics.forEach(st=>{st.fallY=0;st.vy=0;st.angle=0;st.tx=0;st.ty=0;st.vx=st.vx<0?-.1:.1;st.grounded=false;st.glyph.style.transform=''});
+let artistsGravity=false,artistsGravityWasBelow=false,artistsGravityReturning=false;
+function startArtistsGravity(){
+ if(artistsGravity)return;
+ artistsGravity=true; artistsGravityReturning=false;
+ const floor=document.querySelector('#artistList')?.getBoundingClientRect().top||0;
+ artistLetterPhysics.forEach((st,i)=>{st.fallY=0;st.vy=0;st.angle=i%2?0.035:-0.035;st.tx=0;st.ty=0;st.grounded=false;st.returning=false;st.floor=floor});
+ document.querySelector('#artists')?.classList.add('gravity-active');
+}
+function beginArtistsReturn(){
+ if(artistsGravityReturning)return;
+ artistsGravity=false; artistsGravityReturning=true;
+ artistLetterPhysics.forEach(st=>{st.vy=0;st.grounded=false;st.returning=true});
  document.querySelector('#artists')?.classList.remove('gravity-active');
 }
-function startArtistsGravity(){
- if(artistsGravity)return; artistsGravity=true;
- const floor=document.querySelector('#artistList')?.getBoundingClientRect().top||0;
- artistLetterPhysics.forEach((st,i)=>{st.fallY=0;st.vy=0;st.angle=(i%2?.02:-.02);st.grounded=false;st.floor=floor});
- document.querySelector('#artists')?.classList.add('gravity-active');
+function updateArtistsReturn(){
+ let done=true;
+ artistLetterPhysics.forEach(st=>{
+  st.fallY+=(0-st.fallY)*.105; st.angle+=(0-st.angle)*.105; st.tx+=(0-st.tx)*.12; st.ty+=(0-st.ty)*.12;
+  st.glyph.style.transform=`translate3d(${st.tx.toFixed(2)}px,${(st.fallY+st.ty).toFixed(2)}px,0) rotate(${st.angle.toFixed(3)}rad)`;
+  if(Math.abs(st.fallY)>0.25||Math.abs(st.angle)>0.002||Math.abs(st.tx)>0.25||Math.abs(st.ty)>0.25)done=false;
+ });
+ if(done){artistsGravityReturning=false;artistLetterPhysics.forEach(st=>{st.fallY=0;st.angle=0;st.tx=0;st.ty=0;st.glyph.style.transform=''});}
 }
 function updateArtistsGravity(){
  const list=document.querySelector('#artistList'),letters=document.querySelectorAll('#artists .artist-letter');
  if(!list||!letters.length)return;
  const floor=list.getBoundingClientRect().top;
  for(let i=0;i<artistLetterPhysics.length;i++){
-  const st=artistLetterPhysics[i],r=letters[i].getBoundingClientRect(),h=r.height*.78;
-  if(!st.grounded){st.vy=Math.min(st.vy+.11,5.5);st.fallY+=st.vy;st.angle+=st.spin;st.tx+=st.vx;}
+  const st=artistLetterPhysics[i],r=letters[i].getBoundingClientRect(),h=Math.max(24,r.height*.78);
+  if(!st.grounded){st.vy=Math.min(st.vy+.11,5.5);st.fallY+=st.vy;st.angle+=st.spin;}
   const bottom=r.bottom+st.fallY;
-  if(bottom>=floor-h*.08){st.fallY=Math.max(0,st.fallY-(bottom-floor+h*.08));st.vy*=-.28;st.vx*=.82;st.spin*=.84;if(Math.abs(st.vy)<.16){st.vy=0;st.grounded=true}}
-  for(let j=0;j<i;j++){
-   const other=artistLetterPhysics[j],or=letters[j].getBoundingClientRect(),oy=or.bottom+other.fallY;
-   if(Math.abs(r.left-or.left)<Math.max(r.width,or.width)*.8 && bottom>oy-h*.7 && bottom<oy+h*.8){st.fallY=Math.min(st.fallY,other.fallY-h*.72);st.vy=Math.min(st.vy,other.vy*.35);st.vx+=(r.left-or.left)*.0008}}
-  st.glyph.style.transform=`translate3d(${st.tx.toFixed(2)}px,${st.fallY.toFixed(2)}px,0) rotate(${st.angle.toFixed(3)}rad)`;
+  if(bottom>=floor-h*.08){st.fallY=Math.max(0,st.fallY-(bottom-floor+h*.08));st.vy*=-.28;st.spin*=.92;if(Math.abs(st.vy)<.16){st.vy=0;st.grounded=true}}
+  st.glyph.style.transform=`translate3d(0px,${st.fallY.toFixed(2)}px,0) rotate(${st.angle.toFixed(3)}rad)`;
  }
 }
 function updateArtistsPhysics(x,y){
@@ -339,9 +348,10 @@ function updateArtistsPhysics(x,y){
  const threshold=innerHeight*.30,headTop=head?.getBoundingClientRect().top||Infinity;
  const below=headTop<=threshold;
  if(below&&!artistsGravityWasBelow)startArtistsGravity();
- if(!below&&artistsGravityWasBelow)resetArtistsGravity();
+ if(!below&&artistsGravityWasBelow)beginArtistsReturn();
  artistsGravityWasBelow=below;
  if(artistsGravity){updateArtistsGravity();return}
+ if(artistsGravityReturning){updateArtistsReturn();return}
  letters.forEach((letter,i)=>{
   const st=artistLetterPhysics[i],r=letter.getBoundingClientRect(),cx=r.left+r.width/2;
   const dx=x-cx,dy=y-(r.top+r.height*.55),dist=Math.hypot(dx,dy),force=dist<170?(1-dist/170):0;
