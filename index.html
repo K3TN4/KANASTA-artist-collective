@@ -256,7 +256,10 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* WORKS ART CURSOR: large black field behind artwork cards, pointer-events stay disabled */
 #worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
-#cursor.works-art-cursor{width:1000px!important;height:1000px!important;border-radius:50%!important;background:#000!important;z-index:1!important}
+#cursor.works-art-cursor{width:1000px!important;height:1000px!important;border-radius:48% 52% 54% 46% / 44% 47% 53% 56%!important;background:#000!important;z-index:1!important;clip-path:inset(0)!important;filter:url(#worksBlobFilter);will-change:transform,border-radius;transition:border-radius .18s ease-out!important}
+#cursor.works-art-cursor::before,#cursor.works-art-cursor::after{content:"";position:absolute;left:50%;transform:translateX(-50%);width:34%;background:#000;pointer-events:none}
+#cursor.works-art-cursor::before{top:calc(-18% - var(--blob-neck,0px));height:calc(30% + var(--blob-neck,0px));width:calc(34% + var(--blob-neck,0px));border-radius:48% 52% 0 0 / 70% 70% 0 0}
+#cursor.works-art-cursor::after{bottom:calc(-22% - var(--blob-neck,0px));height:calc(34% + var(--blob-neck,0px));width:calc(34% + var(--blob-neck,0px));border-radius:0 0 48% 52% / 0 0 70% 70%}
 #cursorText.works-art-cursor{display:none!important}
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
 
@@ -274,7 +277,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 @media(prefers-reduced-motion:reduce){#artists .artist-letter{transition:none!important}}
 </style></head>
 <body>
-<div id="cursor"></div><div id="cursorText"></div>
+<svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="cursor"></div><div id="cursorText"></div>
 <header class="top"><button id="logo">KANASTA</button><button id="menuBtn">MENU</button></header>
 <main class="hero" id="home"><h1>KANASTA</h1><div class="subtitle">artist collective · Poland</div><div class="orbit" id="orbit"><div class="orbit-row" id="orbitA"></div><div class="orbit-row" id="orbitB"></div></div></main>
 <section class="section" id="artists"><div class="section-head"><span>01</span><h2>ARTISTS</h2><span>15</span></div><div class="artist-list" id="artistList"></div></section>
@@ -456,10 +459,16 @@ function renderCursor(){
  const now=performance.now()*.001,speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12),jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
  cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
  const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksArt=hovered?.closest('#worksRow'),worksZone=worksBar||worksArt;
+ if(worksArt){
+  const wobble=Math.min(28,speed*1.8),phase=now*2.4;
+  const radii=[48+Math.sin(phase)*wobble*.32,52+Math.cos(phase*1.13)*wobble*.28,54+Math.sin(phase*.87+1)*wobble*.35,46+Math.cos(phase*.91+2)*wobble*.3];
+  cursor.style.borderRadius=`${radii[0]}% ${radii[1]}% ${radii[2]}% ${radii[3]}% / ${44+Math.sin(phase*.8)*wobble*.2}% ${47+Math.cos(phase)*wobble*.18}% ${53+Math.sin(phase*1.1)*wobble*.22}% ${56+Math.cos(phase*.74)*wobble*.2}%`;
+  cursor.style.setProperty('--blob-neck',`${Math.min(70,18+speed*2.2).toFixed(1)}px`);
+ }else{cursor.style.borderRadius='50%';cursor.style.removeProperty('--blob-neck')}
  cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!worksArt);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',!!worksZone);
  const worksTop=worksBar?.getBoundingClientRect().top ?? document.querySelector('#works .section-head')?.getBoundingClientRect().top ?? 0;
  const worksClipTop=worksZone?Math.max(0,worksTop-(mouse.py-500)):0;
- cursor.style.clipPath=worksZone?`inset(${worksClipTop}px 0 0 0)`:'';
+ cursor.style.clipPath=worksArt?'none':(worksZone?`inset(${worksClipTop}px 0 0 0)`:'');
  const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);cursorText.classList.toggle('works-art-cursor',!!worksArt);
  updateArtistsPhysics(mouse.x,mouse.y);syncCursorClone(cursorTarget());cursorText.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
 }
