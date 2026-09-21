@@ -263,13 +263,14 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
 #artists .section-head{position:relative;align-items:flex-end;min-height:clamp(190px,24vw,290px);margin-bottom:80px;overflow:visible}
 #artists .section-head h2{display:flex;align-items:flex-end;justify-content:center;gap:clamp(4px,1.1vw,18px);position:absolute;left:50%;bottom:0;transform:translateX(-50%);white-space:nowrap;overflow:visible}
-#artists .artist-letter{position:relative;display:inline-flex;align-items:flex-end;justify-content:center;padding-top:clamp(106px,13vw,170px);font:400 clamp(48px,8vw,110px)/.82 "Bakbak One",sans-serif;transform-origin:50% 0;will-change:transform;cursor:pointer;transition:color .25s ease}
+#artists .artist-letter{position:relative;display:inline-flex;align-items:flex-end;justify-content:center;padding-top:clamp(106px,13vw,170px);font:400 clamp(48px,8vw,110px)/.82 "Bakbak One",sans-serif;transform:none;cursor:pointer;transition:color .25s ease}
+#artists .artist-glyph{display:block;transform-origin:50% 0;will-change:transform}
 #artists .artist-letter:hover{color:var(--pink)}
-#artists .artist-chain{position:absolute;top:0;left:50%;height:clamp(102px,13vw,166px);width:clamp(30px,3vw,46px);transform:translateX(-50%);display:block;pointer-events:none;overflow:visible}
+#artists .artist-chain{position:absolute;top:0;left:50%;height:1px;width:clamp(44px,5vw,76px);transform:translateX(-50%);display:block;pointer-events:none;overflow:visible}
 #artists .artist-chain::before{content:none}
 #artists .artist-dot{position:absolute;z-index:1;left:50%;top:0;width:clamp(4px,.38vw,6px);height:clamp(4px,.38vw,6px);border-radius:50%;background:#000;box-shadow:0 0 0 1px #fff;will-change:transform}
 #artists .artist-letter[data-active="1"] .artist-dot{background:var(--pink)}
-@media(max-width:700px){#artists .section-head{min-height:clamp(160px,44vw,235px);margin-bottom:48px}#artists .section-head h2{gap:clamp(2px,1vw,7px)}#artists .artist-letter{padding-top:clamp(88px,25vw,130px);font-size:clamp(38px,12vw,72px)}#artists .artist-chain{height:clamp(84px,24vw,126px)}}
+@media(max-width:700px){#artists .section-head{min-height:clamp(160px,44vw,235px);margin-bottom:48px}#artists .section-head h2{gap:clamp(2px,1vw,7px)}#artists .artist-letter{padding-top:clamp(88px,25vw,130px);font-size:clamp(38px,12vw,72px)}}
 @media(prefers-reduced-motion:reduce){#artists .artist-letter{transition:none!important}}
 </style></head>
 <body>
@@ -295,41 +296,66 @@ function buildArtistsSuspension(){
  heading.dataset.suspended='1';heading.setAttribute('aria-label','ARTISTS');
  const letters=[...'ARTISTS'];heading.textContent='';
  letters.forEach((letter,index)=>{
-  const el=document.createElement('span');el.className='artist-letter';el.dataset.index=index;el.textContent=letter;
+  const el=document.createElement('span');el.className='artist-letter';el.dataset.index=index;
+  const glyph=document.createElement('span');glyph.className='artist-glyph';glyph.textContent=letter;
   const chain=document.createElement('span');chain.className='artist-chain';chain.setAttribute('aria-hidden','true');
   for(let n=0;n<15;n++){const dot=document.createElement('span');dot.className='artist-dot';chain.append(dot)}
-  el.prepend(chain);heading.append(el);
+  el.prepend(chain);el.append(glyph);heading.append(el);
  });
 }
 buildArtistsSuspension();
+function layoutArtistChains(){
+ const head=document.querySelector('#artists .section-head');
+ if(!head)return;
+ const sectionTop=head.getBoundingClientRect().top;
+ document.querySelectorAll('#artists .artist-letter').forEach((letter,i)=>{
+  const chain=letter.querySelector('.artist-chain');
+  if(!chain)return;
+  const rect=letter.getBoundingClientRect();
+  const padding=parseFloat(getComputedStyle(letter).paddingTop)||0;
+  const height=Math.max(40,rect.top+padding-sectionTop);
+  chain.style.top=`${sectionTop-rect.top}px`;
+  chain.style.height=`${height}px`;
+  const st=artistLetterPhysics?.[i];
+  if(st){
+   st.h=height;
+   st.nodes.forEach((node,n)=>{node.x=0;node.y=n*height/14;node.px=node.x;node.py=node.y;node.vx=0;node.vy=0});
+   st.dots.forEach((dot,n)=>dot.style.transform=`translate3d(0px,${(n*height/14).toFixed(2)}px,0) translateX(-50%)`);
+  }
+ });
+}
+window.addEventListener('resize',()=>requestAnimationFrame(layoutArtistChains),{passive:true});
 const artistLetterPhysics=[...document.querySelectorAll('#artists .artist-letter')].map((letter)=>{
  const dots=[...letter.querySelectorAll('.artist-dot')],h=letter.querySelector('.artist-chain')?.getBoundingClientRect().height||150;
  const nodes=dots.map((_,i)=>({x:0,y:i*(h/14),px:0,py:i*(h/14),vx:0,vy:0}));
  return {angle:0,tx:0,ty:0,nodes,dots,h};
 });
+layoutArtistChains();
 function updateArtistsPhysics(x,y){
  const letters=document.querySelectorAll('#artists .artist-letter');
  if(!letters.length)return;
  letters.forEach((letter,i)=>{
-  const st=artistLetterPhysics[i],r=letter.getBoundingClientRect(),cx=r.left+r.width/2,anchorY=r.top;
+  const st=artistLetterPhysics[i],r=letter.getBoundingClientRect(),cx=r.left+r.width/2;
+  st.h=letter.querySelector('.artist-chain')?.getBoundingClientRect().height||st.h;
   const dx=x-cx,dy=y-(r.top+r.height*.55),dist=Math.hypot(dx,dy),reach=230,force=dist<reach?(1-dist/reach):0;
   const nodes=st.nodes,seg=st.h/14;
   nodes[0].x=0;nodes[0].y=0;nodes[0].px=0;nodes[0].py=0;
   for(let n=1;n<nodes.length;n++){
    const q=nodes[n],fall=force*Math.max(0,1-n/nodes.length);
-   q.vy+=(.24+fall*.18);q.vx+=(dx*.0009*fall);
-   q.vx*=.92;q.vy*=.92;q.px=q.x;q.py=q.y;q.x+=q.vx;q.y+=q.vy;
+   q.vy+=(.045+fall*.10);q.vx+=(dx*.0018*fall);
+   q.vx*=.86;q.vy*=.86;q.px=q.x;q.py=q.y;q.x+=q.vx;q.y+=q.vy;
   }
   for(let pass=0;pass<4;pass++)for(let n=1;n<nodes.length;n++){
    const a=nodes[n-1],q=nodes[n],vx=q.x-a.x,vy=q.y-a.y,len=Math.hypot(vx,vy)||1,err=(len-seg)/len*.72;
    if(n>1){q.x-=vx*err;q.y-=vy*err} a.x+=vx*err*.22;a.y+=vy*err*.22;
-   q.x=Math.max(-26,Math.min(26,q.x));q.y=Math.max(n*seg-20,Math.min(n*seg+38,q.y));
+   q.x=Math.max(-34,Math.min(34,q.x));q.y=Math.max(n*seg-26,Math.min(n*seg+32,q.y));
   }
   const end=nodes[nodes.length-1],prev=nodes[nodes.length-2];
   const targetAngle=Math.max(-18,Math.min(18,(end.x-prev.x)*.75+dx*.045*force));
   st.angle+=(targetAngle-st.angle)*.13;
   st.tx+=(dx*.10*force-st.tx)*.08;st.ty+=((dy*.025*force)-st.ty)*.08;
-  letter.style.transform=`translate3d(${st.tx.toFixed(2)}px,${st.ty.toFixed(2)}px,0) rotate(${st.angle.toFixed(2)}deg)`;
+  const glyph=letter.querySelector('.artist-glyph');
+  if(glyph)glyph.style.transform=`translate3d(${st.tx.toFixed(2)}px,${st.ty.toFixed(2)}px,0) rotate(${st.angle.toFixed(2)}deg)`;
   st.dots.forEach((dot,n)=>dot.style.transform=`translate3d(${nodes[n].x.toFixed(2)}px,${nodes[n].y.toFixed(2)}px,0) translateX(-50%)`);
   letter.dataset.active=force>.06?'1':'0';
  });
