@@ -340,10 +340,16 @@ function updateArtistsPhysics(x,y){
   const dx=x-cx,dy=y-(r.top+r.height*.55),dist=Math.hypot(dx,dy),reach=230,force=dist<reach?(1-dist/reach):0;
   const nodes=st.nodes,seg=st.h/14;
   nodes[0].x=0;nodes[0].y=0;nodes[0].px=0;nodes[0].py=0;
+  const chainRect=letter.querySelector('.artist-chain')?.getBoundingClientRect();
   for(let n=1;n<nodes.length;n++){
    const q=nodes[n],fall=force*Math.max(0,1-n/nodes.length);
-   q.vy+=(.045+fall*.10);q.vx+=(dx*.0018*fall);
-   q.vx*=.86;q.vy*=.86;q.px=q.x;q.py=q.y;q.x+=q.vx;q.y+=q.vy;
+   const nodeX=(chainRect?.left||cx)+q.x, nodeY=(chainRect?.top||r.top)+q.y;
+   const awayX=nodeX-x, awayY=nodeY-y, nodeDist=Math.hypot(awayX,awayY)||1;
+   const cursorInfluence=Math.max(0,1-nodeDist/190);
+   q.vy+=(.045+fall*.10);
+   q.vx+=(dx*.0018*fall)+(awayX/nodeDist)*cursorInfluence*2.8;
+   q.vy+=(awayY/nodeDist)*cursorInfluence*1.2;
+   q.vx*=.84;q.vy*=.84;q.px=q.x;q.py=q.y;q.x+=q.vx;q.y+=q.vy;
   }
   for(let pass=0;pass<4;pass++)for(let n=1;n<nodes.length;n++){
    const a=nodes[n-1],q=nodes[n],vx=q.x-a.x,vy=q.y-a.y,len=Math.hypot(vx,vy)||1,err=(len-seg)/len*.72;
@@ -351,9 +357,9 @@ function updateArtistsPhysics(x,y){
    q.x=Math.max(-34,Math.min(34,q.x));q.y=Math.max(n*seg-26,Math.min(n*seg+32,q.y));
   }
   const end=nodes[nodes.length-1],prev=nodes[nodes.length-2];
-  const targetAngle=Math.max(-18,Math.min(18,(end.x-prev.x)*.75+dx*.045*force));
+  const targetAngle=Math.max(-22,Math.min(22,(end.x-prev.x)*.95+dx*.045*force));
   st.angle+=(targetAngle-st.angle)*.13;
-  st.tx+=(dx*.10*force-st.tx)*.08;st.ty+=((dy*.025*force)-st.ty)*.08;
+  st.tx+=(end.x*.28+dx*.06*force-st.tx)*.08;st.ty+=((dy*.025*force)-st.ty)*.08;
   const glyph=letter.querySelector('.artist-glyph');
   if(glyph)glyph.style.transform=`translate3d(${st.tx.toFixed(2)}px,${st.ty.toFixed(2)}px,0) rotate(${st.angle.toFixed(2)}deg)`;
   st.dots.forEach((dot,n)=>dot.style.transform=`translate3d(${nodes[n].x.toFixed(2)}px,${nodes[n].y.toFixed(2)}px,0) translateX(-50%)`);
