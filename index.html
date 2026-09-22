@@ -256,14 +256,8 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* WORKS ART CURSOR: large black field behind artwork cards, pointer-events stay disabled */
 #worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
-#cursor.works-art-cursor{width:var(--blob-width,260px)!important;height:var(--blob-height,260px)!important;border-radius:50%!important;background:#000!important;z-index:1!important;clip-path:none!important;filter:url(#worksBlobFilter)!important;will-change:left,top,width,height,border-radius;transition:width .32s cubic-bezier(.22,1,.36,1),height .32s cubic-bezier(.22,1,.36,1),border-radius .36s ease-out!important}
-#cursor.works-art-cursor::before,#cursor.works-art-cursor::after{content:"";position:absolute;left:50%;width:var(--neck-width,80px);height:var(--neck-height,0px);transform:translateX(-50%);background:#000;pointer-events:none;border-radius:50%;display:block!important}
-#cursor.works-art-cursor::before{top:100%}
-#cursor.works-art-cursor::after{bottom:100%}
-#cursor.works-art-cursor.blob-connect-top::before{display:none!important}
-#cursor.works-art-cursor.blob-connect-top::after{display:block!important}
-#cursor.works-art-cursor.blob-connect-bottom::before{display:block!important}
-#cursor.works-art-cursor.blob-connect-bottom::after{display:none!important}
+#cursor.works-art-cursor{width:var(--blob-width,150px)!important;height:var(--blob-height,120px)!important;border-radius:48% 52% 57% 43% / 34% 38% 62% 66%!important;background:#000!important;z-index:1!important;clip-path:none!important;filter:url(#worksBlobFilter)!important;will-change:left,top,width,height,border-radius;transition:width .3s cubic-bezier(.22,1,.36,1),height .3s cubic-bezier(.22,1,.36,1),border-radius .38s ease-out!important}
+#cursor.works-art-cursor::before,#cursor.works-art-cursor::after{display:none!important;content:none!important}
 #cursorText.works-art-cursor{display:none!important}
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
 #works .works-track{position:relative!important}
@@ -480,15 +474,13 @@ function renderCursor(){
  if(blobZone){
   const phase=now*1.75,energy=Math.min(1,speed/20),pulse=Math.sin(phase)+Math.sin(phase*1.43+1.2)*.32;
   const distance=Math.min(topGap,bottomGap),far=Math.min(1,distance/Math.max(1,(lowerBarY-headRect.bottom)*.5));
-  const size=Math.max(150,Math.min(520,210+far*270+energy*35+pulse*12));
-  const width=Math.max(150,Math.min(560,Math.max(size,210+far*300+energy*45)));
-  const neck=Math.max(0,Math.min(260,(attachTop?topGap:bottomGap)*(.72+far*.22)));
-  const neckWidth=Math.max(28,Math.min(180,width*(.22+far*.16)));
-  const a=48+Math.sin(phase*.91)*5+energy*3,b=52+Math.cos(phase*1.07)*5;
-  cursor.style.left=mouse.x+'px';cursor.style.top=mouse.py+'px';cursor.style.transform='translate(-50%,-50%)';
-  cursor.style.setProperty('--blob-width',`${width.toFixed(1)}px`);cursor.style.setProperty('--blob-height',`${size.toFixed(1)}px`);cursor.style.setProperty('--neck-width',`${neckWidth.toFixed(1)}px`);cursor.style.setProperty('--neck-height',`${neck.toFixed(1)}px`);
-  cursor.style.borderRadius=`${a}% ${b}% ${54+Math.sin(phase*1.2)*5}% ${46+Math.cos(phase*.8)*5}% / ${48+far*18}% ${52+far*14}% ${48+far*18}% ${52+far*14}%`;
-  cursor.style.setProperty('--neck-side',attachTop?'top':'bottom');
+  const lobe=Math.max(82,Math.min(190,108+far*58+energy*22+pulse*7));
+  const width=Math.max(92,Math.min(230,112+far*74+energy*30));
+  const height=Math.max(72,Math.min(170,lobe));
+  const centerY=attachTop?headRect.bottom+height*.28:lowerBarY-height*.28;
+  cursor.style.left=mouse.x+'px';cursor.style.top=centerY+'px';cursor.style.transform='translate(-50%,-50%)';
+  cursor.style.setProperty('--blob-width',`${width.toFixed(1)}px`);cursor.style.setProperty('--blob-height',`${height.toFixed(1)}px`);
+  cursor.style.borderRadius=`${48+Math.sin(phase*.9)*7}% ${52+Math.cos(phase*1.1)*7}% ${57+Math.sin(phase*1.3)*6}% ${43+Math.cos(phase*.8)*6}% / ${34+far*12}% ${38+far*10}% ${62-far*8}% ${66-far*8}%`;
  }else{cursor.style.borderRadius='50%';['--blob-height','--blob-width','--neck-width','--neck-height','--neck-side'].forEach(v=>cursor.style.removeProperty(v))}
  cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!blobZone);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',blobZone);cursor.classList.toggle('blob-connect-top',blobZone&&attachTop);cursor.classList.toggle('blob-connect-bottom',blobZone&&!attachTop);
  cursor.style.clipPath=blobZone?'none':(worksBar?'inset(0)':'');
