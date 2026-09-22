@@ -256,10 +256,18 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* WORKS ART CURSOR: large black field behind artwork cards, pointer-events stay disabled */
 #worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
-#cursor.works-art-cursor{width:var(--blob-width,150px)!important;height:var(--blob-height,72px)!important;border-radius:46% 54% 54% 46% / 78% 72% 28% 22%!important;background:#000!important;z-index:1!important;clip-path:none!important;filter:url(#worksBlobFilter)!important;will-change:left,top,width,height,border-radius;transition:width .28s cubic-bezier(.22,1,.36,1),height .28s cubic-bezier(.22,1,.36,1),border-radius .36s ease-out!important}
-#cursor.works-art-cursor::before,#cursor.works-art-cursor::after{display:none!important}
+#cursor.works-art-cursor{width:var(--blob-width,260px)!important;height:var(--blob-height,260px)!important;border-radius:50%!important;background:#000!important;z-index:1!important;clip-path:none!important;filter:url(#worksBlobFilter)!important;will-change:left,top,width,height,border-radius;transition:width .32s cubic-bezier(.22,1,.36,1),height .32s cubic-bezier(.22,1,.36,1),border-radius .36s ease-out!important}
+#cursor.works-art-cursor::before,#cursor.works-art-cursor::after{content:"";position:absolute;left:50%;width:var(--neck-width,80px);height:var(--neck-height,0px);transform:translateX(-50%);background:#000;pointer-events:none;border-radius:50%;display:block!important}
+#cursor.works-art-cursor::before{top:100%}
+#cursor.works-art-cursor::after{bottom:100%}
+#cursor.works-art-cursor.blob-connect-top::before{display:none!important}
+#cursor.works-art-cursor.blob-connect-top::after{display:block!important}
+#cursor.works-art-cursor.blob-connect-bottom::before{display:block!important}
+#cursor.works-art-cursor.blob-connect-bottom::after{display:none!important}
 #cursorText.works-art-cursor{display:none!important}
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
+#works .works-track{position:relative!important}
+#works .works-track::after{content:"";position:absolute;left:0;right:0;bottom:0;height:clamp(52px,6vw,92px);background:#000;z-index:4;pointer-events:none}
 
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
 #artists .section-head{position:relative;align-items:flex-end;min-height:clamp(130px,16vw,210px);margin-bottom:80px;overflow:visible}
@@ -304,21 +312,21 @@ function buildArtistsSuspension(){
 }
 buildArtistsSuspension();
 const artistLetterPhysics=[...document.querySelectorAll('#artists .artist-letter')].map((letter,i)=>({
- angle:0,tx:0,ty:0,glyph:letter.querySelector('.artist-glyph'),fallY:0,vy:0,
- spin:(i%2?0.026:-0.024),grounded:false,returning:false
+ angle:0,tx:0,ty:0,glyph:letter.querySelector('.artist-glyph'),fallY:0,vy:0,vx:0,
+ spin:(i%2?0.026:-0.024),grounded:false,returning:false,hitCooldown:0
 }));
 let artistsGravity=false,artistsGravityWasBelow=false,artistsGravityReturning=false;
 function startArtistsGravity(){
  if(artistsGravity)return;
  artistsGravity=true; artistsGravityReturning=false;
  const floor=document.querySelector('#artistList')?.getBoundingClientRect().top||0;
- artistLetterPhysics.forEach((st,i)=>{st.fallY=0;st.vy=0;st.angle=i%2?0.035:-0.035;st.tx=0;st.ty=0;st.grounded=false;st.returning=false;st.floor=floor});
+ artistLetterPhysics.forEach((st,i)=>{st.fallY=0;st.vy=0;st.vx=0;st.angle=i%2?0.035:-0.035;st.tx=0;st.ty=0;st.grounded=false;st.returning=false;st.hitCooldown=0;st.floor=floor});
  document.querySelector('#artists')?.classList.add('gravity-active');
 }
 function beginArtistsReturn(){
  if(artistsGravityReturning)return;
  artistsGravity=false; artistsGravityReturning=true;
- artistLetterPhysics.forEach(st=>{st.vy=0;st.grounded=false;st.returning=true});
+ artistLetterPhysics.forEach(st=>{st.vy=0;st.vx=0;st.grounded=false;st.returning=true});
  document.querySelector('#artists')?.classList.remove('gravity-active');
 }
 function updateArtistsReturn(){
@@ -336,10 +344,15 @@ function updateArtistsGravity(){
  const floor=list.getBoundingClientRect().top;
  for(let i=0;i<artistLetterPhysics.length;i++){
   const st=artistLetterPhysics[i],r=letters[i].getBoundingClientRect(),h=Math.max(24,r.height*.78);
-  if(!st.grounded){st.vy=Math.min(st.vy+.11,5.5);st.fallY+=st.vy;st.angle+=st.spin;}
+  if(st.hitCooldown>0)st.hitCooldown--;
+  if(!st.grounded){st.vy=Math.min(st.vy+.11,5.5);st.vx*=.992;st.fallY+=st.vy;st.tx+=st.vx;st.angle+=st.spin;}
+  const section=document.querySelector('#artists').getBoundingClientRect(),base=letters[i].getBoundingClientRect();
+  const maxX=Math.max(0,section.width-base.width-12),minX=-base.left+section.left+12;
+  if(base.left+st.tx<section.left+12){st.tx=section.left+12-base.left;st.vx=Math.abs(st.vx)*.35;st.spin*=-.7}
+  if(base.right+st.tx>section.right-12){st.tx=section.right-12-base.right;st.vx=-Math.abs(st.vx)*.35;st.spin*=-.7}
   const bottom=r.bottom+st.fallY;
-  if(bottom>=floor-h*.08){st.fallY=Math.max(0,st.fallY-(bottom-floor+h*.08));st.vy*=-.28;st.spin*=.92;if(Math.abs(st.vy)<.16){st.vy=0;st.grounded=true}}
-  st.glyph.style.transform=`translate3d(0px,${st.fallY.toFixed(2)}px,0) rotate(${st.angle.toFixed(3)}rad)`;
+  if(bottom>=floor-h*.08){st.fallY=Math.max(0,st.fallY-(bottom-floor+h*.08));st.vy*=-.28;st.vx*=.78;st.spin*=.92;if(Math.abs(st.vy)<.16){st.vy=0;st.grounded=true}}
+  st.glyph.style.transform=`translate3d(${st.tx.toFixed(2)}px,${st.fallY.toFixed(2)}px,0) rotate(${st.angle.toFixed(3)}rad)`;
  }
 }
 function updateArtistsPhysics(x,y){
@@ -354,9 +367,10 @@ function updateArtistsPhysics(x,y){
  if(artistsGravity){updateArtistsGravity();return}
  if(artistsGravityReturning){updateArtistsReturn();return}
  letters.forEach((letter,i)=>{
-  const st=artistLetterPhysics[i],r=letter.getBoundingClientRect(),cx=r.left+r.width/2;
-  const dx=x-cx,dy=y-(r.top+r.height*.55),dist=Math.hypot(dx,dy),force=dist<170?(1-dist/170):0;
-  st.angle+=(Math.max(-.035,Math.min(.035,dx*.0007*force))-st.angle)*.12;
+  const st=artistLetterPhysics[i],r=letter.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height*.55;
+  const dx=x-cx,dy=y-cy,dist=Math.hypot(dx,dy),force=dist<170?(1-dist/170):0;
+  if(force&&dist<Math.max(54,r.width*.58)&&st.hitCooldown<=0){const kick=Math.min(18,Math.max(5,Math.hypot(mouse.vx,mouse.vy)*.9));st.vx+=(dx/(dist||1))*kick+mouse.vx*.55;st.vy+=(dy/(dist||1))*kick+mouse.vy*.55;st.spin+=(mouse.vx*.012)+(i%2?.018:-.018);st.hitCooldown=10}
+  st.angle+=(Math.max(-.8,Math.min(.8,dx*.004*force))-st.angle)*.12;
   st.tx+=(dx*.018*force-st.tx)*.12;st.ty+=(dy*.008*force-st.ty)*.12;
   st.glyph.style.transform=`translate3d(${st.tx.toFixed(2)}px,${st.ty.toFixed(2)}px,0) rotate(${st.angle.toFixed(3)}rad)`;
  });
@@ -456,29 +470,29 @@ function renderCursor(){
  cursor.style.display='block';mouse.px+=(mouse.x-mouse.px)*.14;mouse.py+=(mouse.y-mouse.py)*.14;mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
  const now=performance.now()*.001,speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12),jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
  cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
- const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksArt=hovered?.closest('#worksRow'),headRect=document.querySelector('#works .section-head')?.getBoundingClientRect();
- const topDistance=headRect?mouse.py-headRect.top:9999;
- const nearTop=!!headRect && topDistance>-120 && topDistance<120;
- const organicEdge=!!headRect && nearTop && !worksTitle;
- const blobZone=organicEdge,blobTop=topDistance<=0;
+ const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksRow=document.querySelector('#worksRow'),headRect=document.querySelector('#works .section-head')?.getBoundingClientRect(),rowRect=worksRow?.getBoundingClientRect();
+ const worksTrack=document.querySelector('#works .works-track'),trackRect=worksTrack?.getBoundingClientRect();
+ const lowerBarY=trackRect?trackRect.bottom:rowRect?.bottom||0;
+ const inWorks=!!headRect && mouse.x>=0 && mouse.x<=innerWidth && mouse.py>=headRect.top && mouse.py<=lowerBarY;
+ const betweenBars=inWorks && !worksTitle && !worksBar;
+ const topGap=Math.max(0,mouse.py-headRect.bottom),bottomGap=Math.max(0,lowerBarY-mouse.py),attachTop=topGap<=bottomGap;
+ const blobZone=betweenBars||!!worksRow?.contains(hovered);
  if(blobZone){
-  const phase=now*2.15,energy=Math.min(1,speed/18),pulse=Math.sin(phase)+Math.sin(phase*1.73+1.4)*.35;
-  const w=Math.max(112,Math.min(240,148+energy*60+pulse*10));
-  const h=Math.max(48,Math.min(92,62+energy*18+pulse*6));
-  const a=46+Math.sin(phase*.91)*5+energy*3,b=54+Math.cos(phase*1.07)*5;
-  const c=51+Math.sin(phase*1.19+1)*7,d=49+Math.cos(phase*.83+2)*7;
-  cursor.style.left=mouse.px+'px';
-  cursor.style.top=headRect.top+'px';
-  cursor.style.transform=blobTop?'translate(-50%,-100%)':'translate(-50%,0)';
-  cursor.style.setProperty('--blob-width',`${w.toFixed(1)}px`);
-  cursor.style.setProperty('--blob-height',`${h.toFixed(1)}px`);
-  cursor.style.borderRadius=blobTop?`${a}% ${b}% ${c}% ${d}% / 72% 68% 32% 28%`:`${c}% ${d}% 58% 42% / 30% 34% 66% 70%`;
- }else{cursor.style.borderRadius='50%';cursor.style.removeProperty('--blob-height');cursor.style.removeProperty('--blob-width')}
- cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!blobZone);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',blobZone);
- const worksTop=worksBar?.getBoundingClientRect().top ?? document.querySelector('#works .section-head')?.getBoundingClientRect().top ?? 0;
- const worksClipTop=blobZone?0:Math.max(0,worksTop-(mouse.py-500));
- cursor.style.clipPath=blobZone?'none':(worksBar?`inset(${worksClipTop}px 0 0 0)`:'');
- const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);cursorText.classList.toggle('works-art-cursor',!!worksArt);
+  const phase=now*1.75,energy=Math.min(1,speed/20),pulse=Math.sin(phase)+Math.sin(phase*1.43+1.2)*.32;
+  const distance=Math.min(topGap,bottomGap),far=Math.min(1,distance/Math.max(1,(lowerBarY-headRect.bottom)*.5));
+  const size=Math.max(150,Math.min(520,210+far*270+energy*35+pulse*12));
+  const width=Math.max(150,Math.min(560,Math.max(size,210+far*300+energy*45)));
+  const neck=Math.max(0,Math.min(260,(attachTop?topGap:bottomGap)*(.72+far*.22)));
+  const neckWidth=Math.max(28,Math.min(180,width*(.22+far*.16)));
+  const a=48+Math.sin(phase*.91)*5+energy*3,b=52+Math.cos(phase*1.07)*5;
+  cursor.style.left=mouse.x+'px';cursor.style.top=mouse.py+'px';cursor.style.transform='translate(-50%,-50%)';
+  cursor.style.setProperty('--blob-width',`${width.toFixed(1)}px`);cursor.style.setProperty('--blob-height',`${size.toFixed(1)}px`);cursor.style.setProperty('--neck-width',`${neckWidth.toFixed(1)}px`);cursor.style.setProperty('--neck-height',`${neck.toFixed(1)}px`);
+  cursor.style.borderRadius=`${a}% ${b}% ${54+Math.sin(phase*1.2)*5}% ${46+Math.cos(phase*.8)*5}% / ${48+far*18}% ${52+far*14}% ${48+far*18}% ${52+far*14}%`;
+  cursor.style.setProperty('--neck-side',attachTop?'top':'bottom');
+ }else{cursor.style.borderRadius='50%';['--blob-height','--blob-width','--neck-width','--neck-height','--neck-side'].forEach(v=>cursor.style.removeProperty(v))}
+ cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!blobZone);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',blobZone);cursor.classList.toggle('blob-connect-top',blobZone&&attachTop);cursor.classList.toggle('blob-connect-bottom',blobZone&&!attachTop);
+ cursor.style.clipPath=blobZone?'none':(worksBar?'inset(0)':'');
+ const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);cursorText.classList.toggle('works-art-cursor',blobZone);
  updateArtistsPhysics(mouse.x,mouse.y);syncCursorClone(cursorTarget());cursorText.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
 }
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});renderCursor();
