@@ -256,7 +256,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* WORKS ART CURSOR: local elastic deformation of the lower edge */
 #worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
-#cursor.works-art-cursor{width:var(--edge-width,180px)!important;height:var(--edge-height,240px)!important;border-radius:0!important;background:#000!important;z-index:1!important;clip-path:polygon(var(--edge-path,0% 0%,100% 0%,96% 11%,91% 22%,84% 34%,77% 47%,72% 60%,64% 72%,56% 83%,47% 92%,38% 100%,28% 96%,19% 88%,12% 76%,7% 62%,3% 46%,0 28%))!important;filter:url(#worksBlobFilter)!important;will-change:left,top,width,height,clip-path;transition:width .28s cubic-bezier(.22,1,.36,1),height .28s cubic-bezier(.22,1,.36,1)!important}
+#cursor.works-art-cursor{width:var(--edge-width,900px)!important;height:var(--edge-height,900px)!important;border-radius:0!important;background:#000!important;z-index:1!important;clip-path:polygon(45% 0,55% 0,58% 8%,57% 18%,54% 28%,53% 38%,58% 47%,68% 56%,76% 65%,78% 74%,73% 83%,64% 91%,55% 100%,45% 98%,36% 100%,27% 92%,20% 83%,22% 74%,30% 65%,39% 56%,47% 47%,48% 38%,46% 28%,43% 18%,42% 8%)!important;filter:url(#worksBlobFilter)!important;will-change:left,top,width,height,clip-path;transition:width .34s cubic-bezier(.22,1,.36,1),height .34s cubic-bezier(.22,1,.36,1)!important}
 #cursor.works-art-cursor::before,#cursor.works-art-cursor::after{display:none!important;content:none!important}
 #cursorText.works-art-cursor{display:none!important}
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
@@ -475,16 +475,13 @@ function renderCursor(){
   const phase=now*1.75,energy=Math.min(1,speed/20),pulse=Math.sin(phase)+Math.sin(phase*1.43+1.2)*.32;
   const distance=Math.min(topGap,bottomGap),far=Math.min(1,distance/Math.max(1,(lowerBarY-headRect.bottom)*.5));
   const stretch=Math.max(0,Math.min(1,distance/Math.max(1,(lowerBarY-headRect.bottom)*.5)));
-  const height=Math.max(100,Math.min(360,116+stretch*220+energy*34+pulse*8));
-  const width=Math.max(110,Math.min(300,150+stretch*92+energy*24));
-  const sway=Math.sin(phase*.72)*Math.min(26,width*.12)+mouse.vx*.18;
-  const centerY=attachTop?headRect.bottom+height*.48:lowerBarY-height*.48;
-  cursor.style.left=(mouse.px+sway)+'px';cursor.style.top=centerY+'px';cursor.style.transform='translate(-50%,-50%)';
-  cursor.style.setProperty('--edge-width',`${width.toFixed(1)}px`);cursor.style.setProperty('--edge-height',`${height.toFixed(1)}px`);
-  const lean=Math.max(-12,Math.min(12,sway/width*100));
-  cursor.style.setProperty('--edge-path',attachTop
-    ? `0% 0%,${(100+lean).toFixed(1)}% 0%,${(96+lean).toFixed(1)}% 10%,${(88+lean).toFixed(1)}% 21%,${(80+lean).toFixed(1)}% 34%,${(70+lean).toFixed(1)}% 49%,${(61+lean).toFixed(1)}% 64%,${(51+lean).toFixed(1)}% 78%,${(42+lean).toFixed(1)}% 90%,${(32+lean).toFixed(1)}% 100%,28% 96%,18% 86%,10% 71%,4% 52%,0% 28%`
-    : `0% 72%,4% 48%,10% 29%,18% 14%,28% 4%,${(38-lean).toFixed(1)}% 0%,${(48-lean).toFixed(1)}% 10%,${(58-lean).toFixed(1)}% 24%,${(68-lean).toFixed(1)}% 40%,${(78-lean).toFixed(1)}% 58%,${(88-lean).toFixed(1)}% 78%,${(100-lean).toFixed(1)}% 100%,0% 100%`);
+  const formSize=Math.max(900,Math.min(1080,900+stretch*120+energy*30));
+  const sway=Math.sin(phase*.72)*Math.min(34,formSize*.04)+mouse.vx*.18;
+  const formTop=attachTop?headRect.bottom:Math.max(headRect.bottom,lowerBarY-formSize);
+  cursor.style.left=(mouse.px+sway)+'px';cursor.style.top=formTop+'px';cursor.style.transform='translateX(-50%)';
+  cursor.style.setProperty('--edge-width',`${formSize.toFixed(1)}px`);cursor.style.setProperty('--edge-height',`${formSize.toFixed(1)}px`);
+  const drift=Math.max(-4,Math.min(4,sway/formSize*100));
+  cursor.style.clipPath=`polygon(${31+drift}% 0,48% 2%,${65+drift}% 0,${79+drift}% 9%,${70+drift}% 18%,${59+drift}% 27%,${53+drift}% 38%,${55+drift}% 49%,${64+drift}% 59%,${78+drift}% 68%,${92+drift}% 78%,100% 90%,91% 98%,72% 100%,54% 96%,39% 100%,20% 96%,5% 87%,14% 76%,28% 66%,41% 56%,47% 46%,44% 36%,36% 26%,23% 17%,14% 8%)`;
  }else{cursor.style.borderRadius='50%';['--blob-height','--blob-width','--neck-width','--neck-height','--neck-side'].forEach(v=>cursor.style.removeProperty(v))}
  cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!blobZone);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',blobZone);cursor.classList.toggle('blob-connect-top',blobZone&&attachTop);cursor.classList.toggle('blob-connect-bottom',blobZone&&!attachTop);
  cursor.style.clipPath=blobZone?'none':(worksBar?'inset(0)':'');
