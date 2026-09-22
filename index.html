@@ -262,7 +262,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #cursorText.works-art-cursor{display:none!important}
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
 #works .works-track{position:relative!important}
-#works .works-track::after{content:"";position:absolute;left:0;right:0;bottom:0;height:clamp(110px,10vw,150px);background:#000;z-index:4;pointer-events:none}
+#works .works-track::after{content:"";position:absolute;left:0;right:0;bottom:0;height:500px;background:#000;z-index:4;pointer-events:none}
 
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
 #artists .section-head{position:relative;align-items:flex-end;min-height:clamp(130px,16vw,210px);margin-bottom:80px;overflow:visible}
@@ -467,7 +467,8 @@ function renderCursor(){
  cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
  const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksRow=document.querySelector('#worksRow'),headRect=document.querySelector('#works .section-head')?.getBoundingClientRect(),rowRect=worksRow?.getBoundingClientRect();
  const worksTrack=document.querySelector('#works .works-track'),trackRect=worksTrack?.getBoundingClientRect();
- const lowerBarY=trackRect?trackRect.bottom:rowRect?.bottom||0;
+ const lowerBarHeight=500;
+ const lowerBarY=trackRect?trackRect.bottom-lowerBarHeight:rowRect?.bottom||0;
  const inWorks=!!headRect && mouse.x>=0 && mouse.x<=innerWidth && mouse.py>=headRect.top && mouse.py<=lowerBarY;
  const betweenBars=inWorks && !worksTitle && !worksBar;
  const topGap=Math.max(0,mouse.py-headRect.bottom),bottomGap=Math.max(0,lowerBarY-mouse.py),attachTop=topGap<=bottomGap;
