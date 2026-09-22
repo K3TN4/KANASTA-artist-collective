@@ -262,7 +262,14 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #cursorText.works-art-cursor{display:none!important}
 #worksRow .work-card{z-index:3!important;padding:0!important;background:transparent!important}
 #works .works-track{position:relative!important}
-#works .works-track::after{content:"";position:absolute;left:0;right:0;bottom:0;height:500px;background:#000;z-index:4;pointer-events:none}
+#works .works-track::after{display:none!important}
+/* From the end of WORKS to the page bottom: continuous black field with white typography. */
+#works~.section{background:#000!important;color:#fff!important;border-top-color:#fff!important}
+#works~.section .section-head h2,#works~.section .section-head span,#works~.section .placeholder,#works~.section .about,#works~.section .contact,#works~.section a,#works~.section p{color:#fff!important}
+#works~.section .artist-list{border-color:#fff!important}
+#works~.section .contact a{text-decoration-color:#fff!important}
+#works~.section:after{content:"";display:block;position:absolute;left:0;right:0;bottom:0;height:0;background:#000}
+body:has(#works~.section){background:#000!important}
 
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
 #artists .section-head{position:relative;align-items:flex-end;min-height:clamp(130px,16vw,210px);margin-bottom:80px;overflow:visible}
