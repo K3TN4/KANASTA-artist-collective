@@ -493,15 +493,20 @@ function renderCursor(){
  const topGap=Math.max(0,mouse.py-headRect.bottom),bottomGap=Math.max(0,lowerBarY-mouse.py),attachTop=topGap<=bottomGap;
  const blobZone=betweenBars||!!worksRow?.contains(hovered);
  const darkZone=!!nextRect&&mouse.py>=nextRect.top;
- const exitProgress=darkZone?Math.max(0,Math.min(1,(mouse.py-nextRect.top)/420)):0;
- const morphZone=blobZone||approach||darkZone;
+ const worksTop=headRect?.bottom||0;
+ const worksBottom=nextRect?.top||lowerBarY;
+ const exitRange=360;
+ const leavingWorks=!approach&&!!headRect&&mouse.py>worksTop&&mouse.py<worksBottom+exitRange;
+ const exitProgress=leavingWorks?Math.max(0,Math.min(1,(mouse.py-worksTop)/(Math.max(1,(worksBottom-worksTop)+exitRange)))):0;
+ const morphZone=blobZone||approach||leavingWorks||darkZone;
  if(morphZone){
   const phase=now*1.75,energy=Math.min(1,speed/20),pulse=Math.sin(phase)+Math.sin(phase*1.43+1.2)*.32;
   const distance=Math.min(topGap,bottomGap),far=Math.min(1,distance/Math.max(1,(lowerBarY-headRect.bottom)*.5));
   const stretch=Math.max(0,Math.min(1,distance/Math.max(1,(lowerBarY-headRect.bottom)*.5)));
-  const approachProgress=approach?Math.max(0,Math.min(1,(headRect.top-mouse.py)/approachRange)):1;
-  const exitScale=darkZone?Math.max(.06,1-exitProgress):1;
-  const formSize=approach?18+(1500-18)*approachProgress:Math.max(18,Math.min(1640,1500*exitScale+stretch*100+energy*26));
+  const approachProgress=approach?Math.max(0,Math.min(1,(mouse.py-(headRect.top-approachRange))/approachRange)):1;
+  const exitScale=(leavingWorks||darkZone)?Math.max(0,1-exitProgress):1;
+  const normalSize=18;
+  const formSize=approach?normalSize+(1500-normalSize)*approachProgress:(leavingWorks||darkZone)?normalSize+(1500-normalSize)*exitScale:Math.max(18,Math.min(1640,1500+stretch*100+energy*26));
   const sway=Math.sin(phase*.72)*Math.min(28,formSize*.03)+mouse.vx*.16;
   cursor.style.left=(mouse.px+sway)+'px';cursor.style.top=mouse.py+'px';cursor.style.transform='translate(-50%,-50%)';
   cursor.style.setProperty('--soft-size',`${formSize.toFixed(1)}px`);
@@ -512,9 +517,9 @@ function renderCursor(){
   cursor.style.clipPath='inset(var(--works-clip-top) 0 var(--works-clip-bottom) 0)';
  }else{cursor.style.borderRadius='50%';cursor.style.clipPath=worksBar?'inset(0)':'';['--blob-height','--blob-width','--neck-width','--neck-height','--neck-side','--works-clip-top','--works-clip-bottom'].forEach(v=>cursor.style.removeProperty(v))}
  const wasBlob=cursor.classList.contains('works-art-cursor');
- cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!blobZone&&!approach&&!darkZone);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',morphZone);cursor.classList.toggle('dark-zone',darkZone&&!worksTitle&&!blobZone&&!approach);cursor.classList.toggle('blob-connect-top',blobZone&&attachTop);cursor.classList.toggle('blob-connect-bottom',blobZone&&!attachTop);
- if((blobZone||approach)&&!wasBlob){cursor.classList.add('works-entering');requestAnimationFrame(()=>cursor.classList.remove('works-entering'))}
- cursor.style.clipPath=blobZone?'inset(var(--works-clip-top,0px) 0 var(--works-clip-bottom,0px) 0)':(worksBar?'inset(0)':'');
+ cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!blobZone&&!approach&&!leavingWorks&&!darkZone);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',morphZone);cursor.classList.toggle('dark-zone',darkZone&&!worksTitle&&!blobZone&&!approach);cursor.classList.toggle('blob-connect-top',blobZone&&attachTop);cursor.classList.toggle('blob-connect-bottom',blobZone&&!attachTop);
+ if((blobZone||approach||leavingWorks)&&!wasBlob){cursor.classList.add('works-entering');requestAnimationFrame(()=>cursor.classList.remove('works-entering'))}
+ cursor.style.clipPath=(blobZone||leavingWorks)&&headRect?`inset(var(--works-clip-top,0px) 0 var(--works-clip-bottom,0px) 0)`:(worksBar?'inset(0)':'');
  const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);cursorText.classList.toggle('works-art-cursor',blobZone);
  updateArtistsPhysics(mouse.x,mouse.y);syncCursorClone(cursorTarget());cursorText.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
 }
