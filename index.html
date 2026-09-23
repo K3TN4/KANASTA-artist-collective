@@ -269,7 +269,13 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #works~.section .artist-list{border-color:#fff!important}
 #works~.section .contact a{text-decoration-color:#fff!important}
 #works~.section:after{content:"";display:block;position:absolute;left:0;right:0;bottom:0;height:0;background:#000}
-body:has(#works~.section){background:#000!important}
+body:has(#works~.section){background:#fff!important}
+/* White page and white WORKS; black begins only after WORKS. */
+html,body{background:#fff!important;color:#000!important}
+#works{background:#fff!important;color:#000!important;border-top-color:#000!important}
+#works .section-head{background:#fff!important;color:#000!important}
+#works .section-head h2,#works .section-head span{color:#000!important}
+#works .works-track{background:#fff!important}
 
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
 #artists .section-head{position:relative;align-items:flex-end;min-height:clamp(130px,16vw,210px);margin-bottom:80px;overflow:visible}
