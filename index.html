@@ -253,11 +253,12 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #cursor.works-bar-cursor{background:#fff!important}
 #cursor.works-title-cursor{background:#000!important}
 #cursor.dark-zone{background:#fff!important}
+#cursorText.white-cursor .clone{color:#000!important;-webkit-text-fill-color:#000!important}
 #cursorText.works-title-cursor .clone{color:#000!important;-webkit-text-fill-color:#000!important}
 
 /* WORKS ART CURSOR: local elastic deformation of the lower edge */
 #worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
-#cursor.works-art-cursor{width:var(--soft-size,1500px)!important;height:var(--soft-size,1500px)!important;border-radius:var(--soft-radius,52% 48% 47% 53% / 48% 43% 57% 52%)!important;background:#000!important;z-index:1!important;opacity:1!important;clip-path:none!important;filter:none!important;will-change:left,top,width,height,border-radius,opacity;transition:width .5s cubic-bezier(.22,1,.36,1),height .5s cubic-bezier(.22,1,.36,1),border-radius .55s ease-out,opacity .7s ease!important}
+#cursor.works-art-cursor{width:var(--soft-size,1500px)!important;height:var(--soft-size,1500px)!important;border-radius:var(--soft-radius,52% 48% 47% 53% / 48% 43% 57% 52%)!important;background:#000!important;z-index:1!important;opacity:1!important;clip-path:var(--cursor-clip,none)!important;filter:none!important;will-change:left,top,width,height,border-radius,opacity;transition:width .5s cubic-bezier(.22,1,.36,1),height .5s cubic-bezier(.22,1,.36,1),border-radius .55s ease-out,opacity .7s ease!important}
 #cursor.works-art-cursor.works-entering{opacity:0!important}
 #cursor.works-art-cursor.dark-zone{background:#fff!important}
 #cursor.works-art-cursor::before,#cursor.works-art-cursor::after{display:none!important;content:none!important}
@@ -480,48 +481,70 @@ function syncCursorClone(target){
 }
 function renderCursor(){
  if(!cursor||matchMedia('(max-width:700px)').matches){if(cursor)cursor.style.display='none';cancelAnimationFrame(cursorFrame);return}
- cursor.style.display='block';mouse.px+=(mouse.x-mouse.px)*.14;mouse.py+=(mouse.y-mouse.py)*.14;mouse.vx=mouse.x-mouse.px;mouse.vy=mouse.y-mouse.py;
- const now=performance.now()*.001,speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12),jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
- cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
- const hovered=document.elementFromPoint(mouse.x,mouse.y),worksBar=hovered?.closest('#works .section-head'),worksTitle=hovered?.closest('#works .section-head h2'),worksRow=document.querySelector('#worksRow'),headRect=document.querySelector('#works .section-head')?.getBoundingClientRect(),rowRect=worksRow?.getBoundingClientRect();
- const worksTrack=document.querySelector('#works .works-track'),trackRect=worksTrack?.getBoundingClientRect();
- const lowerBarY=trackRect?trackRect.bottom:rowRect?.bottom||0;
- const nextSection=document.querySelector('#works~.section'),nextRect=nextSection?.getBoundingClientRect();
- const approachRange=360,approach=!!headRect&&mouse.py<headRect.top&&mouse.py>headRect.top-approachRange;
- const inWorks=!!headRect && mouse.x>=0 && mouse.x<=innerWidth && mouse.py>=headRect.top && mouse.py<=lowerBarY;
- const betweenBars=inWorks && !worksTitle && !worksBar;
- const topGap=Math.max(0,mouse.py-headRect.bottom),bottomGap=Math.max(0,lowerBarY-mouse.py),attachTop=topGap<=bottomGap;
- const blobZone=betweenBars||!!worksRow?.contains(hovered);
- const darkZone=!!nextRect&&mouse.py>=nextRect.top;
- const worksTop=headRect?.bottom||0;
- const worksBottom=nextRect?.top||lowerBarY;
- const exitRange=360;
- const leavingWorks=!approach&&!!headRect&&mouse.py>worksTop&&mouse.py<worksBottom+exitRange;
- const exitProgress=leavingWorks?Math.max(0,Math.min(1,(mouse.py-worksTop)/(Math.max(1,(worksBottom-worksTop)+exitRange)))):0;
- const morphZone=blobZone||approach||leavingWorks||darkZone;
- if(morphZone){
-  const phase=now*1.75,energy=Math.min(1,speed/20),pulse=Math.sin(phase)+Math.sin(phase*1.43+1.2)*.32;
-  const distance=Math.min(topGap,bottomGap),far=Math.min(1,distance/Math.max(1,(lowerBarY-headRect.bottom)*.5));
-  const stretch=Math.max(0,Math.min(1,distance/Math.max(1,(lowerBarY-headRect.bottom)*.5)));
-  const approachProgress=approach?Math.max(0,Math.min(1,(mouse.py-(headRect.top-approachRange))/approachRange)):1;
-  const exitScale=(leavingWorks||darkZone)?Math.max(0,1-exitProgress):1;
-  const normalSize=18;
-  const formSize=approach?normalSize+(1500-normalSize)*approachProgress:(leavingWorks||darkZone)?normalSize+(1500-normalSize)*exitScale:Math.max(18,Math.min(1640,1500+stretch*100+energy*26));
-  const sway=Math.sin(phase*.72)*Math.min(28,formSize*.03)+mouse.vx*.16;
-  cursor.style.left=(mouse.px+sway)+'px';cursor.style.top=mouse.py+'px';cursor.style.transform='translate(-50%,-50%)';
-  cursor.style.setProperty('--soft-size',`${formSize.toFixed(1)}px`);
-  cursor.style.setProperty('--soft-radius',`${50+Math.sin(phase*.83)*6}% ${50-Math.sin(phase*.83)*6}% ${46+Math.cos(phase*1.1)*7}% ${54-Math.cos(phase*1.1)*7}% / ${48+Math.sin(phase*.7)*6}% ${44+Math.cos(phase*.9)*7}% ${56-Math.sin(phase*.7)*6}% ${52-Math.cos(phase*.9)*7}%`);
-  const boxTop=mouse.py-formSize*.5,boxBottom=mouse.py+formSize*.5;
-  cursor.style.setProperty('--works-clip-top',`${Math.max(0,headRect.bottom-boxTop).toFixed(1)}px`);
-  cursor.style.setProperty('--works-clip-bottom',`${Math.max(0,boxBottom-lowerBarY).toFixed(1)}px`);
-  cursor.style.clipPath='inset(var(--works-clip-top) 0 var(--works-clip-bottom) 0)';
- }else{cursor.style.borderRadius='50%';cursor.style.clipPath=worksBar?'inset(0)':'';['--blob-height','--blob-width','--neck-width','--neck-height','--neck-side','--works-clip-top','--works-clip-bottom'].forEach(v=>cursor.style.removeProperty(v))}
- const wasBlob=cursor.classList.contains('works-art-cursor');
- cursor.classList.toggle('works-bar-cursor',!!worksBar&&!worksTitle&&!blobZone&&!approach&&!leavingWorks&&!darkZone);cursor.classList.toggle('works-title-cursor',!!worksTitle);cursor.classList.toggle('works-art-cursor',morphZone);cursor.classList.toggle('dark-zone',darkZone&&!worksTitle&&!blobZone&&!approach);cursor.classList.toggle('blob-connect-top',blobZone&&attachTop);cursor.classList.toggle('blob-connect-bottom',blobZone&&!attachTop);
- if((blobZone||approach||leavingWorks)&&!wasBlob){cursor.classList.add('works-entering');requestAnimationFrame(()=>cursor.classList.remove('works-entering'))}
- cursor.style.clipPath=(blobZone||leavingWorks)&&headRect?`inset(var(--works-clip-top,0px) 0 var(--works-clip-bottom,0px) 0)`:(worksBar?'inset(0)':'');
- const cursorText=document.getElementById('cursorText');cursorText.classList.toggle('works-title-cursor',!!worksTitle);cursorText.classList.toggle('works-art-cursor',blobZone);
- updateArtistsPhysics(mouse.x,mouse.y);syncCursorClone(cursorTarget());cursorText.style.clipPath=`circle(9px at ${mouse.px}px ${mouse.py}px)`;cursorFrame=requestAnimationFrame(renderCursor)
+ cursor.style.display='block';
+ mouse.px+=(mouse.x-mouse.px)*.14; mouse.py+=(mouse.y-mouse.py)*.14;
+ mouse.vx=mouse.x-mouse.px; mouse.vy=mouse.y-mouse.py;
+ const now=performance.now()*.001;
+ const hovered=document.elementFromPoint(mouse.x,mouse.y);
+ const worksRow=document.querySelector('#worksRow');
+ const worksHead=document.querySelector('#works .section-head');
+ const nextSection=document.querySelector('#works~.section');
+ const headRect=worksHead?.getBoundingClientRect();
+ const rowRect=worksRow?.getBoundingClientRect();
+ const nextRect=nextSection?.getBoundingClientRect();
+ const worksTop=headRect?.top||0;
+ const worksBottom=nextRect?.top||rowRect?.bottom||0;
+ const approachRange=360;
+ const exitRange=420;
+ const inApproach=!!headRect&&mouse.py>=worksTop-approachRange&&mouse.py<worksTop;
+ const beforeExit=!!headRect&&mouse.py>=worksTop&&mouse.py<worksBottom;
+ const inExit=!!headRect&&mouse.py>=Math.max(worksTop,worksBottom-exitRange)&&mouse.py<worksBottom+exitRange;
+ const inWorks=beforeExit||inExit;
+ const approachProgress=inApproach?Math.max(0,Math.min(1,(mouse.py-(worksTop-approachRange))/approachRange)):0;
+ const exitProgress=inExit?Math.max(0,Math.min(1,(mouse.py-(worksBottom-exitRange))/(exitRange*2))):0;
+ const normalSize=18;
+ const largeSize=1500;
+ let size=normalSize;
+ if(inApproach) size=normalSize+(largeSize-normalSize)*approachProgress;
+ else if(beforeExit&&!inExit) size=largeSize;
+ else if(inExit) size=largeSize+(normalSize-largeSize)*exitProgress;
+ const onDark=!!nextRect&&mouse.py>=nextRect.top;
+ const inWorksHeader=!!headRect&&mouse.py>=headRect.top&&mouse.py<=headRect.bottom;
+ const worksTitle=!!hovered?.closest('#works .section-head h2');
+ const worksBar=!!hovered?.closest('#works .section-head');
+ const activeLarge=inApproach||inWorks||inExit;
+ const whiteCursor=onDark&&!inWorks;
+ const speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12);
+ const jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
+ cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';
+ cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
+ cursor.style.setProperty('--soft-size',`${size.toFixed(1)}px`);
+ cursor.style.setProperty('--soft-radius',`${50+Math.sin(now*1.45)*3}% ${50-Math.sin(now*1.45)*3}% ${48+Math.cos(now*1.8)*3}% ${52-Math.cos(now*1.8)*3}% / 50% 47% 53% 50%`);
+ cursor.style.background=whiteCursor?'#fff':'#000';
+ cursor.style.width=size+'px';cursor.style.height=size+'px';
+ cursor.style.borderRadius=activeLarge?'var(--soft-radius)':'50%';
+ cursor.style.setProperty('--cursor-clip','none');
+ if(activeLarge&&headRect&&rowRect){
+  const boxTop=mouse.py-size*.5,boxBottom=mouse.py+size*.5;
+  const clipTop=Math.max(0,headRect.top-boxTop);
+  const clipBottom=Math.max(0,boxBottom-worksBottom);
+  cursor.style.setProperty('--cursor-clip',`inset(${clipTop.toFixed(1)}px 0 ${clipBottom.toFixed(1)}px 0)`);
+ }
+ const wasLarge=cursor.classList.contains('works-art-cursor');
+ cursor.classList.toggle('works-art-cursor',activeLarge);
+ cursor.classList.toggle('works-bar-cursor',worksBar&&!activeLarge&&!whiteCursor);
+ cursor.classList.toggle('works-title-cursor',worksTitle);
+ cursor.classList.toggle('dark-zone',whiteCursor);
+ cursor.classList.toggle('white-cursor',whiteCursor);
+ if(activeLarge&&!wasLarge){cursor.classList.add('works-entering');requestAnimationFrame(()=>cursor.classList.remove('works-entering'))}
+ const cursorText=document.getElementById('cursorText');
+ cursorText.classList.toggle('works-title-cursor',worksTitle);
+ cursorText.classList.toggle('works-art-cursor',activeLarge);
+ cursorText.classList.toggle('white-cursor',whiteCursor);
+ cursorText.style.clipPath=`circle(${Math.max(9,size*.5).toFixed(1)}px at ${mouse.px}px ${mouse.py}px)`;
+ updateArtistsPhysics(mouse.x,mouse.y);
+ syncCursorClone(cursorTarget());
+ cursorFrame=requestAnimationFrame(renderCursor);
 }
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});renderCursor();
 
