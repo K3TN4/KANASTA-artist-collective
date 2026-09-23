@@ -273,8 +273,11 @@ body:has(#works~.section){background:#fff!important}
 /* White page and white WORKS; black begins only after WORKS. */
 html,body{background:#fff!important;color:#000!important}
 #works{background:#fff!important;color:#000!important;border-top-color:#000!important}
-#works .section-head{background:#fff!important;color:#000!important}
-#works .section-head h2,#works .section-head span{color:#000!important}
+#works .section-head{background:#000!important;color:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important}
+#works .section-head h2{color:#fff!important;position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;margin:0!important;z-index:2!important}
+#works .section-head span{color:#fff!important;position:absolute!important;top:90px!important;z-index:2!important}
+#works .section-head span:first-child{left:var(--g)!important}
+#works .section-head span:last-child{right:var(--g)!important}
 #works .works-track{background:#fff!important}
 
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
