@@ -283,12 +283,13 @@ html,body{background:#fff!important;color:#000!important}
 #works .section-head span{color:#fff!important;position:absolute!important;top:90px!important;z-index:2!important}
 #works .section-head span:first-child{left:var(--g)!important}
 #works .section-head span:last-child{right:var(--g)!important}
-#works .works-track{background:#000!important}
-#worksRow{background:#000!important}
+#works .works-track{background:#fff!important}
+#worksRow{background:#fff!important}
 #worksRow .work-card{background:transparent!important}
 #worksRow .work-card img{background:transparent!important}
 /* Invert white labels locally under the white cursor on the black sections. */
 #cursorText.works-art-cursor.dark-zone{display:block!important}
+#cursorText.works-art-cursor{display:block!important}
 #cursorText.white-cursor{z-index:10002!important}
 #cursorText.white-cursor .clone,#cursorText.white-cursor .clone *{color:#000!important;-webkit-text-fill-color:#000!important}
 
@@ -470,36 +471,40 @@ function cardSize(w,stats,i){
 function placeBatch(items,offsetX,height){
  const line=railLine(),dims=items.map(artworkDimensions).filter(Boolean).map(d=>Math.log(d.area));
  const stats={min:dims.length?Math.min(...dims):0,max:dims.length?Math.max(...dims):1};
- const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=16,scaleBuffer=1.56,gap=18,cell=96;
+ const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=12,cell=96;
  const records=items.map((w,i)=>{
-  const sz=cardSize(w,stats,i),px=sz.w*(scaleBuffer-1)/2+gap/2,py=sz.h*(scaleBuffer-1)/2+gap/2;
+  const sz=cardSize(w,stats,i),pad=7;
   let seed=2166136261;for(const ch of w.id)seed=Math.imul(seed^ch.charCodeAt(0),16777619);
-  return {w,i,sz,px,py,bw:sz.w+2*px,bh:sz.h+2*py,seed:seed>>>0};
+  return {w,i,sz,pad,bw:sz.w+pad*2,bh:sz.h+pad*2,seed:seed>>>0};
  });
  const usableH=Math.max(1,usableHeight-side*2),area=records.reduce((n,r)=>n+r.bw*r.bh,0);
- let span=Math.max(innerWidth*1.8,Math.ceil(area/(usableH*.68)+innerWidth*.16)),placed=[];
+ let span=Math.max(innerWidth*1.55,Math.ceil(area/(usableH*1.05)+innerWidth*.08)),placed=[];
  const cellKeys=r=>{const keys=[];for(let gy=Math.floor(r.y/cell);gy<=Math.floor((r.y+r.h)/cell);gy++)for(let gx=Math.floor(r.x/cell);gx<=Math.floor((r.x+r.w)/cell);gx++)keys.push(`${gx},${gy}`);return keys};
- for(let attempt=0;attempt<7;attempt++){
+ for(let attempt=0;attempt<8;attempt++){
   placed=[];const bins=new Map();let success=true;
   const ordered=[...records].sort((a,b)=>b.bw*b.bh-a.bw*a.bh);
   for(const rec of ordered){let state=(rec.seed+Math.imul(attempt+1,0x9e3779b1))>>>0,found=null;
    const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296};
    const maxX=Math.max(side,span-side-rec.bw),maxY=Math.max(side,usableHeight-side-rec.bh);
-   for(let n=0;n<2600;n++){
+   for(let n=0;n<2200;n++){
     const box={x:offsetX+side+random()*(maxX-side),y:side+random()*(maxY-side),w:rec.bw,h:rec.bh};
     const nearby=new Set();for(const key of cellKeys(box))for(const other of bins.get(key)||[])nearby.add(other);
-    if([...nearby].every(other=>!overlaps(box,other,0))){found={rec,box,x:box.x+rec.px,y:box.y+rec.py};break}
+    let overlapArea=0,tooMuch=false;
+    for(const other of nearby){const iw=Math.max(0,Math.min(box.x+box.w,other.x+other.w)-Math.max(box.x,other.x)),ih=Math.max(0,Math.min(box.y+box.h,other.y+other.h)-Math.max(box.y,other.y)),inter=iw*ih;
+     if(inter/Math.min(box.w*box.h,other.w*other.h)>.48){tooMuch=true;break}overlapArea+=inter;
+    }
+    if(!tooMuch&&overlapArea<box.w*box.h*.62){found={rec,box,x:box.x+rec.pad,y:box.y+rec.pad};break}
    }
    if(!found){success=false;break}
    placed.push(found);for(const key of cellKeys(found.box)){if(!bins.has(key))bins.set(key,[]);bins.get(key).push(found.box)}
   }
   if(success)break;
-  span=Math.ceil(span*1.18);
+  span=Math.ceil(span*1.14);
  }
  if(placed.length!==records.length)console.warn('WORKS scatter placement incomplete',placed.length,records.length);
  const byIndex=new Map(placed.map(p=>[p.rec.i,p]));let extent=0;
  for(const rec of records){const pos=byIndex.get(rec.i);if(!pos)continue;const {w,sz}=rec,card=document.createElement('figure');
-  card.className='work-card';card.style.setProperty('--card-x',pos.x+'px');card.style.setProperty('--card-y',pos.y+'px');card.style.setProperty('--card-w',sz.w+'px');card.style.setProperty('--card-h',sz.h+'px');card.dataset.workId=w.id;
+  card.className='work-card';card.style.setProperty('--card-x',pos.x+'px');card.style.setProperty('--card-y',pos.y+'px');card.style.setProperty('--card-w',sz.w+'px');card.style.setProperty('--card-h',sz.h+'px');card.style.setProperty('z-index',String(2+(rec.seed%7)));card.dataset.workId=w.id;card.dataset.depth=String(rec.seed%7);
   const img=document.createElement('img');img.alt=`${w.title} — ${w.artist}`;img.loading='lazy';img.decoding='async';img.draggable=false;img.style.objectFit='contain';img.style.objectPosition='center';
   useImageCandidates(img,imageCandidates(w,'thumb'));card.append(img);
   card.addEventListener('click',()=>{if(!document.querySelector('#worksRow').dataset.suppress){const k=works.indexOf(w);if(k>=0)openWork(k)}});line.append(card);
@@ -517,7 +522,7 @@ function updateEdge(){
   const left=railX-w*(scale-1)/2,right=railX+w+w*(scale-1)/2,top=railY-h*(scale-1)/2,bottom=railY+h+h*(scale-1)/2;
   const visible=right>0&&left<innerWidth&&bottom>vr.top&&top<vr.bottom;
   c.style.setProperty('opacity',String(visible?1:0),'important');c.style.setProperty('transform',`scale(${scale.toFixed(3)})`,'important');
-  c.style.setProperty('transform-origin','center center','important');c.style.setProperty('z-index',String(3+Math.round(center*12)),'important');
+  c.style.setProperty('transform-origin','center center','important');c.style.setProperty('z-index',String(3+Math.round(center*12)+Number(c.dataset.depth||0)),'important');
  });
 }
 function paint(){const l=railLine();if(l)l.style.transform=`translate3d(${rail.x}px,0,0)`;updateEdge()}
