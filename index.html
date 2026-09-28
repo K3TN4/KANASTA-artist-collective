@@ -283,13 +283,12 @@ html,body{background:#fff!important;color:#000!important}
 #works .section-head span{color:#fff!important;position:absolute!important;top:90px!important;z-index:2!important}
 #works .section-head span:first-child{left:var(--g)!important}
 #works .section-head span:last-child{right:var(--g)!important}
-#works .works-track{background:#fff!important}
-#worksRow{background:#fff!important}
+#works .works-track{background:transparent!important}
+#worksRow{background:transparent!important}
 #worksRow .work-card{background:transparent!important}
 #worksRow .work-card img{background:transparent!important}
 /* Invert white labels locally under the white cursor on the black sections. */
-#cursorText.works-art-cursor.dark-zone{display:block!important}
-#cursorText.works-art-cursor{display:block!important}
+#cursorText.works-art-cursor.white-cursor{display:block!important}
 #cursorText.white-cursor{z-index:10002!important}
 #cursorText.white-cursor .clone,#cursorText.white-cursor .clone *{color:#000!important;-webkit-text-fill-color:#000!important}
 
@@ -471,35 +470,33 @@ function cardSize(w,stats,i){
 function placeBatch(items,offsetX,height){
  const line=railLine(),dims=items.map(artworkDimensions).filter(Boolean).map(d=>Math.log(d.area));
  const stats={min:dims.length?Math.min(...dims):0,max:dims.length?Math.max(...dims):1};
- const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=12,cell=96;
+ const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=14,cell=96,maxScale=1.5,gap=18;
  const records=items.map((w,i)=>{
-  const sz=cardSize(w,stats,i),pad=7;
+  const sz=cardSize(w,stats,i),reserveW=Math.ceil(sz.w*maxScale)+gap,reserveH=Math.ceil(sz.h*maxScale)+gap;
   let seed=2166136261;for(const ch of w.id)seed=Math.imul(seed^ch.charCodeAt(0),16777619);
-  return {w,i,sz,pad,bw:sz.w+pad*2,bh:sz.h+pad*2,seed:seed>>>0};
+  return {w,i,sz,reserveW,reserveH,seed:seed>>>0};
  });
- const usableH=Math.max(1,usableHeight-side*2),area=records.reduce((n,r)=>n+r.bw*r.bh,0);
- let span=Math.max(innerWidth*1.55,Math.ceil(area/(usableH*1.05)+innerWidth*.08)),placed=[];
+ const usableH=Math.max(1,usableHeight-side*2),area=records.reduce((n,r)=>n+r.reserveW*r.reserveH,0);
+ let span=Math.max(innerWidth*1.65,Math.ceil(area/(usableH*.58)+innerWidth*.12)),placed=[];
  const cellKeys=r=>{const keys=[];for(let gy=Math.floor(r.y/cell);gy<=Math.floor((r.y+r.h)/cell);gy++)for(let gx=Math.floor(r.x/cell);gx<=Math.floor((r.x+r.w)/cell);gx++)keys.push(`${gx},${gy}`);return keys};
- for(let attempt=0;attempt<8;attempt++){
+ for(let attempt=0;attempt<9;attempt++){
   placed=[];const bins=new Map();let success=true;
-  const ordered=[...records].sort((a,b)=>b.bw*b.bh-a.bw*a.bh);
+  const ordered=[...records].sort((a,b)=>b.reserveW*b.reserveH-a.reserveW*a.reserveH);
   for(const rec of ordered){let state=(rec.seed+Math.imul(attempt+1,0x9e3779b1))>>>0,found=null;
    const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296};
-   const maxX=Math.max(side,span-side-rec.bw),maxY=Math.max(side,usableHeight-side-rec.bh);
-   for(let n=0;n<2200;n++){
-    const box={x:offsetX+side+random()*(maxX-side),y:side+random()*(maxY-side),w:rec.bw,h:rec.bh};
+   const maxX=Math.max(side,span-side-rec.reserveW),maxY=Math.max(side,usableHeight-side-rec.reserveH);
+   for(let n=0;n<4200;n++){
+    const box={x:offsetX+side+random()*(maxX-side),y:side+random()*(maxY-side),w:rec.reserveW,h:rec.reserveH};
     const nearby=new Set();for(const key of cellKeys(box))for(const other of bins.get(key)||[])nearby.add(other);
-    let overlapArea=0,tooMuch=false;
-    for(const other of nearby){const iw=Math.max(0,Math.min(box.x+box.w,other.x+other.w)-Math.max(box.x,other.x)),ih=Math.max(0,Math.min(box.y+box.h,other.y+other.h)-Math.max(box.y,other.y)),inter=iw*ih;
-     if(inter/Math.min(box.w*box.h,other.w*other.h)>.48){tooMuch=true;break}overlapArea+=inter;
+    if([...nearby].every(other=>!overlaps(box,other,0))){
+     found={rec,box,x:box.x+(box.w-rec.sz.w)/2,y:box.y+(box.h-rec.sz.h)/2};break
     }
-    if(!tooMuch&&overlapArea<box.w*box.h*.62){found={rec,box,x:box.x+rec.pad,y:box.y+rec.pad};break}
    }
    if(!found){success=false;break}
    placed.push(found);for(const key of cellKeys(found.box)){if(!bins.has(key))bins.set(key,[]);bins.get(key).push(found.box)}
   }
   if(success)break;
-  span=Math.ceil(span*1.14);
+  span=Math.ceil(span*1.16);
  }
  if(placed.length!==records.length)console.warn('WORKS scatter placement incomplete',placed.length,records.length);
  const byIndex=new Map(placed.map(p=>[p.rec.i,p]));let extent=0;
@@ -535,7 +532,21 @@ async function buildRail(){const list=loadRepoWorks();sourceWorks.splice(0,sourc
 let worksDrag=null,worksTouchRail=null;$('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;worksDrag={x:e.clientX,moved:false};$('#worksRow').classList.add('dragging');e.preventDefault()};document.addEventListener('mousemove',e=>{if(!worksDrag)return;const dx=e.clientX-worksDrag.x;if(Math.abs(dx)>2)worksDrag.moved=true;scheduleMove(dx);worksDrag.x=e.clientX},{passive:true});document.addEventListener('mouseup',()=>{if(!worksDrag)return;const moved=worksDrag.moved;worksDrag=null;$('#worksRow').classList.remove('dragging');if(moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,90)}});$('#worksRow').addEventListener('touchstart',e=>{if(e.touches.length)worksTouchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(!worksTouchRail||!e.touches.length)return;const dx=e.touches[0].clientX-worksTouchRail.x;if(Math.abs(dx)>3)worksTouchRail.moved=true;if(worksTouchRail.moved){e.preventDefault();scheduleMove(dx);worksTouchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(worksTouchRail?.moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,100)}worksTouchRail=null});window.addEventListener('resize',updateEdge);window.addEventListener('scroll',updateEdge,{passive:true});(async()=>{try{await buildRail()}catch(e){console.error('WORKS rebuild',e);$('#worksRow').innerHTML='<div class="placeholder">WORKS COULD NOT BE LOADED</div>'}})();
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
 let cursorFrame=0,cursorClone=null,cursorCloneTarget=null;
-function cursorTarget(){const el=document.elementFromPoint(mouse.x,mouse.y);return el&&el.closest('button,a,h1,h2,h3,.subtitle,.artist-name,.section-head,.section-head span,.viewer-caption h2,.viewer-caption p,.viewer-caption small,.top button,.viewerLogo,.section-head span,.section-head h2,.artist-name,.subtitle,.placeholder,.about p,.contact,.contact *,.bio button,.menu-list a,.circle,.artist-photo');}
+const cursorTextCandidates='h1,h2,h3,.subtitle,.artist-name,.section-head span,.viewer-caption p,.viewer-caption small,.top button,.viewerLogo,.placeholder,.about p,.contact a,.contact p,.bio button,.menu-list a';
+function cursorTarget(size=18,whiteCursor=false){
+ const x=mouse.x,y=mouse.y,el=document.elementFromPoint(x,y),direct=el&&el.closest(cursorTextCandidates);
+ if(direct)return direct;
+ if(!whiteCursor||size<500)return null;
+ const radius=size*.5;let best=null,bestDistance=Infinity;
+ for(const candidate of document.querySelectorAll(cursorTextCandidates)){
+  const r=candidate.getBoundingClientRect(),cs=getComputedStyle(candidate);
+  if(!r.width||!r.height||r.bottom<0||r.top>innerHeight||r.right<0||r.left>innerWidth||cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)continue;
+  if(cs.color!=='rgb(255, 255, 255)'&&cs.webkitTextFillColor!=='rgb(255, 255, 255)')continue;
+  const nx=Math.max(r.left,Math.min(x,r.right)),ny=Math.max(r.top,Math.min(y,r.bottom)),distance=Math.hypot(nx-x,ny-y);
+  if(distance<=radius&&distance<bestDistance){best=candidate;bestDistance=distance}
+ }
+ return best;
+}
 function syncCursorClone(target){
  if(cursorCloneTarget!==target){
   if(cursorClone)cursorClone.remove();cursorClone=null;cursorCloneTarget=target;
@@ -616,7 +627,7 @@ function renderCursor(){
  cursorText.classList.toggle('white-cursor',whiteCursor);
  cursorText.style.clipPath=`circle(${Math.max(9,size*.5).toFixed(1)}px at ${mouse.px}px ${mouse.py}px)`;
  updateArtistsPhysics(mouse.x,mouse.y);
- syncCursorClone(cursorTarget());
+ syncCursorClone(cursorTarget(size,whiteCursor));
  cursorFrame=requestAnimationFrame(renderCursor);
 }
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});renderCursor();
