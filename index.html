@@ -283,7 +283,14 @@ html,body{background:#fff!important;color:#000!important}
 #works .section-head span{color:#fff!important;position:absolute!important;top:90px!important;z-index:2!important}
 #works .section-head span:first-child{left:var(--g)!important}
 #works .section-head span:last-child{right:var(--g)!important}
-#works .works-track{background:#fff!important}
+#works .works-track{background:#000!important}
+#worksRow{background:#000!important}
+#worksRow .work-card{background:transparent!important}
+#worksRow .work-card img{background:transparent!important}
+/* Invert white labels locally under the white cursor on the black sections. */
+#cursorText.works-art-cursor.dark-zone{display:block!important}
+#cursorText.white-cursor{z-index:10002!important}
+#cursorText.white-cursor .clone,#cursorText.white-cursor .clone *{color:#000!important;-webkit-text-fill-color:#000!important}
 
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
 #artists .section-head{position:relative;align-items:flex-end;min-height:clamp(130px,16vw,210px);margin-bottom:80px;overflow:visible}
@@ -455,15 +462,15 @@ function expandedCardBox(c,pad=36){return {x:c.x-pad,y:c.y-pad,w:c.w+pad*2,h:c.h
 function cardSize(w,stats,i){
  const d=artworkDimensions(w),t=d&&stats.max>stats.min?Math.max(0,Math.min(1,(Math.log(d.area)-stats.min)/(stats.max-stats.min))):.5;
  const wobble=((i*37)%17-8)/100,mobile=innerWidth<=700;
- const minH=mobile?84:140,maxH=mobile?112:176;
+ const minH=mobile?112:200,maxH=mobile?158:270;
  const h=Math.round(minH+t*(maxH-minH)+wobble*(maxH-minH));
  const ratio=d?Math.max(.52,Math.min(1.9,d.a/d.b)):1.15;
- return {w:Math.min(mobile?215:330,Math.max(mobile?90:115,Math.round(h*ratio))),h};
+ return {w:Math.min(mobile?278:430,Math.max(mobile?118:160,Math.round(h*ratio))),h};
 }
 function placeBatch(items,offsetX,height){
  const line=railLine(),dims=items.map(artworkDimensions).filter(Boolean).map(d=>Math.log(d.area));
  const stats={min:dims.length?Math.min(...dims):0,max:dims.length?Math.max(...dims):1};
- const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=14,scaleBuffer=1.56,gap=14,cell=96;
+ const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=16,scaleBuffer=1.56,gap=18,cell=96;
  const records=items.map((w,i)=>{
   const sz=cardSize(w,stats,i),px=sz.w*(scaleBuffer-1)/2+gap/2,py=sz.h*(scaleBuffer-1)/2+gap/2;
   let seed=2166136261;for(const ch of w.id)seed=Math.imul(seed^ch.charCodeAt(0),16777619);
@@ -555,7 +562,7 @@ function renderCursor(){
  const worksBottom=nextRect?.top||rowRect?.bottom||0;
  const approachRange=360;
  const exitLead=100;
- const exitRange=2400;
+ const exitRange=2800;
  const inApproach=!!headRect&&mouse.py>=worksTop-approachRange&&mouse.py<worksTop;
  const beforeExit=!!headRect&&mouse.py>=worksTop&&mouse.py<worksBottom-exitLead;
  const inExit=!!headRect&&mouse.py>=Math.max(worksTop,worksBottom-exitLead)&&mouse.py<worksBottom+exitRange;
