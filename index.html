@@ -454,29 +454,51 @@ function overlaps(a,b,g=12){return !(a.x+a.w+g<=b.x||b.x+b.w+g<=a.x||a.y+a.h+g<=
 function expandedCardBox(c,pad=36){return {x:c.x-pad,y:c.y-pad,w:c.w+pad*2,h:c.h+pad*2}}
 function cardSize(w,stats,i){
  const d=artworkDimensions(w),t=d&&stats.max>stats.min?Math.max(0,Math.min(1,(Math.log(d.area)-stats.min)/(stats.max-stats.min))):.5;
- const wobble=((i*37)%17-8)/100;
- const mobile=innerWidth<=700,baseH=mobile?76:110,maxH=mobile?92:134;
- const h=Math.round(Math.max(baseH,Math.min(maxH,baseH+(t+wobble)*(maxH-baseH))));
+ const wobble=((i*37)%17-8)/100,mobile=innerWidth<=700;
+ const minH=mobile?84:140,maxH=mobile?112:176;
+ const h=Math.round(minH+t*(maxH-minH)+wobble*(maxH-minH));
  const ratio=d?Math.max(.52,Math.min(1.9,d.a/d.b)):1.15;
- return {w:Math.min(250,Math.max(75,Math.round(h*ratio))),h};
+ return {w:Math.min(mobile?215:330,Math.max(mobile?90:115,Math.round(h*ratio))),h};
 }
 function placeBatch(items,offsetX,height){
- const line=railLine(),ds=items.map(artworkDimensions).filter(Boolean).map(d=>Math.log(d.area));
- const stats={min:ds.length?Math.min(...ds):0,max:ds.length?Math.max(...ds):1};
- const lanes=3,safeScale=1.34,gap=12,side=12,baseH=innerWidth<=700?92:134,usableHeight=document.querySelector('#worksRow')?.clientHeight||height,lanePitch=Math.max(baseH*safeScale+8,Math.min(178,(usableHeight-130)/2)),laneX=Array(lanes).fill(offsetX+side);
- let maxX=offsetX;
- items.forEach((w,i)=>{
-  const sz=cardSize(w,stats,i),lane=i%lanes,seed=(i*7919+(w.id.length*97))%10000;
-  const x=laneX[lane]+(sz.w*safeScale-sz.w)/2;
-  const y=side+lane*lanePitch+(baseH-sz.h)/2+(((seed%9)-4)*.25);
-  laneX[lane]+=sz.w*safeScale+gap;maxX=Math.max(maxX,laneX[lane]);
-  const card=document.createElement('figure');card.className='work-card';
-  card.style.setProperty('--card-x',x+'px');card.style.setProperty('--card-y',y+'px');card.style.setProperty('--card-w',sz.w+'px');card.style.setProperty('--card-h',sz.h+'px');card.dataset.workId=w.id;
+ const line=railLine(),dims=items.map(artworkDimensions).filter(Boolean).map(d=>Math.log(d.area));
+ const stats={min:dims.length?Math.min(...dims):0,max:dims.length?Math.max(...dims):1};
+ const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=14,scaleBuffer=1.56,gap=14,cell=96;
+ const records=items.map((w,i)=>{
+  const sz=cardSize(w,stats,i),px=sz.w*(scaleBuffer-1)/2+gap/2,py=sz.h*(scaleBuffer-1)/2+gap/2;
+  let seed=2166136261;for(const ch of w.id)seed=Math.imul(seed^ch.charCodeAt(0),16777619);
+  return {w,i,sz,px,py,bw:sz.w+2*px,bh:sz.h+2*py,seed:seed>>>0};
+ });
+ const usableH=Math.max(1,usableHeight-side*2),area=records.reduce((n,r)=>n+r.bw*r.bh,0);
+ let span=Math.max(innerWidth*1.8,Math.ceil(area/(usableH*.68)+innerWidth*.16)),placed=[];
+ const cellKeys=r=>{const keys=[];for(let gy=Math.floor(r.y/cell);gy<=Math.floor((r.y+r.h)/cell);gy++)for(let gx=Math.floor(r.x/cell);gx<=Math.floor((r.x+r.w)/cell);gx++)keys.push(`${gx},${gy}`);return keys};
+ for(let attempt=0;attempt<7;attempt++){
+  placed=[];const bins=new Map();let success=true;
+  const ordered=[...records].sort((a,b)=>b.bw*b.bh-a.bw*a.bh);
+  for(const rec of ordered){let state=(rec.seed+Math.imul(attempt+1,0x9e3779b1))>>>0,found=null;
+   const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296};
+   const maxX=Math.max(side,span-side-rec.bw),maxY=Math.max(side,usableHeight-side-rec.bh);
+   for(let n=0;n<2600;n++){
+    const box={x:offsetX+side+random()*(maxX-side),y:side+random()*(maxY-side),w:rec.bw,h:rec.bh};
+    const nearby=new Set();for(const key of cellKeys(box))for(const other of bins.get(key)||[])nearby.add(other);
+    if([...nearby].every(other=>!overlaps(box,other,0))){found={rec,box,x:box.x+rec.px,y:box.y+rec.py};break}
+   }
+   if(!found){success=false;break}
+   placed.push(found);for(const key of cellKeys(found.box)){if(!bins.has(key))bins.set(key,[]);bins.get(key).push(found.box)}
+  }
+  if(success)break;
+  span=Math.ceil(span*1.18);
+ }
+ if(placed.length!==records.length)console.warn('WORKS scatter placement incomplete',placed.length,records.length);
+ const byIndex=new Map(placed.map(p=>[p.rec.i,p]));let extent=0;
+ for(const rec of records){const pos=byIndex.get(rec.i);if(!pos)continue;const {w,sz}=rec,card=document.createElement('figure');
+  card.className='work-card';card.style.setProperty('--card-x',pos.x+'px');card.style.setProperty('--card-y',pos.y+'px');card.style.setProperty('--card-w',sz.w+'px');card.style.setProperty('--card-h',sz.h+'px');card.dataset.workId=w.id;
   const img=document.createElement('img');img.alt=`${w.title} — ${w.artist}`;img.loading='lazy';img.decoding='async';img.draggable=false;img.style.objectFit='contain';img.style.objectPosition='center';
   useImageCandidates(img,imageCandidates(w,'thumb'));card.append(img);
   card.addEventListener('click',()=>{if(!document.querySelector('#worksRow').dataset.suppress){const k=works.indexOf(w);if(k>=0)openWork(k)}});line.append(card);
- });
- return maxX+side-offsetX;
+  extent=Math.max(extent,pos.box.x+pos.box.w-offsetX+side);
+ }
+ return Math.max(extent,innerWidth*1.5);
 }
 function updateEdge(){
  const v=document.querySelector('#worksRow'),vr=v?.getBoundingClientRect();if(!vr)return;
@@ -484,7 +506,7 @@ function updateEdge(){
  v.querySelectorAll('.work-card').forEach(c=>{
   const x=parseFloat(c.style.getPropertyValue('--card-x'))||0,y=parseFloat(c.style.getPropertyValue('--card-y'))||0,w=parseFloat(c.style.getPropertyValue('--card-w'))||0,h=parseFloat(c.style.getPropertyValue('--card-h'))||0;
   const railX=vr.left+rail.x+x,railY=vr.top+y,mx=railX+w*.5,my=railY+h*.5;
-  const dist=Math.hypot((mx-cx)/nx,(my-cy)/ny),center=Math.max(0,Math.min(1,1-dist)),scale=1+.28*center;
+  const dist=Math.hypot((mx-cx)/nx,(my-cy)/ny),center=Math.max(0,Math.min(1,1-dist)),scale=.88+.62*center;
   const left=railX-w*(scale-1)/2,right=railX+w+w*(scale-1)/2,top=railY-h*(scale-1)/2,bottom=railY+h+h*(scale-1)/2;
   const visible=right>0&&left<innerWidth&&bottom>vr.top&&top<vr.bottom;
   c.style.setProperty('opacity',String(visible?1:0),'important');c.style.setProperty('transform',`scale(${scale.toFixed(3)})`,'important');
@@ -533,7 +555,7 @@ function renderCursor(){
  const worksBottom=nextRect?.top||rowRect?.bottom||0;
  const approachRange=360;
  const exitLead=100;
- const exitRange=420;
+ const exitRange=2400;
  const inApproach=!!headRect&&mouse.py>=worksTop-approachRange&&mouse.py<worksTop;
  const beforeExit=!!headRect&&mouse.py>=worksTop&&mouse.py<worksBottom-exitLead;
  const inExit=!!headRect&&mouse.py>=Math.max(worksTop,worksBottom-exitLead)&&mouse.py<worksBottom+exitRange;
