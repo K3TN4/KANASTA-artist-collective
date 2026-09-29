@@ -462,36 +462,41 @@ function expandedCardBox(c,pad=36){return {x:c.x-pad,y:c.y-pad,w:c.w+pad*2,h:c.h
 function cardSize(w,stats,i){
  const d=artworkDimensions(w),t=d&&stats.max>stats.min?Math.max(0,Math.min(1,(Math.log(d.area)-stats.min)/(stats.max-stats.min))):.5;
  const wobble=((i*37)%17-8)/100,mobile=innerWidth<=700;
- const minH=mobile?112:200,maxH=mobile?158:270;
+ const minH=mobile?52:76,maxH=mobile?76:116;
  const h=Math.round(minH+t*(maxH-minH)+wobble*(maxH-minH));
  const ratio=d?Math.max(.52,Math.min(1.9,d.a/d.b)):1.15;
- return {w:Math.min(mobile?278:430,Math.max(mobile?118:160,Math.round(h*ratio))),h};
+ return {w:Math.min(mobile?128:220,Math.max(mobile?52:72,Math.round(h*ratio))),h};
 }
 function placeBatch(items,offsetX,height){
  const line=railLine(),dims=items.map(artworkDimensions).filter(Boolean).map(d=>Math.log(d.area));
  const stats={min:dims.length?Math.min(...dims):0,max:dims.length?Math.max(...dims):1};
- const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=14,cell=96,maxScale=1.5,gap=18;
+ const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=7,cell=96,maxScale=1.5,gap=14;
  const records=items.map((w,i)=>{
   const sz=cardSize(w,stats,i),reserveW=Math.ceil(sz.w*maxScale)+gap,reserveH=Math.ceil(sz.h*maxScale)+gap;
   let seed=2166136261;for(const ch of w.id)seed=Math.imul(seed^ch.charCodeAt(0),16777619);
   return {w,i,sz,reserveW,reserveH,seed:seed>>>0};
  });
  const usableH=Math.max(1,usableHeight-side*2),area=records.reduce((n,r)=>n+r.reserveW*r.reserveH,0);
- let span=Math.max(innerWidth*1.65,Math.ceil(area/(usableH*.58)+innerWidth*.12)),placed=[];
+ let span=Math.max(innerWidth*1.2,Math.ceil(area/(usableH*.92)+innerWidth*.02)),placed=[];
  const cellKeys=r=>{const keys=[];for(let gy=Math.floor(r.y/cell);gy<=Math.floor((r.y+r.h)/cell);gy++)for(let gx=Math.floor(r.x/cell);gx<=Math.floor((r.x+r.w)/cell);gx++)keys.push(`${gx},${gy}`);return keys};
  for(let attempt=0;attempt<9;attempt++){
   placed=[];const bins=new Map();let success=true;
   const ordered=[...records].sort((a,b)=>b.reserveW*b.reserveH-a.reserveW*a.reserveH);
-  for(const rec of ordered){let state=(rec.seed+Math.imul(attempt+1,0x9e3779b1))>>>0,found=null;
+  let frontier=offsetX+side;
+  for(const rec of ordered){let state=(rec.seed+Math.imul(attempt+1,0x9e3779b1))>>>0,found=null,bestScore=Infinity;
    const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296};
    const maxX=Math.max(side,span-side-rec.reserveW),maxY=Math.max(side,usableHeight-side-rec.reserveH);
-   for(let n=0;n<4200;n++){
-    const box={x:offsetX+side+random()*(maxX-side),y:side+random()*(maxY-side),w:rec.reserveW,h:rec.reserveH};
+   const sampleCount=4200;
+   for(let n=0;n<sampleCount;n++){
+    const reach=Math.min(maxX,Math.max(side,frontier-offsetX+rec.reserveW*.45));
+    const box={x:offsetX+side+random()*Math.max(0,reach-side),y:side+random()*(maxY-side),w:rec.reserveW,h:rec.reserveH};
     const nearby=new Set();for(const key of cellKeys(box))for(const other of bins.get(key)||[])nearby.add(other);
     if([...nearby].every(other=>!overlaps(box,other,0))){
-     found={rec,box,x:box.x+(box.w-rec.sz.w)/2,y:box.y+(box.h-rec.sz.h)/2};break
+     const score=box.x+random()*Math.min(70,rec.reserveW*.16);
+     if(score<bestScore){bestScore=score;found={rec,box,x:box.x+(box.w-rec.sz.w)/2,y:box.y+(box.h-rec.sz.h)/2};if(score<=offsetX+side+3)break}
     }
    }
+   if(found)frontier=Math.max(frontier,found.box.x+found.box.w);
    if(!found){success=false;break}
    placed.push(found);for(const key of cellKeys(found.box)){if(!bins.has(key))bins.set(key,[]);bins.get(key).push(found.box)}
   }
