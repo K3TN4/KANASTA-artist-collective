@@ -541,12 +541,13 @@ const cursorTextCandidates='h1,h2,h3,.subtitle,.artist-name,.section-head span,.
 function cursorTarget(size=18,whiteCursor=false){
  const x=mouse.x,y=mouse.y,el=document.elementFromPoint(x,y),direct=el&&el.closest(cursorTextCandidates);
  if(direct)return direct;
- if(!whiteCursor||size<500)return null;
- const radius=size*.5;let best=null,bestDistance=Infinity;
+ if(!whiteCursor)return null;
+ const radius=Math.max(400,size*.5);let best=null,bestDistance=Infinity;
  for(const candidate of document.querySelectorAll(cursorTextCandidates)){
   const r=candidate.getBoundingClientRect(),cs=getComputedStyle(candidate);
   if(!r.width||!r.height||r.bottom<0||r.top>innerHeight||r.right<0||r.left>innerWidth||cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)continue;
-  if(cs.color!=='rgb(234, 235, 204)'&&cs.webkitTextFillColor!=='rgb(234, 235, 204)')continue;
+  const targetColor=whiteCursor?'rgb(234, 235, 204)':'rgb(31, 29, 52)';
+  if(cs.color!==targetColor&&cs.webkitTextFillColor!==targetColor)continue;
   const nx=Math.max(r.left,Math.min(x,r.right)),ny=Math.max(r.top,Math.min(y,r.bottom)),distance=Math.hypot(nx-x,ny-y);
   if(distance<=radius&&distance<bestDistance){best=candidate;bestDistance=distance}
  }
