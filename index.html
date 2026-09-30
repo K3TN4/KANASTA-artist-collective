@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bakbak+One&family=Cairo:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#EAEBCC;--pink:#000000;--cyan:#96bfe6;--ink:#000000;--muted:#777;--g:clamp(20px,3.2vw,56px)}
+:root{--bg:#EAEBCC;--pink:#1F1D34;--cyan:#96bfe6;--ink:#1F1D34;--muted:#777;--g:clamp(20px,3.2vw,56px)}
 *{box-sizing:border-box;margin:0}html{scroll-behavior:smooth;background:var(--bg)}body{background:var(--bg);color:var(--ink);font-family:Arial,sans-serif;overflow-x:hidden}button,a{font:inherit;color:inherit}.top{position:fixed;inset:0 0 auto;z-index:50;display:flex;justify-content:space-between;padding:clamp(20px,3vh,32px) var(--g);font:14px Cairo,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--pink)}.top button{border:0;background:none;cursor:pointer;color:inherit;letter-spacing:inherit;text-transform:inherit}.top button:hover{transform:scale(1.15)}
 #worksCursorMask{position:fixed;z-index:10001;left:0;right:0;top:0;height:0;background:#EAEBCC;pointer-events:none;display:none}#cursor{position:fixed;z-index:10000;width:18px;height:18px;border-radius:50%;background:#000;pointer-events:none;transform:translate(-50%,-50%);transition:background .08s;display:block;will-change:transform}#cursorText{position:fixed;inset:0;z-index:10002;pointer-events:none;overflow:hidden;clip-path:circle(9px at -100px -100px)}#cursorText .clone{position:fixed;margin:0;padding:0;color:#EAEBCC!important;-webkit-text-fill-color:#EAEBCC!important;white-space:pre;pointer-events:none}.mobile-hide{display:block}
 main.hero{min-height:100svh;position:relative;display:flex;align-items:center;flex-direction:column;padding:clamp(86px,11vh,128px) var(--g) 0}.hero h1{font:400 clamp(150px,min(24vw,43vh),360px)/.82 "Bakbak One",sans-serif;letter-spacing:.045em;background:url('images/typography.jpg') 50% 38%/130% auto no-repeat;background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;transition:transform .4s}.hero h1:hover{transform:scale(1.04)}.subtitle{margin-top:clamp(14px,2vh,24px);font:clamp(11px,1.55vh,14px) Cairo,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--pink)}.orbit{width:min(1180px,92vw);margin-top:clamp(34px,5vh,68px);display:grid;gap:clamp(20px,2.7vw,42px);z-index:1}.orbit-row{display:flex;justify-content:center;gap:clamp(20px,2.7vw,42px)}.circle{width:clamp(92px,13vh,130px);height:clamp(92px,13vh,130px);flex:0 0 auto;border:3px solid #96bfe6;border-radius:50%;overflow:hidden;background:#e7dfcf;cursor:pointer;transition:transform .8s cubic-bezier(.22,1,.36,1),opacity .5s ease;will-change:transform,opacity}.circle:hover{transform:scale(1.18)}.circle img{width:100%;height:100%;object-fit:cover;border-radius:50%}
@@ -43,9 +43,9 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 }
 
 /* v14 final composition */
-:root{--ink:#000!important}
+:root{--ink:#1F1D34!important}
 .hero h1{letter-spacing:.045em;line-height:.82;white-space:nowrap}
-.viewer-caption p,.viewer-caption small{color:#000}
+.viewer-caption p,.viewer-caption small{color:#1F1D34}
 @media (min-width:1800px) and (min-height:1050px) and (max-height:1599px), (min-width:1200px) and (max-width:1799px) and (min-height:1000px){
  .viewer-image{height:min(calc(100svh - 285px),1100px)!important}
  .related{margin-top:70px;height:190px}
@@ -148,7 +148,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 
 /* v35: robust GitHub loader and visible four-line fallback */
 #worksRow .works-line{display:flex!important;visibility:visible!important;opacity:1!important;min-height:1px!important}
-#worksRow .placeholder{display:block!important;width:100%;padding:20px;color:#000}
+#worksRow .placeholder{display:block!important;width:100%;padding:20px;color:#1F1D34}
 
 /* v36: no artificial contain gaps in horizontal WORKS rows */
 #worksRow{--works-gap:6px!important}
@@ -254,8 +254,8 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #cursor.works-title-cursor{background:#000!important}
 #cursor.dark-zone{background:#EAEBCC!important}
 #cursor.white-cursor{background:#EAEBCC!important}
-#cursorText.white-cursor .clone,#cursorText.white-cursor .clone *{color:#000!important;-webkit-text-fill-color:#000!important}
-#cursorText.works-title-cursor .clone{color:#000!important;-webkit-text-fill-color:#000!important}
+#cursorText.white-cursor .clone,#cursorText.white-cursor .clone *{color:#1F1D34!important;-webkit-text-fill-color:#1F1D34!important}
+#cursorText.works-title-cursor .clone{color:#1F1D34!important;-webkit-text-fill-color:#1F1D34!important}
 
 /* WORKS ART CURSOR: local elastic deformation of the lower edge */
 #worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
@@ -276,8 +276,8 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #works~.section:after{content:"";display:block;position:absolute;left:0;right:0;bottom:0;height:0;background:#000}
 body:has(#works~.section){background:#EAEBCC!important}
 /* White page and white WORKS; black begins only after WORKS. */
-html,body{background:#EAEBCC!important;color:#000!important}
-#works{background:#EAEBCC!important;color:#000!important;border-top-color:#000!important}
+html,body{background:#EAEBCC!important;color:#1F1D34!important}
+#works{background:#EAEBCC!important;color:#1F1D34!important;border-top-color:#1F1D34!important}
 #works .section-head{background:#000!important;color:#EAEBCC!important;display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important}
 #works .section-head h2{color:#EAEBCC!important;position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;margin:0!important;z-index:2!important;font-size:clamp(44px,7vw,92px)!important}
 #works .section-head span{color:#EAEBCC!important;position:absolute!important;top:90px!important;z-index:2!important}
@@ -290,7 +290,7 @@ html,body{background:#EAEBCC!important;color:#000!important}
 /* Invert white labels locally under the white cursor on the black sections. */
 #cursorText.works-art-cursor.white-cursor{display:block!important}
 #cursorText.white-cursor{z-index:10002!important}
-#cursorText.white-cursor .clone,#cursorText.white-cursor .clone *{color:#000!important;-webkit-text-fill-color:#000!important}
+#cursorText.white-cursor .clone,#cursorText.white-cursor .clone *{color:#1F1D34!important;-webkit-text-fill-color:#1F1D34!important}
 
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
 #artists .section-head{position:relative;align-items:flex-end;min-height:clamp(130px,16vw,210px);margin-bottom:80px;overflow:visible}
@@ -462,15 +462,15 @@ function expandedCardBox(c,pad=36){return {x:c.x-pad,y:c.y-pad,w:c.w+pad*2,h:c.h
 function cardSize(w,stats,i){
  const d=artworkDimensions(w),t=d&&stats.max>stats.min?Math.max(0,Math.min(1,(Math.log(d.area)-stats.min)/(stats.max-stats.min))):.5;
  const wobble=((i*37)%17-8)/100,mobile=innerWidth<=700;
- const minH=mobile?88:112,maxH=mobile?124:168;
+ const minH=mobile?100:132,maxH=mobile?144:198;
  const h=Math.round(minH+t*(maxH-minH)+wobble*(maxH-minH));
  const ratio=d?Math.max(.52,Math.min(1.9,d.a/d.b)):1.15;
- return {w:Math.min(mobile?188:300,Math.max(mobile?82:112,Math.round(h*ratio))),h};
+ return {w:Math.min(mobile?210:340,Math.max(mobile?94:130,Math.round(h*ratio))),h};
 }
 function placeBatch(items,offsetX,height){
  const line=railLine(),dims=items.map(artworkDimensions).filter(Boolean).map(d=>Math.log(d.area));
  const stats={min:dims.length?Math.min(...dims):0,max:dims.length?Math.max(...dims):1};
- const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=7,cell=96,maxScale=1.5,gap=14;
+ const usableHeight=document.querySelector('#worksRow')?.clientHeight||height,side=6,cell=96,maxScale=1.5,gap=5;
  const records=items.map((w,i)=>{
   const sz=cardSize(w,stats,i),reserveW=Math.ceil(sz.w*maxScale)+gap,reserveH=Math.ceil(sz.h*maxScale)+gap;
   let seed=2166136261;for(const ch of w.id)seed=Math.imul(seed^ch.charCodeAt(0),16777619);
