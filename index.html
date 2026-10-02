@@ -306,10 +306,15 @@ html,body{background:#EAEBCC!important;color:#1F1D34!important}
 @media(prefers-reduced-motion:reduce){#artists .artist-letter{transition:none!important}}
 
 /* Touch layouts: hide the desktop pointer effect and use a compact works grid. */
+/* HERO WORDMARK: plain ink typography, no photographic fill on any viewport. */
+.hero h1{background:none!important;background-image:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#1F1D34!important;-webkit-text-fill-color:#1F1D34!important}
+/* Shorter WORKS section on desktop; retain complete, uncropped artwork. */
+@media (hover:hover) and (pointer:fine){#works.section{padding-top:64px!important;padding-bottom:72px!important}#worksRow{height:clamp(400px,46vh,520px)!important}}
+
 @media (hover:none), (pointer:coarse){
  #cursor,#cursorText,#worksCursorMask{display:none!important}
- .section.works{width:min(calc(100% - 24px),920px)!important;margin-inline:auto!important;padding-left:0!important;padding-right:0!important;overflow:visible!important}
- #works .section-head{width:100%!important;margin-left:0!important}
+ .section.works{width:min(calc(100% - 24px),920px)!important;margin-inline:auto!important;padding:42px 0 58px!important;overflow:visible!important}
+ #works .section-head{width:100%!important;height:180px!important;min-height:180px!important;margin-left:0!important;padding-top:28px!important;padding-bottom:28px!important}
  #works .works-track{position:relative!important;width:100%!important;max-width:100%!important;margin:0!important;left:0!important;transform:none!important;overflow:visible!important}
  #worksRow{position:relative!important;width:100%!important;max-width:100%!important;height:auto!important;min-height:0!important;margin:0!important;overflow:visible!important;display:block!important;mask-image:none!important;-webkit-mask-image:none!important;cursor:auto!important}
  #worksRow .works-line{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;min-width:0!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;align-items:start!important;gap:4px!important;overflow:visible!important;contain:none!important;transform:none!important;will-change:auto!important}
