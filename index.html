@@ -269,11 +269,11 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #works .works-track{position:relative!important}
 #works .works-track::after{display:none!important}
 /* From the end of WORKS to the page bottom: continuous black field with white typography. */
-#works~.section{background:#1F1D34!important;color:#EAEBCC!important;border-top-color:#EAEBCC!important}
+#works~.section{background:#000!important;color:#EAEBCC!important;border-top-color:#EAEBCC!important}
 #works~.section .section-head h2,#works~.section .section-head span,#works~.section .placeholder,#works~.section .about,#works~.section .contact,#works~.section a,#works~.section p{color:#EAEBCC!important}
 #works~.section .artist-list{border-color:#EAEBCC!important}
 #works~.section .contact a{text-decoration-color:#EAEBCC!important}
-#works~.section:after{content:"";display:block;position:absolute;left:0;right:0;bottom:0;height:0;background:#1F1D34}
+#works~.section:after{content:"";display:block;position:absolute;left:0;right:0;bottom:0;height:0;background:#000}
 body:has(#works~.section){background:#EAEBCC!important}
 /* White page and white WORKS; black begins only after WORKS. */
 html,body{background:#EAEBCC!important;color:#1F1D34!important}
@@ -714,14 +714,13 @@ function renderCursor(){
  const normalSize=18;
  const largeSize=800;
  let size=normalSize;
- if(inApproach) size=normalSize+(largeSize-normalSize)*approachProgress;
- else if(beforeExit&&!inExit) size=largeSize;
- else if(inExit) size=largeSize+(normalSize-largeSize)*exitProgress;
+ /* Keep the cursor small and above the artwork before EXHIBITIONS; the existing slow shrink begins at EXHIBITIONS. */
+ if(!!nextRect&&mouse.py>=nextRect.top&&inExit) size=largeSize+(normalSize-largeSize)*exitProgress;
  const onDark=!!nextRect&&mouse.py>=nextRect.top;
  const inWorksHeader=!!headRect&&mouse.py>=headRect.top&&mouse.py<=headRect.bottom;
  const worksTitle=!!hovered?.closest('#works .section-head h2');
  const worksBar=!!hovered?.closest('#works .section-head');
- const activeLarge=inApproach||inWorks||inExit;
+ const activeLarge=!!nextRect&&mouse.py>=nextRect.top&&inExit;
  const whiteCursor=onDark;
  const speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12);
  const jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
