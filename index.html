@@ -313,6 +313,14 @@ html,body{background:#EAEBCC!important;color:#1F1D34!important}
 /* Allow naturally tall portrait thumbnails to use their true aspect ratio without clipping or collisions. */
 @media (hover:hover) and (pointer:fine){#works.section{padding-top:64px!important;padding-bottom:72px!important}#worksRow{height:clamp(760px,82vh,800px)!important}}
 
+/* Restore the artist hover micro-interactions; the earlier static-gallery reset had disabled them. */
+@media (hover:hover) and (pointer:fine){
+ #artists .artist-row{transition:padding .35s cubic-bezier(.22,1,.36,1)!important}
+ #artists .artist-name{display:inline-block;transform-origin:left center;transition:color .3s ease,transform .35s cubic-bezier(.22,1,.36,1)!important}
+ #artists .artist-row:hover .artist-name{transform:translateX(8px)}
+ #artists .artist-photo{transition:opacity .35s ease,transform .35s cubic-bezier(.22,1,.36,1)!important}
+ #artists .bio{transition:max-height .5s ease,opacity .35s ease,padding .5s ease!important}
+}
 @media (hover:none), (pointer:coarse){
  #cursor,#cursorText,#worksCursorMask{display:none!important}
  .section.works{width:min(calc(100% - 24px),920px)!important;margin-inline:auto!important;padding:42px 0 58px!important;overflow:visible!important}
@@ -426,7 +434,7 @@ html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:
 /* Full-bleed home hero video, behind the wordmark and page controls. */
 #home{isolation:isolate;overflow:hidden}
 #home .hero-background{position:absolute!important;inset:0!important;z-index:0!important;display:block;width:100%;height:100%;object-fit:cover;object-position:center center;pointer-events:none}
-#home .film-grain{position:absolute!important;inset:0!important;width:100%;height:100%;z-index:1!important;pointer-events:none;opacity:.38;mix-blend-mode:overlay}
+#home .film-grain{position:absolute!important;inset:0!important;width:100%;height:100%;z-index:1!important;pointer-events:none;opacity:.12;mix-blend-mode:overlay}
 #home .kanasta-wordmark,#home .artist-group,#home .language-switch{z-index:2}
 /* Latest requested refinements: fixed language control, centered About arrow and calmer Works heading. */
 #languageSwitch{position:fixed!important;left:4.2708vw!important;right:auto!important;top:auto!important;bottom:5.6481vh!important;z-index:51!important;}
@@ -442,14 +450,14 @@ html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:
 #works .section-head{height:clamp(170px,20vh,240px)!important;min-height:clamp(170px,20vh,240px)!important;background:transparent!important;color:#1F1D34!important;border-bottom:0!important}
 #works .section-head h2{color:#1F1D34!important}
 #works .section-head span{color:#1F1D34!important;top:50%!important;transform:translateY(-50%)!important}
-#works::after{content:"";display:block;position:relative;width:100vw;height:clamp(150px,22vh,260px);margin-left:calc(50% - 50vw);background:#000}
+#works::after{content:none!important;display:none!important}
 @media(max-width:700px){#languageSwitch{left:20px!important;top:auto!important;bottom:25px!important;transform:scale(.85);transform-origin:left bottom}.hero-about-arrow{top:82vh;width:24px;height:64px}.hero-about-arrow img{width:24px;height:64px}.about-copy h2,.about-text{top:-16px}#works .section-head{height:150px!important;min-height:150px!important}#works::after{height:140px}}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div>
 <header class="top"><button id="logo" aria-label="KANASTA — strona główna"><img class="kanasta-mark" src="images/kanasta-mark.svg" alt=""></button><div class="top-actions"><button id="motionToggle" class="motion-toggle" type="button" aria-label="Wyłącz wszystkie animacje" aria-pressed="false" title="Wyłącz wszystkie animacje"><span class="motion-toggle-label">MOTION</span><span class="motion-switch" aria-hidden="true"><span class="motion-switch-knob"></span></span><span id="motionStatus">ON</span></button><button id="menuBtn">MENU</button></div></header>
 <div class="language-switch" id="languageSwitch" role="group" aria-label="Choose language"><button type="button" class="language-option active" data-language="en" aria-pressed="true">ENG</button><button type="button" class="language-option" data-language="pl" aria-pressed="false">PL</button><span class="language-dot" aria-hidden="true"></span></div>
-<main class="hero" id="home"><video class="hero-background" autoplay muted loop playsinline preload="auto" aria-hidden="true"><source src="images/kanasta-background.mp4" type="video/mp4"></video><svg class="film-grain" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true"><defs><filter id="camera-film-grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.65 0.38" numOctaves="1" seed="15" stitchTiles="stitch" result="noise"><animate attributeName="seed" values="15;27;39;51;63;75;87;99;111;123;135;147" dur="0.5s" calcMode="discrete" repeatCount="indefinite"/></feTurbulence><feColorMatrix in="noise" type="saturate" values="0" result="mono"/><feComponentTransfer in="mono"><feFuncR type="linear" slope="2" intercept="-0.5"/><feFuncG type="linear" slope="2" intercept="-0.5"/><feFuncB type="linear" slope="2" intercept="-0.5"/></feComponentTransfer></filter></defs><rect width="100%" height="100%" fill="#fff" filter="url(#camera-film-grain)"/></svg><a class="hero-about-arrow" href="#about" aria-label="Scroll to About"><img src="images/kanasta-arrow.svg" alt=""></a><h1 class="kanasta-wordmark" aria-label="KaNASTA"><span class="letter-k">K</span><span class="letter-a">a</span><span class="letter-n">N</span><span class="letter-a-cap">A</span><span class="letter-s">S</span><span class="letter-t">T</span><span class="letter-a-end">A</span></h1><div class="artist-group" id="artistGroup">ARTIST GROUP</div></main>
+<main class="hero" id="home"><video class="hero-background" autoplay muted loop playsinline preload="auto" aria-hidden="true"><source src="images/kanasta-background.mp4" type="video/mp4"></video><svg class="film-grain" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true"><defs><filter id="camera-film-grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.18 0.12" numOctaves="1" seed="15" stitchTiles="stitch" result="noise"><animate attributeName="seed" values="15;27;39;51;63;75;87;99;111;123;135;147" dur="0.5s" calcMode="discrete" repeatCount="indefinite"/></feTurbulence><feColorMatrix in="noise" type="saturate" values="0" result="mono"/><feComponentTransfer in="mono"><feFuncR type="linear" slope="2" intercept="-0.5"/><feFuncG type="linear" slope="2" intercept="-0.5"/><feFuncB type="linear" slope="2" intercept="-0.5"/></feComponentTransfer></filter></defs><rect width="100%" height="100%" fill="#fff" filter="url(#camera-film-grain)"/></svg><a class="hero-about-arrow" href="#about" aria-label="Scroll to About"><img src="images/kanasta-arrow.svg" alt=""></a><h1 class="kanasta-wordmark" aria-label="KaNASTA"><span class="letter-k">K</span><span class="letter-a">a</span><span class="letter-n">N</span><span class="letter-a-cap">A</span><span class="letter-s">S</span><span class="letter-t">T</span><span class="letter-a-end">A</span></h1><div class="artist-group" id="artistGroup">ARTIST GROUP</div></main>
 <section class="about-section" id="about"><div class="about-copy"><p class="eyebrow">KANASTA · POLAND</p><h2>ABOUT</h2><div class="about-text"><p>KANASTA is an artist collective based in Poland.</p><p>15 artists working across different media, practices and perspectives.</p></div><a class="discover-link" href="#artists"><span>DISCOVER</span><span class="discover-arrow" aria-hidden="true">↗</span></a></div><div class="about-map" aria-label="Miejsce na mapę Polski"><img class="about-map-image" src="images/mapa-polski.png" alt="Mapa Polski" onload="this.parentElement.classList.add('map-ready')" onerror="this.style.display='none'"><div class="map-placeholder"><span>POLAND</span><small>ADD YOUR MAP TO<br><code>images/mapa-polski.png</code></small></div></div></section>
 <section class="section" id="artists"><div class="section-head"><span>01</span><h2>ARTISTS</h2><span>15</span></div><div class="artist-list" id="artistList"></div></section>
 <section class="section works" id="works"><div class="section-head"><span>02</span><h2>WORKS</h2><span>KANASTA</span></div><div class="works-track"><div class="works-row" id="worksRow"><div class="works-line" data-line="0"></div><div class="works-line" data-line="1"></div><div class="works-line" data-line="2"></div><div class="works-line" data-line="3"></div></div></div></section>
@@ -737,8 +745,19 @@ function scheduleMobileRailCheck(){if(mobileScrollFrame)return;mobileScrollFrame
 function moveRail(dx){
 if(!rail.ready)return;const v=$('#worksRow').clientWidth;rail.x=Math.max(v-rail.trackWidth,Math.min(0,rail.x+dx));paint();maybeExtend()}
 function scheduleMove(dx){rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
+/* Gentle desktop-only autonomous drift; manual dragging and Motion OFF always take precedence. */
+let worksAutoTimer=0;
+function startWorksAutoDrift(){
+ if(worksAutoTimer)return;
+ worksAutoTimer=setInterval(()=>{
+  if(!rail.ready||!pageMotionEnabled||worksDrag||worksTouchRail||document.visibilityState!=='visible'||matchMedia('(hover:none), (pointer:coarse)').matches||$('#viewer').classList.contains('open')||$('#menu').classList.contains('open')||$('#profile').classList.contains('open'))return;
+  const row=$('#worksRow'),rect=row.getBoundingClientRect();
+  if(rect.bottom<=0||rect.top>=innerHeight)return;
+  moveRail(-.5);
+ },100);
+}
 function loadRepoWorks(){return REPO_THUMB_FILES.map(makeWork)}
-async function buildRail(){const list=loadRepoWorks();sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);const line=railLine();document.querySelectorAll('#worksRow .works-line').forEach((x,i)=>{if(i)x.remove()});line.replaceChildren();rail.segments=[];mobileSegments.length=0;const items=makeSequence(list,WORKS_RENDER_COUNT);if(matchMedia('(hover:none), (pointer:coarse)').matches){const fragment=document.createDocumentFragment();for(const w of items)fragment.append(makeWorkCard(w));line.append(fragment);rail.segment=$('#worksRow').scrollWidth||innerWidth*1.5}else{const h=$('#worksRow').clientHeight||560;rail.segment=await placeBatch(items,0,h)}rail.trackWidth=rail.segment;rail.segments=[{cards:[...line.querySelectorAll('.work-card')],width:rail.segment}];line.style.setProperty('--works-track-width',rail.trackWidth+'px');rail.x=Math.min(-120,-(rail.trackWidth-innerWidth)/2);rail.ready=true;paint();if(matchMedia('(hover:none), (pointer:coarse)').matches){const row=$('#worksRow');mobileSegments.push({cards:[...line.querySelectorAll('.work-card')],width:row.scrollWidth});row.scrollLeft=Math.max(0,(row.scrollWidth-row.clientWidth)/2);scheduleMobileRailCheck()}$('#works .section-head span:last-child').textContent=list.length+' · '+languageCopy[currentLanguage].worksCount}
+async function buildRail(){const list=loadRepoWorks();sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);const line=railLine();document.querySelectorAll('#worksRow .works-line').forEach((x,i)=>{if(i)x.remove()});line.replaceChildren();rail.segments=[];mobileSegments.length=0;const items=makeSequence(list,WORKS_RENDER_COUNT);if(matchMedia('(hover:none), (pointer:coarse)').matches){const fragment=document.createDocumentFragment();for(const w of items)fragment.append(makeWorkCard(w));line.append(fragment);rail.segment=$('#worksRow').scrollWidth||innerWidth*1.5}else{const h=$('#worksRow').clientHeight||560;rail.segment=await placeBatch(items,0,h)}rail.trackWidth=rail.segment;rail.segments=[{cards:[...line.querySelectorAll('.work-card')],width:rail.segment}];line.style.setProperty('--works-track-width',rail.trackWidth+'px');rail.x=Math.min(-120,-(rail.trackWidth-innerWidth)/2);rail.ready=true;paint();startWorksAutoDrift();if(matchMedia('(hover:none), (pointer:coarse)').matches){const row=$('#worksRow');mobileSegments.push({cards:[...line.querySelectorAll('.work-card')],width:row.scrollWidth});row.scrollLeft=Math.max(0,(row.scrollWidth-row.clientWidth)/2);scheduleMobileRailCheck()}$('#works .section-head span:last-child').textContent=list.length+' · '+languageCopy[currentLanguage].worksCount}
 let worksDrag=null,worksTouchRail=null;$('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;worksDrag={x:e.clientX,moved:false};$('#worksRow').classList.add('dragging');e.preventDefault()};document.addEventListener('mousemove',e=>{if(!worksDrag)return;const dx=e.clientX-worksDrag.x;if(Math.abs(dx)>2)worksDrag.moved=true;scheduleMove(dx);worksDrag.x=e.clientX},{passive:true});document.addEventListener('mouseup',()=>{if(!worksDrag)return;const moved=worksDrag.moved;worksDrag=null;$('#worksRow').classList.remove('dragging');if(moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,90)}});$('#worksRow').addEventListener('touchstart',e=>{if(matchMedia('(hover:none), (pointer:coarse)').matches)return;if(e.touches.length)worksTouchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(matchMedia('(hover:none), (pointer:coarse)').matches||!worksTouchRail||!e.touches.length)return;const dx=e.touches[0].clientX-worksTouchRail.x;if(Math.abs(dx)>3)worksTouchRail.moved=true;if(worksTouchRail.moved){e.preventDefault();scheduleMove(dx);worksTouchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(matchMedia('(hover:none), (pointer:coarse)').matches){worksTouchRail=null;return}if(worksTouchRail?.moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,100)}worksTouchRail=null});$('#worksRow').addEventListener('scroll',scheduleMobileRailCheck,{passive:true});window.addEventListener('resize',updateEdge);window.addEventListener('scroll',updateEdge,{passive:true});(async()=>{try{await buildRail()}catch(e){console.error('WORKS rebuild',e);$('#worksRow').innerHTML=`<div class="placeholder">${languageCopy[currentLanguage].worksError}</div>`}})();
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
 let cursorFrame=0,cursorClones=new Map(),cursorCloneTargets=[];
@@ -806,11 +825,15 @@ function renderCursor(){
  if(!!nextRect&&mouse.py>=nextRect.top&&inExit) size=largeSize+(normalSize-largeSize)*exitProgress;
  const onDark=!!nextRect&&mouse.py>=nextRect.top;
  const discoverHover=!!hovered?.closest('.discover-link');
+ const homeRect=document.querySelector('#home')?.getBoundingClientRect();
+ const overHomeVideo=!!homeRect&&mouse.py>=homeRect.top&&mouse.py<=homeRect.bottom;
+ const exhibitionImage=document.querySelector('#exhibitions .exhibition-image');
+ const exhibitionImageRect=exhibitionImage?.getBoundingClientRect();
  const inWorksHeader=!!headRect&&mouse.py>=headRect.top&&mouse.py<=headRect.bottom;
  const worksTitle=!!hovered?.closest('#works .section-head h2');
  const worksBar=!!hovered?.closest('#works .section-head');
  const activeLarge=!!nextRect&&mouse.py>=nextRect.top&&inExit;
- const whiteCursor=discoverHover?!onDark:onDark;
+ const whiteCursor=discoverHover?!onDark:(overHomeVideo||onDark);
  const speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12);
  const jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
  cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';
@@ -826,6 +849,10 @@ function renderCursor(){
   const clipTop=Math.max(0,headRect.top-boxTop);
   /* The black field below WORKS handles the lower edge; only the upper edge is masked. */
   cursor.style.setProperty('--cursor-clip',`inset(${clipTop.toFixed(1)}px 0 0 0)`);
+ }
+ if(activeLarge&&exhibitionImageRect&&mouse.py>=nextRect.top&&mouse.py<=nextRect.bottom){
+  const clipRight=Math.max(0,mouse.px+size*.5-exhibitionImageRect.left);
+  cursor.style.setProperty('--cursor-clip',`inset(0 ${clipRight.toFixed(1)}px 0 0)`);
  }
  const wasLarge=cursor.classList.contains('works-art-cursor');
  cursor.classList.toggle('works-art-cursor',activeLarge);
