@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>KANASTA — artist collective</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bakbak+One&family=Cairo:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Allison&family=Bakbak+One&family=Cairo:wght@300;400;600&family=Climate+Crisis:YEAR@1979&family=Gelasio:ital,wght@0,400;0,700;1,400;1,700&family=Julius+Sans+One&family=Pixelify+Sans:wght@400;700&family=Zalando+Sans:wght@400&family=Bitcount+Single:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#EAEBCC;--pink:#1F1D34;--cyan:#96bfe6;--ink:#1F1D34;--muted:#777;--g:clamp(20px,3.2vw,56px)}
 *{box-sizing:border-box;margin:0}html{scroll-behavior:smooth;background:var(--bg)}body{background:var(--bg);color:var(--ink);font-family:Arial,sans-serif;overflow-x:hidden}button,a{font:inherit;color:inherit}.top{position:fixed;inset:0 0 auto;z-index:50;display:flex;justify-content:space-between;padding:clamp(20px,3vh,32px) var(--g);font:14px Cairo,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--pink)}.top button{border:0;background:none;cursor:pointer;color:inherit;letter-spacing:inherit;text-transform:inherit}.top button:hover{transform:scale(1.15)}.top-actions{display:flex;align-items:center;gap:clamp(16px,2.4vw,34px)}.top .motion-toggle{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.13em;white-space:nowrap}.motion-switch{width:34px;height:18px;border:1px solid currentColor;border-radius:99px;display:inline-flex;align-items:center;padding:2px;transition:background .2s ease}.motion-switch-knob{width:12px;height:12px;border-radius:50%;background:currentColor;transform:translateX(0);transition:transform .2s ease}#motionToggle[aria-pressed="true"] .motion-switch-knob{transform:translateX(16px)}
@@ -388,11 +388,26 @@ html.motion-off,html.motion-off *,html.motion-off *::before,html.motion-off *::a
 html.motion-off .orbit .circle,html.motion-off .orbit .circle:hover{transform:none!important;opacity:1!important}
 html.motion-off .hero h1:hover,html.motion-off .top button:hover,html.motion-off .circle:hover{transform:none!important}
 html.motion-off #cursor,html.motion-off #cursorText,html.motion-off #worksCursorMask{display:none!important}
+/* Main KaNASTA wordmark: centered in the viewport at the supplied 1920x1080 reference position. */
+.hero .kanasta-wordmark,.hero .kanasta-wordmark:hover{position:absolute!important;left:50%!important;top:50%!important;width:616px!important;height:150px!important;max-width:none!important;margin:0!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:0!important;white-space:nowrap!important;overflow:visible!important;transform:translate(-50%,-50%)!important;transform-origin:center!important;font-size:128px!important;font-weight:400!important;font-style:normal!important;line-height:1!important;letter-spacing:0!important;background:none!important;background-image:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+.kanasta-wordmark span{display:inline-block!important;flex:none!important;margin:0!important;padding:0!important;font-size:128px!important;line-height:1!important;letter-spacing:0!important;font-style:normal!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+.kanasta-wordmark .letter-k{font-family:'Julius Sans One',sans-serif!important;font-weight:400!important}
+.kanasta-wordmark .letter-a{font-family:'Zalando Sans',sans-serif!important;font-weight:400!important}
+.kanasta-wordmark .letter-n{font-family:'Allison',cursive!important;font-weight:400!important}
+.kanasta-wordmark .letter-a-cap{font-family:'Gelasio',serif!important;font-weight:400!important}
+.kanasta-wordmark .letter-s{font-family:'Bitcount Single',sans-serif!important;font-weight:700!important}
+.kanasta-wordmark .letter-t{font-family:'Climate Crisis',sans-serif!important;font-weight:400!important}
+.kanasta-wordmark .letter-a-end{font-family:'Pixelify Sans',sans-serif!important;font-weight:700!important}
+#cursorText .clone.kanasta-wordmark{display:flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
+#cursorText .clone.kanasta-wordmark span{color:#1F1D34!important;-webkit-text-fill-color:#1F1D34!important}
+.hero .subtitle{position:absolute!important;left:50%!important;top:calc(50% + 90px)!important;margin:0!important;transform:translateX(-50%)!important;white-space:nowrap!important}
+html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:hover{transform:translate(-50%,-50%)!important}
+@media(max-width:700px){.hero .kanasta-wordmark,.hero .kanasta-wordmark:hover{width:calc(100vw - 28px)!important;height:auto!important;font-size:clamp(40px,15vw,76px)!important}.hero .kanasta-wordmark span{font-size:clamp(40px,15vw,76px)!important}.hero .subtitle{top:calc(50% + clamp(56px,18vw,75px))!important;font-size:9px!important;letter-spacing:.09em!important}}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div>
 <header class="top"><button id="logo">KANASTA</button><div class="top-actions"><button id="motionToggle" class="motion-toggle" type="button" aria-label="Wyłącz wszystkie animacje" aria-pressed="false" title="Wyłącz wszystkie animacje"><span class="motion-toggle-label">MOTION</span><span class="motion-switch" aria-hidden="true"><span class="motion-switch-knob"></span></span><span id="motionStatus">ON</span></button><button id="menuBtn">MENU</button></div></header>
-<main class="hero" id="home"><h1>KANASTA</h1><div class="subtitle">15 artists · one collective · Poland</div></main>
+<main class="hero" id="home"><h1 class="kanasta-wordmark" aria-label="KaNASTA"><span class="letter-k">K</span><span class="letter-a">a</span><span class="letter-n">N</span><span class="letter-a-cap">A</span><span class="letter-s">S</span><span class="letter-t">T</span><span class="letter-a-end">A</span></h1><div class="subtitle">15 artists · one collective · Poland</div></main>
 <section class="about-section" id="about"><div class="about-copy"><p class="eyebrow">KANASTA · POLAND</p><h2>ABOUT</h2><div class="about-text"><p>KANASTA is an artist collective based in Poland.</p><p>15 artists working across different media, practices and perspectives.</p></div><a class="discover-link" href="#artists"><span>DISCOVER</span><span class="discover-arrow" aria-hidden="true">↗</span></a></div><div class="about-map" aria-label="Miejsce na mapę Polski"><img class="about-map-image" src="images/mapa-polski.png" alt="Mapa Polski" onload="this.parentElement.classList.add('map-ready')" onerror="this.style.display='none'"><div class="map-placeholder"><span>POLAND</span><small>ADD YOUR MAP TO<br><code>images/mapa-polski.png</code></small></div></div></section>
 <section class="section" id="artists"><div class="section-head"><span>01</span><h2>ARTISTS</h2><span>15</span></div><div class="artist-list" id="artistList"></div></section>
 <section class="section works" id="works"><div class="section-head"><span>02</span><h2>WORKS</h2><span>KANASTA</span></div><div class="works-track"><div class="works-row" id="worksRow"><div class="works-line" data-line="0"></div><div class="works-line" data-line="1"></div><div class="works-line" data-line="2"></div><div class="works-line" data-line="3"></div></div></div></section>
@@ -664,7 +679,8 @@ function cursorTarget(size=18,whiteCursor=false){
   const r=candidate.getBoundingClientRect(),cs=getComputedStyle(candidate);
   if(!r.width||!r.height||r.bottom<0||r.top>innerHeight||r.right<0||r.left>innerWidth||cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)continue;
   const forcedDiscover=!!document.elementFromPoint(x,y)?.closest('.discover-link')&&!!candidate.closest('.discover-link');
-  if(cs.color!==targetColor&&cs.webkitTextFillColor!==targetColor&&!forcedDiscover)continue;
+  const forcedWordmark=candidate.matches('.kanasta-wordmark')&&!whiteCursor;
+  if(cs.color!==targetColor&&cs.webkitTextFillColor!==targetColor&&!forcedDiscover&&!forcedWordmark)continue;
   const nx=Math.max(r.left,Math.min(x,r.right)),ny=Math.max(r.top,Math.min(y,r.bottom)),distance=Math.hypot(nx-x,ny-y);
   if(distance<=radius)matches.push(candidate);
  }
@@ -676,8 +692,8 @@ function syncCursorClone(targets){
  for(const [target,clone] of cursorClones){if(!wanted.has(target)){clone.remove();cursorClones.delete(target)}}
  for(const target of wanted){
   let clone=cursorClones.get(target);
-  if(!clone){clone=document.createElement('span');clone.className='clone';clone.textContent=target.textContent;clone.setAttribute('aria-hidden','true');layer.append(clone);cursorClones.set(target,clone)}
-  else if(clone.textContent!==target.textContent)clone.textContent=target.textContent;
+  if(!clone){clone=document.createElement('span');clone.className='clone';clone.setAttribute('aria-hidden','true');if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');clone.innerHTML=target.innerHTML}else clone.textContent=target.textContent;layer.append(clone);cursorClones.set(target,clone)}
+  else if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');if(clone.innerHTML!==target.innerHTML)clone.innerHTML=target.innerHTML}else if(clone.textContent!==target.textContent)clone.textContent=target.textContent;
   const r=target.getBoundingClientRect(),cs=getComputedStyle(target);
  const baseW=Math.max(1,target.offsetWidth),baseH=Math.max(1,target.offsetHeight);
  const scaleX=r.width/baseW,scaleY=r.height/baseH;
