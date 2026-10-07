@@ -1,0 +1,5 @@
+KANASTA v2 — paczka aktualizacji
+
+Rozpakuj archiwum w folderze projektu i zezwól na podmianę plików z zachowaniem ścieżek: index.html oraz plików w images/.
+
+Zawiera aktualny index.html, logo, strzałkę i film tła. Nie zawiera całej biblioteki prac galerii.

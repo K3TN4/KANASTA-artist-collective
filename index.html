@@ -22,7 +22,7 @@ main.hero{min-height:100svh;position:relative;display:flex;align-items:center;fl
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
 
-html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-card img{user-select:none!important;-webkit-user-select:none!important;-webkit-user-drag:none!important}#cursor{background:#1F1D34!important;border-radius:50%;display:block;will-change:left,top,transform}#cursorText .clone{color:#EAEBCC!important;-webkit-text-fill-color:#EAEBCC!important;background:transparent!important;pointer-events:none!important}
+html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-card img{user-select:none!important;-webkit-user-select:none!important;-webkit-user-drag:none!important}#cursor{background:#1F1D34!important;border-radius:50%;display:block;will-change:left,top,transform}#cursorText .clone{color:#EAEBCC;-webkit-text-fill-color:#EAEBCC;background:transparent;pointer-events:none!important}#cursorText .clone[data-inverse-text="1"]{color:#1F1D34!important;-webkit-text-fill-color:#1F1D34!important}
 
 /* v12 final calibration */
 .top{padding-left:var(--g);padding-right:var(--g)}
@@ -85,7 +85,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 @media(max-width:700px){.hero h1{font-size:clamp(54px,16vw,88px)!important;line-height:.88!important;letter-spacing:.02em!important}.hero .subtitle{margin-top:18px}}
 
 /* v21 — clone follows the transformed glyph box, including hover scale */
-#cursorText .clone{position:fixed!important;pointer-events:none!important;color:#EAEBCC!important;-webkit-text-fill-color:#EAEBCC!important;white-space:nowrap!important;transform-origin:50% 50%!important}
+#cursorText .clone{position:fixed!important;pointer-events:none!important;color:#EAEBCC!important;-webkit-text-fill-color:#EAEBCC!important;white-space:nowrap!important;transform-origin:50% 50%!important}#cursorText .clone[data-inverse-text="1"]{color:#1F1D34!important;-webkit-text-fill-color:#1F1D34!important}
 
 /* v26 true dense masonry: one continuous block, independent columns */
 .related{display:block!important;column-count:5!important;--masonry-gap:clamp(4px,.45vw,8px);column-gap:var(--masonry-gap)!important;overflow:visible!important;height:auto!important;margin-top:var(--masonry-gap)!important;align-items:initial!important;cursor:default!important;touch-action:auto!important;padding:var(--masonry-gap)!important}
@@ -408,6 +408,11 @@ html.motion-off #cursor,html.motion-off #cursorText,html.motion-off #worksCursor
 .kanasta-wordmark .letter-a-end{font-family:'Pixelify Sans',sans-serif!important;font-weight:700!important}
 #cursorText .clone.kanasta-wordmark{display:flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
 #cursorText .clone.kanasta-wordmark span{color:#1F1D34!important;-webkit-text-fill-color:#1F1D34!important}
+/* Header logo recolors from its transparent SVG alpha mask. */
+#logo .kanasta-mark,.viewerLogo .kanasta-mark{opacity:0!important}
+#logo::after,.viewerLogo::after{content:"";position:absolute;inset:0;display:block;background-color:var(--header-control-color,#fff);-webkit-mask:url('images/kanasta-mark.svg') center/contain no-repeat;mask:url('images/kanasta-mark.svg') center/contain no-repeat;transition:background-color .14s ease;pointer-events:none}
+#cursorText .clone.kanasta-mark-clone{background-color:#EAEBCC;-webkit-mask:url('images/kanasta-mark.svg') center/100% 100% no-repeat;mask:url('images/kanasta-mark.svg') center/100% 100% no-repeat}
+#cursorText .clone.kanasta-mark-clone[data-inverse-text="1"]{background-color:#1F1D34!important}
 .hero .subtitle{position:absolute!important;left:50%!important;top:calc(50% + 90px)!important;margin:0!important;transform:translateX(-50%)!important;white-space:nowrap!important}
 html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:hover{transform:translate(-50%,-50%)!important}
 @media(max-width:700px){.hero .kanasta-wordmark,.hero .kanasta-wordmark:hover{width:calc(100vw - 28px)!important;height:auto!important;font-size:clamp(40px,15vw,76px)!important}.hero .kanasta-wordmark span{font-size:clamp(40px,15vw,76px)!important}.hero .subtitle{top:calc(50% + clamp(56px,18vw,75px))!important;font-size:9px!important;letter-spacing:.09em!important}}
@@ -415,7 +420,7 @@ html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:
 /* KANASTA symbol supplied as SVG (embedded PNG), fixed to the requested corner position. */
 #logo,.viewerLogo{position:absolute!important;top:42px!important;left:59px!important;width:95px!important;height:115px!important;display:block!important;padding:0!important;border:0!important;background:transparent!important;transform:none!important;z-index:2!important}
 #logo:hover,.viewerLogo:hover{transform:none!important}
-#logo .kanasta-mark,.viewerLogo .kanasta-mark{display:block!important;width:95px!important;height:115px!important;object-fit:contain!important;opacity:1!important}
+#logo .kanasta-mark,.viewerLogo .kanasta-mark{display:block!important;width:95px!important;height:115px!important;object-fit:contain!important;opacity:0!important}
 @media(max-width:700px){#logo,.viewerLogo{top:42px!important;left:59px!important;width:95px!important;height:115px!important}#logo .kanasta-mark,.viewerLogo .kanasta-mark{width:95px!important;height:115px!important}}
 
 /* Home controls calibrated to the supplied 1920x1080 Figma layout. */
@@ -438,7 +443,7 @@ html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:
 #home .kanasta-wordmark,#home .artist-group,#home .language-switch{z-index:2}
 /* Latest requested refinements: fixed language control, centered About arrow and calmer Works heading. */
 #languageSwitch{position:fixed!important;left:4.2708vw!important;right:auto!important;top:auto!important;bottom:5.6481vh!important;z-index:51!important;}
-.language-option{opacity:.8;transition:opacity .28s ease!important}
+.language-option{opacity:.5;transition:opacity .28s ease,color .14s ease!important}
 .language-option.active{opacity:1}
 .hero-about-arrow{position:absolute;left:50%;top:85vh;z-index:3;display:block;width:30px;height:80px;transform:translateX(-50%);cursor:pointer;transition:opacity .2s ease}
 .hero-about-arrow img{display:block;width:30px;height:80px;object-fit:contain}
@@ -452,10 +457,23 @@ html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:
 #works .section-head span{color:#1F1D34!important;top:50%!important;transform:translateY(-50%)!important}
 #works::after{content:none!important;display:none!important}
 @media(max-width:700px){#languageSwitch{left:20px!important;top:auto!important;bottom:25px!important;transform:scale(.85);transform-origin:left bottom}.hero-about-arrow{top:82vh;width:24px;height:64px}.hero-about-arrow img{width:24px;height:64px}.about-copy h2,.about-text{top:-16px}#works .section-head{height:150px!important;min-height:150px!important}#works::after{height:140px}}
+
+/* Live noise controls next to the menu; they only affect the hero grain layer. */
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.noise-controls{position:absolute;z-index:52;top:6.574074vh;right:calc(2.552083vw + clamp(76px,6.2vw,118px) + clamp(12px,2vw,32px));width:clamp(156px,11vw,205px);display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:10px;row-gap:4px;color:#fff;font:10px/1.2 Cairo,Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+.noise-toggle{display:inline-flex;align-items:center;gap:7px;padding:0;border:0;background:transparent;color:inherit;font:inherit;letter-spacing:inherit;cursor:pointer;white-space:nowrap}
+.noise-switch{width:29px;height:16px;border:1px solid currentColor;border-radius:99px;display:inline-flex;align-items:center;padding:2px}
+.noise-switch-knob{width:10px;height:10px;border-radius:50%;background:currentColor;transform:translateX(0);transition:transform .2s ease}
+#noiseToggle[aria-pressed="true"] .noise-switch-knob{transform:translateX(13px)}
+.noise-strength{display:flex;align-items:center;min-width:0}
+.noise-strength input{width:100%;height:12px;margin:0;accent-color:#fff;cursor:pointer}
+.noise-readout{grid-column:1/-1;font:8px/1.2 Cairo,Arial,sans-serif;letter-spacing:.08em;opacity:.82;white-space:nowrap}
+.noise-toggle:focus-visible,.noise-strength input:focus-visible{outline:1px solid currentColor;outline-offset:3px}
+@media(max-width:700px){.noise-controls{top:58px;right:20px;width:154px;grid-template-columns:auto 1fr;column-gap:8px;row-gap:2px;font-size:9px}.noise-readout{font-size:7px}}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div>
-<header class="top"><button id="logo" aria-label="KANASTA — strona główna"><img class="kanasta-mark" src="images/kanasta-mark.svg" alt=""></button><div class="top-actions"><button id="motionToggle" class="motion-toggle" type="button" aria-label="Wyłącz wszystkie animacje" aria-pressed="false" title="Wyłącz wszystkie animacje"><span class="motion-toggle-label">MOTION</span><span class="motion-switch" aria-hidden="true"><span class="motion-switch-knob"></span></span><span id="motionStatus">ON</span></button><button id="menuBtn">MENU</button></div></header>
+<header class="top"><button id="logo" aria-label="KANASTA — strona główna"><img class="kanasta-mark" src="images/kanasta-mark.svg" alt=""></button><div class="top-actions"><button id="motionToggle" class="motion-toggle" type="button" aria-label="Wyłącz wszystkie animacje" aria-pressed="false" title="Wyłącz wszystkie animacje"><span class="motion-toggle-label">MOTION</span><span class="motion-switch" aria-hidden="true"><span class="motion-switch-knob"></span></span><span id="motionStatus">ON</span></button><button id="menuBtn">MENU</button></div><div class="noise-controls" aria-label="Film grain controls"><button id="noiseToggle" class="noise-toggle" type="button" aria-label="Toggle film grain" aria-pressed="true"><span>NOISE</span><span class="noise-switch" aria-hidden="true"><span class="noise-switch-knob"></span></span></button><label class="noise-strength"><span class="sr-only">Noise strength</span><input id="noiseStrength" type="range" min="0" max="38" step="1" value="12" aria-label="Noise strength"></label><output id="noiseReadout" class="noise-readout" aria-live="polite">12% · baseFrequency 0.18 × 0.12 · overlay</output></div></header>
 <div class="language-switch" id="languageSwitch" role="group" aria-label="Choose language"><button type="button" class="language-option active" data-language="en" aria-pressed="true">ENG</button><button type="button" class="language-option" data-language="pl" aria-pressed="false">PL</button><span class="language-dot" aria-hidden="true"></span></div>
 <main class="hero" id="home"><video class="hero-background" autoplay muted loop playsinline preload="auto" aria-hidden="true"><source src="images/kanasta-background.mp4" type="video/mp4"></video><svg class="film-grain" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true"><defs><filter id="camera-film-grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.18 0.12" numOctaves="1" seed="15" stitchTiles="stitch" result="noise"><animate attributeName="seed" values="15;27;39;51;63;75;87;99;111;123;135;147" dur="0.5s" calcMode="discrete" repeatCount="indefinite"/></feTurbulence><feColorMatrix in="noise" type="saturate" values="0" result="mono"/><feComponentTransfer in="mono"><feFuncR type="linear" slope="2" intercept="-0.5"/><feFuncG type="linear" slope="2" intercept="-0.5"/><feFuncB type="linear" slope="2" intercept="-0.5"/></feComponentTransfer></filter></defs><rect width="100%" height="100%" fill="#fff" filter="url(#camera-film-grain)"/></svg><a class="hero-about-arrow" href="#about" aria-label="Scroll to About"><img src="images/kanasta-arrow.svg" alt=""></a><h1 class="kanasta-wordmark" aria-label="KaNASTA"><span class="letter-k">K</span><span class="letter-a">a</span><span class="letter-n">N</span><span class="letter-a-cap">A</span><span class="letter-s">S</span><span class="letter-t">T</span><span class="letter-a-end">A</span></h1><div class="artist-group" id="artistGroup">ARTIST GROUP</div></main>
 <section class="about-section" id="about"><div class="about-copy"><p class="eyebrow">KANASTA · POLAND</p><h2>ABOUT</h2><div class="about-text"><p>KANASTA is an artist collective based in Poland.</p><p>15 artists working across different media, practices and perspectives.</p></div><a class="discover-link" href="#artists"><span>DISCOVER</span><span class="discover-arrow" aria-hidden="true">↗</span></a></div><div class="about-map" aria-label="Miejsce na mapę Polski"><img class="about-map-image" src="images/mapa-polski.png" alt="Mapa Polski" onload="this.parentElement.classList.add('map-ready')" onerror="this.style.display='none'"><div class="map-placeholder"><span>POLAND</span><small>ADD YOUR MAP TO<br><code>images/mapa-polski.png</code></small></div></div></section>
@@ -470,6 +488,12 @@ html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:
 const artists=[['Patrycja Boruch','patrycja-boruch.jpg'],['Zuzanna Frankowska','zuzanna-frankowska.jpg'],['Amelia Korczak','amelia-korczak.jpg'],['Adam Pażucha','adam-pazucha.jpg'],['Antoni Augustyniak','antoni-augustyniak.jpg'],['Ada Rosa','ada-rosa.jpg'],['Anastazja Gierlak','anastazja-gierlak.jpg'],['Anna Esnekier','anna-esnekier.jpg'],['Gabriela Bossowska','gabriela-bossowska.jpg'],['Marta Mioduszewska','marta-mioduszewska.jpg'],['Nina Borowicz','nina-borowicz.jpg'],['Aleksandra Sikora','aleksandra-sikora.jpg'],['Marta Mendelejeva','marta-mendelejeva.jpg'],['Franek Ciastoń','franek-ciaston.jpg'],['Urszula Smagowicz','urszula-smagowicz.jpg']];
 const works=[];
 const $=s=>document.querySelector(s); const cursor=$('#cursor'); let activeWork=null;
+const noiseLayer=$('.film-grain'),noiseButton=$('#noiseToggle'),noiseSlider=$('#noiseStrength'),noiseReadout=$('#noiseReadout');
+let filmNoiseEnabled=true;
+try{filmNoiseEnabled=localStorage.getItem('kanasta-film-noise-enabled')!=='false';const savedNoise=localStorage.getItem('kanasta-film-noise-strength');if(savedNoise!==null&&noiseSlider)noiseSlider.value=String(Math.max(0,Math.min(38,Number(savedNoise)||0)))}catch{}
+function updateFilmNoise(){if(!noiseLayer||!noiseButton||!noiseSlider)return;const strength=Number(noiseSlider.value);noiseLayer.style.opacity=filmNoiseEnabled?String(strength/100):'0';noiseLayer.style.display=filmNoiseEnabled?'':'none';noiseButton.setAttribute('aria-pressed',String(filmNoiseEnabled));noiseButton.setAttribute('aria-label',filmNoiseEnabled?'Turn film grain off':'Turn film grain on');noiseReadout.textContent=`${filmNoiseEnabled?'ON':'OFF'} · ${strength}% · baseFrequency 0.18 × 0.12 · overlay`;try{localStorage.setItem('kanasta-film-noise-enabled',String(filmNoiseEnabled));localStorage.setItem('kanasta-film-noise-strength',String(strength))}catch{}}
+noiseButton?.addEventListener('click',()=>{filmNoiseEnabled=!filmNoiseEnabled;updateFilmNoise()});noiseSlider?.addEventListener('input',updateFilmNoise);updateFilmNoise();
+
 let currentLanguage='en';try{currentLanguage=localStorage.getItem('kanasta-language')==='pl'?'pl':'en'}catch{}
 const languageCopy={
  en:{artistGroup:'ARTIST GROUP',aboutEyebrow:'KANASTA · POLAND',aboutTitle:'ABOUT',about1:'KANASTA is an artist collective based in Poland.',about2:'15 artists working across different media, practices and perspectives.',discover:'DISCOVER',artists:'ARTISTS',works:'WORKS',worksCount:'ORGANIC WORKS',exhibitions:'EXHIBITIONS',contact:'CONTACT',close:'CLOSE',menu:['00  ABOUT','01  ARTISTS','02  WORKS','03  EXHIBITIONS','04  CONTACT'],country:'Poland',mapAlt:'Map of Poland',mapLabel:'POLAND',mapInstruction:'ADD YOUR MAP TO',imageAlt:'Selected KANASTA exhibition image — exhibition preview',caption:'KANASTA · ARTIST COLLECTIVE',bioSoon:'Biography coming soon.',readMore:'READ MORE',showLess:'SHOW LESS',profileBio:'${languageCopy[currentLanguage].profileBio}',choose:'Choose language',motionOn:'Turn off all animations',motionOff:'Turn on all animations',homeLabel:'KANASTA — home',title:'KANASTA — artist collective',worksError:'WORKS COULD NOT BE LOADED'},
@@ -753,7 +777,7 @@ function startWorksAutoDrift(){
   if(!rail.ready||!pageMotionEnabled||worksDrag||worksTouchRail||document.visibilityState!=='visible'||matchMedia('(hover:none), (pointer:coarse)').matches||$('#viewer').classList.contains('open')||$('#menu').classList.contains('open')||$('#profile').classList.contains('open'))return;
   const row=$('#worksRow'),rect=row.getBoundingClientRect();
   if(rect.bottom<=0||rect.top>=innerHeight)return;
-  moveRail(-.5);
+  moveRail(-1);
  },100);
 }
 function loadRepoWorks(){return REPO_THUMB_FILES.map(makeWork)}
@@ -761,15 +785,54 @@ async function buildRail(){const list=loadRepoWorks();sourceWorks.splice(0,sourc
 let worksDrag=null,worksTouchRail=null;$('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;worksDrag={x:e.clientX,moved:false};$('#worksRow').classList.add('dragging');e.preventDefault()};document.addEventListener('mousemove',e=>{if(!worksDrag)return;const dx=e.clientX-worksDrag.x;if(Math.abs(dx)>2)worksDrag.moved=true;scheduleMove(dx);worksDrag.x=e.clientX},{passive:true});document.addEventListener('mouseup',()=>{if(!worksDrag)return;const moved=worksDrag.moved;worksDrag=null;$('#worksRow').classList.remove('dragging');if(moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,90)}});$('#worksRow').addEventListener('touchstart',e=>{if(matchMedia('(hover:none), (pointer:coarse)').matches)return;if(e.touches.length)worksTouchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(matchMedia('(hover:none), (pointer:coarse)').matches||!worksTouchRail||!e.touches.length)return;const dx=e.touches[0].clientX-worksTouchRail.x;if(Math.abs(dx)>3)worksTouchRail.moved=true;if(worksTouchRail.moved){e.preventDefault();scheduleMove(dx);worksTouchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(matchMedia('(hover:none), (pointer:coarse)').matches){worksTouchRail=null;return}if(worksTouchRail?.moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,100)}worksTouchRail=null});$('#worksRow').addEventListener('scroll',scheduleMobileRailCheck,{passive:true});window.addEventListener('resize',updateEdge);window.addEventListener('scroll',updateEdge,{passive:true});(async()=>{try{await buildRail()}catch(e){console.error('WORKS rebuild',e);$('#worksRow').innerHTML=`<div class="placeholder">${languageCopy[currentLanguage].worksError}</div>`}})();
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
 let cursorFrame=0,cursorClones=new Map(),cursorCloneTargets=[];
-const cursorTextCandidates='h1,h2,h3,.subtitle,.artist-name,.section-head span,.viewer-caption p,.viewer-caption small,.top button,.viewerLogo,.placeholder,.about p,.about-section h2,.exhibitions-section h2,.discover-link,.contact a,.contact p,.bio button,.menu-list a';
+const cursorTextCandidates='h1,h2,h3,.subtitle,.artist-name,.section-head span,.viewer-caption p,.viewer-caption small,.top button,#logo,.viewerLogo,.language-option,.placeholder,.about p,.about-section h2,.exhibitions-section h2,.discover-link,.contact a,.contact p,.bio button,.menu-list a';
+function headerControlColorAt(el){
+ if(!el)return 'rgb(31, 29, 52)';
+ const r=el.getBoundingClientRect(),x=Math.max(0,Math.min(innerWidth-1,r.left+r.width/2)),y=Math.max(0,Math.min(innerHeight-1,r.top+r.height/2));
+ for(const node of document.elementsFromPoint(x,y)){
+  if(node.closest('#cursor,#cursorText,#worksCursorMask,#logo,.viewerLogo,#languageSwitch,.top'))continue;
+  const section=node.closest('#home,#about,#artists,#works,#exhibitions,#contact,#menu,#profile,.viewer');
+  if(!section)continue;
+  if(section.matches('#home,#exhibitions,#contact'))return 'rgb(255, 255, 255)';
+  if(section.matches('#menu,#profile,.viewer'))return 'rgb(31, 29, 52)';
+  /* Dark foreground text needs a white control above it, not the section's usual ink color. */
+  const darkLabel=node.closest('h1,h2,h3,.artist-name,.section-head span,.about p,.about-section h2,.exhibitions-section h2,.discover-link,.contact a,.contact p,.bio button,.menu-list a');
+  if(darkLabel&&getComputedStyle(darkLabel).color==='rgb(31, 29, 52)')return 'rgb(255, 255, 255)';
+  return 'rgb(31, 29, 52)';
+ }
+ return 'rgb(31, 29, 52)';
+}
+function refreshHeaderControlColors(){
+ document.querySelectorAll('#logo,.viewerLogo').forEach(el=>{const c=headerControlColorAt(el);if(el.style.getPropertyValue('--header-control-color')!==c)el.style.setProperty('--header-control-color',c)});
+ document.querySelectorAll('.language-option').forEach(el=>{const c=headerControlColorAt(el);if(el.style.color!==c)el.style.color=c;if(el.style.textShadow!=='none')el.style.textShadow='none'});
+ const dot=document.querySelector('#languageSwitch .language-dot');
+ if(dot){const c=headerControlColorAt(dot);if(dot.style.backgroundColor!==c)dot.style.backgroundColor=c}
+}
+let headerColorFrame=0;
+function scheduleHeaderControlColors(){if(headerColorFrame)return;headerColorFrame=requestAnimationFrame(()=>{headerColorFrame=0;refreshHeaderControlColors()})}
+window.addEventListener('scroll',scheduleHeaderControlColors,{passive:true});
+window.addEventListener('resize',scheduleHeaderControlColors,{passive:true});
+ scheduleHeaderControlColors();
 function cursorTarget(size=18,whiteCursor=false){
  const x=mouse.x,y=mouse.y,radius=Math.max(400,size*.5),targetColor=whiteCursor?'rgb(234, 235, 204)':'rgb(31, 29, 52)',matches=[];
  for(const candidate of document.querySelectorAll(cursorTextCandidates)){
   const r=candidate.getBoundingClientRect(),cs=getComputedStyle(candidate);
   if(!r.width||!r.height||r.bottom<0||r.top>innerHeight||r.right<0||r.left>innerWidth||cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)continue;
-  const forcedDiscover=!!document.elementFromPoint(x,y)?.closest('.discover-link')&&!!candidate.closest('.discover-link');
+  const hoveredElement=document.elementFromPoint(x,y);
+  const clone=cursorClones.get(candidate);
+  if(clone&&candidate.matches('#logo,.viewerLogo,.language-option')){
+   const r=candidate.getBoundingClientRect(),cx=Math.max(r.left+1,Math.min(x,r.right-1)),cy=Math.max(r.top+1,Math.min(y,r.bottom-1));
+   const under=candidate.matches('#logo,.viewerLogo')?document.elementFromPoint(cx,cy):null;
+   const paintedText=under&&under!==candidate&&!!under.closest('h1,h2,h3,.subtitle,.artist-name,.section-head span,.about p,.about-section h2,.exhibitions-section h2,.discover-link,.contact a,.contact p,.bio button,.menu-list a');
+   clone.dataset.inverseText=paintedText?'1':'0';
+  }
+  const forcedDiscover=!!hoveredElement?.closest('.discover-link')&&!!candidate.closest('.discover-link');
   const forcedWordmark=candidate.matches('.kanasta-wordmark')&&!whiteCursor;
-  if(cs.color!==targetColor&&cs.webkitTextFillColor!==targetColor&&!forcedDiscover&&!forcedWordmark)continue;
+  const hoveredControl=hoveredElement?.closest('#logo,.viewerLogo,.language-option');
+  const forcedHeaderMark=!!hoveredControl&&candidate===hoveredControl;
+  const paintColors=whiteCursor?['rgb(234, 235, 204)','rgb(255, 255, 255)']:['rgb(31, 29, 52)'];
+  const matchesCursorText=paintColors.includes(cs.color)||paintColors.includes(cs.webkitTextFillColor);
+  if(!matchesCursorText&&!forcedDiscover&&!forcedWordmark&&!forcedHeaderMark)continue;
   const nx=Math.max(r.left,Math.min(x,r.right)),ny=Math.max(r.top,Math.min(y,r.bottom)),distance=Math.hypot(nx-x,ny-y);
   if(distance<=radius)matches.push(candidate);
  }
@@ -781,14 +844,21 @@ function syncCursorClone(targets){
  for(const [target,clone] of cursorClones){if(!wanted.has(target)){clone.remove();cursorClones.delete(target)}}
  for(const target of wanted){
   let clone=cursorClones.get(target);
-  if(!clone){clone=document.createElement('span');clone.className='clone';clone.setAttribute('aria-hidden','true');if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');clone.innerHTML=target.innerHTML}else clone.textContent=target.textContent;layer.append(clone);cursorClones.set(target,clone)}
-  else if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');if(clone.innerHTML!==target.innerHTML)clone.innerHTML=target.innerHTML}else if(clone.textContent!==target.textContent)clone.textContent=target.textContent;
+  if(!clone){clone=document.createElement('span');clone.className='clone';clone.setAttribute('aria-hidden','true');if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');clone.innerHTML=target.innerHTML}else if(target.matches('#logo,.viewerLogo')){clone.classList.add('kanasta-mark-clone')}else clone.textContent=target.textContent;layer.append(clone);cursorClones.set(target,clone)}
+  else if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');if(clone.innerHTML!==target.innerHTML)clone.innerHTML=target.innerHTML}else if(target.matches('#logo,.viewerLogo'))clone.classList.add('kanasta-mark-clone');else if(clone.textContent!==target.textContent)clone.textContent=target.textContent;
   const r=target.getBoundingClientRect(),cs=getComputedStyle(target);
  const baseW=Math.max(1,target.offsetWidth),baseH=Math.max(1,target.offsetHeight);
  const scaleX=r.width/baseW,scaleY=r.height/baseH;
   clone.style.left=(r.left+r.width/2)+'px';clone.style.top=(r.top+r.height/2)+'px';
   clone.style.width=baseW+'px';clone.style.height=baseH+'px';
   clone.style.fontFamily=cs.fontFamily;clone.style.fontSize=cs.fontSize;clone.style.fontWeight=cs.fontWeight;clone.style.fontStyle=cs.fontStyle;clone.style.fontVariant=cs.fontVariant;clone.style.fontStretch=cs.fontStretch;clone.style.lineHeight=cs.lineHeight;clone.style.letterSpacing=cs.letterSpacing;clone.style.textTransform=cs.textTransform;clone.style.textAlign=cs.textAlign;clone.style.whiteSpace='nowrap';
+  if(target.matches('#logo,.viewerLogo')){
+   const base=getComputedStyle(target).getPropertyValue('--header-control-color').trim()||'rgb(255, 255, 255)';
+   clone.style.setProperty('background-color',base,'important');
+  }else if(target.matches('.language-option')){
+   const base=getComputedStyle(target).color;
+   clone.style.setProperty('color',base,'important');clone.style.setProperty('-webkit-text-fill-color',base,'important');
+  }
   clone.style.transform=`translate(-50%,-50%) scale(${scaleX},${scaleY})`;clone.style.transformOrigin='50% 50%';clone.style.display='block';
  }
  cursorCloneTargets=[...wanted];
@@ -834,6 +904,8 @@ function renderCursor(){
  const worksBar=!!hovered?.closest('#works .section-head');
  const activeLarge=!!nextRect&&mouse.py>=nextRect.top&&inExit;
  const whiteCursor=discoverHover?!onDark:(overHomeVideo||onDark);
+ const worksBarLight=worksBar&&!activeLarge&&!whiteCursor;
+ const cursorLight=whiteCursor||worksBarLight;
  const speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12);
  const jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
  cursor.style.left=mouse.px+'px';cursor.style.top=mouse.py+'px';
@@ -865,9 +937,9 @@ function renderCursor(){
  const worksMask=document.getElementById('worksCursorMask');if(worksMask)worksMask.style.display='none';
  cursorText.classList.toggle('works-title-cursor',worksTitle);
  cursorText.classList.toggle('works-art-cursor',activeLarge);
- cursorText.classList.toggle('white-cursor',whiteCursor);
+ cursorText.classList.toggle('white-cursor',cursorLight);
  cursorText.style.clipPath=`circle(${Math.max(9,size*.5).toFixed(1)}px at ${mouse.px}px ${mouse.py}px)`;
- syncCursorClone(cursorTarget(size,whiteCursor));
+ syncCursorClone(cursorTarget(size,cursorLight));
  cursorFrame=requestAnimationFrame(renderCursor);
 }
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});$('#motionToggle').addEventListener('click',()=>setPageMotion(!pageMotionEnabled));updateMotionToggle();if(!pageMotionEnabled)document.querySelector('#worksBlobDefs')?.pauseAnimations?.();renderCursor();
