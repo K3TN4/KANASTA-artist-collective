@@ -413,6 +413,9 @@ html.motion-off #cursor,html.motion-off #cursorText,html.motion-off #worksCursor
 #logo::after,.viewerLogo::after{content:"";position:absolute;inset:0;display:block;background-color:var(--header-control-color,#fff);-webkit-mask:url('images/kanasta-mark.svg') center/contain no-repeat;mask:url('images/kanasta-mark.svg') center/contain no-repeat;transition:background-color .14s ease;pointer-events:none}
 #cursorText .clone.kanasta-mark-clone{background-color:#EAEBCC;-webkit-mask:url('images/kanasta-mark.svg') center/100% 100% no-repeat;mask:url('images/kanasta-mark.svg') center/100% 100% no-repeat}
 #cursorText .clone.kanasta-mark-clone[data-inverse-text="1"]{background-color:#1F1D34!important}
+#cursorText.white-cursor .clone.kanasta-mark-clone{background-color:#1F1D34!important}
+#cursorText .clone.language-dot-clone{border-radius:50%;background:#EAEBCC!important}
+#cursorText.white-cursor .clone.language-dot-clone{background:#1F1D34!important}
 .hero .subtitle{position:absolute!important;left:50%!important;top:calc(50% + 90px)!important;margin:0!important;transform:translateX(-50%)!important;white-space:nowrap!important}
 html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:hover{transform:translate(-50%,-50%)!important}
 @media(max-width:700px){.hero .kanasta-wordmark,.hero .kanasta-wordmark:hover{width:calc(100vw - 28px)!important;height:auto!important;font-size:clamp(40px,15vw,76px)!important}.hero .kanasta-wordmark span{font-size:clamp(40px,15vw,76px)!important}.hero .subtitle{top:calc(50% + clamp(56px,18vw,75px))!important;font-size:9px!important;letter-spacing:.09em!important}}
@@ -822,7 +825,7 @@ async function buildRail(){const list=loadRepoWorks();sourceWorks.splice(0,sourc
 let worksDrag=null,worksTouchRail=null;$('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;worksDrag={x:e.clientX,moved:false};$('#worksRow').classList.add('dragging');e.preventDefault()};document.addEventListener('mousemove',e=>{if(!worksDrag)return;const dx=e.clientX-worksDrag.x;if(Math.abs(dx)>2)worksDrag.moved=true;scheduleMove(dx);worksDrag.x=e.clientX},{passive:true});document.addEventListener('mouseup',()=>{if(!worksDrag)return;const moved=worksDrag.moved;worksDrag=null;$('#worksRow').classList.remove('dragging');if(moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,90)}});$('#worksRow').addEventListener('touchstart',e=>{if(matchMedia('(hover:none), (pointer:coarse)').matches)return;if(e.touches.length)worksTouchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(matchMedia('(hover:none), (pointer:coarse)').matches||!worksTouchRail||!e.touches.length)return;const dx=e.touches[0].clientX-worksTouchRail.x;if(Math.abs(dx)>3)worksTouchRail.moved=true;if(worksTouchRail.moved){e.preventDefault();scheduleMove(dx);worksTouchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(matchMedia('(hover:none), (pointer:coarse)').matches){worksTouchRail=null;return}if(worksTouchRail?.moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,100)}worksTouchRail=null});$('#worksRow').addEventListener('scroll',scheduleMobileRailCheck,{passive:true});window.addEventListener('resize',updateEdge);window.addEventListener('scroll',updateEdge,{passive:true});(async()=>{try{await buildRail()}catch(e){console.error('WORKS rebuild',e);$('#worksRow').innerHTML=`<div class="placeholder">${languageCopy[currentLanguage].worksError}</div>`}})();
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
 let cursorFrame=0,cursorClones=new Map(),cursorCloneTargets=[];
-const cursorTextCandidates='h1,h2,h3,.subtitle,.artist-name,.section-head span,.viewer-caption p,.viewer-caption small,.top button,#logo,.viewerLogo,.language-option,.placeholder,.about p,.about-section h2,.exhibitions-section h2,.discover-link,.contact a,.contact p,.bio button,.menu-list a';
+const cursorTextCandidates='h1,h2,h3,.subtitle,.artist-name,.section-head span,.viewer-caption p,.viewer-caption small,.top button,#logo,.viewerLogo,.language-option,.language-dot,.placeholder,.about p,.about-section h2,.exhibitions-section h2,.discover-link,.contact a,.contact p,.bio button,.menu-list a';
 function headerControlColorAt(el){
  if(!el)return 'rgb(31, 29, 52)';
  const r=el.getBoundingClientRect(),x=Math.max(0,Math.min(innerWidth-1,r.left+r.width/2)),y=Math.max(0,Math.min(innerHeight-1,r.top+r.height/2));
@@ -857,44 +860,42 @@ function cursorTarget(size=18,whiteCursor=false){
   if(!r.width||!r.height||r.bottom<0||r.top>innerHeight||r.right<0||r.left>innerWidth||cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)continue;
   const hoveredElement=document.elementFromPoint(x,y);
   const clone=cursorClones.get(candidate);
-  if(clone&&candidate.matches('#logo,.viewerLogo,.language-option')){
-   const r=candidate.getBoundingClientRect(),cx=Math.max(r.left+1,Math.min(x,r.right-1)),cy=Math.max(r.top+1,Math.min(y,r.bottom-1));
-   const under=candidate.matches('#logo,.viewerLogo')?document.elementFromPoint(cx,cy):null;
-   const paintedText=under&&under!==candidate&&!!under.closest('h1,h2,h3,.subtitle,.artist-name,.section-head span,.about p,.about-section h2,.exhibitions-section h2,.discover-link,.contact a,.contact p,.bio button,.menu-list a');
-   clone.dataset.inverseText=paintedText?'1':'0';
-  }
   const forcedDiscover=!!hoveredElement?.closest('.discover-link')&&!!candidate.closest('.discover-link');
   const forcedWordmark=candidate.matches('.kanasta-wordmark')&&!whiteCursor;
   const hoveredControl=hoveredElement?.closest('#logo,.viewerLogo,.language-option');
   const forcedHeaderMark=!!hoveredControl&&candidate===hoveredControl;
+  const isHeaderControl=candidate.matches('#logo,.viewerLogo,.language-option,.language-dot');
   const paintColors=whiteCursor?['rgb(234, 235, 204)','rgb(255, 255, 255)']:['rgb(31, 29, 52)'];
-  const matchesCursorText=paintColors.includes(cs.color)||paintColors.includes(cs.webkitTextFillColor);
-  if(!matchesCursorText&&!forcedDiscover&&!forcedWordmark&&!forcedHeaderMark)continue;
+  const dotColor=candidate.matches('.language-dot')?getComputedStyle(candidate).backgroundColor:'';
+  const controlColor=candidate.matches('#logo,.viewerLogo')?getComputedStyle(candidate).getPropertyValue('--header-control-color').trim():candidate.matches('.language-option')?cs.color:'';
+  const matchesCursorText=paintColors.includes(cs.color)||paintColors.includes(cs.webkitTextFillColor)||paintColors.includes(controlColor)||(candidate.matches('.language-dot')&&paintColors.includes(dotColor));
+  if(!matchesCursorText&&!forcedDiscover&&!forcedWordmark&&!forcedHeaderMark&&!isHeaderControl)continue;
   const nx=Math.max(r.left,Math.min(x,r.right)),ny=Math.max(r.top,Math.min(y,r.bottom)),distance=Math.hypot(nx-x,ny-y);
   if(distance<=radius)matches.push(candidate);
  }
  // A matching parent already paints its text; avoid a second clone for nested labels.
  return matches.filter(candidate=>!matches.some(other=>other!==candidate&&other.contains(candidate)));
 }
-function syncCursorClone(targets){
+function syncCursorClone(targets,whiteCursor=false){
  const wanted=new Set(targets||[]),layer=document.getElementById('cursorText');
  for(const [target,clone] of cursorClones){if(!wanted.has(target)){clone.remove();cursorClones.delete(target)}}
  for(const target of wanted){
   let clone=cursorClones.get(target);
-  if(!clone){clone=document.createElement('span');clone.className='clone';clone.setAttribute('aria-hidden','true');if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');clone.innerHTML=target.innerHTML}else if(target.matches('#logo,.viewerLogo')){clone.classList.add('kanasta-mark-clone')}else clone.textContent=target.textContent;layer.append(clone);cursorClones.set(target,clone)}
-  else if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');if(clone.innerHTML!==target.innerHTML)clone.innerHTML=target.innerHTML}else if(target.matches('#logo,.viewerLogo'))clone.classList.add('kanasta-mark-clone');else if(clone.textContent!==target.textContent)clone.textContent=target.textContent;
+  if(!clone){clone=document.createElement('span');clone.className='clone';clone.setAttribute('aria-hidden','true');if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');clone.innerHTML=target.innerHTML}else if(target.matches('#logo,.viewerLogo')){clone.classList.add('kanasta-mark-clone')}else if(target.matches('.language-dot')){clone.classList.add('language-dot-clone')}else clone.textContent=target.textContent;layer.append(clone);cursorClones.set(target,clone)}
+  else if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');if(clone.innerHTML!==target.innerHTML)clone.innerHTML=target.innerHTML}else if(target.matches('#logo,.viewerLogo'))clone.classList.add('kanasta-mark-clone');else if(target.matches('.language-dot'))clone.classList.add('language-dot-clone');else if(clone.textContent!==target.textContent)clone.textContent=target.textContent;
   const r=target.getBoundingClientRect(),cs=getComputedStyle(target);
  const baseW=Math.max(1,target.offsetWidth),baseH=Math.max(1,target.offsetHeight);
  const scaleX=r.width/baseW,scaleY=r.height/baseH;
   clone.style.left=(r.left+r.width/2)+'px';clone.style.top=(r.top+r.height/2)+'px';
   clone.style.width=baseW+'px';clone.style.height=baseH+'px';
   clone.style.fontFamily=cs.fontFamily;clone.style.fontSize=cs.fontSize;clone.style.fontWeight=cs.fontWeight;clone.style.fontStyle=cs.fontStyle;clone.style.fontVariant=cs.fontVariant;clone.style.fontStretch=cs.fontStretch;clone.style.lineHeight=cs.lineHeight;clone.style.letterSpacing=cs.letterSpacing;clone.style.textTransform=cs.textTransform;clone.style.textAlign=cs.textAlign;clone.style.whiteSpace='nowrap';
+  const inverseColor=whiteCursor?'#1F1D34':'#EAEBCC';
   if(target.matches('#logo,.viewerLogo')){
-   const base=getComputedStyle(target).getPropertyValue('--header-control-color').trim()||'rgb(255, 255, 255)';
-   clone.style.setProperty('background-color',base,'important');
+   clone.style.setProperty('background-color',inverseColor,'important');
   }else if(target.matches('.language-option')){
-   const base=getComputedStyle(target).color;
-   clone.style.setProperty('color',base,'important');clone.style.setProperty('-webkit-text-fill-color',base,'important');
+   clone.style.setProperty('color',inverseColor,'important');clone.style.setProperty('-webkit-text-fill-color',inverseColor,'important');
+  }else if(target.matches('.language-dot')){
+   clone.style.setProperty('background-color',inverseColor,'important');
   }
   clone.style.transform=`translate(-50%,-50%) scale(${scaleX},${scaleY})`;clone.style.transformOrigin='50% 50%';clone.style.display='block';
  }
@@ -976,7 +977,7 @@ function renderCursor(){
  cursorText.classList.toggle('works-art-cursor',activeLarge);
  cursorText.classList.toggle('white-cursor',cursorLight);
  cursorText.style.clipPath=`circle(${Math.max(9,size*.5).toFixed(1)}px at ${mouse.px}px ${mouse.py}px)`;
- syncCursorClone(cursorTarget(size,cursorLight));
+ syncCursorClone(cursorTarget(size,cursorLight),cursorLight);
  cursorFrame=requestAnimationFrame(renderCursor);
 }
 window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});window.addEventListener('mouseleave',()=>{cursor.style.opacity='0';document.getElementById('cursorText').style.opacity='0'});window.addEventListener('mouseenter',()=>{cursor.style.opacity='1';document.getElementById('cursorText').style.opacity='1'});$('#motionToggle').addEventListener('click',()=>setPageMotion(!pageMotionEnabled));updateMotionToggle();if(!pageMotionEnabled)document.querySelector('#worksBlobDefs')?.pauseAnimations?.();renderCursor();

@@ -1,5 +1,5 @@
-KANASTA v2 — aktualizacja kontrolek noise
+KANASTA v2 — aktualizacja kursora logo i ENG/PL
 
-Rozpakuj archiwum do folderu kopii projektu i zachowaj ścieżki plików (index.html oraz images/).
+Rozpakuj archiwum w folderze kopii projektu i zachowaj ścieżki (index.html oraz images/).
 
-To paczka zmian, nie pełna biblioteka prac galerii.
+To paczka aktualizacji, nie pełna biblioteka prac galerii.
