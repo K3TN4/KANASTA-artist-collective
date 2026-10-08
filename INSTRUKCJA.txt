@@ -21,3 +21,6 @@ Aktualizacja komputerowa: warstwa filmu i grain są pod przezroczystą sekcją A
 
 
 Aktualizacja: ARTISTS ma pełne beżowe tło #EAEBCC, identyczne z tłem sekcji ABOUT; film pozostaje pod sekcją.
+
+
+Aktualizacja scrollowania: na komputerze kółko myszy przewija stronę z łagodnym wyhamowaniem. Obsługa nie przechwytuje dotyku/trackpada rozpoznanego jako coarse, gestów powiększania ani przewijania galerii i okien modalnych. Ustawienie MOTION OFF wyłącza ten efekt.
