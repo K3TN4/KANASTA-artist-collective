@@ -6,3 +6,6 @@ Rozpakuj ZIP w folderze kopii projektu, zachowując ścieżki, i zatwierdź podm
 
 
 Dodatkowo: wersja zawiera układ mobilny/tabletowy bez bocznych marginesów i mniejsze logo oraz MENU umieszczone bliżej górnych narożników. Film tła zachowuje pełną opacity.
+
+
+Aktualizacja MENU: kategorie są wyśrodkowane, bez numerów i ozdobnych znaków; zastosowano pogrubioną Helvetica i dodano pod nimi link INSTAGRAM do @kanasta_art. Na małych ekranach rozmiar tekstu zmniejsza się responsywnie.
