@@ -3,3 +3,6 @@ KANASTA v2 — poprawka filmu tła na stronie głównej
 Film startuje lekko powiększony; przy przewijaniu odsuwa się delikatnie i kurczy bez pokazywania krawędzi. Znika przy przejściu do sekcji ABOUT; niżej nie jest widoczny.
 
 Rozpakuj ZIP w folderze kopii projektu, zachowując ścieżki, i zatwierdź podmianę plików. Paczka zawiera index.html oraz używane logo, strzałkę, film i zdjęcie sekcji EXHIBITIONS; nie zawiera pełnej biblioteki prac galerii.
+
+
+Dodatkowo: wersja zawiera układ mobilny/tabletowy bez bocznych marginesów i mniejsze logo oraz MENU umieszczone bliżej górnych narożników. Film tła zachowuje pełną opacity.

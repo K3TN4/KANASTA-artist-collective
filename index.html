@@ -456,7 +456,7 @@ html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:
 
 /* Full-bleed home hero video, behind the wordmark and page controls. */
 #home{isolation:isolate;overflow:visible!important}
-#home .hero-background{position:fixed!important;inset:0!important;z-index:0!important;display:block;width:100vw;height:100svh;object-fit:cover;object-position:center center;pointer-events:none;opacity:var(--hero-depth-opacity,1)}
+#home .hero-background{position:fixed!important;inset:0!important;z-index:0!important;display:block;width:100vw;height:100svh;object-fit:cover;object-position:center center;pointer-events:none;opacity:1!important}
 #home .film-grain{position:fixed!important;inset:0!important;width:100vw;height:100svh;z-index:1!important;pointer-events:none;opacity:calc(var(--noise-opacity,.12) * var(--hero-depth-opacity,1));mix-blend-mode:overlay}
 #home .hero-background,#home .film-grain{transform:translate3d(0,var(--hero-depth-y,0px),0) scale(var(--hero-depth-scale,1.12));transform-origin:center center;will-change:transform,opacity}
 html.motion-off #home .hero-background,html.motion-off #home .film-grain{position:absolute!important;inset:0!important;width:100%;height:100%;transform:none!important;will-change:auto}
@@ -504,6 +504,36 @@ html.motion-off #home .hero-background,html.motion-off #home .film-grain{positio
 .noise-reset{justify-self:end;padding:4px 8px;color:#fff;background:transparent;border:1px solid rgba(255,255,255,.55);font:8px Cairo,Arial,sans-serif;letter-spacing:.08em;cursor:pointer}
 .noise-reset:hover{background:rgba(255,255,255,.14)}
 @media(max-width:700px){.noise-controls{top:58px;right:20px;width:154px;grid-template-columns:auto 1fr;column-gap:8px;row-gap:2px;font-size:9px}.noise-readout{font-size:7px}}
+
+/* Touch layouts: true edge-to-edge sections and compact, fluid corner controls. */
+@media (max-width:1280px) and (pointer:coarse){
+ html,body{width:100%;max-width:100%;overflow-x:hidden}
+ .top{left:0!important;right:0!important;width:100%!important;padding:0!important}
+ main.hero{padding-left:0!important;padding-right:0!important}
+ #logo,.viewerLogo{top:clamp(10px,1.7vh,18px)!important;left:clamp(10px,1.8vw,22px)!important;width:clamp(52px,6.2vw,76px)!important;height:auto!important;aspect-ratio:95/115!important}
+ #logo .kanasta-mark,.viewerLogo .kanasta-mark{width:100%!important;height:100%!important}
+ #menuBtn{left:auto!important;right:clamp(10px,1.8vw,22px)!important;top:clamp(11px,1.8vh,20px)!important;width:auto!important;height:auto!important;font-size:clamp(17px,2.5vw,26px)!important;line-height:1.1!important}
+ .section,.section.works,.about-section,.exhibitions-section,.contact-section{width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;padding-left:0!important;padding-right:0!important}
+ .section-head,.artist-list,.works-track,.works-row,.about-copy,.about-map,.exhibition-copy,.exhibition-image,.contact-section .contact{width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important}
+ .viewer-inner{width:100%!important;margin-left:0!important;margin-right:0!important}
+ .related{padding-left:0!important;padding-right:0!important}
+}
+@media (max-width:700px){
+ .top-actions{margin-right:0!important}
+ #logo,.viewerLogo{left:10px!important;top:10px!important;width:clamp(46px,12vw,60px)!important;height:auto!important;aspect-ratio:95/115!important}
+ #menuBtn{right:10px!important;top:12px!important;font-size:clamp(16px,4.2vw,21px)!important;line-height:1.1!important}
+ .noise-controls{right:10px!important}
+ .section,.section.works,.about-section,.exhibitions-section,.contact-section{padding-top:clamp(72px,12vw,100px)!important;padding-bottom:clamp(48px,10vw,80px)!important}
+ .section.works{padding-left:0!important;padding-right:0!important}
+ .section-head{padding-left:0!important;padding-right:0!important}
+ .artist-row{padding-left:0!important;padding-right:0!important}
+ .viewer-inner{width:100%!important;margin:64px 0 80px!important}
+ .viewer-image{width:100%!important}
+ .related{padding:0!important}
+ .about-section{grid-template-columns:minmax(0,1fr)!important;gap:28px!important}
+ .exhibitions-section{grid-template-columns:minmax(0,1fr)!important;gap:24px!important}
+ .contact-section .contact{grid-template-columns:minmax(0,1fr)!important}
+}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div>
