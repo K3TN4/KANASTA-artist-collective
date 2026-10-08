@@ -455,9 +455,11 @@ html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:
 @media(max-width:700px){.top-actions{margin-right:76px}#menuBtn{left:auto!important;right:20px!important;top:17px!important;width:auto!important;height:32px!important;font-size:24px!important;line-height:32px!important}.artist-group{left:auto;right:20px;top:auto;bottom:29px;font-size:14px;width:auto}.language-switch{left:20px;top:auto;bottom:25px;transform:scale(.85);transform-origin:left bottom}}
 
 /* Full-bleed home hero video, behind the wordmark and page controls. */
-#home{isolation:isolate;overflow:hidden}
-#home .hero-background{position:absolute!important;inset:0!important;z-index:0!important;display:block;width:100%;height:100%;object-fit:cover;object-position:center center;pointer-events:none}
-#home .film-grain{position:absolute!important;inset:0!important;width:100%;height:100%;z-index:1!important;pointer-events:none;opacity:.12;mix-blend-mode:overlay}
+#home{isolation:isolate;overflow:visible!important}
+#home .hero-background{position:fixed!important;inset:0!important;z-index:0!important;display:block;width:100vw;height:100svh;object-fit:cover;object-position:center center;pointer-events:none}
+#home .film-grain{position:fixed!important;inset:0!important;width:100vw;height:100svh;z-index:1!important;pointer-events:none;opacity:calc(.12 * var(--hero-depth-opacity,1));mix-blend-mode:overlay}
+#home .hero-background,#home .film-grain{transform:translate3d(0,var(--hero-depth-y,0px),0) scale(var(--hero-depth-scale,1));transform-origin:center center;will-change:transform,opacity}
+html.motion-off #home .hero-background,html.motion-off #home .film-grain{position:absolute!important;inset:0!important;width:100%;height:100%;transform:none!important;will-change:auto}
 #home .kanasta-wordmark,#home .artist-group,#home .language-switch{z-index:2}
 /* Latest requested refinements: fixed language control, centered About arrow and calmer Works heading. */
 #languageSwitch{position:fixed!important;left:4.2708vw!important;right:auto!important;top:auto!important;bottom:5.6481vh!important;z-index:51!important;}
@@ -580,8 +582,21 @@ document.querySelectorAll('.language-option').forEach(el=>el.addEventListener('c
 let pageMotionEnabled=true;
 try{pageMotionEnabled=localStorage.getItem('kanasta-motion-enabled')!=='false'}catch{}
 if(!pageMotionEnabled)document.documentElement.classList.add('motion-off');
+// Let the hero footage lag behind the page scroll, then gently recede beneath ABOUT.
+let heroDepthTick=false;
+function updateHeroDepth(){
+ const home=$('#home');if(!home)return;
+ if(!pageMotionEnabled){home.style.setProperty('--hero-depth-y','0px');home.style.setProperty('--hero-depth-scale','1');home.style.setProperty('--hero-depth-opacity','1');return}
+ const distance=Math.max(0,Math.min(window.innerHeight,window.scrollY));
+ const progress=distance/Math.max(1,window.innerHeight);
+ home.style.setProperty('--hero-depth-y',`${-distance*.12}px`);
+ home.style.setProperty('--hero-depth-scale',String(1-progress*.035));
+ home.style.setProperty('--hero-depth-opacity',String(1-progress*.18));
+}
+window.addEventListener('scroll',()=>{if(heroDepthTick)return;heroDepthTick=true;requestAnimationFrame(()=>{updateHeroDepth();heroDepthTick=false})},{passive:true});
+window.addEventListener('resize',updateHeroDepth);updateHeroDepth();
 function updateMotionToggle(){const toggle=$('#motionToggle');if(!toggle)return;const t=languageCopy[currentLanguage]||{motionOn:'Wyłącz wszystkie animacje',motionOff:'Włącz wszystkie animacje'};const label=pageMotionEnabled?t.motionOn:t.motionOff;toggle.setAttribute('aria-pressed',String(!pageMotionEnabled));toggle.setAttribute('aria-label',label);toggle.title=label;$('#motionStatus').textContent=pageMotionEnabled?'ON':'OFF'}
-function setPageMotion(enabled){pageMotionEnabled=!!enabled;document.documentElement.classList.toggle('motion-off',!pageMotionEnabled);updateMotionToggle();try{localStorage.setItem('kanasta-motion-enabled',String(pageMotionEnabled))}catch{}
+function setPageMotion(enabled){pageMotionEnabled=!!enabled;document.documentElement.classList.toggle('motion-off',!pageMotionEnabled);updateMotionToggle();updateHeroDepth();try{localStorage.setItem('kanasta-motion-enabled',String(pageMotionEnabled))}catch{}
  const svgMotion=document.querySelector('#worksBlobDefs');if(!pageMotionEnabled)svgMotion?.pauseAnimations?.();else svgMotion?.unpauseAnimations?.();
  if(!pageMotionEnabled){if(cursorFrame)cancelAnimationFrame(cursorFrame);cursorFrame=0;cursor.style.display='none';$('#cursorText').style.display='none';for(const clone of cursorClones.values())clone.remove();cursorClones.clear();orbitCircles.forEach(circle=>{circle.style.transform='';circle.style.opacity='';circle.style.removeProperty('--hover-x');circle.style.removeProperty('--hover-scale')})}
  else{cursor.style.display='';$('#cursorText').style.display='';updateOrbit();renderCursor()}}

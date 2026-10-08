@@ -1,5 +1,3 @@
-KANASTA v2 — poprawka sekcji Exhibitions
+KANASTA v2 — perspektywa filmu przy przewijaniu do ABOUT
 
-Rozpakuj archiwum w folderze kopii projektu i zachowaj ścieżki (index.html oraz images/). Zatwierdź podmianę plików przy pytaniu systemu.
-
-Paczka zawiera pliki strony i wykorzystane przez nią logo, strzałkę, film główny oraz zdjęcie Exhibitions; nie zawiera pełnej biblioteki prac galerii.
+Rozpakuj ZIP w folderze kopii projektu. Zachowaj ścieżki i zatwierdź podmianę plików przy pytaniu systemu. W paczce jest index.html oraz logo, strzałka, film tła i zdjęcie sekcji EXHIBITIONS. Nie zawiera pełnej biblioteki prac galerii.
