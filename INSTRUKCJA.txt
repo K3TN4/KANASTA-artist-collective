@@ -12,3 +12,12 @@ Aktualizacja MENU: kategorie są wyśrodkowane, bez numerów i ozdobnych znaków
 
 
 Dodatkowa poprawka dla telefonu i tabletu: film tła oraz jego warstwa noise są ograniczone do sekcji głównej i znikają po przewinięciu do kolejnych sekcji. Panel noise (włącznik, suwaki i statystyki) jest ukryty na urządzeniach dotykowych.
+
+
+Aktualizacja: na telefonach i tabletach warstwa filmu pozostaje widoczna pod sekcją ARTISTS, a po przewinięciu poza nią znika. Panel noise jest ukryty.
+
+
+Aktualizacja komputerowa: warstwa filmu i grain są pod przezroczystą sekcją ARTISTS; film znika po przewinięciu poza HOME i ARTISTS.
+
+
+Aktualizacja: ARTISTS ma pełne beżowe tło #EAEBCC, identyczne z tłem sekcji ABOUT; film pozostaje pod sekcją.
