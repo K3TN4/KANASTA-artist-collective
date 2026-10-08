@@ -1,26 +1,7 @@
-KANASTA v2 — poprawka filmu tła na stronie głównej
+KANASTA v2 — poprawka płynnego przewijania i filmu tła
 
-Film startuje lekko powiększony; przy przewijaniu odsuwa się delikatnie i kurczy bez pokazywania krawędzi. Znika przy przejściu do sekcji ABOUT; niżej nie jest widoczny.
+W tej wersji poprawiono płynne przewijanie kółkiem na komputerze: przewijanie działa również wtedy, gdy kursor znajduje się nad sekcją WORKS i nie blokuje dalszego zjazdu do EXHIBITIONS oraz CONTACT. Przy granicy strony sterowanie wraca do przeglądarki. Film tła znika, gdy sekcja WORKS zaczyna wchodzić na ekran — nie jest wyświetlany pod WORKS ani dalszymi sekcjami.
 
 Rozpakuj ZIP w folderze kopii projektu, zachowując ścieżki, i zatwierdź podmianę plików. Paczka zawiera index.html oraz używane logo, strzałkę, film i zdjęcie sekcji EXHIBITIONS; nie zawiera pełnej biblioteki prac galerii.
 
-
-Dodatkowo: wersja zawiera układ mobilny/tabletowy bez bocznych marginesów i mniejsze logo oraz MENU umieszczone bliżej górnych narożników. Film tła zachowuje pełną opacity.
-
-
-Aktualizacja MENU: kategorie są wyśrodkowane, bez numerów i ozdobnych znaków; zastosowano pogrubioną Helvetica i dodano pod nimi link INSTAGRAM do @kanasta_art. Na małych ekranach rozmiar tekstu zmniejsza się responsywnie.
-
-
-Dodatkowa poprawka dla telefonu i tabletu: film tła oraz jego warstwa noise są ograniczone do sekcji głównej i znikają po przewinięciu do kolejnych sekcji. Panel noise (włącznik, suwaki i statystyki) jest ukryty na urządzeniach dotykowych.
-
-
-Aktualizacja: na telefonach i tabletach warstwa filmu pozostaje widoczna pod sekcją ARTISTS, a po przewinięciu poza nią znika. Panel noise jest ukryty.
-
-
-Aktualizacja komputerowa: warstwa filmu i grain są pod przezroczystą sekcją ARTISTS; film znika po przewinięciu poza HOME i ARTISTS.
-
-
-Aktualizacja: ARTISTS ma pełne beżowe tło #EAEBCC, identyczne z tłem sekcji ABOUT; film pozostaje pod sekcją.
-
-
-Aktualizacja scrollowania: na komputerze kółko myszy przewija stronę z łagodnym wyhamowaniem. Obsługa nie przechwytuje dotyku/trackpada rozpoznanego jako coarse, gestów powiększania ani przewijania galerii i okien modalnych. Ustawienie MOTION OFF wyłącza ten efekt.
+Pozostałe elementy zachowane: płynne wyhamowanie kółka w ustawieniu MOTION, warstwa film grain, sterowanie NOISE, układ strony oraz beżowe tło sekcji ARTISTS.
