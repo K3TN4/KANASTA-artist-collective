@@ -629,42 +629,28 @@ document.querySelectorAll('.language-option').forEach(el=>el.addEventListener('c
 let pageMotionEnabled=true;
 try{pageMotionEnabled=localStorage.getItem('kanasta-motion-enabled')!=='false'}catch{}
 if(!pageMotionEnabled)document.documentElement.classList.add('motion-off');
-// Desktop wheel scrolling eases gently but yields to the browser at page boundaries.
-let wheelScrollFrame=0,wheelScrollTarget=window.scrollY;
-function stopWheelScroll(){if(wheelScrollFrame)cancelAnimationFrame(wheelScrollFrame);wheelScrollFrame=0;wheelScrollTarget=document.scrollingElement?.scrollTop??window.scrollY}
-function easeDesktopWheelScroll(event){
- if(!pageMotionEnabled||matchMedia('(hover:none), (pointer:coarse), (prefers-reduced-motion:reduce)').matches||event.ctrlKey||event.metaKey||event.shiftKey)return;
- const delta=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?window.innerHeight:1);
- if(!delta)return;
- const target=event.target instanceof Element?event.target:null;
- if(target?.closest('.viewer,.overlay,.profile,.noise-advanced-panel,[data-native-scroll]'))return;
- const scroller=document.scrollingElement||document.documentElement;
- const maxScroll=Math.max(0,scroller.scrollHeight-scroller.clientHeight);
- const current=scroller.scrollTop;
- if(maxScroll<=0)return;
- const base=wheelScrollFrame?wheelScrollTarget:current;
- const next=Math.max(0,Math.min(maxScroll,base+delta));
- // At the top/bottom, let native scrolling/overscroll behavior handle the gesture.
- if(Math.abs(next-base)<.01){stopWheelScroll();return}
- event.preventDefault();
- wheelScrollTarget=next;
- if(wheelScrollFrame)return;
- let previousTime=performance.now();
+// Keep ordinary wheel/trackpad scrolling native; glide gently to ABOUT only when the hero arrow is clicked.
+let arrowScrollFrame=0;
+function cancelArrowScroll(){if(arrowScrollFrame)cancelAnimationFrame(arrowScrollFrame);arrowScrollFrame=0}
+function glideToAbout(event){
+ event.preventDefault();cancelArrowScroll();
+ const about=$('#about');if(!about)return;
+ const start=window.scrollY;
+ const target=Math.max(0,Math.min(document.documentElement.scrollHeight-window.innerHeight,about.getBoundingClientRect().top+start));
+ if(!pageMotionEnabled||matchMedia('(prefers-reduced-motion:reduce)').matches||Math.abs(target-start)<2){window.scrollTo(0,target);return}
+ const duration=1300,started=performance.now();
  const step=now=>{
-  const elapsed=Math.min(48,now-previousTime);previousTime=now;
-  const liveScroller=document.scrollingElement||document.documentElement;
-  const liveMax=Math.max(0,liveScroller.scrollHeight-liveScroller.clientHeight);
-  wheelScrollTarget=Math.max(0,Math.min(liveMax,wheelScrollTarget));
-  const position=liveScroller.scrollTop,distance=wheelScrollTarget-position;
-  if(Math.abs(distance)<.65){liveScroller.scrollTop=wheelScrollTarget;wheelScrollFrame=0;return}
-  liveScroller.scrollTop=position+distance*(1-Math.exp(-elapsed/240));
-  wheelScrollFrame=requestAnimationFrame(step);
+  const progress=Math.min(1,(now-started)/duration);
+  const eased=progress<.5?4*progress*progress*progress:1-Math.pow(-2*progress+2,3)/2;
+  window.scrollTo(0,start+(target-start)*eased);
+  if(progress<1)arrowScrollFrame=requestAnimationFrame(step);else arrowScrollFrame=0;
  };
- wheelScrollFrame=requestAnimationFrame(step);
+ arrowScrollFrame=requestAnimationFrame(step);
 }
-document.addEventListener('wheel',easeDesktopWheelScroll,{passive:false});
-window.addEventListener('keydown',event=>{if(['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].includes(event.key))stopWheelScroll()},{passive:true});
-window.addEventListener('touchstart',stopWheelScroll,{passive:true});
+$('.hero-about-arrow')?.addEventListener('click',glideToAbout);
+window.addEventListener('wheel',cancelArrowScroll,{passive:true});
+window.addEventListener('touchstart',cancelArrowScroll,{passive:true});
+window.addEventListener('keydown',event=>{if(['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].includes(event.key))cancelArrowScroll()},{passive:true});
 // Let the hero footage lag behind the page scroll, then gently recede beneath ABOUT.
 let heroDepthTick=false;
 function updateHeroDepth(){

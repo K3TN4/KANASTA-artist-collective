@@ -1,7 +1,5 @@
-KANASTA v2 — poprawka płynnego przewijania i filmu tła
+KANASTA v2 — płynny zjazd strzałką
 
-W tej wersji poprawiono płynne przewijanie kółkiem na komputerze: przewijanie działa również wtedy, gdy kursor znajduje się nad sekcją WORKS i nie blokuje dalszego zjazdu do EXHIBITIONS oraz CONTACT. Przy granicy strony sterowanie wraca do przeglądarki. Film tła znika, gdy sekcja WORKS zaczyna wchodzić na ekran — nie jest wyświetlany pod WORKS ani dalszymi sekcjami.
+Zmiana przewijania: zwykłe kółko myszy i touchpad działają natywnie, bez przechwytywania gestów przy górnej krawędzi strony. Kliknięcie strzałki na stronie głównej uruchamia płynny, około 1,3-sekundowy zjazd z łagodnym startem i wyhamowaniem do sekcji ABOUT. Ruch można przerwać kółkiem, dotykiem lub klawiszem nawigacyjnym. Ustawienie MOTION OFF oraz systemowa preferencja ograniczenia ruchu wyłączają animację zjazdu.
 
-Rozpakuj ZIP w folderze kopii projektu, zachowując ścieżki, i zatwierdź podmianę plików. Paczka zawiera index.html oraz używane logo, strzałkę, film i zdjęcie sekcji EXHIBITIONS; nie zawiera pełnej biblioteki prac galerii.
-
-Pozostałe elementy zachowane: płynne wyhamowanie kółka w ustawieniu MOTION, warstwa film grain, sterowanie NOISE, układ strony oraz beżowe tło sekcji ARTISTS.
+Film tła nadal znika, gdy sekcja WORKS zaczyna wchodzić na ekran. Rozpakuj ZIP w folderze kopii projektu, zachowując ścieżki, i zatwierdź podmianę plików. Paczka zawiera index.html oraz używane logo, strzałkę, film i zdjęcie sekcji EXHIBITIONS; nie zawiera pełnej biblioteki prac galerii.
