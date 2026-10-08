@@ -391,6 +391,21 @@ html,body{background:#EAEBCC!important;color:#1F1D34!important}
  .contact-section{min-height:50vh;padding:74px 20px 70px!important}.contact-section .contact{grid-template-columns:1fr;gap:18px}.contact-section .section-head{margin-bottom:42px}
 }
 @media(min-width:701px) and (max-width:1000px){.about-section{grid-template-columns:.9fr 1.1fr;gap:30px}.about-map{height:52vh;min-height:380px}.exhibitions-section{grid-template-columns:.9fr 1.1fr;gap:26px}.exhibition-copy h2{font-size:clamp(62px,8vw,100px)}}
+/* Exhibitions: fixed edge-to-edge image panel; keep the cursor running underneath it. */
+@media(min-width:701px){
+ #exhibitions{display:block!important;position:relative!important;min-height:100svh!important;height:100svh!important;padding:0!important;overflow:hidden!important}
+ #exhibitions .exhibition-image{position:absolute!important;z-index:2!important;top:0!important;right:0!important;bottom:0!important;left:50%!important;width:50%!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0!important;overflow:hidden!important}
+ #exhibitions .exhibition-image img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important;transform:none!important;transition:none!important;animation:none!important;filter:saturate(.78)!important}
+ #exhibitions .exhibition-image:hover img{transform:none!important;filter:saturate(.78)!important}
+ #exhibitions .exhibition-copy{position:relative!important;z-index:3!important;width:50%!important;height:100svh!important;min-height:100svh!important;padding:clamp(90px,12vh,150px) var(--g) clamp(55px,8vh,100px)!important}
+ #exhibitions .exhibition-copy .discover-link{margin-top:auto!important}
+ #cursor.under-exhibition-image{z-index:1!important}
+ #cursor.works-art-cursor.under-exhibition-image{z-index:1!important}
+ #cursorText.under-exhibition-image{z-index:1!important}
+}
+@media(max-width:700px){
+ #exhibitions .exhibition-image img,#exhibitions .exhibition-image:hover img{transform:none!important;transition:none!important;animation:none!important;filter:saturate(.78)!important}
+}
 /* User-controlled page-wide motion switch. */
 html.motion-off,html.motion-off *,html.motion-off *::before,html.motion-off *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 html.motion-off .orbit .circle,html.motion-off .orbit .circle:hover{transform:none!important;opacity:1!important}
@@ -960,20 +975,19 @@ function renderCursor(){
   /* The black field below WORKS handles the lower edge; only the upper edge is masked. */
   cursor.style.setProperty('--cursor-clip',`inset(${clipTop.toFixed(1)}px 0 0 0)`);
  }
- if(activeLarge&&exhibitionImageRect&&mouse.py>=nextRect.top&&mouse.py<=nextRect.bottom){
-  const clipRight=Math.max(0,mouse.px+size*.5-exhibitionImageRect.left);
-  cursor.style.setProperty('--cursor-clip',`inset(0 ${clipRight.toFixed(1)}px 0 0)`);
- }
+ const underExhibitionImage=!!hovered?.closest('#exhibitions .exhibition-image');
  const wasLarge=cursor.classList.contains('works-art-cursor');
  cursor.classList.toggle('works-art-cursor',activeLarge);
  cursor.classList.toggle('works-bar-cursor',worksBar&&!activeLarge&&!whiteCursor);
  cursor.classList.toggle('works-title-cursor',worksTitle);
+ cursor.classList.toggle('under-exhibition-image',underExhibitionImage);
  cursor.classList.toggle('dark-zone',whiteCursor);
  cursor.classList.toggle('white-cursor',whiteCursor);
  if(activeLarge&&!wasLarge){cursor.classList.add('works-entering');requestAnimationFrame(()=>cursor.classList.remove('works-entering'))}
  const cursorText=document.getElementById('cursorText');
  const worksMask=document.getElementById('worksCursorMask');if(worksMask)worksMask.style.display='none';
  cursorText.classList.toggle('works-title-cursor',worksTitle);
+ cursorText.classList.toggle('under-exhibition-image',underExhibitionImage);
  cursorText.classList.toggle('works-art-cursor',activeLarge);
  cursorText.classList.toggle('white-cursor',cursorLight);
  cursorText.style.clipPath=`circle(${Math.max(9,size*.5).toFixed(1)}px at ${mouse.px}px ${mouse.py}px)`;

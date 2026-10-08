@@ -1,5 +1,5 @@
-KANASTA v2 — aktualizacja kursora logo i ENG/PL
+KANASTA v2 — poprawka sekcji Exhibitions
 
-Rozpakuj archiwum w folderze kopii projektu i zachowaj ścieżki (index.html oraz images/).
+Rozpakuj archiwum w folderze kopii projektu i zachowaj ścieżki (index.html oraz images/). Zatwierdź podmianę plików przy pytaniu systemu.
 
-To paczka aktualizacji, nie pełna biblioteka prac galerii.
+Paczka zawiera pliki strony i wykorzystane przez nią logo, strzałkę, film główny oraz zdjęcie Exhibitions; nie zawiera pełnej biblioteki prac galerii.
