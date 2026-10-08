@@ -456,9 +456,9 @@ html.motion-off .hero .kanasta-wordmark,html.motion-off .hero .kanasta-wordmark:
 
 /* Full-bleed home hero video, behind the wordmark and page controls. */
 #home{isolation:isolate;overflow:visible!important}
-#home .hero-background{position:fixed!important;inset:0!important;z-index:0!important;display:block;width:100vw;height:100svh;object-fit:cover;object-position:center center;pointer-events:none}
-#home .film-grain{position:fixed!important;inset:0!important;width:100vw;height:100svh;z-index:1!important;pointer-events:none;opacity:calc(.12 * var(--hero-depth-opacity,1));mix-blend-mode:overlay}
-#home .hero-background,#home .film-grain{transform:translate3d(0,var(--hero-depth-y,0px),0) scale(var(--hero-depth-scale,1));transform-origin:center center;will-change:transform,opacity}
+#home .hero-background{position:fixed!important;inset:0!important;z-index:0!important;display:block;width:100vw;height:100svh;object-fit:cover;object-position:center center;pointer-events:none;opacity:var(--hero-depth-opacity,1)}
+#home .film-grain{position:fixed!important;inset:0!important;width:100vw;height:100svh;z-index:1!important;pointer-events:none;opacity:calc(var(--noise-opacity,.12) * var(--hero-depth-opacity,1));mix-blend-mode:overlay}
+#home .hero-background,#home .film-grain{transform:translate3d(0,var(--hero-depth-y,0px),0) scale(var(--hero-depth-scale,1.12));transform-origin:center center;will-change:transform,opacity}
 html.motion-off #home .hero-background,html.motion-off #home .film-grain{position:absolute!important;inset:0!important;width:100%;height:100%;transform:none!important;will-change:auto}
 #home .kanasta-wordmark,#home .artist-group,#home .language-switch{z-index:2}
 /* Latest requested refinements: fixed language control, centered About arrow and calmer Works heading. */
@@ -534,7 +534,7 @@ function updateFilmNoise(){
  if(!noiseLayer||!noiseButton||!noiseSlider)return;
  const strength=Number(noiseSlider.value),v=Object.fromEntries(Object.entries(noiseControls).map(([k,e])=>[k,e?(e.type==='checkbox'?e.checked:e.value):noiseDefaults[k]]));
  const scale=Number(v.scale)/100,speed=Number(v.speed)/100,contrast=Number(v.contrast)/100,brightness=Number(v.brightness)/100,octaves=Number(v.octaves);
- noiseLayer.style.opacity=filmNoiseEnabled?String(strength/100):'0';noiseLayer.style.display=filmNoiseEnabled?'':'none';noiseLayer.style.mixBlendMode=v.blend;
+ noiseLayer.style.setProperty('--noise-opacity',filmNoiseEnabled?String(strength/100):'0');noiseLayer.style.display=filmNoiseEnabled?'':'none';noiseLayer.style.mixBlendMode=v.blend;
  noiseButton.setAttribute('aria-pressed',String(filmNoiseEnabled));noiseButton.setAttribute('aria-label',filmNoiseEnabled?'Turn film grain off':'Turn film grain on');
  if(noiseTurbulence){noiseTurbulence.setAttribute('baseFrequency',`${(0.18/scale).toFixed(3)} ${(0.12/scale).toFixed(3)}`);noiseTurbulence.setAttribute('numOctaves',String(octaves));noiseTurbulence.setAttribute('stitchTiles',v.seamless?'stitch':'noStitch')}
  if(noiseSeedAnimation){noiseSeedAnimation.setAttribute('dur',`${speed.toFixed(2)}s`);noiseSeedAnimation.setAttribute('values',v.animate?'15;27;39;51;63;75;87;99;111;123;135;147':'15;15')}
@@ -587,11 +587,12 @@ let heroDepthTick=false;
 function updateHeroDepth(){
  const home=$('#home');if(!home)return;
  if(!pageMotionEnabled){home.style.setProperty('--hero-depth-y','0px');home.style.setProperty('--hero-depth-scale','1');home.style.setProperty('--hero-depth-opacity','1');return}
- const distance=Math.max(0,Math.min(window.innerHeight,window.scrollY));
- const progress=distance/Math.max(1,window.innerHeight);
- home.style.setProperty('--hero-depth-y',`${-distance*.12}px`);
- home.style.setProperty('--hero-depth-scale',String(1-progress*.035));
- home.style.setProperty('--hero-depth-opacity',String(1-progress*.18));
+ const heroHeight=Math.max(1,home.offsetHeight);
+ const distance=Math.max(0,Math.min(heroHeight,window.scrollY));
+ const progress=distance/heroHeight;
+ home.style.setProperty('--hero-depth-y',`${-distance*.06}px`);
+ home.style.setProperty('--hero-depth-scale',String(1.12-progress*.035));
+ home.style.setProperty('--hero-depth-opacity',String(1-progress));
 }
 window.addEventListener('scroll',()=>{if(heroDepthTick)return;heroDepthTick=true;requestAnimationFrame(()=>{updateHeroDepth();heroDepthTick=false})},{passive:true});
 window.addEventListener('resize',updateHeroDepth);updateHeroDepth();

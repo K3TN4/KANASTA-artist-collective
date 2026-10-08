@@ -1,3 +1,5 @@
-KANASTA v2 — perspektywa filmu przy przewijaniu do ABOUT
+KANASTA v2 — poprawka filmu tła na stronie głównej
 
-Rozpakuj ZIP w folderze kopii projektu. Zachowaj ścieżki i zatwierdź podmianę plików przy pytaniu systemu. W paczce jest index.html oraz logo, strzałka, film tła i zdjęcie sekcji EXHIBITIONS. Nie zawiera pełnej biblioteki prac galerii.
+Film startuje lekko powiększony; przy przewijaniu odsuwa się delikatnie i kurczy bez pokazywania krawędzi. Znika przy przejściu do sekcji ABOUT; niżej nie jest widoczny.
+
+Rozpakuj ZIP w folderze kopii projektu, zachowując ścieżki, i zatwierdź podmianę plików. Paczka zawiera index.html oraz używane logo, strzałkę, film i zdjęcie sekcji EXHIBITIONS; nie zawiera pełnej biblioteki prac galerii.
