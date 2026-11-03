@@ -1,5 +1,9 @@
-KANASTA v2 — aktualizacja palety kolorów
+KANASTA v2 — poprawka Exhibitions i aktualizacja palety
 
-Paleta strony została zmieniona: beż zastąpiony jasnym #EBEBEB, ciemne/czarne partie granatem #201E34, a tytuł ABOUT / O NAS ma akcent #E04324. Zmiana obejmuje tła, napisy, logo KANASTA, MENU, ENG/PL, strzałkę, ARTIST GROUP, sekcje WORKS/EXHIBITIONS/CONTACT oraz elementy noise i kursora.
+To jest paczka aktualizacyjna do istniejącej kopii projektu (nie pełna kopia wszystkich zdjęć galerii). Rozpakuj ją w głównym folderze projektu i zatwierdź podmianę plików, zachowując strukturę:
+- index.html
+- images/kanasta-arrow.svg
 
-Rozpakuj ZIP w folderze kopii projektu, zachowując ścieżki, i zatwierdź podmianę plików. Wersja zachowuje istniejące funkcje i układ strony.
+Pozostałe pliki i katalogi projektu pozostaw bez zmian. Nie nadpisuje oryginalnego repozytorium — użyj wyłącznie kopii KANASTA v2.
+
+W sekcji Exhibitions nagłówek jest wyśrodkowany nad zdjęciem i zapętlony poziomo; CTA DISCOVER znajduje się pod nim po lewej stronie, ze strzałką skierowaną w prawo. Układ mobilny jest dopasowany osobno. Aktualizuje też wcześniejszą paletę kolorów.
