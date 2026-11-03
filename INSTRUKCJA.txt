@@ -1,5 +1,5 @@
-KANASTA v2 — płynny zjazd strzałką
+KANASTA v2 — aktualizacja palety kolorów
 
-Zmiana przewijania: zwykłe kółko myszy i touchpad działają natywnie, bez przechwytywania gestów przy górnej krawędzi strony. Kliknięcie strzałki na stronie głównej uruchamia płynny, około 1,3-sekundowy zjazd z łagodnym startem i wyhamowaniem do sekcji ABOUT. Ruch można przerwać kółkiem, dotykiem lub klawiszem nawigacyjnym. Ustawienie MOTION OFF oraz systemowa preferencja ograniczenia ruchu wyłączają animację zjazdu.
+Paleta strony została zmieniona: beż zastąpiony jasnym #EBEBEB, ciemne/czarne partie granatem #201E34, a tytuł ABOUT / O NAS ma akcent #E04324. Zmiana obejmuje tła, napisy, logo KANASTA, MENU, ENG/PL, strzałkę, ARTIST GROUP, sekcje WORKS/EXHIBITIONS/CONTACT oraz elementy noise i kursora.
 
-Film tła nadal znika, gdy sekcja WORKS zaczyna wchodzić na ekran. Rozpakuj ZIP w folderze kopii projektu, zachowując ścieżki, i zatwierdź podmianę plików. Paczka zawiera index.html oraz używane logo, strzałkę, film i zdjęcie sekcji EXHIBITIONS; nie zawiera pełnej biblioteki prac galerii.
+Rozpakuj ZIP w folderze kopii projektu, zachowując ścieżki, i zatwierdź podmianę plików. Wersja zachowuje istniejące funkcje i układ strony.
