@@ -1,7 +1,3 @@
-KANASTA v2 — poprawka przezroczystej mapy i kursora
+KANASTA v2 — aktualizacja EXHIBITIONS i kursora
 
-Paczka aktualizacyjna. Rozpakuj w katalogu głównym kopii projektu KANASTA v2 i zaakceptuj podmianę/utworzenie plików, zachowując strukturę katalogów:
-- index.html
-- images/mapa-polski.png
-
-To nie jest pełne archiwum całej galerii. Zmiany obejmują przezroczyste tło pola mapy, dodanie mapy Polski PNG oraz czerwony kursor tylko nad nieprzezroczystymi pikselami mapy. Oryginalnego repozytorium nie zmieniaj — użyj kopii projektu.
+Rozpakuj tę paczkę w katalogu głównym kopii projektu KANASTA-artist-collective-v2, zachowując strukturę plików. Zawiera zmieniony index.html oraz images/mapa-polski.png. Nie nadpisuje oryginalnego repozytorium.
