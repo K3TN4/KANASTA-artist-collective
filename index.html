@@ -565,7 +565,7 @@ html.motion-off #home .hero-background,html.motion-off #home .film-grain{positio
 #exhibitions .marquee-word{display:block;flex:none;color:#EBEBEB!important;font:700 clamp(48px,6.667vw,128px)/1.15 Helvetica,Arial,sans-serif!important;letter-spacing:0!important}
 #exhibitions .marquee-dot{display:block;flex:none;width:35px;height:35px;border-radius:50%;background:#EBEBEB}
 @keyframes exhibitions-marquee-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-#exhibitionsDiscover{position:absolute!important;left:19.1vw!important;top:42.3vh!important;margin:0!important;padding:0!important;width:auto!important;height:56px!important;min-height:56px!important;display:flex!important;align-items:center!important;gap:1.51vw!important;border:0!important;border-bottom:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;color:#EBEBEB!important;text-decoration:none!important;letter-spacing:0!important;font:400 clamp(24px,2.083vw,40px)/1.15 Helvetica,Arial,sans-serif!important;pointer-events:auto!important;z-index:6!important}
+#exhibitionsDiscover{position:absolute!important;left:19.1vw!important;top:55vh!important;margin:0!important;padding:0!important;width:auto!important;height:56px!important;min-height:56px!important;display:flex!important;align-items:center!important;gap:1.51vw!important;border:0!important;border-bottom:0!important;background:transparent!important;box-shadow:none!important;outline:none!important;color:#EBEBEB!important;text-decoration:none!important;letter-spacing:0!important;font:400 clamp(24px,2.083vw,40px)/1.15 Helvetica,Arial,sans-serif!important;pointer-events:auto!important;z-index:6!important}
 #exhibitionsArrowWrap{position:relative!important;display:block!important;flex:0 0 78px!important;width:78px!important;min-width:78px!important;height:56px!important;overflow:visible!important}
 #exhibitionsArrow{position:absolute!important;left:50%!important;top:50%!important;display:block!important;width:30px!important;height:80px!important;max-width:none!important;transform:translate(-50%,-50%) rotate(-90deg)!important;transform-origin:center!important}
 #exhibitionsDiscoverLabel{box-sizing:border-box!important;display:flex!important;flex:0 0 157px!important;width:157px!important;min-width:157px!important;height:56px!important;padding:0 6px!important;border:0!important;border-bottom:0!important;background:transparent!important;align-items:center!important;justify-content:center!important;color:#EBEBEB!important}
@@ -580,6 +580,87 @@ html.motion-off #home .hero-background,html.motion-off #home .film-grain{positio
  #exhibitionsArrow{width:24px!important;height:64px!important}
  #exhibitionsDiscoverLabel{flex:0 0 clamp(132px,41vw,157px)!important;width:clamp(132px,41vw,157px)!important;min-width:clamp(132px,41vw,157px)!important;height:48px!important}
 }
+/* Latest layout pass: move DISCOVER beneath the moving heading. */
+@media(min-width:701px){#exhibitionsDiscover{top:55vh!important}}
+@media(max-width:700px){#exhibitionsDiscover{top:35vh!important}}
+/* WORKS becomes a full-bleed art rail followed by a compact caption. */
+#works.section.works{padding:0 0 clamp(36px,5vw,80px)!important;overflow:visible!important;background:#EBEBEB!important;color:#201E34!important}
+#works .section-head{display:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important}
+#works .works-track{margin-top:0!important}
+#worksRow{height:clamp(560px,62vh,680px)!important}
+#works .works-caption{position:relative;z-index:4;width:100%;margin-top:clamp(120px,9.27vw,178px);transform:translateY(clamp(0px,2.55vw,49px));color:#201E34}
+#works .works-caption-hint{display:flex;align-items:center;gap:clamp(12px,1.3vw,25px);margin-left:clamp(24px,2.55vw,49px);height:56px;font:400 clamp(14px,1.05vw,20px)/1.15 Helvetica,Arial,sans-serif;color:#201E34}
+#works .works-caption-arrow{position:relative;display:block;flex:none;width:clamp(40px,4.06vw,78px);height:0;border-top:2px solid #201E34}
+#works .works-caption-title{width:100%;margin-top:-28px;color:#201E34;font:700 clamp(64px,6.667vw,128px)/1.15 Helvetica,Arial,sans-serif;text-align:center;text-transform:uppercase;letter-spacing:0}
+/* CONTACT: two-column editorial panel with a full-width wordmark footer. */
+#contact.contact-section{position:relative;isolation:isolate;display:flex;flex-direction:column;width:100%;min-height:0;padding:0!important;margin:0!important;overflow:hidden;background:#201E34!important;color:#EBEBEB!important;border:0!important}
+#contact .contact-rule-top{position:absolute;z-index:2;top:0;left:0;width:100%;height:1px;background:#EBEBEB}
+#contact .contact-grid{position:relative;display:grid;grid-template-columns:42.3% 1px minmax(0,1fr);width:100%;height:535px;min-height:535px;margin-top:0;flex:none}
+#contact .contact-left{position:relative;min-width:0}
+#contact .contact-columns{position:absolute;left:clamp(24px,2.76vw,53px);top:48px;display:grid;grid-template-columns:clamp(130px,10.95vw,210px) clamp(120px,9.9vw,190px);column-gap:clamp(24px,9.48vw,182px)}
+
+
+#contact .contact-column{display:flex;flex-direction:column;align-items:flex-start;gap:0;font:300 clamp(22px,1.667vw,32px)/1.16 Helvetica,Arial,sans-serif;color:#EBEBEB}
+#contact .contact-column h2{display:flex;align-items:center;box-sizing:border-box;width:100%;height:56px;padding:0;font:400 clamp(23px,1.667vw,32px)/1.16 Helvetica,Arial,sans-serif;color:#EBEBEB;border:1px solid #EBEBEB}
+#contact .contact-column a,#contact .contact-copy-email{display:block;padding:0;border:0;background:none;color:#EBEBEB;text-align:left;text-decoration:none;font:300 clamp(22px,1.667vw,32px)/1.16 Helvetica,Arial,sans-serif;cursor:pointer}
+#contact .contact-follow a:first-of-type{margin-top:15px}
+#contact .contact-follow a+a{margin-top:24px}
+#contact .contact-info a:first-of-type{margin-top:10px}
+#contact .contact-info .contact-copy-email{margin-top:24px}
+#contact .contact-column a:hover,#contact .contact-copy-email:hover,#contact .contact-jump-links a:hover{opacity:.66}
+#contact .contact-divider{width:1px;height:100%;background:#EBEBEB}
+#contact .contact-support{position:absolute;left:clamp(140px,19.8vw,380px);top:78%;display:flex;align-items:center;gap:29px;color:#EBEBEB}
+@media(min-width:1700px){#contact .contact-support{left:380px;top:75.7%}}
+#contact .contact-support img{display:block;flex:0 0 78px;width:30px;height:78px;object-fit:contain;transform:translateY(-9px) rotate(-90deg)}
+#contact .contact-support span{display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:clamp(180px,13.8vw,265px);height:56px;padding:0 8px;border:1px solid #EBEBEB;font:400 clamp(28px,2.08vw,40px)/1.15 Helvetica,Arial,sans-serif;white-space:nowrap}
+@media(min-width:1700px){#contact .contact-support span{width:265px}}
+#contact .contact-right{position:relative;min-width:0;padding:39px clamp(28px,3.34vw,64px) 0}
+#contact .contact-manifesto{max-width:645px;margin:0;font:400 clamp(28px,2.5vw,48px)/1.15 Helvetica,Arial,sans-serif;color:#EBEBEB}
+#contact .contact-jump-links{position:absolute;right:clamp(24px,3.8vw,73px);bottom:48px;display:flex;flex-direction:column;align-items:flex-end;gap:0}
+#contact .contact-jump-links a{display:flex;align-items:center;justify-content:flex-end;box-sizing:border-box;height:61px;padding:0 0 0 10px;border:1px solid #EBEBEB;color:#EBEBEB;text-decoration:none;text-align:right;font:400 clamp(23px,1.667vw,32px)/1.16 Helvetica,Arial,sans-serif}
+#contact .contact-jump-links a:first-child{width:clamp(210px,17vw,326px)}
+#contact .contact-jump-links a:last-child{width:clamp(280px,23.9vw,459px)}
+@media(min-width:1700px){#contact .contact-jump-links{right:73px;bottom:48px}}
+#contact .contact-bottom-rule{position:relative;z-index:2;width:100%;height:1px;flex:none;background:#EBEBEB}
+#contact .contact-wordmark{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:0;width:100%;height:clamp(200px,22.15vw,425px);min-height:200px;margin-top:-49px;padding-top:48px;color:#EBEBEB;white-space:nowrap;font-size:clamp(120px,20.83vw,400px);font-weight:400;line-height:1.09;letter-spacing:0}
+#contact .contact-wordmark span{display:inline-block;flex:none;line-height:1.09;letter-spacing:0;color:#EBEBEB}
+@media(min-width:1700px){#contact .contact-wordmark{font-size:400px}}
+#contact .contact-wordmark .letter-k{font-family:'Julius Sans One',sans-serif;font-weight:400}
+#contact .contact-wordmark .letter-a{font-family:'Zalando Sans',sans-serif;font-weight:400}
+#contact .contact-wordmark .letter-n{font-family:'Allison',cursive;font-weight:400}
+#contact .contact-wordmark .letter-a-cap{font-family:'Gelasio',serif;font-weight:400}
+#contact .contact-wordmark .letter-s{font-family:'Bitcount Single',sans-serif;font-weight:700}
+#contact .contact-wordmark .letter-t{font-family:'Climate Crisis',sans-serif;font-weight:400}
+#contact .contact-wordmark .letter-a-end{font-family:'Pixelify Sans',sans-serif;font-weight:700}
+@media(max-width:700px){
+ #works.section.works{padding-bottom:44px!important}
+ #worksRow{height:clamp(420px,115vw,560px)!important}
+ #works .works-caption-hint{gap:16px;margin-left:20px;font-size:14px}
+ #works .works-caption-arrow{width:40px}
+ #works .works-caption{margin-top:48px;transform:none}
+ #works .works-caption-title{margin-top:-4px;font-size:clamp(48px,12vw,74px)}
+ #contact .contact-grid{display:grid;grid-template-columns:minmax(0,1fr);height:auto;min-height:0;margin-top:48px}
+ #contact .contact-left{min-height:380px}
+ #contact .contact-columns{position:relative;left:auto;top:auto;padding:28px 20px 0;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px}
+ #contact .contact-column{gap:0;font-size:clamp(18px,5.2vw,24px)}
+ #contact .contact-column h2{height:46px;font-size:clamp(18px,5.2vw,24px)}
+ #contact .contact-column a,#contact .contact-copy-email{font-size:clamp(18px,5.2vw,24px)}
+ #contact .contact-follow a:first-of-type{margin-top:12px}
+ #contact .contact-follow a+a{margin-top:16px}
+ #contact .contact-info a:first-of-type{margin-top:12px}
+ #contact .contact-info .contact-copy-email{margin-top:16px}
+ #contact .contact-support{left:20px;top:auto;bottom:24px;gap:12px}
+ #contact .contact-support img{width:26px;height:68px;flex-basis:68px;transform:rotate(-90deg)}
+ #contact .contact-support span{height:48px;font-size:26px}
+ #contact .contact-divider{width:calc(100% - 40px);height:1px;margin:0 20px}
+ #contact .contact-right{min-height:290px;padding:26px 20px 105px}
+ #contact .contact-manifesto{font-size:clamp(26px,7.2vw,36px)}
+ #contact .contact-jump-links{right:20px;bottom:16px}
+ #contact .contact-jump-links a{height:48px;font-size:21px}
+ #contact .contact-jump-links a:first-child{width:190px}
+ #contact .contact-jump-links a:last-child{width:260px}
+ #contact .contact-wordmark{height:clamp(130px,34vw,190px);min-height:130px;margin-top:-25px;padding-top:24px;font-size:clamp(75px,17vw,120px)}
+}
 @media(prefers-reduced-motion:reduce){#exhibitionsMarqueeTrack{animation:none!important}}
 #home .kanasta-wordmark,#home .kanasta-wordmark span{color:#EBEBEB!important;-webkit-text-fill-color:#EBEBEB!important}
 #about .about-copy h2{color:#E04324!important;-webkit-text-fill-color:#E04324!important}
@@ -592,9 +673,9 @@ html.motion-off #home .hero-background,html.motion-off #home .film-grain{positio
 <main class="hero" id="home"><video class="hero-background" autoplay muted loop playsinline preload="auto" aria-hidden="true"><source src="images/kanasta-background.mp4" type="video/mp4"></video><svg class="film-grain" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true"><defs><filter id="camera-film-grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.18 0.12" numOctaves="1" seed="15" stitchTiles="stitch" result="noise"><animate attributeName="seed" values="15;27;39;51;63;75;87;99;111;123;135;147" dur="0.5s" calcMode="discrete" repeatCount="indefinite"/></feTurbulence><feColorMatrix in="noise" type="saturate" values="0" result="mono"/><feComponentTransfer in="mono"><feFuncR type="linear" slope="2" intercept="-0.5"/><feFuncG type="linear" slope="2" intercept="-0.5"/><feFuncB type="linear" slope="2" intercept="-0.5"/></feComponentTransfer></filter></defs><rect width="100%" height="100%" fill="#EBEBEB" filter="url(#camera-film-grain)"/></svg><a class="hero-about-arrow" href="#about" aria-label="Scroll to About"><img src="images/kanasta-arrow.svg" alt=""></a><h1 class="kanasta-wordmark" aria-label="KaNASTA"><span class="letter-k">K</span><span class="letter-a">a</span><span class="letter-n">N</span><span class="letter-a-cap">A</span><span class="letter-s">S</span><span class="letter-t">T</span><span class="letter-a-end">A</span></h1><div class="artist-group" id="artistGroup">ARTIST GROUP</div></main>
 <section class="about-section" id="about"><div class="about-copy"><p class="eyebrow">KANASTA · POLAND</p><h2>ABOUT</h2><div class="about-text"><p>KANASTA is an artist collective based in Poland.</p><p>15 artists working across different media, practices and perspectives.</p></div><a class="discover-link" href="#artists"><span>DISCOVER</span><span class="discover-arrow" aria-hidden="true">↗</span></a></div><div class="about-map" aria-label="Miejsce na mapę Polski"><img class="about-map-image" src="images/mapa-polski.png" alt="Mapa Polski" onload="this.parentElement.classList.add('map-ready')" onerror="this.style.display='none'"><div class="map-placeholder"><span>POLAND</span><small>ADD YOUR MAP TO<br><code>images/mapa-polski.png</code></small></div></div></section>
 <section class="section" id="artists"><div class="section-head"><span>01</span><h2>ARTISTS</h2><span>15</span></div><div class="artist-list" id="artistList"></div></section>
-<section class="section works" id="works"><div class="section-head"><span>02</span><h2>WORKS</h2><span>KANASTA</span></div><div class="works-track"><div class="works-row" id="worksRow"><div class="works-line" data-line="0"></div><div class="works-line" data-line="1"></div><div class="works-line" data-line="2"></div><div class="works-line" data-line="3"></div></div></div></section>
+<section class="section works" id="works"><div class="section-head" aria-hidden="true"><span></span><h2></h2><span></span></div><div class="works-track"><div class="works-row" id="worksRow"><div class="works-line" data-line="0"></div><div class="works-line" data-line="1"></div><div class="works-line" data-line="2"></div><div class="works-line" data-line="3"></div></div></div><div class="works-caption"><div class="works-caption-hint"><span class="works-caption-arrow" aria-hidden="true"></span><p data-en="Scroll to see more" data-pl="Przewijaj, by zobaczyć więcej">Scroll to see more</p></div><h2 class="works-caption-title" data-en="Our Artworks" data-pl="Nasze prace">Our Artworks</h2></div></section>
 <section class="exhibitions-section" id="exhibitions"><div class="exhibition-copy"><h2 id="exhibitionsMarquee" class="exhibitions-marquee" aria-label="EXHIBITIONS"><span id="exhibitionsMarqueeTrack" class="exhibitions-marquee-track" aria-hidden="true"><span id="exhibitionsMarqueeGroupA" class="exhibitions-marquee-group"><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span></span><span id="exhibitionsMarqueeGroupB" class="exhibitions-marquee-group"><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span></span></span></h2><a id="exhibitionsDiscover" class="discover-link exhibitions-discover" href="#contact"><span id="exhibitionsArrowWrap" class="exhibition-arrow-wrap" aria-hidden="true"><img id="exhibitionsArrow" class="exhibition-arrow" src="images/kanasta-arrow.svg" alt=""></span><span id="exhibitionsDiscoverLabel">DISCOVER</span></a></div><div class="exhibition-image"><img src="images/hero-square.jpg" alt="Wybrane zdjęcie KANASTA — miejsce na prezentację wystawy"><span class="image-caption">KANASTA · ARTIST COLLECTIVE</span></div></section>
-<section class="section contact-section" id="contact"><div class="section-head"><span>04</span><h2>CONTACT</h2><span>KANASTA</span></div><div class="contact"><a href="https://www.instagram.com/kanasta_art/">INSTAGRAM</a><span>@kanasta_art</span><span>Poland</span></div></section>
+<section class="contact-section" id="contact" aria-label="Contact"><div class="contact-rule-top"></div><div class="contact-grid"><div class="contact-left"><div class="contact-columns"><div class="contact-column contact-follow"><h2 data-en="FOLLOW US" data-pl="OBSERWUJ NAS">FOLLOW US</h2><a href="https://www.instagram.com/kanasta_art/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Facebook</a></div><div class="contact-column contact-info"><h2>INFO</h2><a href="#about" data-scroll-target="about" data-en="About" data-pl="O nas">About</a><button type="button" class="contact-copy-email" data-email="patrycjaboruchkanasta@gmail.com" data-en="Contact" data-pl="Kontakt">Contact</button></div></div><div class="contact-support"><img src="images/kanasta-arrow.svg" alt="" aria-hidden="true"><span data-en="Support us" data-pl="Wesprzyj nas">Support us</span></div></div><div class="contact-divider" aria-hidden="true"></div><div class="contact-right"><p class="contact-manifesto" data-en="Independent artists. Shared space. New perspectives." data-pl="Niezależni artyści. Wspólna przestrzeń. Nowe perspektywy.">Independent artists. Shared space. New perspectives.</p><nav class="contact-jump-links" aria-label="Explore"><a href="#artists" data-scroll-target="artists">ARTISTS</a><a href="#exhibitions" data-scroll-target="exhibitions">EXHIBITIONS</a></nav></div></div><div class="contact-bottom-rule"></div><h2 class="contact-wordmark" aria-label="KaNASTA"><span class="letter-k">K</span><span class="letter-a">a</span><span class="letter-n">N</span><span class="letter-a-cap">A</span><span class="letter-s">S</span><span class="letter-t">T</span><span class="letter-a-end">A</span></h2></section>
 <div class="overlay" id="menu"><button class="close" id="menuClose">CLOSE</button><nav class="menu-list"><a href="#about">ABOUT</a><a href="#artists">ARTISTS</a><a href="#works">WORKS</a><a href="#exhibitions">EXHIBITIONS</a><a href="#contact">CONTACT</a></nav><a class="menu-instagram" href="https://www.instagram.com/kanasta_art/" target="_blank" rel="noopener noreferrer">INSTAGRAM</a></div>
 <div class="profile" id="profile"><button class="close" id="profileClose">CLOSE</button><div id="profileBody"></div></div>
 <div class="viewer" id="viewer"><div class="viewer-top"><header class="top"><button class="viewerLogo" aria-label="KANASTA — strona główna"><img class="kanasta-mark" src="images/kanasta-mark.svg" alt=""></button><button class="close" id="viewerClose">CLOSE</button></header></div><div class="viewer-inner"><div class="viewer-image" id="viewerImage"><img id="viewerImg" alt=""></div><div class="viewer-caption"><small id="viewerNo"></small><h2 id="viewerTitle"></h2><p id="viewerArtist"></p><small id="viewerMeta"></small></div><div class="related" id="related"></div></div></div>
@@ -649,7 +730,8 @@ function applyLanguage(lang){
  const map=$('.about-map-image');if(map)map.alt=t.mapAlt;const mapBox=$('.about-map');if(mapBox)mapBox.setAttribute('aria-label',t.mapAlt);const mapPlace=$('.map-placeholder span');if(mapPlace)mapPlace.textContent=t.mapLabel;const mapSmall=$('.map-placeholder small');if(mapSmall&&mapSmall.firstChild)mapSmall.firstChild.textContent=t.mapInstruction+' ';
  const exImg=$('.exhibition-image img');if(exImg)exImg.alt=t.imageAlt;put('.image-caption',t.caption);
  const country=$('.contact span:last-child');if(country)country.textContent=t.country;const worksCount=$('#works .section-head span:last-child');if(worksCount){const match=worksCount.textContent.match(/^(\d+)\s*·/);if(match)worksCount.textContent=match[1]+' · '+t.worksCount}
- document.querySelectorAll('.language-option').forEach(el=>{const active=el.dataset.language===currentLanguage;el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active))});const switcher=$('#languageSwitch');if(switcher){switcher.dataset.language=currentLanguage;switcher.setAttribute('aria-label',t.choose)}
+ document.querySelectorAll('.language-option').forEach(el=>{const active=el.dataset.language===currentLanguage;el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active))});
+ document.querySelectorAll('[data-en][data-pl]').forEach(el=>{el.textContent=currentLanguage==='pl'?el.dataset.pl:el.dataset.en});const switcher=$('#languageSwitch');if(switcher){switcher.dataset.language=currentLanguage;switcher.setAttribute('aria-label',t.choose)}
  ['#logo','.viewerLogo'].forEach(sel=>document.querySelectorAll(sel).forEach(el=>el.setAttribute('aria-label',t.homeLabel)));
  const motion=$('#motionToggle');if(motion){const label=pageMotionEnabled?t.motionOn:t.motionOff;motion.setAttribute('aria-label',label);motion.title=label}
  try{localStorage.setItem('kanasta-language',currentLanguage)}catch{}
@@ -958,7 +1040,7 @@ function startWorksAutoDrift(){
   if(!rail.ready||!pageMotionEnabled||worksDrag||worksTouchRail||document.visibilityState!=='visible'||matchMedia('(hover:none), (pointer:coarse)').matches||$('#viewer').classList.contains('open')||$('#menu').classList.contains('open')||$('#profile').classList.contains('open'))return;
   const row=$('#worksRow'),rect=row.getBoundingClientRect();
   if(rect.bottom<=0||rect.top>=innerHeight)return;
-  moveRail(-1.7);
+  moveRail(-3.4);
  },100);
 }
 function loadRepoWorks(){return REPO_THUMB_FILES.map(makeWork)}
@@ -1182,4 +1264,8 @@ const tiers=[{folder:'60%',weight:60},{folder:'30%',weight:30},{folder:'10%',wei
 applyLanguage(currentLanguage);
 const exhibitionsSection=document.querySelector('#exhibitions');
 if(exhibitionsSection&&'IntersectionObserver'in window){new IntersectionObserver(entries=>entries.forEach(entry=>exhibitionsSection.classList.toggle('exhibitions-visible',entry.isIntersecting)),{threshold:.01}).observe(exhibitionsSection)}
+let contactScrollFrame=0;
+function smoothContactJump(id){const target=document.getElementById(id);if(!target)return;cancelAnimationFrame(contactScrollFrame);const start=window.scrollY,top=target.getBoundingClientRect().top+start,distance=top-start;if(!pageMotionEnabled||matchMedia('(prefers-reduced-motion:reduce)').matches){window.scrollTo(0,top);return}const duration=Math.min(1600,Math.max(750,Math.abs(distance)*.28)),started=performance.now();const step=now=>{const p=Math.min(1,(now-started)/duration),eased=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;window.scrollTo(0,start+distance*eased);if(p<1)contactScrollFrame=requestAnimationFrame(step);else contactScrollFrame=0};contactScrollFrame=requestAnimationFrame(step)}
+document.querySelectorAll('#contact [data-scroll-target]').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();smoothContactJump(link.dataset.scrollTarget)}));
+const emailButton=document.querySelector('.contact-copy-email');emailButton?.addEventListener('click',async()=>{const email=emailButton.dataset.email;try{await navigator.clipboard.writeText(email)}catch{const field=document.createElement('textarea');field.value=email;field.style.position='fixed';field.style.opacity='0';document.body.append(field);field.select();document.execCommand('copy');field.remove()}const original=currentLanguage==='pl'?'Kontakt':'Contact';emailButton.textContent=currentLanguage==='pl'?'Skopiowano!':'Copied!';setTimeout(()=>{emailButton.textContent=original},1600)});
 </script></body></html>
