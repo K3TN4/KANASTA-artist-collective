@@ -815,14 +815,14 @@ html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain
 #viewer .related{padding-left:0!important;padding-right:0!important;margin-left:0!important;margin-right:0!important}
 /* round 5: map grows 15% smoothly on hover (single PNG, whole map) */
 .about-map-image{transition:transform .45s cubic-bezier(.22,1,.36,1)!important;transform-origin:center center}
-.about-map:hover .about-map-image{transform:scale(1.15)}
+
 
 /* round 7: SVG map, per-voivodeship hover +15% */
 .about-map-image{display:block;width:88%;max-width:88%;max-height:88%;opacity:0;transition:opacity .3s ease}
 .about-map.map-ready .about-map-image{opacity:1}
-.about-map-image svg{display:block;width:100%;height:auto;max-height:88%}
-.about-map-image svg [id]{transform-box:fill-box;transform-origin:center;transition:transform .45s cubic-bezier(.22,1,.36,1),fill .3s ease;cursor:pointer}
-.about-map-image svg [id]:hover{transform:scale(1.15)}
+.about-map-image svg{display:block;width:100%;height:100%;max-height:88%}
+.about-map-image svg path{transform-box:fill-box;transform-origin:center;transition:transform .45s cubic-bezier(.22,1,.36,1),fill .3s ease;cursor:pointer}
+.about-map-image svg path:hover{transform:scale(1.05)}
 
 
 /* round 8: under the open work, the artist's works grid is an exact copy of the profile grid */
@@ -1455,8 +1455,13 @@ function renderCursor(){
     const r=target.getBoundingClientRect(),cs=getComputedStyle(target);
     let glyph=glyphs[i];if(!glyph){glyph=document.createElement('span');glyph.className=target.matches('.marquee-dot')?'exhibitions-cursor-glyph exhibitions-cursor-dot':'exhibitions-cursor-glyph';exhibitionsLayer.append(glyph)}
     glyph.className=target.matches('.marquee-dot')?'exhibitions-cursor-glyph exhibitions-cursor-dot':'exhibitions-cursor-glyph';
-    glyph.textContent=target.matches('.marquee-dot')?'':target.textContent;
-    glyph.style.left=(r.left-layerRect.left)+'px';glyph.style.top=(r.top-layerRect.top)+'px';glyph.style.width=r.width+'px';glyph.style.height=r.height+'px';
+    const isArrow=target.tagName==='IMG';
+    if(isArrow){glyph.textContent='';if(!glyph.firstElementChild){const im=document.createElement('img');im.alt='';im.style.cssText='display:block;width:100%;height:100%;filter:brightness(0) saturate(100%) invert(12%) sepia(20%) saturate(900%) hue-rotate(218deg);';glyph.append(im)}glyph.firstElementChild.src=target.src;glyph.style.background='transparent';}
+    else{glyph.textContent=target.matches('.marquee-dot')?'':target.textContent;if(glyph.firstElementChild)glyph.firstElementChild.remove();}
+    glyph.style.left=r.left+'px';glyph.style.top=r.top+'px';glyph.style.width=r.width+'px';glyph.style.height=r.height+'px';
+    if(isArrow){const w=target.offsetWidth,h=target.offsetHeight,cx=r.left+r.width/2,cy=r.top+r.height/2;
+     glyph.style.width=w+'px';glyph.style.height=h+'px';glyph.style.left=(cx-w/2)+'px';glyph.style.top=(cy-h/2)+'px';
+     glyph.style.transform='rotate(-90deg)';glyph.style.transformOrigin='center';}
     glyph.style.font=cs.font;glyph.style.lineHeight=cs.lineHeight;glyph.style.letterSpacing=cs.letterSpacing;glyph.style.textTransform=cs.textTransform;glyph.style.textAlign=cs.textAlign;
    });
    while(exhibitionsLayer.children.length>targets.length)exhibitionsLayer.lastElementChild.remove();
@@ -1538,7 +1543,7 @@ if(menuArtists)menuArtists.onclick=e=>{e.preventDefault();closeAll();openArtists
 (function(){const host=document.getElementById('mapSvg');if(!host)return;
  fetch('images/mapa-polski.svg').then(r=>{if(!r.ok)throw 0;return r.text()}).then(t=>{
   host.innerHTML=t;const svg=host.querySelector('svg');
-  if(svg){svg.setAttribute('preserveAspectRatio','xMidYMid meet');svg.removeAttribute('width');svg.removeAttribute('height');}
+  if(svg){svg.setAttribute('preserveAspectRatio','xMidYMid meet');svg.removeAttribute('width');svg.removeAttribute('height');svg.querySelectorAll('path').forEach((pa,i)=>{if(!pa.id)pa.id='woj-'+(i+1)});}
   host.closest('.about-map').classList.add('map-ready');
  }).catch(()=>{host.style.display='none'});})();
 </script></body></html>
