@@ -1,4 +1,8 @@
-KANASTA v2 — runda 6
+KANASTA v2 — runda 7
+
+Mapa: wgraj plik SVG do folderu images/ pod nazwą DOKŁADNIE:
+  mapa-polski.svg
+Każde województwo jako osobna ścieżka (<path>) z atrybutem id, np. id="mazowieckie", id="slaskie" (małe litery, bez polskich znaków).
+Dopóki pliku nie ma, sekcja mapy jest ukryta.
 
 Rozpakuj w katalogu kopii projektu, zachowując ścieżki.
-Zamień: index.html. Zdjęcia artystów zostają z Twojej kopii images/.
