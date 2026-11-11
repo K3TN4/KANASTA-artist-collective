@@ -772,6 +772,30 @@ body.av-open{overflow:hidden!important}
 @media(max-width:700px){#artistPage .ap-photo{width:40vw}}
 /* round 2: hero film only during the intro; gone for good after the ARTISTS section */
 html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain{display:none!important}
+
+/* round 4: menu inverted — navy background, light grey text */
+#menu{background:#201E34!important}
+#menu .menu-list a,#menu .menu-instagram{color:#EBEBEB!important}
+#menu .menu-list a:hover,#menu .menu-instagram:hover{opacity:.7}
+#menuClose{color:#EBEBEB!important}
+/* round 4: artist profile + viewer — colour swap for the footer and rules */
+#artistPage .contact-section,#viewer .contact-section{background:#FFFFFF!important}
+#artistPage .contact-section *,#viewer .contact-section *{color:#E04324!important}
+#artistPage .contact-section,#viewer .contact-section{color:#E04324!important}
+#artistPage .contact-section .contact-wordmark span,#viewer .contact-section .contact-wordmark span{color:#E04324!important}
+#artistPage .contact-section [class*="rule"],#viewer .contact-section [class*="rule"],#artistPage .contact-divider,#viewer .contact-divider{border-color:#E04324!important;background:#E04324!important}
+#artistPage .contact-section svg path,#artistPage .contact-section img,#viewer .contact-section svg path,#viewer .contact-section img{filter:brightness(0) saturate(100%) invert(30%) sepia(90%) saturate(2400%) hue-rotate(348deg)!important}
+#artistPage,#viewer{background:#FFFFFF!important}
+#viewer .viewer-caption,#viewer .viewer-caption h2,#viewer .viewer-caption p,#viewer .viewer-caption small{color:#E04324!important}
+#viewer .viewer-caption{border-top-color:#E04324!important}
+#viewer .viewer-top .close,#viewer .viewer-top button{color:#E04324!important}
+
+/* round 4 (final): footer on profile + work view — light text becomes #E04324, navy text becomes #FFFFFF, background white */
+#artistPage .contact-section,#viewer .contact-section{background:#FFFFFF!important;color:#E04324!important}
+#artistPage .contact-section *,#viewer .contact-section *{color:#E04324!important;border-color:#E04324!important}
+#artistPage .contact-section .contact-rule-top,#artistPage .contact-section .contact-divider,#artistPage .contact-section .contact-bottom-rule,#viewer .contact-section .contact-rule-top,#viewer .contact-section .contact-divider,#viewer .contact-section .contact-bottom-rule{background:#E04324!important}
+#artistPage .contact-section .contact-copy-email,#viewer .contact-section .contact-copy-email{color:#E04324!important}
+#artistPage .contact-section img,#viewer .contact-section img{filter:brightness(0) saturate(100%) invert(30%) sepia(90%) saturate(2400%) hue-rotate(348deg)!important}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
@@ -945,7 +969,7 @@ function closeAll(){['#menu','#profile','#viewer'].forEach(x=>$(x).classList.rem
 function imageCandidates(w,kind){const key='_'+kind+'Candidates';return (w[key]&&w[key].length?w[key]:[w[kind]]).filter(Boolean)}
 function useImageCandidates(img,list){let n=0;const next=()=>{if(n>=list.length){img.removeAttribute('src');return}img.src=list[n++];};img.onerror=next;next();return img}
 function openWork(i){activeWork=i;const w=works[i];useImageCandidates($('#viewerImg'),imageCandidates(w,'view'));$('#viewerImg').dataset.fullCandidates=JSON.stringify(imageCandidates(w,'full'));$('#viewerImg').dataset.full=imageCandidates(w,'full')[0]||w.full;$('#viewerImg').alt=`${w.title} — ${w.artist}`;$('#viewerTitle').textContent=w.title;$('#viewerArtist').textContent=w.artist;$('#viewerMeta').textContent=[w.technique,w.year,w.dimensions].filter(Boolean).join(' · ');$('#viewerNo').textContent=`${String(i+1).padStart(2,'0')} / ${works.length}`;$('#related').innerHTML='';works.forEach((x,j)=>{if(j===i||x.artist!==w.artist)return;const im=useImageCandidates(new Image(),imageCandidates(x,'thumb'));im.dataset.file=x.thumb;im.alt=x.title;im.onclick=()=>openWork(j);$('#related').append(im)});{const vi=document.querySelector('#viewer .viewer-inner');let f=vi.querySelector('.contact-section');if(!f){vi.insertAdjacentHTML('beforeend',footerClone());f=vi.querySelector('.contact-section');avFooterWire(vi)}}$('#viewer').classList.add('open');document.body.style.overflow='hidden';history.pushState({},'',`/KANASTA-artist-collective/works`);resetZoom()}
-const goHome=()=>{closeAll();history.replaceState({},'',location.pathname.split('/works')[0]||'/');window.scrollTo({top:0,left:0,behavior:pageMotionEnabled?'smooth':'instant'})};$('#menuBtn').onclick=()=>$('#menu').classList.add('open');$('#menuClose').onclick=closeAll;$('#profileClose').onclick=closeAll;$('#viewerClose').onclick=closeAll;$('#logo').onclick=goHome;document.querySelector('.viewerLogo').onclick=goHome;document.querySelectorAll('.menu-list a').forEach(a=>a.onclick=()=>{closeAll();setTimeout(()=>$(a.getAttribute('href')).scrollIntoView({behavior:pageMotionEnabled?'smooth':'instant'}),50)});window.onpopstate=closeAll;
+const goHome=()=>{closeAll();history.replaceState({},'',location.pathname.split('/works')[0]||'/');window.scrollTo({top:0,left:0,behavior:pageMotionEnabled?'smooth':'instant'})};$('#menuBtn').onclick=()=>$('#menu').classList.add('open');$('#menuClose').onclick=closeAll;$('#profileClose').onclick=closeAll;$('#viewerClose').onclick=closeAll;$('#logo').onclick=goHome;document.querySelector('.viewerLogo').onclick=goHome;document.querySelectorAll('.menu-list a').forEach(a=>a.onclick=e=>{e.preventDefault();const h=a.getAttribute('href');if(h==='#artists'){closeAll();openArtistsView();return}closeAll();document.getElementById('artistPage')?.classList.remove('open');avView?.classList.remove('open');document.body.classList.remove('av-open');setTimeout(()=>{const t=document.getElementById(h.slice(1));if(t)t.scrollIntoView({behavior:pageMotionEnabled?'smooth':'instant'})},50)});window.onpopstate=closeAll;
 let zoom={s:1,x:0,y:0,drag:false,sx:0,sy:0,ox:0,oy:0};function renderZoom(){$('#viewerImg').style.setProperty('--s',zoom.s);$('#viewerImg').style.setProperty('--x',zoom.x+'px');$('#viewerImg').style.setProperty('--y',zoom.y+'px');$('#viewerImage').classList.toggle('zoomed',zoom.s>1.01);$('#viewerImage').style.touchAction=zoom.s>1.01?'none':'pan-y'}function resetZoom(){zoom={s:1,x:0,y:0,drag:false,sx:0,sy:0,ox:0,oy:0};renderZoom()}
  function zoomAt(next,cx,cy){const r=$('#viewerImage').getBoundingClientRect(),old=zoom.s,k=next/old,x=cx-r.left,y=cy-r.top;if(next>1.01&&$('#viewerImg').src.indexOf('/full/')<0){const fulls=JSON.parse($('#viewerImg').dataset.fullCandidates||'[]');useImageCandidates($('#viewerImg'),fulls.length?fulls:[$('#viewerImg').dataset.full])}zoom.x=x-(x-zoom.x)*k;zoom.y=y-(y-zoom.y)*k;zoom.s=next;if(zoom.s<=1.001){zoom.s=1;zoom.x=0;zoom.y=0}renderZoom()}
 $('#viewerImage').onwheel=e=>{e.preventDefault();zoomAt(Math.max(1,Math.min(24,zoom.s*Math.exp(-e.deltaY*.0018))),e.clientX,e.clientY)};
@@ -1425,4 +1449,6 @@ if(menuArtists)menuArtists.onclick=e=>{e.preventDefault();closeAll();openArtists
 (function(){const a=document.getElementById('artists');if(!a)return;const check=()=>{if(a.getBoundingClientRect().top<window.innerHeight*0.5){document.documentElement.classList.add('hero-film-gone');document.querySelectorAll('#home .hero-background').forEach(v=>{try{v.pause()}catch(e){}});}};window.addEventListener('scroll',check,{passive:true});window.addEventListener('resize',check);check()})();
 
 (function(){const a=document.getElementById('artists');const top=()=>{if(window.scrollY<40){document.documentElement.classList.remove('hero-film-gone');document.querySelectorAll('#home .hero-background').forEach(v=>{try{v.play().catch(()=>{})}catch(e){}})}};window.addEventListener('scroll',top,{passive:true});})();
+
+(function(){const orig=window.openArtistPage;window.openArtistPage=function(i){orig(i);requestAnimationFrame(()=>{const r=document.querySelector('#artistPage .ap-rule');const pg=document.getElementById('artistPage');if(!r||!pg)return;const y=r.getBoundingClientRect().top+pg.scrollTop-window.innerHeight;pg.scrollTop=Math.max(0,y)})}})();
 </script></body></html>

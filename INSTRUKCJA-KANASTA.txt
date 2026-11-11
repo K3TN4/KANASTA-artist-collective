@@ -1,4 +1,4 @@
-KANASTA v2 — profil artysty, runda 3
+KANASTA v2 — runda 4
 
 Rozpakuj w katalogu kopii projektu, zachowując ścieżki.
 Zamień: index.html. Zdjęcia artystów zostają z Twojej kopii images/.
