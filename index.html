@@ -669,6 +669,35 @@ html.motion-off #home .hero-background,html.motion-off #home .film-grain{positio
 #home .kanasta-wordmark,#home .kanasta-wordmark span{color:#EBEBEB!important;-webkit-text-fill-color:#EBEBEB!important}
 #about .about-copy h2{color:#E04324!important;-webkit-text-fill-color:#E04324!important}
 #cursor.map-solid-cursor,#cursor.works-art-cursor.map-solid-cursor,#cursor.dark-zone.map-solid-cursor,#cursor.works-title-cursor.map-solid-cursor{background:#E04324!important}
+
+/* ARTISTS view from menu: 1920×1080 reference, card-relative sizes via cqw */
+#artistsView{position:fixed;inset:0;z-index:140;background:#EBEBEB;display:none;overflow-y:auto;overscroll-behavior:contain;color:#201E34}
+#artistsView.open{display:block}
+#artistsView .av-top{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:clamp(18px,3vh,32px) 4vw;background:#EBEBEB}
+#artistsView .av-logo-btn{background:none;border:0;padding:0;cursor:pointer;line-height:0}
+#artistsView .av-logo-btn img{height:clamp(34px,3.6vw,69px);width:auto;display:block}
+#artistsView .av-menu{background:none;border:0;padding:0;cursor:pointer;font:14px Cairo,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--pink)}
+#artistsView .av-title{margin:0 0 4vw;padding-top:clamp(20px,6vw,170px);text-align:center;font:700 clamp(48px,6.667vw,128px)/1.15 Helvetica,Arial,sans-serif;color:#E04324;letter-spacing:0}
+#artistsView .av-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2.29vw;padding:0 4vw 10vw}
+#artistsView .av-card{position:relative;display:block;width:100%;aspect-ratio:559/808;border:0;padding:0;margin:0;border-radius:3.44vw;overflow:hidden;background:#201E34;cursor:pointer;container-type:inline-size;font:inherit;color:#FFFFFF;text-align:center}
+#artistsView .av-card>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+#artistsView .av-shade{position:absolute;inset:0;background:rgba(0,0,0,.83);opacity:0;transition:opacity .3s ease;pointer-events:none}
+#artistsView .av-stack{position:absolute;width:13.4cqw;display:flex;flex-direction:column;align-items:center;gap:2cqw;opacity:0;transition:opacity .3s ease;pointer-events:none}
+#artistsView .av-stack.tl{left:4.3cqw;top:4.3cqw}
+#artistsView .av-stack.tr{right:4.3cqw;top:4.3cqw}
+#artistsView .av-stack.br{right:4.3cqw;bottom:4.3cqw;transform:scaleY(-1)}
+#artistsView .av-stack.bl{left:4.3cqw;bottom:4.3cqw;transform:scaleY(-1)}
+#artistsView .av-num{font:400 17.9cqw/1.15 Helvetica,Arial,sans-serif;color:#FFFFFF;white-space:nowrap}
+#artistsView .av-logo{width:10.2cqw;height:auto;display:block}
+#artistsView .av-info{position:absolute;left:6cqw;right:6cqw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:3cqw;opacity:0;transition:opacity .3s ease;pointer-events:none}
+#artistsView .av-name{font:400 max(12px,11.45cqw)/1.16 Helvetica,Arial,sans-serif;color:#FFFFFF}
+#artistsView .av-read{font:400 max(10px,5.7cqw)/1.15 Helvetica,Arial,sans-serif;color:#FFFFFF;text-decoration:underline}
+#artistsView .av-card:hover .av-shade,#artistsView .av-card:focus-visible .av-shade{opacity:1}
+#artistsView .av-card:hover .av-stack,#artistsView .av-card:hover .av-info,#artistsView .av-card:focus-visible .av-stack,#artistsView .av-card:focus-visible .av-info{opacity:1}
+body.av-cursor-white #cursor{background:#EBEBEB!important}
+body.av-open{overflow:hidden!important}
+@media (hover:none){#artistsView .av-shade{opacity:.45}#artistsView .av-stack,#artistsView .av-info{opacity:1}}
+@media (max-width:700px){#artistsView .av-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:3vw;padding:0 4vw 16vw}#artistsView .av-title{margin-bottom:8vw}}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
@@ -680,6 +709,7 @@ html.motion-off #home .hero-background,html.motion-off #home .film-grain{positio
 <section class="section works" id="works"><div class="section-head" aria-hidden="true"><span></span><h2></h2><span></span></div><div class="works-track"><div class="works-row" id="worksRow"><div class="works-line" data-line="0"></div><div class="works-line" data-line="1"></div><div class="works-line" data-line="2"></div><div class="works-line" data-line="3"></div></div></div><div class="works-caption"><div class="works-caption-hint"><span class="works-caption-arrow" aria-hidden="true"></span><p data-en="Scroll to see more" data-pl="Przewijaj, by zobaczyć więcej">Scroll to see more</p></div><h2 class="works-caption-title" data-en="Our Artworks" data-pl="Nasze prace">Our Artworks</h2></div></section>
 <section class="exhibitions-section" id="exhibitions"><div class="exhibition-copy"><h2 id="exhibitionsMarquee" class="exhibitions-marquee" aria-label="EXHIBITIONS"><span id="exhibitionsMarqueeTrack" class="exhibitions-marquee-track" aria-hidden="true"><span id="exhibitionsMarqueeGroupA" class="exhibitions-marquee-group"><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span></span><span id="exhibitionsMarqueeGroupB" class="exhibitions-marquee-group"><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span><span class="marquee-word">EXHIBITIONS</span><span class="marquee-dot"></span></span></span></h2><a id="exhibitionsDiscover" class="discover-link exhibitions-discover" href="#contact"><span id="exhibitionsArrowWrap" class="exhibition-arrow-wrap" aria-hidden="true"><img id="exhibitionsArrow" class="exhibition-arrow" src="images/kanasta-arrow.svg" alt=""></span><span id="exhibitionsDiscoverLabel">DISCOVER</span></a></div><div class="exhibition-image"><img src="images/hero-square.jpg" alt="Wybrane zdjęcie KANASTA — miejsce na prezentację wystawy"><span class="image-caption">KANASTA · ARTIST COLLECTIVE</span></div></section>
 <section class="contact-section" id="contact" aria-label="Contact"><div class="contact-rule-top"></div><div class="contact-grid"><div class="contact-left"><div class="contact-columns"><div class="contact-column contact-follow"><h2 data-en="FOLLOW US" data-pl="OBSERWUJ NAS">FOLLOW US</h2><a href="https://www.instagram.com/kanasta_art/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">Facebook</a></div><div class="contact-column contact-info"><h2>INFO</h2><a href="#about" data-scroll-target="about" data-en="About" data-pl="O nas">About</a><button type="button" class="contact-copy-email" data-email="patrycjaboruchkanasta@gmail.com" data-en="Contact" data-pl="Kontakt">Contact</button></div></div><div class="contact-support"><img src="images/kanasta-arrow.svg" alt="" aria-hidden="true"><span data-en="Support us" data-pl="Wesprzyj nas">Support us</span></div></div><div class="contact-divider" aria-hidden="true"></div><div class="contact-right"><p class="contact-manifesto" data-en="Independent artists. Shared space. New perspectives." data-pl="Niezależni artyści. Wspólna przestrzeń. Nowe perspektywy.">Independent artists. Shared space. New perspectives.</p><nav class="contact-jump-links" aria-label="Explore"><a href="#artists" data-scroll-target="artists">ARTISTS</a><a href="#exhibitions" data-scroll-target="exhibitions">EXHIBITIONS</a></nav></div></div><div class="contact-bottom-rule"></div><h2 class="contact-wordmark" aria-label="KaNASTA"><span class="letter-k">K</span><span class="letter-a">a</span><span class="letter-n">N</span><span class="letter-a-cap">A</span><span class="letter-s">S</span><span class="letter-t">T</span><span class="letter-a-end">A</span></h2></section>
+<div id="artistsView" aria-label="ARTISTS"><header class="av-top"><button type="button" class="av-logo-btn" id="avLogo" aria-label="KANASTA — strona główna"><img src="images/kanasta-mark.svg" alt=""></button><button type="button" class="av-menu" id="avMenu">MENU</button></header><h1 class="av-title">ARTISTS</h1><div class="av-grid" id="avGrid"></div></div>
 <div class="overlay" id="menu"><button class="close" id="menuClose">CLOSE</button><nav class="menu-list"><a href="#about">ABOUT</a><a href="#artists">ARTISTS</a><a href="#works">WORKS</a><a href="#exhibitions">EXHIBITIONS</a><a href="#contact">CONTACT</a></nav><a class="menu-instagram" href="https://www.instagram.com/kanasta_art/" target="_blank" rel="noopener noreferrer">INSTAGRAM</a></div>
 <div class="profile" id="profile"><button class="close" id="profileClose">CLOSE</button><div id="profileBody"></div></div>
 <div class="viewer" id="viewer"><div class="viewer-top"><header class="top"><button class="viewerLogo" aria-label="KANASTA — strona główna"><img class="kanasta-mark" src="images/kanasta-mark.svg" alt=""></button><button class="close" id="viewerClose">CLOSE</button></header></div><div class="viewer-inner"><div class="viewer-image" id="viewerImage"><img id="viewerImg" alt=""></div><div class="viewer-caption"><small id="viewerNo"></small><h2 id="viewerTitle"></h2><p id="viewerArtist"></p><small id="viewerMeta"></small></div><div class="related" id="related"></div></div></div>
@@ -1270,4 +1300,34 @@ let contactScrollFrame=0;
 function smoothContactJump(id){const target=document.getElementById(id);if(!target)return;cancelAnimationFrame(contactScrollFrame);const start=window.scrollY,top=target.getBoundingClientRect().top+start,distance=top-start;if(!pageMotionEnabled||matchMedia('(prefers-reduced-motion:reduce)').matches){window.scrollTo(0,top);return}const duration=Math.min(1600,Math.max(750,Math.abs(distance)*.28)),started=performance.now();const step=now=>{const p=Math.min(1,(now-started)/duration),eased=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;window.scrollTo(0,start+distance*eased);if(p<1)contactScrollFrame=requestAnimationFrame(step);else contactScrollFrame=0};contactScrollFrame=requestAnimationFrame(step)}
 document.querySelectorAll('#contact [data-scroll-target]').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();smoothContactJump(link.dataset.scrollTarget)}));
 const emailButton=document.querySelector('.contact-copy-email');emailButton?.addEventListener('click',async()=>{const email=emailButton.dataset.email;try{await navigator.clipboard.writeText(email)}catch{const field=document.createElement('textarea');field.value=email;field.style.position='fixed';field.style.opacity='0';document.body.append(field);field.select();document.execCommand('copy');field.remove()}const original=currentLanguage==='pl'?'Kontakt':'Contact';emailButton.textContent=currentLanguage==='pl'?'Skopiowano!':'Copied!';setTimeout(()=>{emailButton.textContent=original},1600)});
+
+/* ARTISTS view from menu */
+const avView=document.getElementById('artistsView'),avGrid=document.getElementById('avGrid');
+function avShuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function avStack(cls,n){const wrap=document.createElement('span');wrap.className='av-stack '+cls;const num=document.createElement('span');num.className='av-num';num.textContent=n;const logo=document.createElement('img');logo.className='av-logo';logo.src='images/kanasta-mark.svg';logo.alt='';wrap.append(num,logo);return wrap}
+function buildArtistsView(){
+ const pl=currentLanguage==='pl';
+ const order=avShuffle(artists.map((_,i)=>i));
+ avGrid.replaceChildren(...order.map((idx,pos)=>{
+  const [name,file]=artists[idx];const n=String(pos+1);const diag=Math.random()<.5;
+  const card=document.createElement('button');card.type='button';card.className='av-card';
+  const img=document.createElement('img');img.src='images/'+file;img.alt='';
+  const shade=document.createElement('span');shade.className='av-shade';
+  const info=document.createElement('span');info.className='av-info';
+  const nm=document.createElement('span');nm.className='av-name';nm.textContent=name;
+  const rd=document.createElement('span');rd.className='av-read';rd.textContent=pl?'Czytaj o artyście':'Read about';
+  info.append(nm,rd);
+  card.append(img,shade,avStack(diag?'tl':'tr',n),avStack(diag?'br':'bl',n),info);
+  card.onmouseenter=()=>document.body.classList.add('av-cursor-white');
+  card.onmouseleave=()=>document.body.classList.remove('av-cursor-white');
+  card.onclick=()=>{document.body.classList.remove('av-cursor-white');openArtist(idx)};
+  return card;
+ }));
+}
+function openArtistsView(){buildArtistsView();avView.classList.add('open');document.body.classList.add('av-open');avView.scrollTop=0}
+function closeArtistsView(){avView.classList.remove('open');document.body.classList.remove('av-open','av-cursor-white')}
+document.getElementById('avLogo').onclick=()=>{closeArtistsView();goHome()};
+document.getElementById('avMenu').onclick=()=>$('#menu').classList.add('open');
+const menuArtists=document.querySelector('.menu-list a[href="#artists"]');
+if(menuArtists)menuArtists.onclick=e=>{e.preventDefault();closeAll();openArtistsView()};
 </script></body></html>
