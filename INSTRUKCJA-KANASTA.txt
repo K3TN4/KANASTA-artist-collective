@@ -1,3 +1,6 @@
-KANASTA v2 — poprawki WORKS / EXHIBITIONS / CONTACT
+KANASTA v2 — aktualizacja profilu artysty
 
-Wypakuj pliki z zachowaniem struktury do katalogu głównego kopii projektu KANASTA-artist-collective-v2 i zezwól na podmianę index.html. Paczka zawiera zaktualizowany index.html, mapę Polski oraz tę instrukcję. Nie nadpisuj oryginalnego repozytorium; używaj kopii projektu.
+Rozpakuj w katalogu kopii projektu, zachowując ścieżki.
+Zamień: index.html
+Mapa (images/mapa-polski.png) jest w paczce, jeśli była wcześniej.
+Zdjęcia artystów nie są w paczce — zostają z Twojej kopii images/.

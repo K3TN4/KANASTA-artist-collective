@@ -749,6 +749,14 @@ body.av-open{overflow:hidden!important}
 #artistPage .ap-wordmark{margin:4vh 0 0;font:400 21vw/.9 'Julius Sans One',Helvetica,sans-serif;color:#E04324;white-space:nowrap;letter-spacing:-.04em}
 #artistPage .ap-empty{margin:0 4vw;font:400 20px Helvetica,Arial,sans-serif}
 @media (max-width:700px){#artistPage .ap-hero{grid-template-columns:1fr}#artistPage .ap-bio{max-width:none}#artistPage .ap-works{grid-template-columns:repeat(2,minmax(0,1fr));gap:3vw}#artistsView .av-titlerow{display:block}#artistsView .av-view{align-items:flex-start;margin-top:3vh}}
+
+/* artist profile page: no top band; logo fixed top-left (same placement as home) and returns home */
+#artistPage .ap-top{position:fixed;top:0;left:0;right:0;z-index:160;display:flex;justify-content:flex-end;align-items:flex-start;padding:clamp(20px,3vh,32px) var(--g);background:transparent;pointer-events:none}
+#artistPage .ap-top>*{pointer-events:auto}
+#artistPage .ap-logo-btn{position:absolute!important;top:42px!important;left:59px!important;width:95px!important;height:115px!important;padding:0;background:none;border:0;cursor:pointer;line-height:0}
+#artistPage .ap-logo-btn img{width:95px!important;height:115px!important;object-fit:contain;filter:brightness(0)}
+#artistPage .ap-hero{padding-top:0!important}
+@media(max-width:700px){#artistPage .ap-logo-btn{top:10px!important;left:10px!important;width:46px!important;height:56px!important}#artistPage .ap-logo-btn img{width:46px!important;height:56px!important}}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
@@ -917,7 +925,7 @@ orbitCircles.forEach(circle=>{
 });
 
 let workCards=[];
-function openArtist(i){$('#profileBody').innerHTML=`<div class="profile-no">${String(i+1).padStart(2,'0')} / 15</div><h2>${artists[i][0]}</h2><img src="images/${artists[i][1]}" alt=""><p>${languageCopy[currentLanguage].profileBio}</p>`;$('#profile').classList.add('open');document.body.style.overflow='hidden'}
+function openArtist(i){openArtistPage(i)}
 function closeAll(){['#menu','#profile','#viewer'].forEach(x=>$(x).classList.remove('open'));document.body.style.overflow='';history.replaceState({},'',location.pathname)}
 function imageCandidates(w,kind){const key='_'+kind+'Candidates';return (w[key]&&w[key].length?w[key]:[w[kind]]).filter(Boolean)}
 function useImageCandidates(img,list){let n=0;const next=()=>{if(n>=list.length){img.removeAttribute('src');return}img.src=list[n++];};img.onerror=next;next();return img}
@@ -1384,11 +1392,11 @@ function openArtistPage(i){
  const [name,file]=artists[i];const pg=document.getElementById('artistPage');const list=apWorksOf(name);const pl=currentLanguage==='pl';
  const worksHtml=list.length?list.map((w,j)=>`<button type="button" class="ap-work" data-j="${j}"><img src="${w.thumb}" alt=""><span class="ap-shade"></span><span class="ap-info"><span class="ap-wname">${name}</span><span class="ap-wtitle">${w.title}</span></span><span class="ap-read">${pl?'Czytaj więcej':'Read about'}</span></button>`).join(''):`<p class="ap-empty">${pl?'Prace wkrótce':'Works coming soon'}</p>`;
  const track=`<span>WORKS</span><i></i>`.repeat(6);
- pg.innerHTML=`<header class="ap-top"><button type="button" class="ap-logo-btn" id="apLogo" aria-label="KANASTA"><img src="images/kanasta-mark.svg" alt=""></button><button type="button" class="ap-menu" id="apMenu">MENU</button></header><section class="ap-hero"><div class="ap-left"><h1 class="ap-name">${name.toUpperCase()}</h1><span class="ap-spec">${pl?'Specjalizacja':'Specialisation'}</span></div><div class="ap-photo"><img src="images/${file}" alt="${name}"></div></section><div class="ap-rule"></div><h2 class="ap-about">ABOUT</h2><p class="ap-bio">${languageCopy[currentLanguage].profileBio}</p><div class="ap-marquee" aria-hidden="true"><div class="ap-track">${track}${track}</div></div><div class="ap-works">${worksHtml}</div><footer class="ap-foot"><button type="button" class="ap-contact" id="apContact">Contact</button><h2 class="ap-wordmark">KaNASTA</h2></footer>`;
+ pg.innerHTML=`<header class="ap-top"><button type="button" class="ap-logo-btn" id="apLogo" aria-label="KANASTA"><img src="images/kanasta-mark.svg" alt=""></button><button type="button" class="ap-menu" id="apMenu">MENU</button></header><section class="ap-hero"><div class="ap-left"><h1 class="ap-name">${name.toUpperCase()}</h1><span class="ap-spec">${pl?'Specjalizacja':'Specialisation'}</span></div><div class="ap-photo"><img src="images/${file}" alt="${name}"></div></section><div class="ap-rule"></div><h2 class="ap-about">ABOUT</h2><p class="ap-bio">${languageCopy[currentLanguage].profileBio}</p><div class="ap-marquee" aria-hidden="true"><div class="ap-track">${track}${track}</div></div><div class="ap-works">${worksHtml}</div>${document.getElementById('contact').outerHTML}`;
  pg.querySelectorAll('.ap-work').forEach(b=>b.onclick=()=>openWork(works.indexOf(list[+b.dataset.j])));
  document.getElementById('apLogo').onclick=()=>{pg.classList.remove('open');closeArtistsView();goHome()};
  document.getElementById('apMenu').onclick=()=>$('#menu').classList.add('open');
- document.getElementById('apContact').onclick=()=>{pg.classList.remove('open');closeArtistsView();setTimeout(()=>smoothContactJump('contact'),50)};
+ pg.querySelectorAll('[data-scroll-target]').forEach(a=>a.onclick=e=>{e.preventDefault();pg.classList.remove('open');closeArtistsView();setTimeout(()=>smoothContactJump(a.dataset.scrollTarget),50)});pg.querySelectorAll('.contact-copy-email').forEach(b=>b.onclick=()=>{const o=b.textContent;navigator.clipboard?.writeText(b.dataset.email).catch(()=>{});b.textContent=currentLanguage==='pl'?'Skopiowano!':'Copied!';setTimeout(()=>{b.textContent=o},1600)});
  pg.classList.add('open');pg.scrollTop=0;
 }
 function closeArtistsView(){avView.classList.remove('open');document.body.classList.remove('av-open','av-cursor-white')}
