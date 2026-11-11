@@ -759,16 +759,17 @@ body.av-open{overflow:hidden!important}
 @media(max-width:700px){#artistPage .ap-logo-btn{top:10px!important;left:10px!important;width:46px!important;height:56px!important}#artistPage .ap-logo-btn img{width:46px!important;height:56px!important}}
 
 /* round 2: profile photo smaller, flush to right edge and bottom rule; names stacked */
-#artistPage .ap-hero{grid-template-columns:1fr auto!important;gap:0!important;padding:0 0 0 4vw!important;align-items:end!important}
-#artistPage .ap-photo{width:min(26vw,460px);margin:0;align-self:end}
-#artistPage .ap-photo img{width:100%;height:auto;aspect-ratio:851/1277}
+#artistPage .ap-hero{grid-template-columns:1fr 40vw!important;gap:0!important;padding:12vh 0 0 4vw!important;align-items:end!important}
+#artistPage .ap-photo{width:40vw;margin:0;align-self:end}
+#artistPage .ap-photo img{width:100%;height:auto;aspect-ratio:851/1277;display:block}
 #artistPage .ap-left{padding:0 0 4vh!important}
 #artistPage .ap-name{display:flex;flex-direction:column;line-height:1.02!important}
 #artistPage .ap-name span{display:block}
 #artistPage .ap-rule{margin-top:0!important}
+#artistPage .ap-hero{padding-bottom:0!important}
 #viewer .viewer-inner .contact-section{margin:120px -40px 0;width:calc(100% + 80px)}
 #viewer .contact-section,#artistPage .contact-section{position:relative}
-@media(max-width:700px){#artistPage .ap-photo{width:42vw}}
+@media(max-width:700px){#artistPage .ap-photo{width:40vw}}
 /* round 2: hero film only during the intro; gone for good after the ARTISTS section */
 html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain{display:none!important}
 </style></head>
@@ -1402,7 +1403,7 @@ function avSetView(list){avGrid.classList.toggle('av-list',list);document.getEle
 document.getElementById('avList').onclick=()=>avSetView(true);
 document.getElementById('avTiles').onclick=()=>avSetView(false);
 function apWorksOf(name){return works.filter(w=>w.artist===name)}
-function footerClone(){const c=document.getElementById('contact');const n=c.cloneNode(true);n.removeAttribute('id');n.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));return n.outerHTML}
+function footerClone(){return document.getElementById('contact').outerHTML}
 function avFooterWire(root){root.querySelectorAll('[data-scroll-target]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();closeAll();closeArtistsView();setTimeout(()=>smoothContactJump(a.dataset.scrollTarget),50)}));root.querySelectorAll('.contact-copy-email').forEach(b=>b.addEventListener('click',()=>{const o=b.textContent;navigator.clipboard?.writeText(b.dataset.email).catch(()=>{});b.textContent=currentLanguage==='pl'?'Skopiowano!':'Copied!';setTimeout(()=>{b.textContent=o},1600)}))}
 function openArtistPage(i){
  const [name,file]=artists[i];const pg=document.getElementById('artistPage');const list=apWorksOf(name);const pl=currentLanguage==='pl';
@@ -1421,5 +1422,7 @@ document.getElementById('avMenu').onclick=()=>$('#menu').classList.add('open');
 const menuArtists=document.querySelector('.menu-list a[href="#artists"]');
 if(menuArtists)menuArtists.onclick=e=>{e.preventDefault();closeAll();openArtistsView()};
 
-(function(){const a=document.getElementById('artists');if(!a)return;const check=()=>{if(a.getBoundingClientRect().top<window.innerHeight*0.5){document.documentElement.classList.add('hero-film-gone');document.querySelectorAll('#home .hero-background').forEach(v=>{try{v.pause()}catch(e){}});window.removeEventListener('scroll',check);window.removeEventListener('resize',check)}};window.addEventListener('scroll',check,{passive:true});window.addEventListener('resize',check);check()})();
+(function(){const a=document.getElementById('artists');if(!a)return;const check=()=>{if(a.getBoundingClientRect().top<window.innerHeight*0.5){document.documentElement.classList.add('hero-film-gone');document.querySelectorAll('#home .hero-background').forEach(v=>{try{v.pause()}catch(e){}});}};window.addEventListener('scroll',check,{passive:true});window.addEventListener('resize',check);check()})();
+
+(function(){const a=document.getElementById('artists');const top=()=>{if(window.scrollY<40){document.documentElement.classList.remove('hero-film-gone');document.querySelectorAll('#home .hero-background').forEach(v=>{try{v.play().catch(()=>{})}catch(e){}})}};window.addEventListener('scroll',top,{passive:true});})();
 </script></body></html>
