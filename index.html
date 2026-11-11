@@ -439,6 +439,15 @@ html.motion-off #cursor,html.motion-off #cursorText,html.motion-off #worksCursor
 .kanasta-wordmark .letter-a-end{font-family:'Pixelify Sans',sans-serif!important;font-weight:700!important}
 #cursorText .clone.kanasta-wordmark{display:flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
 #cursorText .clone.kanasta-wordmark span{color:#201E34!important;-webkit-text-fill-color:#201E34!important}
+#cursorText .clone.contact-wordmark-clone{display:flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;gap:0!important;font-size:21.15vw!important;letter-spacing:-.045em!important;line-height:1.09!important;font-family:Arial,sans-serif!important}
+#cursorText .clone.contact-wordmark-clone span{display:inline-block!important;flex:none!important;color:#201E34!important;-webkit-text-fill-color:#201E34!important;line-height:1.09!important;letter-spacing:normal!important}
+#cursorText .clone.contact-wordmark-clone .letter-k{font-family:'Julius Sans One',sans-serif!important;font-weight:400!important}
+#cursorText .clone.contact-wordmark-clone .letter-a{font-family:'Zalando Sans',sans-serif!important;font-weight:400!important}
+#cursorText .clone.contact-wordmark-clone .letter-n{font-family:'Allison',cursive!important;font-weight:400!important}
+#cursorText .clone.contact-wordmark-clone .letter-a-cap{font-family:'Gelasio',serif!important;font-weight:400!important}
+#cursorText .clone.contact-wordmark-clone .letter-s{font-family:'Bitcount Single',sans-serif!important;font-weight:700!important}
+#cursorText .clone.contact-wordmark-clone .letter-t{font-family:'Climate Crisis',sans-serif!important;font-weight:400!important}
+#cursorText .clone.contact-wordmark-clone .letter-a-end{font-family:'Pixelify Sans',sans-serif!important;font-weight:700!important}
 /* Header logo recolors from its transparent SVG alpha mask. */
 #logo .kanasta-mark,.viewerLogo .kanasta-mark{opacity:0!important}
 #logo::after,.viewerLogo::after{content:"";position:absolute;inset:0;display:block;background-color:var(--header-control-color,#EBEBEB);-webkit-mask:url('images/kanasta-mark.svg') center/contain no-repeat;mask:url('images/kanasta-mark.svg') center/contain no-repeat;transition:background-color .14s ease;pointer-events:none}
@@ -1305,8 +1314,8 @@ function syncCursorClone(targets,whiteCursor=false){
  for(const [target,clone] of cursorClones){if(!wanted.has(target)){clone.remove();cursorClones.delete(target)}}
  for(const target of wanted){
   let clone=cursorClones.get(target);
-  if(!clone){clone=document.createElement('span');clone.className='clone';clone.setAttribute('aria-hidden','true');if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');clone.innerHTML=target.innerHTML}else if(target.matches('#logo,.viewerLogo')){clone.classList.add('kanasta-mark-clone')}else if(target.matches('.language-dot')){clone.classList.add('language-dot-clone')}else clone.textContent=target.textContent;layer.append(clone);cursorClones.set(target,clone)}
-  else if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');if(clone.innerHTML!==target.innerHTML)clone.innerHTML=target.innerHTML}else if(target.matches('#logo,.viewerLogo'))clone.classList.add('kanasta-mark-clone');else if(target.matches('.language-dot'))clone.classList.add('language-dot-clone');else if(clone.textContent!==target.textContent)clone.textContent=target.textContent;
+  if(!clone){clone=document.createElement('span');clone.className='clone';clone.setAttribute('aria-hidden','true');if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');clone.innerHTML=target.innerHTML}else if(target.matches('.contact-wordmark')){clone.classList.add('contact-wordmark-clone');clone.innerHTML=target.innerHTML}else if(target.matches('#logo,.viewerLogo')){clone.classList.add('kanasta-mark-clone')}else if(target.matches('.language-dot')){clone.classList.add('language-dot-clone')}else clone.textContent=target.textContent;layer.append(clone);cursorClones.set(target,clone)}
+  else if(target.matches('.kanasta-wordmark')){clone.classList.add('kanasta-wordmark');if(clone.innerHTML!==target.innerHTML)clone.innerHTML=target.innerHTML}else if(target.matches('.contact-wordmark')){clone.classList.add('contact-wordmark-clone');if(clone.innerHTML!==target.innerHTML)clone.innerHTML=target.innerHTML}else if(target.matches('#logo,.viewerLogo'))clone.classList.add('kanasta-mark-clone');else if(target.matches('.language-dot'))clone.classList.add('language-dot-clone');else if(clone.textContent!==target.textContent)clone.textContent=target.textContent;
   const r=target.getBoundingClientRect(),cs=getComputedStyle(target);
  const baseW=Math.max(1,target.offsetWidth),baseH=Math.max(1,target.offsetHeight);
  const scaleX=r.width/baseW,scaleY=r.height/baseH;
