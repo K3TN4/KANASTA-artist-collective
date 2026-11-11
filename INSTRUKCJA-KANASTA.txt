@@ -1,4 +1,4 @@
-KANASTA v2 — runda 8
+KANASTA v2 — runda 9
 
 Mapa: wgraj plik SVG do folderu images/ pod nazwą DOKŁADNIE:
   mapa-polski.svg

@@ -827,6 +827,23 @@ html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain
 #viewer .ap-work:hover .ap-info,#viewer .ap-work:hover .ap-read,#viewer .ap-work:focus-visible .ap-info,#viewer .ap-work:focus-visible .ap-read{opacity:1}
 @media (hover:none){#viewer .ap-shade{opacity:.15}#viewer .ap-info,#viewer .ap-read{opacity:1}}
 @media (max-width:700px){#viewer .related.ap-works{grid-template-columns:repeat(2,minmax(0,1fr));gap:3vw}}
+
+/* round 9: the works viewer grid must be the profile grid; override legacy masonry (column-count) with !important */
+#viewer .related.ap-works{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;column-count:auto!important;column-gap:2.29vw!important;gap:2.29vw!important;padding:4vh 4vw 6vw!important;margin:0!important;height:auto!important;overflow:visible!important;align-items:stretch!important;cursor:default!important;touch-action:auto!important}
+#viewer .related.ap-works .ap-work{display:block!important;width:100%!important;margin:0!important;padding:0!important;break-inside:auto!important;-webkit-column-break-inside:auto!important;transform:none!important;transition:none!important;background:#EBEBEB!important;border:0!important;position:relative!important;overflow:hidden!important;aspect-ratio:auto!important;max-height:none!important;height:auto!important}
+#viewer .related.ap-works .ap-work img{display:block!important;width:100%!important;height:auto!important;max-width:none!important;max-height:none!important;margin:0!important;padding:0!important;transform:none!important;transition:none!important;object-fit:initial!important;aspect-ratio:auto!important;break-inside:auto!important}
+#viewer .related.ap-works .ap-work:hover img{transform:none!important;opacity:1!important}
+#viewer .related.ap-works .ap-shade{position:absolute!important;inset:0!important;background:rgba(0,0,0,.8)!important;opacity:0!important;transition:opacity .3s ease!important;pointer-events:none!important;display:block!important;margin:0!important;padding:0!important;height:auto!important;width:auto!important}
+#viewer .related.ap-works .ap-work:hover .ap-shade{opacity:.3!important}
+@media (max-width:700px){#viewer .related.ap-works{grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:3vw!important;gap:3vw!important}}
+
+/* round 9b: viewer tiles must match the profile tile box exactly */
+#viewer .related.ap-works .ap-work img{height:auto!important;width:100%!important;display:block!important}
+#viewer .related.ap-works .ap-work{height:auto!important;min-height:0!important}
+
+/* round 9c: each tile keeps its own image height, like the profile grid */
+#viewer .related.ap-works{align-items:stretch!important;align-content:start!important}
+#viewer .related.ap-works .ap-work{align-self:stretch!important}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
