@@ -1,6 +1,4 @@
-KANASTA v2 — aktualizacja profilu artysty
+KANASTA v2 — profil artysty, runda 2
 
 Rozpakuj w katalogu kopii projektu, zachowując ścieżki.
-Zamień: index.html
-Mapa (images/mapa-polski.png) jest w paczce, jeśli była wcześniej.
-Zdjęcia artystów nie są w paczce — zostają z Twojej kopii images/.
+Zamień: index.html. Zdjęcia artystów zostają z Twojej kopii images/.

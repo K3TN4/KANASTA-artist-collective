@@ -718,7 +718,7 @@ body.av-open{overflow:hidden!important}
 #artistPage .ap-top{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:clamp(18px,3vh,32px) 4vw;background:#FFFFFF}
 #artistPage .ap-logo-btn{background:none;border:0;padding:0;cursor:pointer;line-height:0}
 #artistPage .ap-logo-btn img{height:clamp(34px,3.6vw,69px);width:auto;display:block}
-#artistPage .ap-menu{background:none;border:0;padding:0;cursor:pointer;font:14px Cairo,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#E04324}
+#artistPage .ap-menu{background:none;border:0;padding:0;cursor:pointer;font:14px Cairo,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#000}
 #artistPage .ap-hero{display:grid;grid-template-columns:1fr 44.3vw;gap:3vw;padding:2vh 4vw 0;align-items:start}
 #artistPage .ap-left{align-self:end;padding-bottom:6vh}
 #artistPage .ap-name{margin:0;font:700 clamp(40px,6.667vw,128px)/1.15 Helvetica,Arial,sans-serif;color:#E04324}
@@ -757,6 +757,20 @@ body.av-open{overflow:hidden!important}
 #artistPage .ap-logo-btn img{width:95px!important;height:115px!important;object-fit:contain;filter:brightness(0)}
 #artistPage .ap-hero{padding-top:0!important}
 @media(max-width:700px){#artistPage .ap-logo-btn{top:10px!important;left:10px!important;width:46px!important;height:56px!important}#artistPage .ap-logo-btn img{width:46px!important;height:56px!important}}
+
+/* round 2: profile photo smaller, flush to right edge and bottom rule; names stacked */
+#artistPage .ap-hero{grid-template-columns:1fr auto!important;gap:0!important;padding:0 0 0 4vw!important;align-items:end!important}
+#artistPage .ap-photo{width:min(26vw,460px);margin:0;align-self:end}
+#artistPage .ap-photo img{width:100%;height:auto;aspect-ratio:851/1277}
+#artistPage .ap-left{padding:0 0 4vh!important}
+#artistPage .ap-name{display:flex;flex-direction:column;line-height:1.02!important}
+#artistPage .ap-name span{display:block}
+#artistPage .ap-rule{margin-top:0!important}
+#viewer .viewer-inner .contact-section{margin:120px -40px 0;width:calc(100% + 80px)}
+#viewer .contact-section,#artistPage .contact-section{position:relative}
+@media(max-width:700px){#artistPage .ap-photo{width:42vw}}
+/* round 2: hero film only during the intro; gone for good after the ARTISTS section */
+html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain{display:none!important}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
@@ -929,7 +943,7 @@ function openArtist(i){openArtistPage(i)}
 function closeAll(){['#menu','#profile','#viewer'].forEach(x=>$(x).classList.remove('open'));document.body.style.overflow='';history.replaceState({},'',location.pathname)}
 function imageCandidates(w,kind){const key='_'+kind+'Candidates';return (w[key]&&w[key].length?w[key]:[w[kind]]).filter(Boolean)}
 function useImageCandidates(img,list){let n=0;const next=()=>{if(n>=list.length){img.removeAttribute('src');return}img.src=list[n++];};img.onerror=next;next();return img}
-function openWork(i){activeWork=i;const w=works[i];useImageCandidates($('#viewerImg'),imageCandidates(w,'view'));$('#viewerImg').dataset.fullCandidates=JSON.stringify(imageCandidates(w,'full'));$('#viewerImg').dataset.full=imageCandidates(w,'full')[0]||w.full;$('#viewerImg').alt=`${w.title} — ${w.artist}`;$('#viewerTitle').textContent=w.title;$('#viewerArtist').textContent=w.artist;$('#viewerMeta').textContent=[w.technique,w.year,w.dimensions].filter(Boolean).join(' · ');$('#viewerNo').textContent=`${String(i+1).padStart(2,'0')} / ${works.length}`;$('#related').innerHTML='';works.forEach((x,j)=>{if(j===i||x.artist!==w.artist)return;const im=useImageCandidates(new Image(),imageCandidates(x,'thumb'));im.dataset.file=x.thumb;im.alt=x.title;im.onclick=()=>openWork(j);$('#related').append(im)});$('#viewer').classList.add('open');document.body.style.overflow='hidden';history.pushState({},'',`/KANASTA-artist-collective/works`);resetZoom()}
+function openWork(i){activeWork=i;const w=works[i];useImageCandidates($('#viewerImg'),imageCandidates(w,'view'));$('#viewerImg').dataset.fullCandidates=JSON.stringify(imageCandidates(w,'full'));$('#viewerImg').dataset.full=imageCandidates(w,'full')[0]||w.full;$('#viewerImg').alt=`${w.title} — ${w.artist}`;$('#viewerTitle').textContent=w.title;$('#viewerArtist').textContent=w.artist;$('#viewerMeta').textContent=[w.technique,w.year,w.dimensions].filter(Boolean).join(' · ');$('#viewerNo').textContent=`${String(i+1).padStart(2,'0')} / ${works.length}`;$('#related').innerHTML='';works.forEach((x,j)=>{if(j===i||x.artist!==w.artist)return;const im=useImageCandidates(new Image(),imageCandidates(x,'thumb'));im.dataset.file=x.thumb;im.alt=x.title;im.onclick=()=>openWork(j);$('#related').append(im)});{const vi=document.querySelector('#viewer .viewer-inner');let f=vi.querySelector('.contact-section');if(!f){vi.insertAdjacentHTML('beforeend',footerClone());f=vi.querySelector('.contact-section');avFooterWire(vi)}}$('#viewer').classList.add('open');document.body.style.overflow='hidden';history.pushState({},'',`/KANASTA-artist-collective/works`);resetZoom()}
 const goHome=()=>{closeAll();history.replaceState({},'',location.pathname.split('/works')[0]||'/');window.scrollTo({top:0,left:0,behavior:pageMotionEnabled?'smooth':'instant'})};$('#menuBtn').onclick=()=>$('#menu').classList.add('open');$('#menuClose').onclick=closeAll;$('#profileClose').onclick=closeAll;$('#viewerClose').onclick=closeAll;$('#logo').onclick=goHome;document.querySelector('.viewerLogo').onclick=goHome;document.querySelectorAll('.menu-list a').forEach(a=>a.onclick=()=>{closeAll();setTimeout(()=>$(a.getAttribute('href')).scrollIntoView({behavior:pageMotionEnabled?'smooth':'instant'}),50)});window.onpopstate=closeAll;
 let zoom={s:1,x:0,y:0,drag:false,sx:0,sy:0,ox:0,oy:0};function renderZoom(){$('#viewerImg').style.setProperty('--s',zoom.s);$('#viewerImg').style.setProperty('--x',zoom.x+'px');$('#viewerImg').style.setProperty('--y',zoom.y+'px');$('#viewerImage').classList.toggle('zoomed',zoom.s>1.01);$('#viewerImage').style.touchAction=zoom.s>1.01?'none':'pan-y'}function resetZoom(){zoom={s:1,x:0,y:0,drag:false,sx:0,sy:0,ox:0,oy:0};renderZoom()}
  function zoomAt(next,cx,cy){const r=$('#viewerImage').getBoundingClientRect(),old=zoom.s,k=next/old,x=cx-r.left,y=cy-r.top;if(next>1.01&&$('#viewerImg').src.indexOf('/full/')<0){const fulls=JSON.parse($('#viewerImg').dataset.fullCandidates||'[]');useImageCandidates($('#viewerImg'),fulls.length?fulls:[$('#viewerImg').dataset.full])}zoom.x=x-(x-zoom.x)*k;zoom.y=y-(y-zoom.y)*k;zoom.s=next;if(zoom.s<=1.001){zoom.s=1;zoom.x=0;zoom.y=0}renderZoom()}
@@ -1388,12 +1402,14 @@ function avSetView(list){avGrid.classList.toggle('av-list',list);document.getEle
 document.getElementById('avList').onclick=()=>avSetView(true);
 document.getElementById('avTiles').onclick=()=>avSetView(false);
 function apWorksOf(name){return works.filter(w=>w.artist===name)}
+function footerClone(){const c=document.getElementById('contact');const n=c.cloneNode(true);n.removeAttribute('id');n.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));return n.outerHTML}
+function avFooterWire(root){root.querySelectorAll('[data-scroll-target]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();closeAll();closeArtistsView();setTimeout(()=>smoothContactJump(a.dataset.scrollTarget),50)}));root.querySelectorAll('.contact-copy-email').forEach(b=>b.addEventListener('click',()=>{const o=b.textContent;navigator.clipboard?.writeText(b.dataset.email).catch(()=>{});b.textContent=currentLanguage==='pl'?'Skopiowano!':'Copied!';setTimeout(()=>{b.textContent=o},1600)}))}
 function openArtistPage(i){
  const [name,file]=artists[i];const pg=document.getElementById('artistPage');const list=apWorksOf(name);const pl=currentLanguage==='pl';
  const worksHtml=list.length?list.map((w,j)=>`<button type="button" class="ap-work" data-j="${j}"><img src="${w.thumb}" alt=""><span class="ap-shade"></span><span class="ap-info"><span class="ap-wname">${name}</span><span class="ap-wtitle">${w.title}</span></span><span class="ap-read">${pl?'Czytaj więcej':'Read about'}</span></button>`).join(''):`<p class="ap-empty">${pl?'Prace wkrótce':'Works coming soon'}</p>`;
  const track=`<span>WORKS</span><i></i>`.repeat(6);
- pg.innerHTML=`<header class="ap-top"><button type="button" class="ap-logo-btn" id="apLogo" aria-label="KANASTA"><img src="images/kanasta-mark.svg" alt=""></button><button type="button" class="ap-menu" id="apMenu">MENU</button></header><section class="ap-hero"><div class="ap-left"><h1 class="ap-name">${name.toUpperCase()}</h1><span class="ap-spec">${pl?'Specjalizacja':'Specialisation'}</span></div><div class="ap-photo"><img src="images/${file}" alt="${name}"></div></section><div class="ap-rule"></div><h2 class="ap-about">ABOUT</h2><p class="ap-bio">${languageCopy[currentLanguage].profileBio}</p><div class="ap-marquee" aria-hidden="true"><div class="ap-track">${track}${track}</div></div><div class="ap-works">${worksHtml}</div>${document.getElementById('contact').outerHTML}`;
- pg.querySelectorAll('.ap-work').forEach(b=>b.onclick=()=>openWork(works.indexOf(list[+b.dataset.j])));
+ pg.innerHTML=`<header class="ap-top"><button type="button" class="ap-logo-btn" id="apLogo" aria-label="KANASTA"><img src="images/kanasta-mark.svg" alt=""></button><button type="button" class="ap-menu" id="apMenu">MENU</button></header><section class="ap-hero"><div class="ap-left"><h1 class="ap-name">${name.split(" ").map(x=>`<span>${x.toUpperCase()}</span>`).join("")}</h1><span class="ap-spec">${pl?'Specjalizacja':'Specialisation'}</span></div><div class="ap-photo"><img src="images/${file}" alt="${name}"></div></section><div class="ap-rule"></div><h2 class="ap-about">ABOUT</h2><p class="ap-bio">${languageCopy[currentLanguage].profileBio}</p><div class="ap-marquee" aria-hidden="true"><div class="ap-track">${track}${track}</div></div><div class="ap-works">${worksHtml}</div>${footerClone()}`;
+ pg.querySelectorAll('.ap-work').forEach(b=>b.onclick=()=>openWork(works.indexOf(list[+b.dataset.j])));avFooterWire(pg);
  document.getElementById('apLogo').onclick=()=>{pg.classList.remove('open');closeArtistsView();goHome()};
  document.getElementById('apMenu').onclick=()=>$('#menu').classList.add('open');
  pg.querySelectorAll('[data-scroll-target]').forEach(a=>a.onclick=e=>{e.preventDefault();pg.classList.remove('open');closeArtistsView();setTimeout(()=>smoothContactJump(a.dataset.scrollTarget),50)});pg.querySelectorAll('.contact-copy-email').forEach(b=>b.onclick=()=>{const o=b.textContent;navigator.clipboard?.writeText(b.dataset.email).catch(()=>{});b.textContent=currentLanguage==='pl'?'Skopiowano!':'Copied!';setTimeout(()=>{b.textContent=o},1600)});
@@ -1404,4 +1420,6 @@ document.getElementById('avLogo').onclick=()=>{closeArtistsView();goHome()};
 document.getElementById('avMenu').onclick=()=>$('#menu').classList.add('open');
 const menuArtists=document.querySelector('.menu-list a[href="#artists"]');
 if(menuArtists)menuArtists.onclick=e=>{e.preventDefault();closeAll();openArtistsView()};
+
+(function(){const a=document.getElementById('artists');if(!a)return;const check=()=>{if(a.getBoundingClientRect().top<window.innerHeight*0.5){document.documentElement.classList.add('hero-film-gone');document.querySelectorAll('#home .hero-background').forEach(v=>{try{v.pause()}catch(e){}});window.removeEventListener('scroll',check);window.removeEventListener('resize',check)}};window.addEventListener('scroll',check,{passive:true});window.addEventListener('resize',check);check()})();
 </script></body></html>
