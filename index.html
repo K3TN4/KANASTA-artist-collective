@@ -570,6 +570,8 @@ html.motion-off #home .hero-background,html.motion-off #home .film-grain{positio
 #exhibitionsArrow{position:absolute!important;left:50%!important;top:50%!important;display:block!important;width:30px!important;height:80px!important;max-width:none!important;transform:translate(-50%,-50%) rotate(-90deg)!important;transform-origin:center!important}
 #exhibitionsDiscoverLabel{box-sizing:border-box!important;display:flex!important;flex:0 0 157px!important;width:157px!important;min-width:157px!important;height:56px!important;padding:0 6px!important;border:0!important;border-bottom:0!important;background:transparent!important;align-items:center!important;justify-content:center!important;color:#EBEBEB!important}
 #exhibitionsDiscover:hover{gap:1.8vw!important}
+#exhibitionsArrow{transition:width .35s cubic-bezier(.2,.7,.2,1),transform .35s cubic-bezier(.2,.7,.2,1)!important}
+#exhibitionsDiscover:hover #exhibitionsArrow{width:calc(30px + 1.8vw)!important;transform:translate(-50%,-50%) rotate(-90deg)!important}
 @media(max-width:700px){
  #exhibitionsMarquee{top:11vh!important;height:22vh!important;align-items:flex-start!important;font-size:clamp(36px,10vw,64px)!important;line-height:1.12!important}
  #exhibitions .marquee-word{font-size:clamp(36px,10vw,64px)!important}
@@ -1250,7 +1252,7 @@ async function buildRail(){const list=loadRepoWorks();sourceWorks.splice(0,sourc
 let worksDrag=null,worksTouchRail=null;$('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;worksDrag={x:e.clientX,moved:false};$('#worksRow').classList.add('dragging');e.preventDefault()};document.addEventListener('mousemove',e=>{if(!worksDrag)return;const dx=e.clientX-worksDrag.x;if(Math.abs(dx)>2)worksDrag.moved=true;scheduleMove(dx);worksDrag.x=e.clientX},{passive:true});document.addEventListener('mouseup',()=>{if(!worksDrag)return;const moved=worksDrag.moved;worksDrag=null;$('#worksRow').classList.remove('dragging');if(moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,90)}});$('#worksRow').addEventListener('touchstart',e=>{if(matchMedia('(hover:none), (pointer:coarse)').matches)return;if(e.touches.length)worksTouchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(matchMedia('(hover:none), (pointer:coarse)').matches||!worksTouchRail||!e.touches.length)return;const dx=e.touches[0].clientX-worksTouchRail.x;if(Math.abs(dx)>3)worksTouchRail.moved=true;if(worksTouchRail.moved){e.preventDefault();scheduleMove(dx);worksTouchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(matchMedia('(hover:none), (pointer:coarse)').matches){worksTouchRail=null;return}if(worksTouchRail?.moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,100)}worksTouchRail=null});$('#worksRow').addEventListener('scroll',scheduleMobileRailCheck,{passive:true});window.addEventListener('resize',updateEdge);window.addEventListener('scroll',updateEdge,{passive:true});(async()=>{try{await buildRail()}catch(e){console.error('WORKS rebuild',e);$('#worksRow').innerHTML=`<div class="placeholder">${languageCopy[currentLanguage].worksError}</div>`}})();
 let mouse={x:window.innerWidth/2,y:window.innerHeight/2,px:window.innerWidth/2,py:window.innerHeight/2,vx:0,vy:0};
 let cursorFrame=0,cursorClones=new Map(),cursorCloneTargets=[];
-const cursorTextCandidates='h1,h2,h3,.subtitle,.artist-name,.section-head span,.viewer-caption p,.viewer-caption small,.top button,#logo,.viewerLogo,.language-option,.language-dot,.placeholder,.about p,.about-section h2,.marquee-word,.marquee-dot,#exhibitionsDiscoverLabel,.discover-link:not(.exhibitions-discover),#works .works-caption-hint p,#works .works-caption-title,.contact a,.contact p,.contact-column h2,.contact-copy-email,.contact-support span,.contact-jump-links a,.contact-wordmark span,.bio button,.menu-list a';
+const cursorTextCandidates='h1,h2,h3,.subtitle,.artist-name,.section-head span,.viewer-caption p,.viewer-caption small,.top button,#logo,.viewerLogo,.language-option,.language-dot,.placeholder,.about p,.about-section h2,.marquee-word,.marquee-dot,#exhibitionsDiscoverLabel,.discover-link:not(.exhibitions-discover),#works .works-caption-hint p,#works .works-caption-title,.contact a,.contact p,.contact-column h2,.contact-copy-email,.contact-support span,.contact-jump-links a,.contact-wordmark span,.contact-wordmark,.contact-rule-top,.contact-bottom-rule,.contact-divider,.bio button,.menu-list a';
 function headerControlColorAt(el){
  if(!el)return 'rgb(32, 30, 52)';
  const r=el.getBoundingClientRect(),x=Math.max(0,Math.min(innerWidth-1,r.left+r.width/2)),y=Math.max(0,Math.min(innerHeight-1,r.top+r.height/2));
@@ -1280,12 +1282,15 @@ window.addEventListener('resize',scheduleHeaderControlColors,{passive:true});
  scheduleHeaderControlColors();
 function cursorTarget(size=18,whiteCursor=false){
  const hoveredElement=document.elementFromPoint(mouse.px,mouse.py);
+ const inContact=size>18&&!!document.querySelector('#contact')&&hoveredElement?.closest('#contact');
+ if(inContact){const rad=size*.5,cx=mouse.px,cy=mouse.py;return[...document.querySelectorAll('#contact '+cursorTextCandidates.split(',').join(', #contact '))].filter(el=>{const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)return false;const r=el.getBoundingClientRect();if(r.width<1||r.height<1)return false;const nx=Math.max(r.left,Math.min(cx,r.right)),ny=Math.max(r.top,Math.min(cy,r.bottom));return Math.hypot(nx-cx,ny-cy)<=rad})}
  const candidate=hoveredElement?.closest(cursorTextCandidates);
  if(!candidate)return [];
  const cs=getComputedStyle(candidate);
  if(cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)return [];
  const forcedDiscover=!!hoveredElement?.closest('.discover-link:not(.exhibitions-discover)')&&!!candidate.closest('.discover-link:not(.exhibitions-discover)');
  const forcedWordmark=candidate.matches('.kanasta-wordmark')&&!whiteCursor;
+ const forcedContact=!!candidate.closest('#contact')&&!candidate.matches('.contact-rule-top,.contact-bottom-rule,.contact-divider');
  const hoveredControl=hoveredElement?.closest('#logo,.viewerLogo,.language-option');
  const forcedHeaderMark=!!hoveredControl&&candidate===hoveredControl;
  const isHeaderControl=candidate.matches('#logo,.viewerLogo,.language-option,.language-dot');
@@ -1293,7 +1298,7 @@ function cursorTarget(size=18,whiteCursor=false){
  const dotColor=candidate.matches('.language-dot,.marquee-dot')?getComputedStyle(candidate).backgroundColor:'';
  const controlColor=candidate.matches('#logo,.viewerLogo')?getComputedStyle(candidate).getPropertyValue('--header-control-color').trim():candidate.matches('.language-option')?cs.color:'';
  const matchesCursorText=paintColors.includes(cs.color)||paintColors.includes(cs.webkitTextFillColor)||paintColors.includes(controlColor)||(candidate.matches('.language-dot,.marquee-dot')&&paintColors.includes(dotColor));
- return matchesCursorText||forcedDiscover||forcedWordmark||forcedHeaderMark||isHeaderControl?[candidate]:[];
+ return matchesCursorText||forcedDiscover||forcedWordmark||forcedContact||forcedHeaderMark||isHeaderControl?[candidate]:[];
 }
 function syncCursorClone(targets,whiteCursor=false){
  const wanted=new Set(targets||[]),layer=document.getElementById('cursorText');
@@ -1372,7 +1377,9 @@ function renderCursor(){
  const largeSize=280;
  let size=normalSize;
  /* Grow through the EXHIBITIONS panel instead of snapping to the large size on entry. */
- if(!!nextRect&&mouse.py>=nextRect.top&&mouse.py<=nextRect.bottom){const exhibitionProgress=Math.max(0,Math.min(1,(mouse.py-nextRect.top)/Math.max(1,Math.min(innerHeight,900))));size=normalSize+(largeSize-normalSize)*exhibitionProgress}
+ const contactEl=document.querySelector('#contact');const contactRect=contactEl?.getBoundingClientRect();const onContact=!!contactRect&&mouse.py>=contactRect.top&&mouse.py<=contactRect.bottom&&mouse.px>=0;
+ if(onContact){size=largeSize}
+ if(!onContact&&!!nextRect&&mouse.py>=nextRect.top&&mouse.py<=nextRect.bottom){const exhibitionProgress=Math.max(0,Math.min(1,(mouse.py-nextRect.top)/Math.max(1,Math.min(innerHeight,900))));size=normalSize+(largeSize-normalSize)*exhibitionProgress}
  const onDark=!!nextRect&&mouse.py>=nextRect.top;
  const discoverHover=!!hovered?.closest('.discover-link');
  const homeRect=document.querySelector('#home')?.getBoundingClientRect();
@@ -1382,7 +1389,7 @@ function renderCursor(){
  const inWorksHeader=!!headRect&&mouse.py>=headRect.top&&mouse.py<=headRect.bottom;
  const worksTitle=!!hovered?.closest('#works .section-head h2');
  const worksBar=!!hovered?.closest('#works .section-head');
- const activeLarge=!!nextRect&&mouse.py>=nextRect.top&&inExit;
+ const activeLarge=(!onContact&&!!nextRect&&mouse.py>=nextRect.top&&inExit)||onContact;
  const whiteCursor=discoverHover?!onDark:(overHomeVideo||onDark);
  const worksBarLight=worksBar&&!activeLarge&&!whiteCursor;
  const cursorLight=whiteCursor||worksBarLight;
@@ -1433,7 +1440,7 @@ function renderCursor(){
    exhibitionsLayer.style.setProperty('--exhibitions-cursor-y',mouse.py+'px');
    exhibitionsLayer.style.setProperty('--exhibitions-cursor-radius',Math.max(9,size*.5)+'px');
    const layerRect=exhibitionsLayer.getBoundingClientRect();
-   const targets=document.querySelectorAll('#exhibitions .marquee-word,#exhibitions .marquee-dot,#exhibitionsDiscoverLabel');
+   const targets=document.querySelectorAll('#exhibitions .marquee-word,#exhibitions .marquee-dot,#exhibitionsDiscoverLabel,#exhibitionsArrow');
    const glyphs=[...exhibitionsLayer.children];
    targets.forEach((target,i)=>{
     const r=target.getBoundingClientRect(),cs=getComputedStyle(target);
