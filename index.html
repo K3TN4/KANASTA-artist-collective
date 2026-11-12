@@ -276,7 +276,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #cursor.works-art-cursor.dark-zone{background:#EBEBEB!important}
 #cursor.works-art-cursor::before,#cursor.works-art-cursor::after{display:none!important;content:none!important}
 #cursorText.works-art-cursor:not(.exhibition-cursor-text){display:none!important}
-#cursorText.exhibition-cursor-text{z-index:10002!important;overflow:hidden!important}
+#cursorText.exhibition-cursor-text{z-index:10005!important;overflow:hidden!important}
 #cursor.works-art-cursor.exhibition-cursor-active{z-index:10004!important}
 #exhibitionsCursorLayer{position:fixed;inset:0 auto 0 0;width:50vw;height:100vh;z-index:10003;pointer-events:none;overflow:hidden;display:none;clip-path:circle(var(--exhibitions-cursor-radius,9px) at var(--exhibitions-cursor-x,-100px) var(--exhibitions-cursor-y,-100px))}
 #exhibitionsCursorLayer.active{display:block!important}
@@ -306,7 +306,7 @@ html,body{background:#EBEBEB!important;color:#201E34!important}
 #worksRow .work-card img{background:transparent!important}
 /* Invert white labels locally under the white cursor on the black sections. */
 #cursorText.works-art-cursor.white-cursor{display:block!important}
-#cursorText.white-cursor{z-index:10002!important}
+#cursorText.white-cursor{z-index:10005!important}
 
 
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
@@ -1315,7 +1315,7 @@ function cursorTarget(size=18,whiteCursor=false){
  if(inContact){const rad=size*.5,cx=mouse.px,cy=mouse.py;return[...document.querySelectorAll('#contact '+cursorTextCandidates.split(',').join(', #contact '))].filter(el=>{const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)return false;const r=el.getBoundingClientRect();if(r.width<1||r.height<1)return false;const nx=Math.max(r.left,Math.min(cx,r.right)),ny=Math.max(r.top,Math.min(cy,r.bottom));return Math.hypot(nx-cx,ny-cy)<=rad})}
  let candidate=hoveredElement?.closest(cursorTextCandidates);
  /* Any element holding its own text in white or navy inverts too, so every homepage label is covered. */
- if(hoveredElement){const own=[...hoveredElement.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());const c=getComputedStyle(hoveredElement).color;if(own&&(c==='rgb(235, 235, 235)'||c==='rgb(32, 30, 52)')&&hoveredElement.getBoundingClientRect().width<700)candidate=hoveredElement}
+ if(hoveredElement){const own=[...hoveredElement.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());const c=getComputedStyle(hoveredElement).color;if(own&&(c==='rgb(235, 235, 235)'||c==='rgb(32, 30, 52)')&&hoveredElement.getBoundingClientRect().width<700&&!hoveredElement.closest('.kanasta-wordmark'))candidate=hoveredElement}
  if(!candidate)return [];
  const cs=getComputedStyle(candidate);
  if(cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)return [];
