@@ -1250,7 +1250,7 @@ function startWorksAutoDrift(){
    const row=$('#worksRow'),rect=row.getBoundingClientRect();
    if(rect.bottom>0&&rect.top<innerHeight)moveRail(-72*dt/1000);
   }
-  if(rail.ready)maybeExtend();
+  if(rail.ready){const rr=$('#worksRow').getBoundingClientRect();if(rr.bottom>-innerHeight&&rr.top<innerHeight*2)maybeExtend()}
   worksAutoFrame=requestAnimationFrame(tick);
  };
  worksAutoFrame=requestAnimationFrame(tick);
@@ -1289,6 +1289,7 @@ window.addEventListener('scroll',scheduleHeaderControlColors,{passive:true});
 window.addEventListener('resize',scheduleHeaderControlColors,{passive:true});
  scheduleHeaderControlColors();
 function cursorTarget(size=18,whiteCursor=false){
+ return [];
  const hoveredElement=document.elementFromPoint(mouse.px,mouse.py);
  const inContact=size>18&&!!document.querySelector('#contact')&&hoveredElement?.closest('#contact');
  if(inContact){const rad=size*.5,cx=mouse.px,cy=mouse.py;return[...document.querySelectorAll('#contact '+cursorTextCandidates.split(',').join(', #contact '))].filter(el=>{const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)return false;const r=el.getBoundingClientRect();if(r.width<1||r.height<1)return false;const nx=Math.max(r.left,Math.min(cx,r.right)),ny=Math.max(r.top,Math.min(cy,r.bottom));return Math.hypot(nx-cx,ny-cy)<=rad})}
