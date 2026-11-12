@@ -8,9 +8,9 @@
 <style>
 :root{--bg:#EBEBEB;--pink:#201E34;--cyan:#96bfe6;--ink:#201E34;--muted:#777;--g:clamp(20px,3.2vw,56px)}
 *{box-sizing:border-box;margin:0}html{scroll-behavior:auto;background:var(--bg)}body{background:var(--bg);color:var(--ink);font-family:Arial,sans-serif;overflow-x:hidden}button,a{font:inherit;color:inherit}.top{position:fixed;inset:0 0 auto;z-index:50;display:flex;justify-content:space-between;padding:clamp(20px,3vh,32px) var(--g);font:14px Cairo,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--pink)}.top button{border:0;background:none;cursor:pointer;color:inherit;letter-spacing:inherit;text-transform:inherit}.top button:hover{transform:scale(1.15)}.top-actions{display:flex;align-items:center;gap:clamp(16px,2.4vw,34px)}.top .motion-toggle{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.13em;white-space:nowrap}.motion-switch{width:34px;height:18px;border:1px solid currentColor;border-radius:99px;display:inline-flex;align-items:center;padding:2px;transition:background .2s ease}.motion-switch-knob{width:12px;height:12px;border-radius:50%;background:currentColor;transform:translateX(0);transition:transform .2s ease}#motionToggle[aria-pressed="true"] .motion-switch-knob{transform:translateX(16px)}
-#worksCursorMask{position:fixed;z-index:10001;left:0;right:0;top:0;height:0;background:#EBEBEB;pointer-events:none;display:none}#cursor{position:fixed;z-index:10004;width:18px;height:18px;border-radius:50%;background:#201E34;pointer-events:none;transform:translate(-50%,-50%);transition:background .08s;display:block;will-change:transform}#cursorText{position:fixed;inset:0;z-index:10002;pointer-events:none;overflow:hidden;clip-path:circle(9px at -100px -100px)}#cursorText .clone{position:fixed;margin:0;padding:0;color:#EBEBEB!important;-webkit-text-fill-color:#EBEBEB!important;white-space:pre;pointer-events:none}.mobile-hide{display:block}
+#worksCursorMask{position:fixed;z-index:10001;left:0;right:0;top:0;height:0;background:#EBEBEB;pointer-events:none;display:none}#cursor{position:fixed;z-index:10004;width:18px;height:18px;border-radius:50%;background:#201E34;pointer-events:none;transform:translate(-50%,-50%);transition:none;display:block;will-change:transform}#cursorText{position:fixed;inset:0;z-index:10005;pointer-events:none;overflow:hidden;clip-path:circle(9px at -100px -100px)}#cursorText .clone{position:fixed;margin:0;padding:0;color:#EBEBEB!important;-webkit-text-fill-color:#EBEBEB!important;white-space:pre;pointer-events:none}.mobile-hide{display:block}
 main.hero{min-height:100svh;position:relative;display:flex;align-items:center;flex-direction:column;padding:clamp(86px,11vh,128px) var(--g) 0}.hero h1{font:400 clamp(150px,min(24vw,43vh),360px)/.82 "Bakbak One",sans-serif;letter-spacing:.045em;background:url('images/typography.jpg') 50% 38%/130% auto no-repeat;background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;transition:transform .4s}.hero h1:hover{transform:scale(1.04)}.subtitle{margin-top:clamp(14px,2vh,24px);font:clamp(11px,1.55vh,14px) Cairo,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--pink)}.orbit{width:min(1180px,92vw);margin-top:clamp(34px,5vh,68px);display:grid;gap:clamp(20px,2.7vw,42px);z-index:1}.orbit-row{display:flex;justify-content:center;gap:clamp(20px,2.7vw,42px)}.circle{width:clamp(92px,13vh,130px);height:clamp(92px,13vh,130px);flex:0 0 auto;border:3px solid #96bfe6;border-radius:50%;overflow:hidden;background:#EBEBEB;cursor:pointer;transition:transform .8s cubic-bezier(.22,1,.36,1),opacity .5s ease;will-change:transform,opacity}.circle:hover{transform:scale(1.18)}.circle img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.section{padding:140px var(--g) 180px;border-top:1px solid var(--ink);min-height:80vh}.section-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:80px;font:11px Cairo,sans-serif;letter-spacing:.12em;text-transform:uppercase}.section-head h2{font:400 clamp(48px,8vw,110px) "Bakbak One",sans-serif;color:var(--pink)}.artist-list{border-top:1px solid var(--pink)}.artist-row{display:grid;grid-template-columns:60px 1fr;position:relative;padding:24px 0;border-bottom:1px solid #ff7399;cursor:pointer;transition:padding .35s}.artist-row:hover{padding-left:20px}.artist-name{font:400 clamp(28px,4vw,52px) "Bakbak One",sans-serif}.artist-no{font-size:10px;color:var(--muted)}.artist-photo{position:absolute;right:40px;top:50%;width:130px;height:130px;border-radius:50%;object-fit:cover;opacity:0;transform:translateY(-50%) scale(.8);transition:.35s;pointer-events:none}.artist-row:hover .artist-photo{opacity:1;transform:translateY(-50%) scale(1)}.bio{grid-column:2;max-height:0;overflow:hidden;opacity:0;transition:.5s}.artist-row.preview .bio{max-height:160px;opacity:1;padding:10px 0 20px}.bio button{display:block;margin-top:10px;border:0;border-bottom:1px solid;background:none;font-size:10px;letter-spacing:.14em;cursor:pointer;position:relative;z-index:5}.artist-row.bio-open .bio{max-height:420px;opacity:1;padding:10px 0 20px}
+.section{padding:140px var(--g) 180px;border-top:1px solid var(--ink);min-height:80vh}.section-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:80px;font:11px Cairo,sans-serif;letter-spacing:.12em;text-transform:uppercase}.section-head h2{font:400 clamp(48px,8vw,110px) "Bakbak One",sans-serif;color:var(--pink)}.artist-list{border-top:1px solid var(--pink)}.artist-row{display:grid;grid-template-columns:minmax(0,1fr);position:relative;padding:24px 0;border-bottom:1px solid #ff7399;cursor:pointer;transition:padding .35s}.artist-row:hover{padding-left:20px}.artist-name{font:400 clamp(28px,4vw,52px) "Bakbak One",sans-serif}.artist-no{font-size:10px;color:var(--muted)}.artist-photo{position:absolute;right:40px;top:50%;width:130px;height:130px;border-radius:50%;object-fit:cover;opacity:0;transform:translateY(-50%) scale(.8);transition:.35s;pointer-events:none}.artist-row:hover .artist-photo{opacity:1;transform:translateY(-50%) scale(1)}.bio{grid-column:1;max-height:0;overflow:hidden;opacity:0;transition:.5s}.artist-row.preview .bio{max-height:160px;opacity:1;padding:10px 0 20px}.artist-row.bio-open .bio{max-height:none;overflow:visible}.bio button{display:block;margin-top:10px;border:0;border-bottom:1px solid;background:none;font-size:10px;letter-spacing:.14em;cursor:pointer;position:relative;z-index:5}.artist-row.bio-open .bio{max-height:420px;opacity:1;padding:10px 0 20px}
 .works{overflow:hidden}.works-track{width:100%;overflow:hidden}.works-row{width:100%;height:clamp(180px,25vw,340px);display:flex;gap:12px;overflow:hidden;user-select:none;cursor:grab;touch-action:pan-y}.works-row.dragging{cursor:grabbing}.work-card{height:100%;flex:0 0 auto;width:auto;cursor:pointer;position:relative;z-index:2}.work-card img{width:auto;height:100%;object-fit:contain;background:transparent;pointer-events:none;user-select:none}
 .placeholder{margin-top:100px;font:12px Arial,sans-serif;letter-spacing:.14em;color:var(--muted)}.about{max-width:700px;margin-top:100px;font-size:14px;line-height:1.7}.contact{margin-top:100px;display:grid;gap:12px;font-size:12px;letter-spacing:.12em;text-transform:uppercase}.contact a{text-decoration:none}.overlay{position:fixed;inset:0;z-index:200;background:var(--bg);display:none;padding:28px var(--g)}.overlay.open{display:flex;flex-direction:column;align-items:center;justify-content:center}.menu-list{width:min(1599px,100%);height:min(684px,calc(100svh - 150px));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}.menu-list a{display:block;width:100%;font:700 clamp(32px,6.667vw,128px)/1 Helvetica,Arial,sans-serif;text-align:center;text-decoration:none;color:var(--pink)}.menu-instagram{display:block;margin-top:clamp(12px,2vh,24px);font:400 20px/1 Helvetica,Arial,sans-serif;text-align:center;text-decoration:none;color:var(--pink)}.menu-instagram:hover{opacity:.7}
 .profile{position:fixed;inset:0;z-index:150;background:var(--bg);display:none;overflow-y:auto;padding:120px 8vw 100px}.profile.open{display:block}.close{position:fixed;right:var(--g);top:28px;z-index:10;border:0;background:none;color:var(--pink);font:14px Cairo,sans-serif;letter-spacing:.18em;cursor:pointer}.profile h2{font:400 clamp(50px,9vw,130px)/.95 "Bakbak One",sans-serif;margin-bottom:60px}.profile img{width:260px;height:260px;border-radius:50%;object-fit:cover;margin-bottom:50px}.profile p{max-width:500px;font:22px/1.5 "Bakbak One",sans-serif}
@@ -18,7 +18,7 @@ main.hero{min-height:100svh;position:relative;display:flex;align-items:center;fl
 @media(min-width:1600px){.viewer-inner{width:min(70vw,980px);margin:clamp(70px,8vh,96px) auto 120px}.viewer-image{height:min(70vh,720px)}}
 @media(min-width:1200px) and (max-width:1599px){.viewer-inner{width:min(94vw,1350px);margin:clamp(70px,8vh,96px) auto 96px}.viewer-image{height:min(calc(100svh - 145px),980px)}.viewer-caption{margin-top:10px}}
 
-@media(max-width:700px){#cursor,#cursorText,#worksCursorMask{display:none!important}.top{padding:18px 20px;font-size:11px}.top .motion-toggle{font-size:9px;gap:6px}.top-actions{gap:14px}.hero{padding-top:clamp(112px,18svh,170px)!important}.hero h1{font-size:clamp(58px,17vw,92px);white-space:nowrap}.orbit{width:100vw;overflow:hidden;padding:0 20px;margin-top:30px}.orbit-row{justify-content:flex-start;width:max-content;gap:14px}.circle{width:clamp(64px,18vw,82px);height:clamp(64px,18vw,82px);border-color:var(--pink)}.section{padding:90px 20px 110px}.section-head{margin-bottom:48px}.artist-row{grid-template-columns:34px 1fr;padding:17px 0}.artist-name{font-size:clamp(22px,7vw,34px)}.artist-photo{right:0;width:72px;height:72px}.works-row{height:clamp(140px,39vw,220px)}.viewer-inner{width:calc(100% - 40px);margin:72px 20px 120px}.viewer-image{height:64svh}.related{margin-top:90px;height:130px}.related img{height:120px}.close{top:18px;right:20px}}
+@media(max-width:700px){#cursor,#cursorText,#worksCursorMask{display:none!important}.top{padding:18px 20px;font-size:11px}.top .motion-toggle{font-size:9px;gap:6px}.top-actions{gap:14px}.hero{padding-top:clamp(112px,18svh,170px)!important}.hero h1{font-size:clamp(58px,17vw,92px);white-space:nowrap}.orbit{width:100vw;overflow:hidden;padding:0 20px;margin-top:30px}.orbit-row{justify-content:flex-start;width:max-content;gap:14px}.circle{width:clamp(64px,18vw,82px);height:clamp(64px,18vw,82px);border-color:var(--pink)}.section{padding:90px 20px 110px}.section-head{margin-bottom:48px}.artist-row{grid-template-columns:minmax(0,1fr);padding:17px 0}.artist-name{font-size:clamp(22px,7vw,34px)}.artist-photo{right:0;width:72px;height:72px}.works-row{height:clamp(140px,39vw,220px)}.viewer-inner{width:calc(100% - 40px);margin:72px 20px 120px}.viewer-image{height:64svh}.related{margin-top:90px;height:130px}.related img{height:120px}.close{top:18px;right:20px}}
 @media(max-width:700px){.overlay{padding:20px 10px}.menu-list{height:min(684px,calc(100svh - 130px))}.menu-list a{font-size:clamp(30px,9.5vw,64px)}.menu-instagram{font-size:20px}.overlay .close{top:14px!important;right:12px!important}}
 @media(min-width:701px) and (max-height:760px){.menu-list{height:calc(100svh - 140px)}.menu-list a{font-size:min(6.667vw,calc((100svh - 140px)/5))}}
 /* On touch devices the footage and grain sit behind HOME and ARTISTS; hide noise UI. */
@@ -119,7 +119,7 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
  .section-head{width:100%;margin-bottom:38px;gap:8px}
  .section-head h2{font-size:clamp(42px,13vw,72px)!important;white-space:nowrap}
  .artist-list{width:100%;min-width:0}
- .artist-row{grid-template-columns:28px minmax(0,1fr);width:100%;padding:16px 0!important}
+ .artist-row{grid-template-columns:minmax(0,1fr);width:100%;padding:16px 0!important}
  .artist-name{font-size:clamp(21px,6.6vw,32px)!important;white-space:normal;overflow-wrap:anywhere}
  .artist-photo{right:0;width:58px;height:58px}
  .works-row{width:100%;height:clamp(150px,48vw,240px);overflow:hidden}
@@ -333,7 +333,7 @@ html,body{background:#EBEBEB!important;color:#201E34!important}
 /* Restore the artist hover micro-interactions; the earlier static-gallery reset had disabled them. */
 @media (hover:hover) and (pointer:fine){
  #artists .artist-row{transition:padding .35s cubic-bezier(.22,1,.36,1)!important}
- #artists .artist-name{display:inline-block;transform-origin:left center;transition:color .3s ease,transform .35s cubic-bezier(.22,1,.36,1)!important}
+ #artists .artist-name{display:inline-block;width:fit-content;max-width:100%;transform-origin:left center;transition:color .3s ease,transform .35s cubic-bezier(.22,1,.36,1)!important}
  #artists .artist-row:hover .artist-name{transform:translateX(8px)}
  #artists .artist-photo{transition:opacity .35s ease,transform .35s cubic-bezier(.22,1,.36,1)!important}
  #artists .bio{transition:max-height .5s ease,opacity .35s ease,padding .5s ease!important}
@@ -864,6 +864,7 @@ html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain
 #viewerImage.zooming .viewer-shade,#viewerImage.zooming .viewer-hint,#viewerImage.zoomed .viewer-shade,#viewerImage.zoomed .viewer-hint{opacity:0!important;transition:opacity .12s ease!important}
 #viewer .viewer-caption{padding-left:4vw!important;padding-right:4vw!important}
 #viewer .related .ap-read{pointer-events:auto!important;cursor:pointer}
+#menuBtn{font-size:clamp(24px,2.083333vw,40px)!important;line-height:1.15!important;width:max-content!important;height:auto!important}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
@@ -1007,7 +1008,7 @@ function buildArtistsSuspension(){
 }
 buildArtistsSuspension();
 
-artists.forEach((a,i)=>{const row=document.createElement('div');row.className='artist-row';row.innerHTML=`<span class="artist-no">${String(i+1).padStart(2,'0')}</span><span class="artist-name" role="button" tabindex="0">${a[0]}</span><img class="artist-photo" src="images/${a[1]}" alt=""><div class="bio"><span class="bio-copy">${languageCopy[currentLanguage].bioSoon}</span><button type="button" class="artist-read-more">${languageCopy[currentLanguage].readMore}</button></div>`;row.onmouseenter=()=>row.classList.add('preview');row.onmouseleave=()=>row.classList.remove('preview');const name=row.querySelector('.artist-name');name.onclick=()=>openArtist(i);name.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')openArtist(i)};const more=row.querySelector('.artist-read-more');more.onclick=e=>{e.stopPropagation();row.classList.toggle('bio-open');more.textContent=row.classList.contains('bio-open')?languageCopy[currentLanguage].showLess:languageCopy[currentLanguage].readMore};$('#artistList').append(row)});
+artists.forEach((a,i)=>{const row=document.createElement('div');row.className='artist-row';row.innerHTML=`<span class="artist-name" role="button" tabindex="0">${a[0]}</span><img class="artist-photo" src="images/${a[1]}" alt=""><div class="bio"><span class="bio-copy">${languageCopy[currentLanguage].bioSoon}</span><button type="button" class="artist-read-more">${languageCopy[currentLanguage].readMore}</button></div>`;row.onmouseenter=()=>row.classList.add('preview');row.onmouseleave=()=>row.classList.remove('preview');const name=row.querySelector('.artist-name');name.onclick=()=>openArtist(i);name.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')openArtist(i)};const more=row.querySelector('.artist-read-more');more.onclick=e=>{e.stopPropagation();row.classList.toggle('bio-open');more.textContent=row.classList.contains('bio-open')?languageCopy[currentLanguage].showLess:languageCopy[currentLanguage].readMore};$('#artistList').append(row)});
 
 const orbitCircles=[...document.querySelectorAll('.circle')];
 let orbitTick=false;
@@ -1278,6 +1279,8 @@ function headerControlColorAt(el){
  return 'rgb(32, 30, 52)';
 }
 function refreshHeaderControlColors(){
+ const menuBtn=document.getElementById('menuBtn');
+ if(menuBtn){const r=menuBtn.getBoundingClientRect();const under=document.elementsFromPoint(r.left+r.width/2,r.top+r.height/2).find(e=>!e.closest('.top,#cursor,#cursorText,#menuBtn'));const sec=under?.closest('#about,#artists,#works,#exhibitions,#contact,#home');const c=sec&&sec.matches('#about,#artists,#works')?'#201E34':'#EBEBEB';if(menuBtn.style.color!==c)menuBtn.style.setProperty('color',c,'important')}
  document.querySelectorAll('#logo,.viewerLogo').forEach(el=>{const c=headerControlColorAt(el);if(el.style.getPropertyValue('--header-control-color')!==c)el.style.setProperty('--header-control-color',c)});
  document.querySelectorAll('.language-option').forEach(el=>{const c=headerControlColorAt(el);if(el.style.color!==c)el.style.color=c;if(el.style.textShadow!=='none')el.style.textShadow='none'});
  const dot=document.querySelector('#languageSwitch .language-dot');
@@ -1288,11 +1291,31 @@ function scheduleHeaderControlColors(){if(headerColorFrame)return;headerColorFra
 window.addEventListener('scroll',scheduleHeaderControlColors,{passive:true});
 window.addEventListener('resize',scheduleHeaderControlColors,{passive:true});
  scheduleHeaderControlColors();
+function isRedTextAt(x,y){
+ for(const el of document.elementsFromPoint(x,y)){
+  if(el.closest('#cursor,#cursorText,#worksCursorMask'))continue;
+  if(![...el.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()))continue;
+  return getComputedStyle(el).color==='rgb(224, 67, 36)';
+ }
+ return false;
+}
+function isDarkBackgroundAt(x,y){
+ for(const el of document.elementsFromPoint(x,y)){
+  if(el.closest('#cursor,#cursorText,#worksCursorMask'))continue;
+  const m=getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
+  if(!m||m.length<4||Number(m[3])<.5)continue;
+  const lum=.2126*m[0]+.7152*m[1]+.0722*m[2];
+  return lum<128;
+ }
+ return false;
+}
 function cursorTarget(size=18,whiteCursor=false){
  const hoveredElement=document.elementFromPoint(mouse.px,mouse.py);
  const inContact=size>18&&!!document.querySelector('#contact')&&hoveredElement?.closest('#contact');
  if(inContact){const rad=size*.5,cx=mouse.px,cy=mouse.py;return[...document.querySelectorAll('#contact '+cursorTextCandidates.split(',').join(', #contact '))].filter(el=>{const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)return false;const r=el.getBoundingClientRect();if(r.width<1||r.height<1)return false;const nx=Math.max(r.left,Math.min(cx,r.right)),ny=Math.max(r.top,Math.min(cy,r.bottom));return Math.hypot(nx-cx,ny-cy)<=rad})}
- const candidate=hoveredElement?.closest(cursorTextCandidates);
+ let candidate=hoveredElement?.closest(cursorTextCandidates);
+ /* Any element holding its own text in white or navy inverts too, so every homepage label is covered. */
+ if(hoveredElement){const own=[...hoveredElement.childNodes].some(n=>n.nodeType===3&&n.textContent.trim());const c=getComputedStyle(hoveredElement).color;if(own&&(c==='rgb(235, 235, 235)'||c==='rgb(32, 30, 52)')&&hoveredElement.getBoundingClientRect().width<700)candidate=hoveredElement}
  if(!candidate)return [];
  const cs=getComputedStyle(candidate);
  if(cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)return [];
@@ -1404,7 +1427,9 @@ function renderCursor(){
  const worksTitle=!!hovered?.closest('#works .section-head h2');
  const worksBar=!!hovered?.closest('#works .section-head');
  const activeLarge=(!onContact&&!!nextRect&&mouse.py>=nextRect.top&&inExit)||onContact;
- const whiteCursor=discoverHover?!onDark:(overHomeVideo||onDark);
+ /* Homepage: colour follows the real background under the disk (navy → white disk, light → navy disk). */
+ const onRedText=isRedTextAt(mouse.px,mouse.py);
+ const whiteCursor=onRedText||(discoverHover?!onDark:(overHomeVideo?isDarkBackgroundAt(mouse.px,mouse.py):onDark));
  const worksBarLight=worksBar&&!activeLarge&&!whiteCursor;
  const cursorLight=whiteCursor||worksBarLight;
  const speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12);
