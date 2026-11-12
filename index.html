@@ -265,8 +265,8 @@ html,body,*{user-select:none;-webkit-user-select:none}.viewer-image img,.work-ca
 #cursor.works-title-cursor{background:#201E34!important}
 #cursor.dark-zone{background:#EBEBEB!important}
 #cursor.white-cursor{background:#EBEBEB!important}
-#cursorText.white-cursor .clone,#cursorText.white-cursor .clone *{color:#201E34!important;-webkit-text-fill-color:#201E34!important}
-#cursorText.works-title-cursor .clone{color:#201E34!important;-webkit-text-fill-color:#201E34!important}
+
+
 
 /* WORKS ART CURSOR: local elastic deformation of the lower edge */
 #worksRow{isolation:isolate!important;position:relative!important;z-index:2!important}
@@ -307,7 +307,7 @@ html,body{background:#EBEBEB!important;color:#201E34!important}
 /* Invert white labels locally under the white cursor on the black sections. */
 #cursorText.works-art-cursor.white-cursor{display:block!important}
 #cursorText.white-cursor{z-index:10002!important}
-#cursorText.white-cursor .clone,#cursorText.white-cursor .clone *{color:#201E34!important;-webkit-text-fill-color:#201E34!important}
+
 
 /* ARTISTS suspended letters: lightweight chain-and-spring interaction */
 #artists .section-head{position:relative;align-items:flex-end;min-height:clamp(130px,16vw,210px);margin-bottom:80px;overflow:visible}
@@ -399,7 +399,7 @@ html,body{background:#EBEBEB!important;color:#201E34!important}
 #cursor{z-index:10004}
 #cursor.works-art-cursor{z-index:1!important}
 #cursor.white-cursor{background:#EBEBEB!important}
-#cursorText.white-cursor .clone,#cursorText.white-cursor .clone *{-webkit-text-fill-color:#201E34!important}
+
 #cursorText .clone{z-index:10003}
 @media(max-width:700px){
  .hero{min-height:90svh!important;padding-inline:12px!important}.hero h1{font-size:clamp(48px,15vw,90px)!important}.hero .subtitle{font-size:10px;letter-spacing:.12em}
@@ -439,7 +439,7 @@ html.motion-off #cursor,html.motion-off #cursorText,html.motion-off #worksCursor
 .kanasta-wordmark .letter-t{font-family:'Climate Crisis',sans-serif!important;font-weight:400!important}
 .kanasta-wordmark .letter-a-end{font-family:'Pixelify Sans',sans-serif!important;font-weight:700!important}
 #cursorText .clone.kanasta-wordmark{display:flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
-#cursorText .clone.kanasta-wordmark span{color:#201E34!important;-webkit-text-fill-color:#201E34!important}
+
 #cursorText .clone.contact-wordmark-clone{display:flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;gap:0!important;font-size:21.15vw!important;letter-spacing:-.045em!important;line-height:1.09!important;font-family:Arial,sans-serif!important}
 #cursorText .clone.contact-wordmark-clone span{display:inline-block!important;flex:none!important;color:#201E34!important;-webkit-text-fill-color:#201E34!important;line-height:1.09!important;letter-spacing:normal!important}
 #cursorText .clone.contact-wordmark-clone .letter-k{font-family:'Julius Sans One',sans-serif!important;font-weight:400!important}
@@ -1289,7 +1289,6 @@ window.addEventListener('scroll',scheduleHeaderControlColors,{passive:true});
 window.addEventListener('resize',scheduleHeaderControlColors,{passive:true});
  scheduleHeaderControlColors();
 function cursorTarget(size=18,whiteCursor=false){
- return [];
  const hoveredElement=document.elementFromPoint(mouse.px,mouse.py);
  const inContact=size>18&&!!document.querySelector('#contact')&&hoveredElement?.closest('#contact');
  if(inContact){const rad=size*.5,cx=mouse.px,cy=mouse.py;return[...document.querySelectorAll('#contact '+cursorTextCandidates.split(',').join(', #contact '))].filter(el=>{const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)return false;const r=el.getBoundingClientRect();if(r.width<1||r.height<1)return false;const nx=Math.max(r.left,Math.min(cx,r.right)),ny=Math.max(r.top,Math.min(cy,r.bottom));return Math.hypot(nx-cx,ny-cy)<=rad})}
@@ -1303,7 +1302,7 @@ function cursorTarget(size=18,whiteCursor=false){
  const hoveredControl=hoveredElement?.closest('#logo,.viewerLogo,.language-option');
  const forcedHeaderMark=!!hoveredControl&&candidate===hoveredControl;
  const isHeaderControl=candidate.matches('#logo,.viewerLogo,.language-option,.language-dot');
- const paintColors=whiteCursor?['rgb(235, 235, 235)']:['rgb(32, 30, 52)'];
+ const paintColors=['rgb(235, 235, 235)','rgb(32, 30, 52)'];
  const dotColor=candidate.matches('.language-dot,.marquee-dot')?getComputedStyle(candidate).backgroundColor:'';
  const controlColor=candidate.matches('#logo,.viewerLogo')?getComputedStyle(candidate).getPropertyValue('--header-control-color').trim():candidate.matches('.language-option')?cs.color:'';
  const matchesCursorText=paintColors.includes(cs.color)||paintColors.includes(cs.webkitTextFillColor)||paintColors.includes(controlColor)||(candidate.matches('.language-dot,.marquee-dot')&&paintColors.includes(dotColor));
@@ -1323,6 +1322,8 @@ function syncCursorClone(targets,whiteCursor=false){
   clone.style.width=baseW+'px';clone.style.height=baseH+'px';
   clone.style.fontFamily=cs.fontFamily;clone.style.fontSize=cs.fontSize;clone.style.fontWeight=cs.fontWeight;clone.style.fontStyle=cs.fontStyle;clone.style.fontVariant=cs.fontVariant;clone.style.fontStretch=cs.fontStretch;clone.style.lineHeight=cs.lineHeight;clone.style.letterSpacing=cs.letterSpacing;clone.style.textTransform=cs.textTransform;clone.style.textAlign=cs.textAlign;clone.style.whiteSpace='nowrap';
   const inverseColor=whiteCursor?'#201E34':'#EBEBEB';
+  /* Plain text swaps to the opposite of its own ink: white text becomes navy, navy text becomes white. */
+  if(!target.matches('#logo,.viewerLogo,.language-option,.language-dot,.marquee-dot')){const ownInk=getComputedStyle(target).color;const textInverse=ownInk==='rgb(235, 235, 235)'?'#201E34':'#EBEBEB';clone.style.setProperty('color',textInverse,'important');clone.style.setProperty('-webkit-text-fill-color',textInverse,'important');clone.querySelectorAll('span').forEach(sp=>{sp.style.setProperty('color',textInverse,'important');sp.style.setProperty('-webkit-text-fill-color',textInverse,'important')})}
   if(target.matches('#logo,.viewerLogo')){
    clone.style.setProperty('background-color',inverseColor,'important');
   }else if(target.matches('.language-option')){
