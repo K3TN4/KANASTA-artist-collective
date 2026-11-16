@@ -819,6 +819,9 @@ html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain
 .about-map-image{display:block;width:88%;max-width:88%;height:80%;max-height:80%;opacity:0;transition:opacity .3s ease}
 .about-map.map-ready .about-map-image{opacity:1}
 .about-map-image svg{display:block;width:auto;height:100%;max-width:100%;max-height:100%;margin:0 auto;opacity:1!important}
+/* r27: smaller map on 1080p and 1440p so the edges keep a margin */
+@media (min-width:1600px) and (max-width:2199px){.about-map-image svg{height:80%!important;max-height:80%!important;width:auto!important}}
+@media (min-width:2200px){.about-map-image svg{height:70%!important;max-height:70%!important;width:auto!important}}
 .about-map-image svg path{transform-box:fill-box;transform-origin:center;transition:transform .35s cubic-bezier(.22,1,.36,1),fill .35s ease;cursor:pointer;opacity:1}
 .about-map-image svg path:hover{transform:scale(1.05);opacity:1}
 
@@ -865,6 +868,16 @@ html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain
 #viewer .viewer-caption{padding-left:4vw!important;padding-right:4vw!important}
 #viewer .related .ap-read{pointer-events:auto!important;cursor:pointer}
 #menuBtn{font-size:clamp(24px,2.083333vw,40px)!important;line-height:1.15!important;width:max-content!important;height:auto!important}
+
+/* r27: touch (phone + tablet): text gets a gap from the edge; works ignore hover; no pointer cursor. */
+@media (hover:none), (pointer:coarse){
+ #artists,#about,#contact .contact-section,#contact .contact-grid,#exhibitions .exhibition-copy,#contact .contact-wordmark{padding-left:20px!important;padding-right:20px!important;box-sizing:border-box!important}
+ #exhibitions .exhibition-copy h2,#exhibitions .exhibitions-marquee{left:20px!important}
+ #artists .artist-row{padding-left:0!important;padding-right:0!important}
+ #worksRow .work-card:hover,#worksRow .work-card:hover img,#worksRow .work-card.edge-visible:hover{transform:none!important;z-index:auto!important}
+ #worksRow .work-card:hover img{transform:none!important}
+ #artists .artist-row:hover .artist-name{transform:none!important}
+}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
@@ -1289,6 +1302,22 @@ function refreshHeaderControlColors(){
 let headerColorFrame=0;
 function scheduleHeaderControlColors(){if(headerColorFrame)return;headerColorFrame=requestAnimationFrame(()=>{headerColorFrame=0;refreshHeaderControlColors()})}
 window.addEventListener('scroll',scheduleHeaderControlColors,{passive:true});
+/* r27: touch devices have no hover. The artist row closest to the middle of the screen is the active one (its bio opens), updated on scroll. */
+(function(){
+ const coarse=()=>matchMedia('(hover:none), (pointer:coarse)').matches;
+ let frame=0;
+ function pick(){
+  frame=0;
+  if(!coarse())return;
+  const rows=[...document.querySelectorAll('#artists .artist-row')];
+  if(!rows.length)return;
+  const mid=innerHeight/2;let best=null,bestD=Infinity;
+  rows.forEach(r=>{const b=r.getBoundingClientRect();if(b.bottom<0||b.top>innerHeight)return;const d=Math.abs((b.top+b.bottom)/2-mid);if(d<bestD){bestD=d;best=r}});
+  rows.forEach(r=>{const on=r===best;if(r.classList.contains('preview')!==on)r.classList.toggle('preview',on)});
+ }
+ window.addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(pick)},{passive:true});
+ window.addEventListener('resize',()=>{if(!frame)frame=requestAnimationFrame(pick)},{passive:true});
+})();
 window.addEventListener('resize',scheduleHeaderControlColors,{passive:true});
  scheduleHeaderControlColors();
 function isRedTextAt(x,y){
@@ -1300,10 +1329,13 @@ function isRedTextAt(x,y){
  return false;
 }
 function isDarkBackgroundAt(x,y){
+ /* r27: walk the stack and take the first opaque background (transparent layers such as IMG/SPAN are skipped). */
  for(const el of document.elementsFromPoint(x,y)){
   if(el.closest('#cursor,#cursorText,#worksCursorMask'))continue;
   const m=getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
-  if(!m||m.length<4||Number(m[3])<.5)continue;
+  if(!m||m.length<3)continue;
+  const a=m.length>=4?Number(m[3]):1;
+  if(a<.5)continue;
   const lum=.2126*m[0]+.7152*m[1]+.0722*m[2];
   return lum<128;
  }
@@ -1429,7 +1461,9 @@ function renderCursor(){
  const activeLarge=(!onContact&&!!nextRect&&mouse.py>=nextRect.top&&inExit)||onContact;
  /* Homepage: colour follows the real background under the disk (navy → white disk, light → navy disk). */
  const onRedText=isRedTextAt(mouse.px,mouse.py);
- const whiteCursor=onRedText||(discoverHover?!onDark:(overHomeVideo?isDarkBackgroundAt(mouse.px,mouse.py):onDark));
+ const menuOpen=!!document.getElementById('menu')?.classList.contains('open');
+ /* r27: one rule everywhere on the homepage: the disk takes the colour of the background under it; inside the open menu the menu's own background decides. */
+ const whiteCursor=onRedText||(menuOpen?isDarkBackgroundAt(mouse.px,mouse.py):(discoverHover?!onDark:isDarkBackgroundAt(mouse.px,mouse.py)));
  const worksBarLight=worksBar&&!activeLarge&&!whiteCursor;
  const cursorLight=whiteCursor||worksBarLight;
  const speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12);
