@@ -899,6 +899,23 @@ html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain
 @media (orientation:portrait) and (max-width:1024px) and (pointer:coarse){
  .artist-row .artist-name{font-size:clamp(18px,5.6vw,28px)!important}
 }
+/* BIO TOUCH v3: smooth expansion, name stays still, bio fades in (like desktop). */
+@media (hover:none), (pointer:coarse){
+ #artists .bio{max-height:0;opacity:0;overflow:hidden;padding:0;transition:max-height .6s cubic-bezier(.22,1,.36,1),opacity .45s ease,padding .6s cubic-bezier(.22,1,.36,1)!important}
+ #artists .artist-row.bio-open .bio{max-height:520px!important;opacity:1!important;padding:10px 0 20px!important}
+ #artists .artist-name{transition:none!important;transform:none!important}
+ #artists .artist-row:hover .artist-name{transform:none!important}
+ #artists .bio .bio-fade{transition:opacity .45s ease}
+}
+/* ARTIST PROFILE v3: readable paragraphs, wider line spacing, red achievements list. */
+#artistPage .ap-bio{font-size:clamp(17px,2.1vw,30px)!important;line-height:1.55!important;text-align:left;hyphens:manual;overflow-wrap:break-word;max-width:min(86vw,1100px)!important}
+#artistPage .ap-bio .ap-ach-head{margin-top:1.6em;margin-bottom:.5em;padding-bottom:.35em;border-bottom:1px solid #D0021B;display:block}
+#artistPage .ap-ach{margin:.2em 0 0;padding:0;list-style:none}
+#artistPage .ap-ach li{position:relative;padding:.75em 0 .75em 1.3em;margin:0;border-bottom:1px solid #D0021B;line-height:1.5;font-size:1.08em}
+#artistPage .ap-ach li:last-child{border-bottom:none}
+#artistPage .ap-ach li::before{content:'';position:absolute;left:0;top:1.2em;width:.7em;height:.7em;border-radius:50%;background:#D0021B}
+/* WORKS RAIL v2 FINAL: every card is opaque; no edge-* hiding. */
+#worksRow .work-card,#worksRow .work-card.edge-visible,#worksRow .work-card.edge-hidden,#worksRow .work-card.edge-transition,#worksRow .work-card.edge-mid{opacity:1!important;visibility:visible!important}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
@@ -919,16 +936,18 @@ const artistBios={"Ada Rosa": "Urodzona w 2005 roku w Wolsztynie. W 2025 roku uk
 
 /* r31: card shows ~30 characters that fade out after 20; full bio lives on the artist page. */
 function bioFull(name){return artistBios[name]||''}
+/* nbsp after one-letter Polish words so they never dangle at a line end */
+function bioNoWidow(t){return t.replace(/(^|[\s(„"])([A-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż])\s+(?=\S)/g,'$1$2&nbsp;')}
 function bioRender(name,fallback){
  const full=bioFull(name);
  if(!full)return (fallback||'').replace(/\n/g,'<br>');
  const parts=full.split(/\n\s*\n/);
  const intro=parts[0].trim();
  const rest=parts.slice(1).join('\n\n').trim();
- let html=intro.replace(/\n/g,' ').replace(/</g,'&lt;');
+ let html=bioNoWidow(intro.replace(/\n/g,' ').replace(/</g,'&lt;'));
  const items=rest?rest.split('\n').map(x=>x.trim()).filter(Boolean):[];
  if(items.length){
-  html+='<span class="ap-ach-head">Osiągnięcia artystyczne</span><ul class="ap-ach">'+items.map(x=>'<li>'+x.replace(/^[-–•]\s*/,'').replace(/</g,'&lt;')+'</li>').join('')+'</ul>';
+  html+='<span class="ap-ach-head">Osiągnięcia artystyczne</span><ul class="ap-ach">'+items.map(x=>'<li>'+bioNoWidow(x.replace(/^[-–•]\s*/,'').replace(/</g,'&lt;'))+'</li>').join('')+'</ul>';
  }
  return html;
 }
@@ -1067,7 +1086,7 @@ function buildArtistsSuspension(){
 }
 buildArtistsSuspension();
 
-artists.forEach((a,i)=>{const row=document.createElement('div');row.className='artist-row';row.innerHTML=`<span class="artist-name" role="button" tabindex="0">${a[0]}</span><img class="artist-photo" src="images/${a[1]}" alt=""><div class="bio"><span class="bio-copy">${bioExcerpt(a[0])}</span><button type="button" class="artist-read-more">${languageCopy[currentLanguage].readMore}</button></div>`;row.onmouseenter=()=>row.classList.add('preview');row.onmouseleave=()=>row.classList.remove('preview');const name=row.querySelector('.artist-name');name.onclick=()=>openArtist(i);name.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')openArtist(i)};const more=row.querySelector('.artist-read-more');more.onclick=e=>{e.stopPropagation();row.classList.toggle('bio-open');more.textContent=row.classList.contains('bio-open')?languageCopy[currentLanguage].showLess:languageCopy[currentLanguage].readMore};$('#artistList').append(row)});
+artists.forEach((a,i)=>{const row=document.createElement('div');row.className='artist-row';row.innerHTML=`<span class="artist-name" role="button" tabindex="0">${a[0]}</span><img class="artist-photo" src="images/${a[1]}" alt=""><div class="bio"><span class="bio-copy">${bioExcerpt(a[0])}</span><button type="button" class="artist-read-more">${languageCopy[currentLanguage].readMore}</button></div>`;row.onmouseenter=()=>row.classList.add('preview');row.onmouseleave=()=>row.classList.remove('preview');const name=row.querySelector('.artist-name');name.onclick=()=>openArtist(i);name.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')openArtist(i)};const more=row.querySelector('.artist-read-more');more.onclick=e=>{e.stopPropagation();openArtist(i)};$('#artistList').append(row)});
 
 const orbitCircles=[...document.querySelectorAll('.circle')];
 let orbitTick=false;
@@ -1236,9 +1255,7 @@ function updateEdge(){
   const railX=vr.left+rail.x+x,railY=vr.top+y,mx=railX+w*.5,my=railY+h*.5;
   const dist=Math.hypot((mx-cx)/nx,(my-cy)/ny),center=Math.max(0,Math.min(1,1-dist)),scale=.92+.13*center;
   const left=railX-w*(scale-1)/2,right=railX+w+w*(scale-1)/2,top=railY-h*(scale-1)/2,bottom=railY+h+h*(scale-1)/2;
-  const visible=right>0&&left<innerWidth&&bottom>vr.top&&top<vr.bottom;
-  if(!visible){if(c.dataset.edgeVisible!=='0'){c.style.setProperty('opacity','0','important');c.dataset.edgeVisible='0'}continue}
-  c.dataset.edgeVisible='1';c.style.setProperty('opacity','1','important');c.style.setProperty('transform',`scale(${scale.toFixed(3)})`,'important');
+  c.dataset.edgeVisible='1';c.style.removeProperty('opacity');c.style.setProperty('transform',`scale(${scale.toFixed(3)})`,'important');
   c.style.setProperty('transform-origin','center center','important');c.style.setProperty('z-index',String(3+Math.round(center*12)+Number(c.dataset.depth||0)),'important');
  }
 }
@@ -1301,6 +1318,7 @@ if(!rail.ready)return;const v=$('#worksRow').clientWidth;rail.x=Math.max(v-rail.
 function scheduleMove(dx){rail.pending+=dx;if(rail.frame)return;rail.frame=requestAnimationFrame(()=>{const d=rail.pending;rail.pending=0;rail.frame=0;moveRail(d)})}
 /* Gentle desktop-only autonomous drift; manual dragging and Motion OFF always take precedence. */
 let worksAutoFrame=0,worksAutoLast=0;
+/* WORKS RAIL CORE (v2 rewrite): cards are always opaque; visibility = geometry only. */
 function startWorksAutoDrift(){
  if(worksAutoFrame)return;
  const tick=now=>{
@@ -1315,6 +1333,13 @@ function startWorksAutoDrift(){
  };
  worksAutoFrame=requestAnimationFrame(tick);
 }
+/* WORKS mobile idle: extend the touch rail even without scroll (touch/pointer:coarse). */
+let mobileIdleLast=0;
+function mobileIdleTick(now){
+ if(matchMedia('(hover:none), (pointer:coarse)').matches&&rail.ready&&pageMotionEnabled&&document.visibilityState==='visible'&&now-mobileIdleLast>500){mobileIdleLast=now;scheduleMobileRailCheck()}
+ requestAnimationFrame(mobileIdleTick);
+}
+requestAnimationFrame(mobileIdleTick);
 function loadRepoWorks(){return REPO_THUMB_FILES.map(makeWork)}
 async function buildRail(){const list=loadRepoWorks();sourceWorks.splice(0,sourceWorks.length,...list);works.splice(0,works.length,...list);const line=railLine();document.querySelectorAll('#worksRow .works-line').forEach((x,i)=>{if(i)x.remove()});line.replaceChildren();rail.segments=[];mobileSegments.length=0;const items=makeSequence(list,WORKS_RENDER_COUNT);if(matchMedia('(hover:none), (pointer:coarse)').matches){const fragment=document.createDocumentFragment();for(const w of items)fragment.append(makeWorkCard(w));line.append(fragment);rail.segment=$('#worksRow').scrollWidth||innerWidth*1.5}else{const h=$('#worksRow').clientHeight||560;rail.segment=await placeBatch(items,0,h)}rail.trackWidth=rail.segment;rail.segments=[{cards:[...line.querySelectorAll('.work-card')],width:rail.segment}];line.style.setProperty('--works-track-width',rail.trackWidth+'px');rail.x=Math.min(-120,-(rail.trackWidth-innerWidth)/2);rail.ready=true;paint();startWorksAutoDrift();if(matchMedia('(hover:none), (pointer:coarse)').matches){const row=$('#worksRow');mobileSegments.push({cards:[...line.querySelectorAll('.work-card')],width:row.scrollWidth});row.scrollLeft=Math.max(0,(row.scrollWidth-row.clientWidth)/2);scheduleMobileRailCheck()}$('#works .section-head span:last-child').textContent=list.length+' · '+languageCopy[currentLanguage].worksCount}
 let worksDrag=null,worksTouchRail=null;$('#worksRow').onmousedown=e=>{if(e.button!==0||!rail.ready)return;worksDrag={x:e.clientX,moved:false};$('#worksRow').classList.add('dragging');e.preventDefault()};document.addEventListener('mousemove',e=>{if(!worksDrag)return;const dx=e.clientX-worksDrag.x;if(Math.abs(dx)>2)worksDrag.moved=true;scheduleMove(dx);worksDrag.x=e.clientX},{passive:true});document.addEventListener('mouseup',()=>{if(!worksDrag)return;const moved=worksDrag.moved;worksDrag=null;$('#worksRow').classList.remove('dragging');if(moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,90)}});$('#worksRow').addEventListener('touchstart',e=>{if(matchMedia('(hover:none), (pointer:coarse)').matches)return;if(e.touches.length)worksTouchRail={x:e.touches[0].clientX,moved:false}},{passive:true});$('#worksRow').addEventListener('touchmove',e=>{if(matchMedia('(hover:none), (pointer:coarse)').matches||!worksTouchRail||!e.touches.length)return;const dx=e.touches[0].clientX-worksTouchRail.x;if(Math.abs(dx)>3)worksTouchRail.moved=true;if(worksTouchRail.moved){e.preventDefault();scheduleMove(dx);worksTouchRail.x=e.touches[0].clientX}},{passive:false});$('#worksRow').addEventListener('touchend',()=>{if(matchMedia('(hover:none), (pointer:coarse)').matches){worksTouchRail=null;return}if(worksTouchRail?.moved){const r=$('#worksRow');r.dataset.suppress='1';setTimeout(()=>delete r.dataset.suppress,100)}worksTouchRail=null});$('#worksRow').addEventListener('scroll',scheduleMobileRailCheck,{passive:true});window.addEventListener('resize',updateEdge);window.addEventListener('scroll',updateEdge,{passive:true});(async()=>{try{await buildRail()}catch(e){console.error('WORKS rebuild',e);$('#worksRow').innerHTML=`<div class="placeholder">${languageCopy[currentLanguage].worksError}</div>`}})();
