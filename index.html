@@ -922,6 +922,31 @@ html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain
 /* r37: marquee words, discover links, arrows and contact links must be seen by the cursor even when their own layer has pointer-events:none */
 #exhibitionsMarquee .marquee-word,#exhibitionsMarqueeTrack,#exhibitionsMarquee,#exhibitions .discover-link,#exhibitions .discover-link *,.contact-section a,.contact-section .contact-manifesto,.contact-section .contact-jump-links a{pointer-events:auto!important}
 </style>
+<style id="r38-cursor-rule">
+/* r38: single rule. The disk takes the inverse of the opaque background under it: navy bg -> white disk, light bg -> navy disk, undefined -> white. Overrides every older class rule. */
+#cursor,#cursor.works-art-cursor,#cursor.dark-zone,#cursor.white-cursor,#cursor.works-bar-cursor,#cursor.works-title-cursor,#cursor.map-solid-cursor,#cursor.works-art-cursor.dark-zone,#cursor.works-art-cursor.map-solid-cursor,#cursor.dark-zone.map-solid-cursor,#cursor.works-title-cursor.map-solid-cursor{background:#EBEBEB!important}
+#cursor.bg-light{background:#201E34!important}
+#cursor.map-solid-cursor{background:#E04324!important}
+</style>
+<script id="r38-bg-classify">
+/* r38: classify what is under the disk: 'navy' | 'light' | 'other'. Cheap: walks elementsFromPoint, reads computed background colour only (no pixel reads). */
+function classifyBgAt(x,y){
+ const stack=document.elementsFromPoint(x,y);
+ for(const el of stack){
+  if(el.closest('#cursor,#cursorText,#worksCursorMask'))continue;
+  const cs=getComputedStyle(el);
+  const m=cs.backgroundColor.match(/[\d.]+/g);
+  if(!m||m.length<3)continue;
+  const a=m.length>=4?Number(m[3]):1;
+  if(a<.5)continue;
+  const r=Number(m[0]),g=Number(m[1]),b=Number(m[2]);
+  if(r===32&&g===30&&b===52)return 'navy';
+  if(r===235&&g===235&&b===235)return 'light';
+  return 'other';
+ }
+ return 'other';
+}
+</script>
 </head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
@@ -1540,8 +1565,8 @@ function renderCursor(){
  const onRedText=isRedTextAt(mouse.px,mouse.py);
  const menuOpen=!!document.getElementById('menu')?.classList.contains('open');
  /* r27: one rule everywhere on the homepage: the disk takes the colour of the background under it; inside the open menu the menu's own background decides. */
- const whiteCursor=onRedText||!!hovered?.closest('.kanasta-wordmark')||isDarkBackgroundAt(mouse.px,mouse.py);
- const worksBarLight=worksBar&&!activeLarge&&!whiteCursor;
+ const bgClass=classifyBgAt(mouse.px,mouse.py);const whiteCursor=bgClass!=='light';
+ const worksBarLight=false;
  const cursorLight=whiteCursor||worksBarLight;
  const speed=Math.hypot(mouse.vx,mouse.vy),jiggle=Math.min(2.2,speed*.12);
  const jx=Math.sin(now*7.2)*jiggle,jy=Math.cos(now*8.1)*jiggle;
@@ -1549,7 +1574,7 @@ function renderCursor(){
  cursor.style.transform=`translate(calc(-50% + ${jx}px),calc(-50% + ${jy}px))`;
  cursor.style.setProperty('--soft-size',`${size.toFixed(1)}px`);
  cursor.style.setProperty('--soft-radius',`${50+Math.sin(now*1.45)*3}% ${50-Math.sin(now*1.45)*3}% ${48+Math.cos(now*1.8)*3}% ${52-Math.cos(now*1.8)*3}% / 50% 47% 53% 50%`);
- cursor.style.background=whiteCursor?'#EBEBEB':'#201E34';
+ cursor.classList.toggle('bg-light',!whiteCursor);cursor.style.background=whiteCursor?'#EBEBEB':'#201E34';
  if(onOpaqueMap)cursor.style.setProperty('background','#E04324','important');else cursor.style.removeProperty('background');
  cursor.style.width=size+'px';cursor.style.height=size+'px';
  cursor.style.borderRadius=activeLarge?'var(--soft-radius)':'50%';
