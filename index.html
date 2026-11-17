@@ -884,6 +884,21 @@ html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain
 .bio .bio-fade{display:inline;-webkit-mask-image:linear-gradient(90deg,#000 0,transparent 100%);mask-image:linear-gradient(90deg,#000 0,transparent 100%);color:inherit}
 .bio .bio-solid,.bio .bio-fade{transition:opacity .35s}
 #artistPage .ap-bio{font-family:Helvetica,Arial,sans-serif!important;font-size:clamp(17px,1.9vw,28px);max-width:44vw}
+#artistPage .ap-ach-head{display:block;margin-top:1.4em;color:#D0021B;font:400 inherit;font-weight:700;letter-spacing:.01em}
+#artistPage .ap-ach{list-style:none;margin:.5em 0 0;padding:0}
+#artistPage .ap-ach li{position:relative;padding-left:1.1em;margin:0 0 .35em}
+#artistPage .ap-ach li::before{content:'';position:absolute;left:0;top:.5em;width:.4em;height:.4em;border-radius:50%;background:#D0021B}
+
+
+@media (max-width:1024px) and (pointer:coarse){
+ html,body{overflow-x:hidden!important;max-width:100vw!important}
+ .artist-row .bio{width:100%!important;max-width:100%!important;justify-self:stretch!important}
+ .artist-row .bio .bio-copy{display:block!important;width:100%!important;white-space:normal!important}
+ .artist-row .bio .bio-fade{display:inline!important}
+}
+@media (orientation:portrait) and (max-width:1024px) and (pointer:coarse){
+ .artist-row .artist-name{font-size:clamp(18px,5.6vw,28px)!important}
+}
 </style></head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
@@ -904,6 +919,19 @@ const artistBios={"Ada Rosa": "Urodzona w 2005 roku w Wolsztynie. W 2025 roku uk
 
 /* r31: card shows ~30 characters that fade out after 20; full bio lives on the artist page. */
 function bioFull(name){return artistBios[name]||''}
+function bioRender(name,fallback){
+ const full=bioFull(name);
+ if(!full)return (fallback||'').replace(/\n/g,'<br>');
+ const parts=full.split(/\n\s*\n/);
+ const intro=parts[0].trim();
+ const rest=parts.slice(1).join('\n\n').trim();
+ let html=intro.replace(/\n/g,' ').replace(/</g,'&lt;');
+ const items=rest?rest.split('\n').map(x=>x.trim()).filter(Boolean):[];
+ if(items.length){
+  html+='<span class="ap-ach-head">Osiągnięcia artystyczne</span><ul class="ap-ach">'+items.map(x=>'<li>'+x.replace(/^[-–•]\s*/,'').replace(/</g,'&lt;')+'</li>').join('')+'</ul>';
+ }
+ return html;
+}
 function bioExcerpt(name){
  const full=bioFull(name);
  if(!full)return languageCopy[currentLanguage].bioSoon;
@@ -1603,7 +1631,7 @@ function openArtistPage(i){
  const [name,file]=artists[i];const pg=document.getElementById('artistPage');const list=apWorksOf(name);const pl=currentLanguage==='pl';
  const worksHtml=list.length?list.map((w,j)=>`<button type="button" class="ap-work" data-j="${j}"><img src="${w.thumb}" alt=""><span class="ap-shade"></span><span class="ap-info"><span class="ap-wname">${name}</span><span class="ap-wtitle">${w.title}</span></span><span class="ap-read">${pl?'Czytaj więcej':'Read about'}</span></button>`).join(''):`<p class="ap-empty">${pl?'Prace wkrótce':'Works coming soon'}</p>`;
  const track=`<span>WORKS</span><i></i>`.repeat(6);
- pg.innerHTML=`<header class="ap-top"><button type="button" class="ap-logo-btn" id="apLogo" aria-label="KANASTA"><img src="images/kanasta-mark.svg" alt=""></button><button type="button" class="ap-menu" id="apMenu">MENU</button></header><section class="ap-hero"><div class="ap-left"><h1 class="ap-name">${name.split(" ").map(x=>`<span>${x.toUpperCase()}</span>`).join("")}</h1><span class="ap-spec">${pl?'Specjalizacja':'Specialisation'}</span></div><div class="ap-photo"><img src="images/${file}" alt="${name}"></div></section><div class="ap-rule"></div><h2 class="ap-about">ABOUT</h2><p class="ap-bio">${(bioFull(name)||languageCopy[currentLanguage].profileBio).replace(/\n/g,'<br>')}</p><div class="ap-marquee" aria-hidden="true"><div class="ap-track">${track}${track}</div></div><div class="ap-works">${worksHtml}</div>${footerClone()}`;
+ pg.innerHTML=`<header class="ap-top"><button type="button" class="ap-logo-btn" id="apLogo" aria-label="KANASTA"><img src="images/kanasta-mark.svg" alt=""></button><button type="button" class="ap-menu" id="apMenu">MENU</button></header><section class="ap-hero"><div class="ap-left"><h1 class="ap-name">${name.split(" ").map(x=>`<span>${x.toUpperCase()}</span>`).join("")}</h1><span class="ap-spec">${pl?'Specjalizacja':'Specialisation'}</span></div><div class="ap-photo"><img src="images/${file}" alt="${name}"></div></section><div class="ap-rule"></div><h2 class="ap-about">ABOUT</h2><p class="ap-bio">${bioRender(name,languageCopy[currentLanguage].profileBio)}</p><div class="ap-marquee" aria-hidden="true"><div class="ap-track">${track}${track}</div></div><div class="ap-works">${worksHtml}</div>${footerClone()}`;
  pg.querySelectorAll('.ap-work').forEach(b=>b.onclick=()=>openWork(works.indexOf(list[+b.dataset.j])));avFooterWire(pg);
  document.getElementById('apLogo').onclick=()=>{pg.classList.remove('open');closeArtistsView();goHome()};
  document.getElementById('apMenu').onclick=()=>$('#menu').classList.add('open');
