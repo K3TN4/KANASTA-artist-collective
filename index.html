@@ -918,7 +918,11 @@ html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain
 #artistPage .ap-ach li::before{content:'';position:absolute;left:0;top:1.2em;width:.7em;height:.7em;border-radius:50%;background:#D0021B}
 /* WORKS RAIL v2 FINAL: every card is opaque; no edge-* hiding. */
 #worksRow .work-card,#worksRow .work-card.edge-visible,#worksRow .work-card.edge-hidden,#worksRow .work-card.edge-transition,#worksRow .work-card.edge-mid{opacity:1!important;visibility:visible!important}
-</style></head>
+</style><style id="r37-cursor-all">
+/* r37: marquee words, discover links, arrows and contact links must be seen by the cursor even when their own layer has pointer-events:none */
+#exhibitionsMarquee .marquee-word,#exhibitionsMarqueeTrack,#exhibitionsMarquee,#exhibitions .discover-link,#exhibitions .discover-link *,.contact-section a,.contact-section .contact-manifesto,.contact-section .contact-jump-links a{pointer-events:auto!important}
+</style>
+</head>
 <body>
 <svg id="worksBlobDefs" aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="worksBlobFilter" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.018 0.045" numOctaves="2" seed="7" result="noise"><animate attributeName="seed" values="7;17;7" dur="3.8s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg><div id="worksCursorMask" aria-hidden="true"></div><div id="cursor"></div><div id="cursorText"></div><div id="exhibitionsCursorLayer" aria-hidden="true"></div>
 <header class="top"><button id="logo" aria-label="KANASTA — strona główna"><img class="kanasta-mark" src="images/kanasta-mark.svg" alt=""></button><div class="top-actions"><button id="motionToggle" class="motion-toggle" type="button" aria-label="Wyłącz wszystkie animacje" aria-pressed="false" title="Wyłącz wszystkie animacje"><span class="motion-toggle-label">MOTION</span><span class="motion-switch" aria-hidden="true"><span class="motion-switch-knob"></span></span><span id="motionStatus">ON</span></button><button id="menuBtn">MENU</button></div><div class="noise-controls" aria-label="Film grain controls"><button id="noiseToggle" class="noise-toggle" type="button" aria-label="Toggle film grain" aria-pressed="true"><span>NOISE</span><span class="noise-switch" aria-hidden="true"><span class="noise-switch-knob"></span></span></button><label class="noise-strength"><span class="sr-only">Noise strength</span><input id="noiseStrength" type="range" min="0" max="38" step="1" value="12" aria-label="Noise strength"></label><output id="noiseReadout" class="noise-readout" aria-live="polite">12% · scale 100% · overlay</output><details class="noise-advanced"><summary>MORE NOISE CONTROLS</summary><div class="noise-advanced-panel"><label class="noise-param"><span>Grain scale</span><output id="noiseScaleValue">100%</output><input id="noiseScale" type="range" min="25" max="300" step="5" value="100" aria-label="Noise grain scale"></label><label class="noise-param"><span>Animation speed</span><output id="noiseSpeedValue">0.5 s</output><input id="noiseSpeed" type="range" min="10" max="200" step="5" value="50" aria-label="Noise animation speed"></label><label class="noise-param"><span>Contrast</span><output id="noiseContrastValue">1.0×</output><input id="noiseContrast" type="range" min="50" max="200" step="5" value="100" aria-label="Noise contrast"></label><label class="noise-param"><span>Brightness</span><output id="noiseBrightnessValue">0</output><input id="noiseBrightness" type="range" min="-30" max="30" step="2" value="0" aria-label="Noise brightness"></label><label class="noise-param"><span>Grain detail</span><output id="noiseOctavesValue">1</output><input id="noiseOctaves" type="range" min="1" max="4" step="1" value="1" aria-label="Noise detail (octaves)"></label><div class="noise-options"><label class="noise-check"><input id="noiseAnimate" type="checkbox" checked><span>Animate</span></label><label class="noise-check"><input id="noiseInvert" type="checkbox"><span>Invert</span></label><label class="noise-check"><input id="noiseColor" type="checkbox"><span>Color</span></label><label class="noise-check"><input id="noiseSeamless" type="checkbox" checked><span>Seamless</span></label></div><label class="noise-blend"><span>Blend mode</span><select id="noiseBlend" aria-label="Noise blend mode"><option value="overlay">Overlay</option><option value="soft-light">Soft light</option><option value="screen">Screen</option><option value="multiply">Multiply</option><option value="normal">Normal</option></select></label><button class="noise-reset" id="noiseReset" type="button">RESET DEFAULTS</button></div></details></div></header>
@@ -1684,4 +1688,18 @@ if(menuArtists)menuArtists.onclick=e=>{e.preventDefault();closeAll();openArtists
   if(svg){svg.setAttribute('preserveAspectRatio','xMidYMid meet');svg.removeAttribute('width');svg.removeAttribute('height');svg.querySelectorAll('path').forEach((pa,i)=>{if(!pa.id)pa.id='woj-'+(i+1)});}
   host.closest('.about-map').classList.add('map-ready');
  }).catch(()=>{host.style.display='none'});})();
-</script></body></html>
+</script><script id="r37-cursor-all-js">
+/* r37: when the hovered element has no candidate, fall back to a geometric hit test over every visible text node so every homepage label inverts. */
+(function(){
+ const extra='#about h2,#about .about-text p,#about .eyebrow,#exhibitionsMarquee .marquee-word,#exhibitions .discover-link,#exhibitions .discover-link span,#home .discover-link,#home .discover-link span,.contact-section a,.contact-section .contact-manifesto,.contact-section .contact-jump-links a,.exhibition-arrow';
+ const origTarget=cursorTarget;
+ window.cursorTarget=function(size,whiteCursor){
+  const base=origTarget(size,whiteCursor);
+  if(base&&base.length)return base;
+  const x=mouse.px,y=mouse.py;
+  const hits=[...document.querySelectorAll(extra)].filter(el=>{const cs=getComputedStyle(el);if(cs.visibility==='hidden'||cs.display==='none'||Number(cs.opacity)<.05)return false;const r=el.getBoundingClientRect();return r.width>=1&&r.height>=1&&x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom});
+  return hits.slice(0,1);
+ };
+})();
+</script>
+</body></html>
