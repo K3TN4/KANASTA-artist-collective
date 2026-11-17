@@ -908,9 +908,11 @@ html.hero-film-gone #home .hero-background,html.hero-film-gone #home .film-grain
  #artists .bio .bio-fade{transition:opacity .45s ease}
 }
 /* ARTIST PROFILE v3: readable paragraphs, wider line spacing, red achievements list. */
-#artistPage .ap-bio{font-size:clamp(17px,2.1vw,30px)!important;line-height:1.55!important;text-align:left;hyphens:manual;overflow-wrap:break-word;max-width:min(86vw,1100px)!important}
+#artistPage .ap-bio{font-size:clamp(17px,2.1vw,30px)!important;line-height:1.55!important;text-align:left;hyphens:manual;overflow-wrap:break-word;max-width:min(86vw,1100px)!important;padding-left:0!important}
+#artistPage .ap-ach-head,#artistPage .ap-ach{padding-left:0!important}
 #artistPage .ap-bio .ap-ach-head{margin-top:1.6em;margin-bottom:.5em;padding-bottom:.35em;border-bottom:1px solid #D0021B;display:block}
-#artistPage .ap-ach{margin:.2em 0 0;padding:0;list-style:none}
+#artistPage .ap-bio .ap-ach-head{margin-left:0}
+#artistPage .ap-ach{margin:.2em 0 0;padding:0;list-style:none;margin-left:0!important;width:100%}
 #artistPage .ap-ach li{position:relative;padding:.75em 0 .75em 1.3em;margin:0;border-bottom:1px solid #D0021B;line-height:1.5;font-size:1.08em}
 #artistPage .ap-ach li:last-child{border-bottom:none}
 #artistPage .ap-ach li::before{content:'';position:absolute;left:0;top:1.2em;width:.7em;height:.7em;border-radius:50%;background:#D0021B}
@@ -1656,7 +1658,7 @@ function openArtistPage(i){
  const [name,file]=artists[i];const pg=document.getElementById('artistPage');const list=apWorksOf(name);const pl=currentLanguage==='pl';
  const worksHtml=list.length?list.map((w,j)=>`<button type="button" class="ap-work" data-j="${j}"><img src="${w.thumb}" alt=""><span class="ap-shade"></span><span class="ap-info"><span class="ap-wname">${name}</span><span class="ap-wtitle">${w.title}</span></span><span class="ap-read">${pl?'Czytaj więcej':'Read about'}</span></button>`).join(''):`<p class="ap-empty">${pl?'Prace wkrótce':'Works coming soon'}</p>`;
  const track=`<span>WORKS</span><i></i>`.repeat(6);
- pg.innerHTML=`<header class="ap-top"><button type="button" class="ap-logo-btn" id="apLogo" aria-label="KANASTA"><img src="images/kanasta-mark.svg" alt=""></button><button type="button" class="ap-menu" id="apMenu">MENU</button></header><section class="ap-hero"><div class="ap-left"><h1 class="ap-name">${name.split(" ").map(x=>`<span>${x.toUpperCase()}</span>`).join("")}</h1><span class="ap-spec">${pl?'Specjalizacja':'Specialisation'}</span></div><div class="ap-photo"><img src="images/${file}" alt="${name}"></div></section><div class="ap-rule"></div><h2 class="ap-about">ABOUT</h2><p class="ap-bio">${bioRender(name,languageCopy[currentLanguage].profileBio)}</p><div class="ap-marquee" aria-hidden="true"><div class="ap-track">${track}${track}</div></div><div class="ap-works">${worksHtml}</div>${footerClone()}`;
+ pg.innerHTML=`<header class="ap-top"><button type="button" class="ap-logo-btn" id="apLogo" aria-label="KANASTA"><img src="images/kanasta-mark.svg" alt=""></button><button type="button" class="ap-menu" id="apMenu">MENU</button></header><section class="ap-hero"><div class="ap-left"><h1 class="ap-name">${name.split(" ").map(x=>`<span>${x.toUpperCase()}</span>`).join("")}</h1><span class="ap-spec">${pl?'Specjalizacja':'Specialisation'}</span></div><div class="ap-photo"><img src="images/${file}" alt="${name}"></div></section><div class="ap-rule"></div><h2 class="ap-about">ABOUT</h2><div class="ap-bio">${bioRender(name,languageCopy[currentLanguage].profileBio)}</div><div class="ap-marquee" aria-hidden="true"><div class="ap-track">${track}${track}</div></div><div class="ap-works">${worksHtml}</div>${footerClone()}`;
  pg.querySelectorAll('.ap-work').forEach(b=>b.onclick=()=>openWork(works.indexOf(list[+b.dataset.j])));avFooterWire(pg);
  document.getElementById('apLogo').onclick=()=>{pg.classList.remove('open');closeArtistsView();goHome()};
  document.getElementById('apMenu').onclick=()=>$('#menu').classList.add('open');
